@@ -1,7 +1,7 @@
 import { Box, Flex, Text, theme } from '@chakra-ui/react';
 import Image from 'next/image';
 
-export default function RootLayout({
+export default function AuthLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -27,7 +27,6 @@ export default function RootLayout({
           top='50%'
           left='50%'
           transform='translate(-50%, -50%)'
-          // bg="green.900"
           bg={'rgba(0, 128, 0, 0.92)'}
           opacity='1'
           w={{ '2xl': '560px', xl: '490px' }}

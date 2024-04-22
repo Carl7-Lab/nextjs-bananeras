@@ -8,6 +8,7 @@ import {
   Input,
 } from '@chakra-ui/react';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { signIn } from 'next-auth/react';
 import * as Yup from 'yup';
 
 interface ValuesProps {
@@ -15,6 +16,12 @@ interface ValuesProps {
   password: string;
   rememberMe: boolean;
 }
+
+type Props = {
+  className?: string;
+  callbackUrl?: string;
+  error?: string;
+};
 
 const initialValues: ValuesProps = {
   email: '',
@@ -27,21 +34,15 @@ const validationSchema = Yup.object({
   password: Yup.string().required('Required'),
 });
 
-export default function SignInForm() {
-  const signin = (values: any) => {
-    console.log('sign up: ', values);
-    alert(JSON.stringify(values));
+export default function SignInForm(props: Props) {
+  const signin = async (values: any) => {
+    const res = await signIn('credentials', {
+      username: values.email,
+      password: values.password,
+      redirect: true,
+      callbackUrl: props.callbackUrl ?? 'http://localhost:3000/dashboard',
+    });
   };
-
-  //   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  //     e.preventDefault();
-  //     const res = await signIn('credentials', {
-  //       username: userName.current,
-  //       password: pass.current,
-  //       redirect: true,
-  //       callbackUrl: props.callbackUrl ?? 'http://localhost:3000',
-  //     });
-  //   };
 
   return (
     <Formik
@@ -49,7 +50,7 @@ export default function SignInForm() {
       onSubmit={signin}
       validationSchema={validationSchema}
     >
-      {({ errors, touched }) => (
+      {({ errors, touched, isSubmitting }) => (
         <Form>
           <Flex flexDirection='column'>
             <FormControl
@@ -109,6 +110,7 @@ export default function SignInForm() {
               type='submit'
               colorScheme='teal'
               variant={'purple'}
+              isLoading={isSubmitting}
             >
               Iniciar sesión
             </Button>

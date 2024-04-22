@@ -6,9 +6,9 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
-  theme,
 } from '@chakra-ui/react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
+import { useRouter } from 'next/navigation';
 import * as Yup from 'yup';
 import { BACKEND_URL } from '../../lib/constants';
 
@@ -41,28 +41,28 @@ const validationSchema = Yup.object({
 });
 
 export default function SignUpForm() {
-  const signUp = (values: any) => {
-    console.log('sign up: ', values);
-    alert(JSON.stringify(values));
-  };
+  const router = useRouter();
 
-  //   const register = async (values: any) => {
-  //     const res = await fetch(BACKEND_URL + '/auth/register', {
-  //       method: 'POST',
-  //       body: JSON.stringify({
-  //         name: values.name,
-  //         email: values.email,
-  //         password: values.password,
-  //       }),
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //     });
-  //     if (!res.ok) {
-  //       alert(res.statusText);
-  //       return;
-  //     }
-  //   };
+  const signUp = async (values: any) => {
+    const res = await fetch(BACKEND_URL + '/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({
+        name: values.name,
+        email: values.email,
+        password: values.password,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!res.ok) {
+      alert(res.statusText);
+      return;
+    }
+
+    router.push('/auth/signin');
+  };
 
   return (
     <Formik
@@ -70,7 +70,7 @@ export default function SignUpForm() {
       onSubmit={signUp}
       validationSchema={validationSchema}
     >
-      {({ errors, touched }) => (
+      {({ errors, touched, isSubmitting }) => (
         <Form>
           <Flex flexDirection='column'>
             <FormControl
@@ -144,6 +144,7 @@ export default function SignUpForm() {
               type='submit'
               colorScheme='teal'
               variant={'purple'}
+              isLoading={isSubmitting}
             >
               Registrarse
             </Button>

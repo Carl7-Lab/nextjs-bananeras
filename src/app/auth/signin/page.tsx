@@ -48,7 +48,10 @@ const SignInPage = (props: Props) => {
 
         <Card variant='unstyled' mt='20px'>
           <CardBody w='100%'>
-            <SignInForm />
+            <SignInForm
+              error={props.searchParams?.error}
+              callbackUrl={props.searchParams?.callbackUrl}
+            />
           </CardBody>
         </Card>
 

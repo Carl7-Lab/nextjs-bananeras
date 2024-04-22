@@ -1,21 +1,18 @@
-import Link from 'next/link';
+import { Box } from '@chakra-ui/react';
 import { getServerSession } from 'next-auth/next';
+import SidenavBar from '../../components/SidenavBar';
 import { authOptions } from '../api/auth/[...nextauth]/authOptions';
 
-type Props = {
+export default async function DashBoardLayout({
+  children,
+}: Readonly<{
   children: React.ReactNode;
-};
-
-const DashboardLayout = async (props: Props) => {
-  console.log('authOptions', authOptions);
+}>) {
   const session = await getServerSession(authOptions);
-  console.log('session!!', session);
-  return (
-    <div>
-      <Link href={`/dashboard/user/${session?.user?.id}`}>User Profile</Link>
-      <div>{props.children}</div>
-    </div>
-  );
-};
 
-export default DashboardLayout;
+  return (
+    <Box as='div' bgColor={'gray.50'}>
+      <SidenavBar idUser={session?.user?.id}>{children}</SidenavBar>
+    </Box>
+  );
+}

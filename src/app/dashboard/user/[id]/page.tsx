@@ -18,7 +18,6 @@ const ProfilePage = async (props: Props) => {
     },
   });
   const user = await response.json();
-  console.log('usuario: ', user);
 
   return (
     <div>
