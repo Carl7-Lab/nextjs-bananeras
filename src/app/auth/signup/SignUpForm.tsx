@@ -1,7 +1,7 @@
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import React from 'react';
 import * as Yup from 'yup';
-import { BACKEND_URL } from '../../lib/constants';
+import { BACKEND_URL } from '../../../lib/constants';
 
 const initialValues = { name: '', email: '', password: '' };
 

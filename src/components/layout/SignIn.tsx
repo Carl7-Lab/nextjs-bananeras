@@ -24,6 +24,7 @@ const Login = (props: Props) => {
       callbackUrl: props.callbackUrl ?? 'http://localhost:3000',
     });
   };
+
   return (
     <div className={props.className}>
       <div>Login Form</div>
