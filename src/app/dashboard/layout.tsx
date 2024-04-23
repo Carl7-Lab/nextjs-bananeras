@@ -10,7 +10,6 @@ export default async function DashBoardLayout({
 }>) {
   const session = await getServerSession(authOptions);
 
-  console.log('inf sessio', session);
   return (
     <Box as='div' bgColor={'gray.50'}>
       <Flex>

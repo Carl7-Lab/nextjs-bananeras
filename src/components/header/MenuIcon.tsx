@@ -28,7 +28,6 @@ export interface MenuItemProps {
 
 export default function MenuIcon({ user }: { user: UserProps }) {
   const menuItems = getTopBarItems(user.id);
-  console.log(menuItems);
 
   return (
     <Menu>
