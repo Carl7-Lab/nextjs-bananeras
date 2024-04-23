@@ -8,7 +8,12 @@ export interface SidenavContainerProps {
 
 export function SidenavContainer({ children, sidenav }: SidenavContainerProps) {
   return (
-    <Grid templateAreas={`'sidebar main'`} templateColumns='auto 1fr'>
+    <Grid
+      templateAreas={`'sidebar main'`}
+      templateColumns='auto 1fr'
+      width='100%'
+      p={'0px'}
+    >
       <GridItem area='sidebar' as='aside' w='full' p={0}>
         <Box
           pos='sticky'
@@ -33,7 +38,7 @@ export function SidenavContainer({ children, sidenav }: SidenavContainerProps) {
           {sidenav}
         </Box>
       </GridItem>
-      <GridItem as='main' area='main' p={{ base: 6, md: 8 }}>
+      <GridItem as='main' area='main' p='0px' w={'100%'}>
         {children}
       </GridItem>
     </Grid>

@@ -39,8 +39,6 @@ export interface SidenavItemsProps {
 export function SidenavItems({ navItems, mode = 'semi' }: SidenavItemsProps) {
   const pathname = usePathname();
 
-  console.log('Ruta actual:', pathname);
-
   const sidebarItemInOverMode = (item: SidenavItem, index: number) => (
     <ListItem key={index}>
       {item.isMenu ? (

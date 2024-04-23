@@ -3,7 +3,7 @@ import { BsBarChart } from 'react-icons/bs';
 
 import { SidenavItem, SidenavMenuItem } from './sidenav-items';
 
-export function getNavItems(idUser?: number): SidenavItem[] {
+export function getNavItems(idUser: number): SidenavItem[] {
   const dashboardMenu: SidenavMenuItem[] = [
     {
       label: 'opcion1',
