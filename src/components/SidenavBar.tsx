@@ -1,12 +1,10 @@
 'use client';
 import { IconButton } from '@chakra-ui/react';
-import { BiChalkboard, BiMap } from 'react-icons/bi';
-import { BsBarChart } from 'react-icons/bs';
-import { FiSettings, FiMenu } from 'react-icons/fi';
+import { FiMenu } from 'react-icons/fi';
 import Sidenav from './sidenav/sidenav';
 import SidenavContainer from './sidenav/sidenav-container';
 import { useSidenav } from './sidenav/sidenav-context';
-import { SidenavItem } from './sidenav/sidenav-items';
+import { getNavItems } from './sidenav/SideNavItems';
 
 export default function SidenavBar({
   children,
@@ -15,16 +13,8 @@ export default function SidenavBar({
   children: React.ReactNode;
   idUser?: number;
 }>) {
-  const navItems: SidenavItem[] = [
-    { icon: BsBarChart, label: 'Dashboard', to: '/dashboard' },
-    {
-      icon: BiChalkboard,
-      label: 'Profile',
-      to: `/dashboard/user/${idUser}`,
-    },
-  ];
-
   const { onOpen } = useSidenav();
+  const navItems = getNavItems(idUser);
 
   return (
     <SidenavContainer sidenav={<Sidenav navItems={navItems} />}>
