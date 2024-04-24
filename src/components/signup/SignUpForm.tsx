@@ -44,7 +44,7 @@ export default function SignUpForm() {
   const router = useRouter();
 
   const signUp = async (values: any) => {
-    const res = await fetch(BACKEND_URL + '/auth/register', {
+    const res = await fetch(BACKEND_URL + '/auth/merchant/register', {
       method: 'POST',
       body: JSON.stringify({
         name: values.name,
