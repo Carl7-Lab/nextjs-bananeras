@@ -1,9 +1,17 @@
+import { useSession } from 'next-auth/react';
 import { BiChalkboard } from 'react-icons/bi';
 import { BsBarChart } from 'react-icons/bs';
 
 import { SidenavItem, SidenavMenuItem } from './sidenav-items';
 
-export function getNavItems(idUser: number): SidenavItem[] {
+export function GetUser() {
+  const { data: session } = useSession();
+  return session?.user;
+}
+
+export function getNavItems(): SidenavItem[] {
+  const user = GetUser();
+
   const dashboardMenu: SidenavMenuItem[] = [
     {
       label: 'opcion1',
@@ -22,14 +30,13 @@ export function getNavItems(idUser: number): SidenavItem[] {
     {
       icon: BsBarChart,
       label: 'Dashboard',
-      //   to: '/dashboard',
       isMenu: true,
       menu: dashboardMenu,
     },
     {
       icon: BiChalkboard,
       label: 'Profile',
-      to: `/dashboard/user/${idUser}`,
+      to: `/dashboard/user/${user?.id}`,
     },
   ];
 

@@ -15,19 +15,17 @@ export interface UserProps {
 
 export default function SidenavBar({
   children,
-  user,
 }: Readonly<{
   children: React.ReactNode;
-  user: UserProps;
 }>) {
   const { onOpen } = useSidenav();
-  const navItems = getNavItems(user!.id);
+  const navItems = getNavItems();
 
   return (
     <SidenavContainer sidenav={<Sidenav navItems={navItems} />}>
       <Box as='main' m='0px' p='0px' width='100%'>
         <Box as={'div'} m='0px' p='0px' width='100%' className='App'>
-          <AppBar user={user} />
+          <AppBar />
           {children}
         </Box>
       </Box>

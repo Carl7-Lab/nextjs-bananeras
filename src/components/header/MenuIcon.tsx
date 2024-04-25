@@ -14,11 +14,11 @@ import {
   MenuOptionGroup,
   Icon,
 } from '@chakra-ui/react';
+import { useSession } from 'next-auth/react';
 import React from 'react';
 import { IconType } from 'react-icons';
 import { AiOutlineUser } from 'react-icons/ai';
 import { getTopBarItems } from './MenuIconItem';
-import { UserProps } from '../ui/SidenavBar';
 
 export interface MenuItemProps {
   icon: IconType;
@@ -26,8 +26,9 @@ export interface MenuItemProps {
   to: string;
 }
 
-export default function MenuIcon({ user }: { user: UserProps }) {
-  const menuItems = getTopBarItems(user.id);
+export default function MenuIcon() {
+  const { data: session } = useSession();
+  const menuItems = getTopBarItems();
 
   return (
     <Menu>
@@ -52,8 +53,8 @@ export default function MenuIcon({ user }: { user: UserProps }) {
             icon={<AiOutlineUser size={'30px'} />}
           />
           <Box>
-            <Heading fontSize={'md'}>{user.name}</Heading>
-            <Text fontSize={'xs'}>{user.email}</Text>
+            <Heading fontSize={'md'}>{session?.user.name}</Heading>
+            <Text fontSize={'xs'}>{session?.user.email}</Text>
           </Box>
         </Flex>
 

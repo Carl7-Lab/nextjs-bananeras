@@ -10,14 +10,17 @@ type Props = {
 
 const ProfilePage = async (props: Props) => {
   const session = await getServerSession(authOptions);
+  // console.log('session: ', session);
   const response = await fetch(BACKEND_URL + `/auth/profile`, {
     method: 'GET',
     headers: {
-      authorization: `Bearer ${session?.accessToken}`,
+      authorization: `Bearer ${session?.refreshToken}`,
       'Content-Type': 'application/json',
     },
   });
+  // console.log('response: ', response);
   const user = await response.json();
+  // console.log('user: ', user);
 
   return (
     <div>

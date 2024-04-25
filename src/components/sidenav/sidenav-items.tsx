@@ -20,6 +20,7 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { IconType } from 'react-icons';
 import { IoIosArrowDown, IoIosArrowForward } from 'react-icons/io';
+import { isOnboarding } from '../../lib/constants';
 
 export interface SidenavItem {
   icon: IconType;
@@ -129,7 +130,7 @@ export function SidenavItems({ navItems, mode = 'semi' }: SidenavItemsProps) {
             onClick={toggleAccordion}
             px='10px'
             py='12px'
-            _focus={{ bg: 'green.300', color: 'white' }}
+            // _focus={{ bg: 'green.300', color: 'white' }}
             _hover={{
               bg: 'green.300',
               color: 'white',
@@ -156,7 +157,7 @@ export function SidenavItems({ navItems, mode = 'semi' }: SidenavItemsProps) {
                 key={index}
                 display={'block'}
                 as={Link_Next}
-                href={item.to}
+                href={isOnboarding ? item.to : ''}
                 w='full'
                 borderRadius='md'
                 color={pathname === item.to ? 'green.800' : 'black'}
@@ -171,7 +172,7 @@ export function SidenavItems({ navItems, mode = 'semi' }: SidenavItemsProps) {
         <Link
           display='block'
           as={Link_Next}
-          href={item.to}
+          href={isOnboarding ? item.to : ''}
           _focus={{ bg: 'green.300', color: 'white' }}
           _hover={{
             bg: 'green.300',
@@ -184,7 +185,6 @@ export function SidenavItems({ navItems, mode = 'semi' }: SidenavItemsProps) {
           px='10px'
           py='12px'
           color={pathname === item.to ? 'white' : 'black'}
-          onClick={toggleAccordion}
         >
           <Flex alignItems='center' justifyContent='start'>
             <Icon size={'20'} as={item.icon} />

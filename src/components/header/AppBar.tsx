@@ -1,10 +1,8 @@
 'use client';
-
 import { Box } from '@chakra-ui/react';
 import MenuIcon from './MenuIcon';
-import { UserProps } from '../ui/SidenavBar';
 
-export const AppBar = ({ user }: { user: UserProps }) => {
+export const AppBar = () => {
   return (
     <Box
       as={'header'}
@@ -16,7 +14,7 @@ export const AppBar = ({ user }: { user: UserProps }) => {
       display='flex'
       justifyContent='flex-end'
     >
-      <MenuIcon user={user} />
+      <MenuIcon />
     </Box>
   );
 };
