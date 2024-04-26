@@ -42,6 +42,8 @@ export default function SignInForm(props: Props) {
       redirect: true,
       callbackUrl: props.callbackUrl ?? 'http://localhost:3000/dashboard',
     });
+
+    return;
   };
 
   return (

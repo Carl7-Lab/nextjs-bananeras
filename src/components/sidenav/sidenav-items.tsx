@@ -1,4 +1,3 @@
-// 'use client';
 import {
   List,
   ListItem,
@@ -12,14 +11,12 @@ import {
   AccordionPanel,
   AccordionIcon,
   Box,
-  Button,
-  theme,
 } from '@chakra-ui/react';
 import Link_Next from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { IconType } from 'react-icons';
-import { IoIosArrowDown, IoIosArrowForward } from 'react-icons/io';
+import { AccordionMenu } from './AccordionMenu';
 import { isOnboarding } from '../../lib/constants';
 
 export interface SidenavItem {
@@ -42,19 +39,6 @@ export interface SidenavItemsProps {
 
 export function SidenavItems({ navItems, mode = 'semi' }: SidenavItemsProps) {
   const pathname = usePathname();
-  const subMenus: SidenavItem[] = navItems.filter(
-    (navItem) => navItem.isMenu === true
-  );
-
-  const isSubMenu = subMenus.find((subMenu) =>
-    subMenu.menu?.find((item) => item.to === pathname)
-  );
-
-  const [isOpen, setIsOpen] = useState(!!isSubMenu);
-
-  const toggleAccordion = () => {
-    setIsOpen(!isOpen);
-  };
 
   const sidebarItemInOverMode = (item: SidenavItem, index: number) => (
     <ListItem key={index}>
@@ -125,49 +109,7 @@ export function SidenavItems({ navItems, mode = 'semi' }: SidenavItemsProps) {
   const sidebarItemInSemiMode = (item: SidenavItem, index: number) => (
     <ListItem key={index}>
       {item.isMenu ? (
-        <>
-          <Button
-            onClick={toggleAccordion}
-            px='10px'
-            py='12px'
-            // _focus={{ bg: 'green.300', color: 'white' }}
-            _hover={{
-              bg: 'green.300',
-              color: 'white',
-            }}
-            bgColor={isOpen ? 'green.300' : 'transparent'}
-            color={isOpen ? 'white' : 'black'}
-            borderRadius='md'
-            w={'full'}
-            display={'flex'}
-            justifyContent={'space-between'}
-            h={'48px'}
-          >
-            <Flex>
-              <Icon as={item.icon} boxSize={'16px'} />
-              <Text ml={2} fontSize={theme.fontSizes.md}>
-                {item.label}
-              </Text>
-            </Flex>
-            <Icon as={isOpen ? IoIosArrowDown : IoIosArrowForward} />
-          </Button>
-          {isOpen &&
-            item.menu?.map((item, index) => (
-              <Link
-                key={index}
-                display={'block'}
-                as={Link_Next}
-                href={isOnboarding ? item.to : ''}
-                w='full'
-                borderRadius='md'
-                color={pathname === item.to ? 'green.800' : 'black'}
-              >
-                <Flex alignItems='center' justifyContent='start' p={2}>
-                  <Text ml={2}>{item.label}</Text>
-                </Flex>
-              </Link>
-            ))}
-        </>
+        <AccordionMenu item={item} />
       ) : (
         <Link
           display='block'
@@ -196,7 +138,7 @@ export function SidenavItems({ navItems, mode = 'semi' }: SidenavItemsProps) {
   );
 
   return (
-    <List spacing={3} w='full' px='16px'>
+    <List spacing={3} w='full' px='16px' mt={'70px'} pt={'10px'}>
       {mode === 'semi'
         ? navItems.map((item, index) => sidebarItemInSemiMode(item, index))
         : navItems.map((item, index) => sidebarItemInOverMode(item, index))}

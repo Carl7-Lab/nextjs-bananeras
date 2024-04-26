@@ -24,6 +24,7 @@ export function SidenavContainer({ children, sidenav }: SidenavContainerProps) {
           p='0'
           height='100vh'
           overflow='auto'
+          pb='50px'
           css={{
             '&::-webkit-scrollbar': {
               height: 'var(--chakra-sizes-1)',

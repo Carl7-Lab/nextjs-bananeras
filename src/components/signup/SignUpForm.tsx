@@ -62,6 +62,7 @@ export default function SignUpForm() {
     }
 
     router.push('/auth/signin');
+    return;
   };
 
   return (
