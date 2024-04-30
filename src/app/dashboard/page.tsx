@@ -1,7 +1,8 @@
-import React from 'react';
+'use client';
+import IsOnboarding from '../../components/ui/IsOnboarding';
 
 const DashboardPage = () => {
   return <div>Dashboard Page</div>;
 };
 
-export default DashboardPage;
+export default IsOnboarding(DashboardPage);

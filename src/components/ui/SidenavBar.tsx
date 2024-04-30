@@ -1,11 +1,9 @@
 'use client';
-import { Box, IconButton } from '@chakra-ui/react';
-import { FiMenu } from 'react-icons/fi';
-import { AppBar } from '../header/AppBar';
-import Sidenav from '../sidenav/sidenav';
-import SidenavContainer from '../sidenav/sidenav-container';
-import { useSidenav } from '../sidenav/sidenav-context';
-import { getNavItems } from '../sidenav/SideNavItems';
+import { Box, Center } from '@chakra-ui/react';
+import { AppBar } from './header/AppBar';
+import Sidenav from './sidenav/sidenav';
+import SidenavContainer from './sidenav/sidenav-container';
+import { getNavItems } from './sidenav/SideNavItems';
 
 export interface UserProps {
   id: number;
@@ -18,7 +16,6 @@ export default function SidenavBar({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { onOpen } = useSidenav();
   const navItems = getNavItems();
 
   return (
@@ -26,15 +23,11 @@ export default function SidenavBar({
       <Box as='main' m='0px' p='0px' width='100%'>
         <Box as={'div'} m='0px' p='0px' width='100%' className='App'>
           <AppBar />
-          {children}
+          <Center height='90vh' overflow='auto' mt='4px'>
+            {children}
+          </Center>
         </Box>
       </Box>
-      <IconButton
-        aria-label='menu'
-        display={{ base: 'flex', md: 'none' }}
-        onClick={onOpen}
-        icon={<FiMenu />}
-      />
     </SidenavContainer>
   );
 }

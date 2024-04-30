@@ -15,7 +15,7 @@ import {
 import React from 'react';
 import { useSidenav } from './sidenav-context';
 import SidenavItems, { SidenavItem } from './sidenav-items';
-import { Logo } from '../ui/Logo';
+import { Logo } from '../Logo';
 
 export interface SidenavProps {
   navItems: SidenavItem[];
@@ -55,7 +55,16 @@ export function Sidenav({ navItems }: SidenavProps) {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Sidenav Header</DrawerHeader>
+          <DrawerHeader>
+            <Flex>
+              <Icon as={Logo} boxSize={8} />
+              <Center ml='5px'>
+                <Text fontSize='2xl' fontWeight='bold' color='green'>
+                  Bananeras
+                </Text>
+              </Center>
+            </Flex>
+          </DrawerHeader>
           <DrawerBody>
             <SidenavItems navItems={navItems} mode='over' />
           </DrawerBody>

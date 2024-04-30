@@ -1,19 +1,10 @@
-import {
-  Button,
-  Divider,
-  Flex,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Heading,
-  Input,
-  SimpleGrid,
-} from '@chakra-ui/react';
-import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { Button, Divider, Flex, Heading, SimpleGrid } from '@chakra-ui/react';
+import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import * as Yup from 'yup';
 import { BACKEND_URL } from '../../lib/constants';
-import { InputFieldText } from '../form/InputFieldText';
+import InputFieldText from '../ui/form/InputFieldText';
 
 interface ValuesProps {
   businessName: string;
@@ -95,6 +86,7 @@ const validationSchema = Yup.object({
 
 export default function OnboardingForm() {
   const router = useRouter();
+  const { data: session, status, update } = useSession();
 
   const sendOnboarding = async (values: ValuesProps) => {
     const onboardingValues = {
@@ -117,12 +109,12 @@ export default function OnboardingForm() {
       },
     };
 
-    console.log('Onboarding ...', onboardingValues);
     const res = await fetch(BACKEND_URL + '/auth/merchant/onboarding', {
       method: 'POST',
       body: JSON.stringify(onboardingValues),
       headers: {
         'Content-Type': 'application/json',
+        authorization: `Bearer ${session?.refreshToken}`,
       },
     });
 
@@ -130,6 +122,9 @@ export default function OnboardingForm() {
       alert(res.statusText);
       return;
     }
+    const response = await res.json();
+
+    await update({ merchantId: response.id });
 
     router.push('/dashboard/productor/fincas');
     return;
@@ -150,7 +145,7 @@ export default function OnboardingForm() {
               </Heading>
               <Divider mb={'16px'} />
 
-              <SimpleGrid columns={2} spacing={5}>
+              <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
                 <InputFieldText name={'businessName'} label={'Razon Social'} />
                 <InputFieldText name={'businessId'} label={'RUC'} />
                 <InputFieldText name={'city'} label={'Ciudad'} />
@@ -162,7 +157,7 @@ export default function OnboardingForm() {
               </Heading>
               <Divider mb={'16px'} />
 
-              <SimpleGrid columns={2} spacing={5}>
+              <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
                 <InputFieldText name={'businessObjName'} label={'Nombre'} />
                 <InputFieldText name={'businessObjArea'} label={'Área'} />
                 <InputFieldText name={'businessObjCity'} label={'Ciudad'} />
@@ -189,7 +184,7 @@ export default function OnboardingForm() {
                 name={'businessManagerObjName'}
                 label={'Nombre'}
               />
-              <SimpleGrid columns={2} spacing={5}>
+              <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
                 <InputFieldText
                   name={'businessManagerObjEmail'}
                   label={'Email'}

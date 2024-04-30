@@ -1,10 +1,9 @@
-import { Button, Flex, Icon, Link, Text } from '@chakra-ui/react';
+import { Box, Button, Divider, Flex, Icon, Link, Text } from '@chakra-ui/react';
 import Link_Next from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { IoIosArrowDown, IoIosArrowForward } from 'react-icons/io';
 import { SidenavItem } from './sidenav-items';
-import { isOnboarding } from '../../lib/constants';
 
 interface AccordionMenuProps {
   item: SidenavItem;
@@ -12,7 +11,10 @@ interface AccordionMenuProps {
 
 export const AccordionMenu = ({ item }: AccordionMenuProps) => {
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(pathname === item.to);
+  const [isOpen, setIsOpen] = useState(pathname.includes(item.to));
+
+  const isAble: boolean = pathname !== '/dashboard/onboarding';
+
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
   };
@@ -50,12 +52,19 @@ export const AccordionMenu = ({ item }: AccordionMenuProps) => {
             key={index}
             display={'block'}
             as={Link_Next}
-            href={isOnboarding ? item.to : ''}
+            href={isAble ? item.to : ''}
             w='full'
             borderRadius='md'
             color={pathname === item.to ? 'green.800' : 'black'}
           >
-            <Flex alignItems='center' justifyContent='start' p={2}>
+            <Flex alignItems='center' justifyContent='start' p={0}>
+              <Box
+                bg={pathname.includes(item.to) ? 'green.300' : 'green.100'}
+                w={'3px'}
+                h={'40px'}
+                mx={2}
+                rounded={'1px'}
+              />
               <Text ml={2}>{item.label}</Text>
             </Flex>
           </Link>

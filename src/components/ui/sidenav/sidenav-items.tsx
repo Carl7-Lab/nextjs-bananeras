@@ -14,15 +14,14 @@ import {
 } from '@chakra-ui/react';
 import Link_Next from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
 import { IconType } from 'react-icons';
 import { AccordionMenu } from './AccordionMenu';
-import { isOnboarding } from '../../lib/constants';
+import { useSidenav } from './sidenav-context';
 
 export interface SidenavItem {
   icon: IconType;
   label: string;
-  to?: string;
+  to: string;
   isMenu?: boolean;
   menu?: SidenavMenuItem[];
 }
@@ -39,6 +38,8 @@ export interface SidenavItemsProps {
 
 export function SidenavItems({ navItems, mode = 'semi' }: SidenavItemsProps) {
   const pathname = usePathname();
+  const { isOpen } = useSidenav();
+  const isAble: boolean = pathname !== '/dashboard/onboarding';
 
   const sidebarItemInOverMode = (item: SidenavItem, index: number) => (
     <ListItem key={index}>
@@ -114,7 +115,7 @@ export function SidenavItems({ navItems, mode = 'semi' }: SidenavItemsProps) {
         <Link
           display='block'
           as={Link_Next}
-          href={isOnboarding ? item.to : ''}
+          href={isAble ? item.to : ''}
           _focus={{ bg: 'green.300', color: 'white' }}
           _hover={{
             bg: 'green.300',
@@ -138,7 +139,13 @@ export function SidenavItems({ navItems, mode = 'semi' }: SidenavItemsProps) {
   );
 
   return (
-    <List spacing={3} w='full' px='16px' mt={'70px'} pt={'10px'}>
+    <List
+      spacing={3}
+      w='full'
+      px='16px'
+      mt={isOpen ? '10px' : '70px'}
+      pt={'10px'}
+    >
       {mode === 'semi'
         ? navItems.map((item, index) => sidebarItemInSemiMode(item, index))
         : navItems.map((item, index) => sidebarItemInOverMode(item, index))}

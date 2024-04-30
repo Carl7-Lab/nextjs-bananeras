@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
-import { BiChalkboard } from 'react-icons/bi';
 import { BsBarChart } from 'react-icons/bs';
 
+import { FaCogs } from 'react-icons/fa';
 import { SidenavItem, SidenavMenuItem } from './sidenav-items';
 
 export function GetUser() {
@@ -17,18 +17,14 @@ export function getNavItems(): SidenavItem[] {
     },
   ];
 
-  const marcasCajaMenu: SidenavMenuItem[] = [
+  const boxBrandsMenu: SidenavMenuItem[] = [
     {
-      label: 'Dole',
-      to: '/dashboard/marcas-de-cajas/dole',
+      label: 'Consultar',
+      to: '/dashboard/box-brands/search',
     },
     {
-      label: 'Chiquita',
-      to: '/dashboard/marcas-de-cajas/chiquita',
-    },
-    {
-      label: 'Del Monte',
-      to: '/dashboard/marcas-de-cajas/del-monte',
+      label: 'Agregar',
+      to: '/dashboard/box-brands/add',
     },
   ];
 
@@ -62,7 +58,7 @@ export function getNavItems(): SidenavItem[] {
     },
   ];
 
-  const penlidadesMenu: SidenavMenuItem[] = [
+  const penalidadesMenu: SidenavMenuItem[] = [
     {
       label: 'Cajas Maduras',
       to: '/dashboard/penalidades/cajas-maduras',
@@ -72,37 +68,55 @@ export function getNavItems(): SidenavItem[] {
       to: '/dashboard/penalidades/cajas-estropeadas',
     },
   ];
+  const settingsMenu: SidenavMenuItem[] = [
+    {
+      label: 'Agregar Marca',
+      to: '/dashboard/settings/add-brand',
+    },
+  ];
 
   const navItems: SidenavItem[] = [
     {
       icon: BsBarChart,
       label: 'Productor',
       isMenu: true,
+      to: '/dashboard/productor',
       menu: productorMenu,
     },
     {
       icon: BsBarChart,
       label: 'Marcas de Caja',
       isMenu: true,
-      menu: marcasCajaMenu,
+      to: '/dashboard/box-brands',
+      menu: boxBrandsMenu,
     },
     {
       icon: BsBarChart,
       label: 'Produccion',
       isMenu: true,
+      to: '/dashboard/produccion',
       menu: produccionMenu,
     },
     {
       icon: BsBarChart,
       label: 'Materiales',
       isMenu: true,
+      to: '/dashboard/materiales',
       menu: materialesMenu,
     },
     {
       icon: BsBarChart,
       label: 'Penalidades',
       isMenu: true,
-      menu: penlidadesMenu,
+      to: '/dashboard/penalidades',
+      menu: penalidadesMenu,
+    },
+    {
+      icon: FaCogs,
+      label: 'Configuraciones',
+      isMenu: true,
+      to: '/dashboard/settings',
+      menu: settingsMenu,
     },
   ];
 

@@ -11,7 +11,7 @@ interface InputFieldProps {
   label: string;
 }
 
-export const InputFieldText: React.FC<InputFieldProps> = ({ name, label }) => {
+const InputFieldText: React.FC<InputFieldProps> = ({ name, label }) => {
   const [field, meta] = useField(name);
   return (
     <FormControl id={name} isInvalid={!!meta.error && meta.touched}>
@@ -27,3 +27,5 @@ export const InputFieldText: React.FC<InputFieldProps> = ({ name, label }) => {
     </FormControl>
   );
 };
+
+export default InputFieldText;

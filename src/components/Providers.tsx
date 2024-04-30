@@ -5,7 +5,7 @@ import { SessionProvider } from 'next-auth/react';
 import { ReactNode } from 'react';
 
 import theme from '@/theme';
-import SidenavProvider from './sidenav/sidenav-context';
+import SidenavProvider from './ui/sidenav/sidenav-context';
 
 interface Props {
   children: ReactNode;
@@ -13,11 +13,11 @@ interface Props {
 
 const Providers = ({ children }: Props) => {
   return (
-    <ChakraProvider theme={theme}>
-      <SidenavProvider>
-        <SessionProvider>{children}</SessionProvider>
-      </SidenavProvider>
-    </ChakraProvider>
+    <SessionProvider>
+      <ChakraProvider theme={theme}>
+        <SidenavProvider>{children}</SidenavProvider>
+      </ChakraProvider>
+    </SessionProvider>
   );
 };
 

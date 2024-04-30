@@ -1,20 +1,24 @@
 'use client';
-import {
-  Box,
-  Card,
-  CardBody,
-  CardHeader,
-  Center,
-  Heading,
-} from '@chakra-ui/react';
-import React from 'react';
+import { Box, Card, CardBody, Center } from '@chakra-ui/react';
+import { redirect } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import React, { useLayoutEffect } from 'react';
 import OnboardingForm from '../../../components/onboarding/OnboardingForm';
 
 export default function OnBoardingPage() {
+  const { data: session } = useSession();
+  const isOnboarded = !!session?.user?.merchantId;
+
+  useLayoutEffect(() => {
+    if (isOnboarded) {
+      return redirect('/dashboard/productor/fincas');
+    }
+  }, [isOnboarded]);
+
   return (
     <>
-      <Box mt='4px' height='90vh' overflow='auto'>
-        <Center my={'20px'}>
+      <Box mt={'475px'} mb={'25px'}>
+        <Center>
           <Card
             w={{
               base: '95%',

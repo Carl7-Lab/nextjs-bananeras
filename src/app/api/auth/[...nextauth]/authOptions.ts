@@ -16,6 +16,9 @@ async function refreshToken(token: JWT): Promise<JWT> {
   return {
     ...token,
     ...response,
+    user: {
+      ...token.user,
+    },
   };
 }
 
@@ -49,12 +52,16 @@ export const authOptions: NextAuthOptions = {
         }
 
         const user = await res.json();
+        console.log('user login: ', user);
         return user;
       },
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
+      if (trigger === 'update' && session?.merchantId) {
+        token.user.merchantId = session.merchantId;
+      }
       if (user) return { ...token, ...user };
       if (new Date().getTime() < token.exp) return token;
 

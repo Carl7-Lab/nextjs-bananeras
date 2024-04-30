@@ -2,8 +2,8 @@
 import React from 'react';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
-function FincasPage() {
-  return <div>FincasPage</div>;
+function SearchPage() {
+  return <div>SearchPage</div>;
 }
 
-export default IsOnboarding(FincasPage);
+export default IsOnboarding(SearchPage);

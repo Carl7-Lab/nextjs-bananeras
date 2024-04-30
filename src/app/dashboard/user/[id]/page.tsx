@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth';
 import { BACKEND_URL } from '../../../../lib/constants';
 import { authOptions } from '../../../api/auth/[...nextauth]/authOptions';
@@ -10,17 +11,22 @@ type Props = {
 
 const ProfilePage = async (props: Props) => {
   const session = await getServerSession(authOptions);
-  // console.log('session: ', session);
-  const response = await fetch(BACKEND_URL + `/auth/profile`, {
+  const response = await fetch(BACKEND_URL + `/auth/merchant/profile`, {
     method: 'GET',
     headers: {
       authorization: `Bearer ${session?.refreshToken}`,
       'Content-Type': 'application/json',
     },
   });
-  // console.log('response: ', response);
+  console.log('session: ', session);
   const user = await response.json();
-  // console.log('user: ', user);
+  console.log('user: ', user);
+
+  const isOnboarding = !!user.merchantId;
+
+  if (!isOnboarding) {
+    redirect('/dashboard/onboarding');
+  }
 
   return (
     <div>

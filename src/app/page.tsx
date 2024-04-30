@@ -1,5 +1,5 @@
 import styles from './page.module.css';
-import { AppBar } from '../components/header/AppBar';
+import { AppBar } from '../components/ui/header/AppBar';
 
 export default function Home() {
   return (
