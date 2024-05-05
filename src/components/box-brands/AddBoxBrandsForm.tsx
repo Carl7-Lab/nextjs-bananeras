@@ -8,12 +8,12 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
-import { useSession } from 'next-auth/react';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import * as Yup from 'yup';
-import { BACKEND_URL } from '../../lib/constants';
+import { useCreateBoxBrand } from '@/hooks/box-brand/createBoxBrand';
+import { queryClient } from '@/lib/react-query';
+import InputFieldBrandSelect from './InputFieldBrandSelect';
 import InputFieldBooleanSelector from '../ui/form/InputFieldBooleanSelector';
-import InputFieldSelector from '../ui/form/InputFieldSelector';
 import InputFieldText from '../ui/form/InputFieldText';
 
 interface ValuesProps {
@@ -47,62 +47,41 @@ const initialValues: ValuesProps = {
 };
 
 const validationSchema = Yup.object({
-  brandId: Yup.number().required('Required'),
-  name: Yup.string().required('Required'),
+  brandId: Yup.number()
+    .max(15, 'Must be 15 characters or less')
+    .required('Required'),
+  name: Yup.string()
+    .max(15, 'Must be 15 characters or less')
+    .required('Required'),
   brandCode: Yup.string().required('Required'),
-  materialBottomType: Yup.string().required('Required'),
-  materialLidType: Yup.string().required('Required'),
-  materialLabelType: Yup.string().required('Required'),
-  materialCoverType: Yup.string().required('Required'),
-  materialCardboardType: Yup.string().required('Required'),
-  materialBandType: Yup.string().required('Required'),
-  materialCornerType: Yup.string().required('Required'),
+  materialBottomType: Yup.string()
+    .max(15, 'Must be 15 characters or less')
+    .required('Required'),
+  materialLidType: Yup.string()
+    .max(15, 'Must be 15 characters or less')
+    .required('Required'),
+  materialLabelType: Yup.string()
+    .max(15, 'Must be 15 characters or less')
+    .required('Required'),
+  materialCoverType: Yup.string()
+    .max(15, 'Must be 15 characters or less')
+    .required('Required'),
+  materialCardboardType: Yup.string()
+    .max(15, 'Must be 15 characters or less')
+    .required('Required'),
+  materialBandType: Yup.string()
+    .max(15, 'Must be 15 characters or less')
+    .required('Required'),
+  materialCornerType: Yup.string()
+    .max(15, 'Must be 15 characters or less')
+    .required('Required'),
   hasPads: Yup.boolean().required('Required'),
   hasSponges: Yup.boolean().required('Required'),
 });
 
 export default function AddBoxBrandsForm() {
-  const { data: session } = useSession();
-  const [brandsOpt, setBrandOpt] = useState([]);
   const toast = useToast();
-  const id = 'toast-error';
-
-  const getBrands = async () => {
-    const res = await fetch(BACKEND_URL + '/box-brand/brand', {
-      method: 'GET',
-      headers: {
-        authorization: `Bearer ${session?.refreshToken}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const response = await res.json();
-
-    if (!res.ok) {
-      if (!toast.isActive(id)) {
-        toast({
-          id,
-          title: `${response.error}`,
-          description: `${response.message}`,
-          status: 'error',
-          duration: 5000,
-          variant: 'left-accent',
-          position: 'top',
-          isClosable: true,
-        });
-      }
-    }
-
-    if (res.ok) {
-      setBrandOpt(response);
-    }
-
-    return;
-  };
-
-  useEffect(() => {
-    getBrands();
-  }, []);
+  const { createBoxBrand } = useCreateBoxBrand();
 
   const addBoxBrands = async (
     values: ValuesProps,
@@ -117,45 +96,33 @@ export default function AddBoxBrandsForm() {
       },
     };
 
-    const res = await fetch(BACKEND_URL + '/box-brand', {
-      method: 'POST',
-      body: JSON.stringify(sendValues),
-      headers: {
-        authorization: `Bearer ${session?.refreshToken}`,
-        'Content-Type': 'application/json',
+    createBoxBrand(
+      {
+        ...sendValues,
       },
-    });
+      {
+        onError: (error) => {
+          toast({
+            title: 'Error.',
+            description: `${error.message}`,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        },
+        onSuccess: () => {
+          toast({
+            title: 'Marca de caja creada',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
 
-    console.log('values: ', sendValues);
-    const response = await res.json();
-
-    if (!res.ok) {
-      console.log('response error :', response);
-      toast({
-        title: `${response.error}`,
-        description: `${response.message}`,
-        status: 'error',
-        duration: 5000,
-        variant: 'left-accent',
-        position: 'top',
-        isClosable: true,
-      });
-    }
-
-    if (res.ok) {
-      console.log('response ok :', response);
-      toast({
-        title: `${response.ok}`,
-        description: `${response.message}`,
-        status: 'success',
-        duration: 5000,
-        variant: 'left-accent',
-        position: 'top',
-        isClosable: true,
-      });
-    }
-
-    actions.resetForm();
+          queryClient.invalidateQueries('brands');
+          actions.resetForm();
+        },
+      }
+    );
 
     return;
   };
@@ -171,14 +138,15 @@ export default function AddBoxBrandsForm() {
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>
-                Marca de Cajas
+                Agregando Marca de Cajas
               </Heading>
               <Divider mb={'16px'} />
+
               <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
-                <InputFieldSelector
+                <InputFieldBrandSelect
                   name={'brandId'}
                   label={'Marca'}
-                  options={brandsOpt}
+                  placeholder={'Seleccione la marca'}
                 />
                 <InputFieldText name={'name'} label={'Nombre'} />
                 <InputFieldText name={'brandCode'} label={'Código'} />

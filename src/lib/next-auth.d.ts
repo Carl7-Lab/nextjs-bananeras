@@ -7,7 +7,7 @@ declare module 'next-auth' {
       id: number;
       email: string;
       name: string;
-      merchantId: string;
+      exporterId: string;
     };
     accessToken: string;
     refreshToken: string;
@@ -20,7 +20,7 @@ declare module 'next-auth/jwt' {
       id: number;
       email: string;
       name: string;
-      merchantId: string;
+      exporterId: string;
     };
     accessToken: string;
     refreshToken: string;

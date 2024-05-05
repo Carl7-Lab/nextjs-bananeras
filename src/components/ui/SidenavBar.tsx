@@ -1,5 +1,5 @@
 'use client';
-import { Box, Center } from '@chakra-ui/react';
+import { Box, Center, Flex } from '@chakra-ui/react';
 import { AppBar } from './header/AppBar';
 import Sidenav from './sidenav/sidenav';
 import SidenavContainer from './sidenav/sidenav-container';
@@ -23,9 +23,9 @@ export default function SidenavBar({
       <Box as='main' m='0px' p='0px' width='100%'>
         <Box as={'div'} m='0px' p='0px' width='100%' className='App'>
           <AppBar />
-          <Center height='90vh' overflow='auto' mt='4px'>
+          <Flex height='90vh' overflow='auto' mt='4px'>
             {children}
-          </Center>
+          </Flex>
         </Box>
       </Box>
     </SidenavContainer>

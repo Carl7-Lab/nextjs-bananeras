@@ -9,6 +9,7 @@ import { useField } from 'formik';
 interface InputFieldBooleanSelectorProps {
   name: string;
   label: string;
+  placeholder?: string;
 }
 
 const options = [
@@ -19,6 +20,7 @@ const options = [
 const InputFieldBooleanSelector: React.FC<InputFieldBooleanSelectorProps> = ({
   name,
   label,
+  placeholder,
 }) => {
   const [field, meta, helpers] = useField(name);
 
@@ -33,7 +35,12 @@ const InputFieldBooleanSelector: React.FC<InputFieldBooleanSelectorProps> = ({
       <FormLabel fontSize='sm' mb='8px'>
         {label}
       </FormLabel>
-      <Select {...field} placeholder={label} onChange={handleChange}>
+      <Select {...field} onChange={handleChange}>
+        {!!placeholder ? (
+          <option value={''}>{placeholder}</option>
+        ) : (
+          <option value={''}>{label}</option>
+        )}
         {options.map((option, index) => (
           <option key={index} value={option.value}>
             {option.label}

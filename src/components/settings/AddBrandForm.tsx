@@ -1,9 +1,9 @@
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
-import { useSession } from 'next-auth/react';
 import React from 'react';
+import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
-import { BACKEND_URL } from '../../lib/constants';
+import { useCreateBrand } from '@/hooks/brands/createBrand';
 import InputFieldText from '../ui/form/InputFieldText';
 
 interface ValuesProps {
@@ -15,56 +15,47 @@ const initialValues: ValuesProps = {
 };
 
 const validationSchema = Yup.object({
-  name: Yup.string().required('Required'),
+  name: Yup.string()
+    .max(15, 'Must be 15 characters or less')
+    .required('Required'),
 });
 
 export default function AddBrandForm() {
-  const { data: session } = useSession();
+  const { createBrand } = useCreateBrand();
   const toast = useToast();
+  const queryClient = useQueryClient();
 
   const addBrand = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
-    const res = await fetch(BACKEND_URL + '/box-brand/brand', {
-      method: 'POST',
-      body: JSON.stringify({
-        name: values.name,
-      }),
-      headers: {
-        authorization: `Bearer ${session?.refreshToken}`,
-        'Content-Type': 'application/json',
+    createBrand(
+      {
+        ...values,
       },
-    });
+      {
+        onError: (error) => {
+          toast({
+            title: 'Error.',
+            description: `${error.message}`,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        },
+        onSuccess: () => {
+          toast({
+            title: 'Marca creada',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
 
-    const response = await res.json();
-
-    if (!res.ok) {
-      toast({
-        title: `${response.error}`,
-        description: `${response.message}`,
-        status: 'error',
-        duration: 5000,
-        variant: 'left-accent',
-        position: 'top',
-        isClosable: true,
-      });
-    }
-
-    if (res.ok) {
-      // console.log('response ok :', response);
-      toast({
-        title: `${response.ok}`,
-        description: `${response.message}`,
-        status: 'success',
-        duration: 5000,
-        variant: 'left-accent',
-        position: 'top',
-        isClosable: true,
-      });
-    }
-
-    actions.resetForm();
+          queryClient.invalidateQueries('brands');
+          actions.resetForm();
+        },
+      }
+    );
 
     return;
   };

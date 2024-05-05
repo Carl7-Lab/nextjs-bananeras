@@ -7,17 +7,17 @@ import OnboardingForm from '../../../components/onboarding/OnboardingForm';
 
 export default function OnBoardingPage() {
   const { data: session } = useSession();
-  const isOnboarded = !!session?.user?.merchantId;
+  const isOnboarded = !!session?.user?.exporterId;
 
   useLayoutEffect(() => {
     if (isOnboarded) {
-      return redirect('/dashboard/productor/fincas');
+      return redirect('/dashboard/producer/fincas');
     }
   }, [isOnboarded]);
 
   return (
     <>
-      <Box mt={'475px'} mb={'25px'}>
+      <Box my={'20px'} mx={'auto'}>
         <Center>
           <Card
             w={{
@@ -28,6 +28,7 @@ export default function OnBoardingPage() {
               xl: '600px',
               '2xl': '700px',
             }}
+            mb={'20px'}
           >
             <CardBody w='100%'>
               <OnboardingForm />

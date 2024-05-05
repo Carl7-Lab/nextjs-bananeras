@@ -1,18 +1,16 @@
-import {
-  Button,
-  Checkbox,
-  Flex,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
-} from '@chakra-ui/react';
-import { Formik, Field, Form, ErrorMessage } from 'formik';
+'use client';
+import { Button, Divider, Flex, Heading } from '@chakra-ui/react';
+import { Formik, Form } from 'formik';
 import { useRouter } from 'next/navigation';
 import * as Yup from 'yup';
 import { BACKEND_URL } from '../../lib/constants';
+import CheckboxForm from '../ui/form/CheckboxForm';
+import InputFieldPassword from '../ui/form/InputFieldPassword';
+import InputFieldText from '../ui/form/InputFieldText';
 
 interface ValuesProps {
+  exportName: string;
+  exportId: string;
   name: string;
   email: string;
   password: string;
@@ -20,6 +18,8 @@ interface ValuesProps {
 }
 
 const initialValues: ValuesProps = {
+  exportName: '',
+  exportId: '',
   name: '',
   email: '',
   password: '',
@@ -27,6 +27,10 @@ const initialValues: ValuesProps = {
 };
 
 const validationSchema = Yup.object({
+  exportName: Yup.string()
+    .max(15, 'Must be 15 characters or less')
+    .required('Required'),
+  exportId: Yup.string().required('Required'),
   name: Yup.string()
     .max(15, 'Must be 15 characters or less')
     .required('Required'),
@@ -43,12 +47,14 @@ const validationSchema = Yup.object({
 export default function SignUpForm() {
   const router = useRouter();
 
-  const signUp = async (values: any) => {
-    const res = await fetch(BACKEND_URL + '/auth/merchant/register', {
+  const signUp = async (values: ValuesProps) => {
+    const res = await fetch(BACKEND_URL + '/auth/exporter/register', {
       method: 'POST',
       body: JSON.stringify({
-        name: values.name,
+        businessName: values.exportName,
+        businessId: values.exportId,
         email: values.email,
+        name: values.name,
         password: values.password,
       }),
       headers: {
@@ -71,72 +77,20 @@ export default function SignUpForm() {
       onSubmit={signUp}
       validationSchema={validationSchema}
     >
-      {({ errors, touched, isSubmitting }) => (
+      {({ isSubmitting }) => (
         <Form>
-          <Flex flexDirection='column'>
-            <FormControl
-              id='name'
-              isInvalid={Boolean(errors.name && touched.name)}
-            >
-              <FormLabel fontSize='sm' mb='8px'>
-                Nombre
-              </FormLabel>
-              <Field as={Input} name='name' placeholder='Nombre' />
-              <FormErrorMessage mt='8px' mb='16px'>
-                <ErrorMessage name='name' />
-              </FormErrorMessage>
-            </FormControl>
+          <Flex flexDirection='column' gap={3}>
+            <InputFieldText name={'exportName'} label={'Razón Social'} />
+            <InputFieldText name={'exportId'} label={'RUC'} />
+            <InputFieldText name={'email'} label={'Correo'} />
 
-            <FormControl
-              id='email'
-              isInvalid={Boolean(errors.email && touched.email)}
-              mt='16px'
-            >
-              <FormLabel fontSize='sm' mb='8px'>
-                Correo
-              </FormLabel>
-              <Field as={Input} name='email' placeholder='Correo' />
-              <FormErrorMessage mt='8px' mb='16px'>
-                <ErrorMessage name='email' />
-              </FormErrorMessage>
-            </FormControl>
+            <InputFieldText name={'name'} label={'Nombre de Usuario'} />
+            <InputFieldPassword name={'password'} label={'Contraseña'} />
 
-            <FormControl
-              id='password'
-              isInvalid={Boolean(errors.password && touched.password)}
-              mt='16px'
-            >
-              <FormLabel fontSize='sm' mb='8px'>
-                Contraseña
-              </FormLabel>
-              <Field
-                as={Input}
-                name='password'
-                type='password'
-                placeholder='Contraseña'
-              />
-              <FormErrorMessage mt='8px'>
-                <ErrorMessage name='password' />
-              </FormErrorMessage>
-            </FormControl>
-
-            <FormControl
-              id='terms'
-              isInvalid={Boolean(errors.password && touched.password)}
-            >
-              <Field
-                as={Checkbox}
-                id='terms'
-                name='terms'
-                colorScheme='teal'
-                mt='20px'
-              >
-                Acepta nuestros Términos y Condiciones
-              </Field>
-              <FormErrorMessage mt='8px'>
-                <ErrorMessage name='terms' />
-              </FormErrorMessage>
-            </FormControl>
+            <CheckboxForm
+              name={'terms'}
+              label={'Acepta nuestros Términos y Condiciones'}
+            />
 
             <Button
               mt='32px'

@@ -11,7 +11,7 @@ type Props = {
 
 const ProfilePage = async (props: Props) => {
   const session = await getServerSession(authOptions);
-  const response = await fetch(BACKEND_URL + `/auth/merchant/profile`, {
+  const response = await fetch(BACKEND_URL + `/auth/exporter/profile`, {
     method: 'GET',
     headers: {
       authorization: `Bearer ${session?.refreshToken}`,
@@ -22,7 +22,7 @@ const ProfilePage = async (props: Props) => {
   const user = await response.json();
   console.log('user: ', user);
 
-  const isOnboarding = !!user.merchantId;
+  const isOnboarding = !!user.exporterId;
 
   if (!isOnboarding) {
     redirect('/dashboard/onboarding');

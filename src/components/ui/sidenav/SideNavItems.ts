@@ -13,7 +13,22 @@ export function getNavItems(): SidenavItem[] {
   const productorMenu: SidenavMenuItem[] = [
     {
       label: 'Fincas',
-      to: '/dashboard/productor/fincas',
+      to: '/dashboard/producer/fincas',
+    },
+    {
+      label: 'Agregar Fincas ',
+      to: '/dashboard/producer/add-fincas',
+    },
+  ];
+
+  const exportMenu: SidenavMenuItem[] = [
+    {
+      label: 'Consultar',
+      to: '/dashboard/export/search',
+    },
+    {
+      label: 'Agregar',
+      to: '/dashboard/export/add-export',
     },
   ];
 
@@ -73,6 +88,18 @@ export function getNavItems(): SidenavItem[] {
       label: 'Agregar Marca',
       to: '/dashboard/settings/add-brand',
     },
+    {
+      label: 'Agregar Productor',
+      to: '/dashboard/settings/add-producer',
+    },
+    {
+      label: 'Agregar Puerto',
+      to: '/dashboard/settings/add-port',
+    },
+    {
+      label: 'Agregar Cliente',
+      to: '/dashboard/settings/add-client',
+    },
   ];
 
   const navItems: SidenavItem[] = [
@@ -80,8 +107,15 @@ export function getNavItems(): SidenavItem[] {
       icon: BsBarChart,
       label: 'Productor',
       isMenu: true,
-      to: '/dashboard/productor',
+      to: '/dashboard/producer',
       menu: productorMenu,
+    },
+    {
+      icon: BsBarChart,
+      label: 'Exportaciones',
+      isMenu: true,
+      to: '/dashboard/export',
+      menu: exportMenu,
     },
     {
       icon: BsBarChart,

@@ -6,7 +6,7 @@ import IsOnboarding from '../../../../components/ui/IsOnboarding';
 function AgregarPage() {
   return (
     <>
-      <Box mt={'400px'} mb={'25px'}>
+      <Box my={'20px'} mx={'auto'}>
         <Center>
           <Card
             w={{
@@ -17,6 +17,7 @@ function AgregarPage() {
               xl: '600px',
               '2xl': '700px',
             }}
+            mb={'20px'}
           >
             <CardBody w='100%'>
               <AddBoxBrandsForm />

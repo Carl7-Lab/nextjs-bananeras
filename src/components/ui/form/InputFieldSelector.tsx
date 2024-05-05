@@ -1,16 +1,14 @@
 import {
-  Center,
   FormControl,
   FormErrorMessage,
   FormLabel,
   Select,
-  Text,
 } from '@chakra-ui/react';
 import { useField } from 'formik';
 
 interface OptionsProps {
   name: string;
-  id: number;
+  id: number | string;
 }
 
 interface InputFieldSelectorProps {
@@ -28,20 +26,7 @@ const InputFieldSelector: React.FC<InputFieldSelectorProps> = ({
   return (
     <FormControl id={name} isInvalid={!!meta.error && meta.touched}>
       <FormLabel fontSize='sm' mb='8px'>
-        {label}{' '}
-        {/* {meta.error && meta.touched && (
-          <Tooltip
-            label={meta.error}
-            placement='top-start'
-            bg={'gray.100'}
-            color={'red.500'}
-            fontWeight={bold}
-          >
-            <Text as='span' color={'red.500'}>
-              *
-            </Text>
-          </Tooltip>
-        )} */}
+        {label}
       </FormLabel>
       <Select {...field}>
         <option value=''>-- Seleccione {label} --</option>

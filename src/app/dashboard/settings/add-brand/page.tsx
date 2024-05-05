@@ -7,7 +7,7 @@ import IsOnboarding from '../../../../components/ui/IsOnboarding';
 function AddBrandPage() {
   return (
     <>
-      <Box mt={'10px'} mb={'25px'}>
+      <Box my={'auto'} mx={'auto'}>
         <Center>
           <Card
             w={{

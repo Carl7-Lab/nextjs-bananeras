@@ -72,7 +72,9 @@ const validationSchema = Yup.object({
     .min(-180, 'Must be at least -180')
     .max(180, 'Must be at most 180')
     .required('Required'),
-  businessManagerObjName: Yup.string().required('Required'),
+  businessManagerObjName: Yup.string()
+    .max(15, 'Must be 15 characters or less')
+    .required('Required'),
   businessManagerObjEmail: Yup.string()
     .email('Invalid email')
     .max(50, 'Must be 50 characters or less')
@@ -109,7 +111,7 @@ export default function OnboardingForm() {
       },
     };
 
-    const res = await fetch(BACKEND_URL + '/auth/merchant/onboarding', {
+    const res = await fetch(BACKEND_URL + '/auth/exporter/onboarding', {
       method: 'POST',
       body: JSON.stringify(onboardingValues),
       headers: {
@@ -124,7 +126,7 @@ export default function OnboardingForm() {
     }
     const response = await res.json();
 
-    await update({ merchantId: response.id });
+    await update({ exporterId: response.id });
 
     router.push('/dashboard/productor/fincas');
     return;

@@ -1,15 +1,10 @@
-import {
-  Button,
-  Checkbox,
-  Flex,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
-} from '@chakra-ui/react';
-import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { Button, Flex } from '@chakra-ui/react';
+import { Form, Formik } from 'formik';
 import { signIn } from 'next-auth/react';
 import * as Yup from 'yup';
+import CheckboxForm from '../ui/form/CheckboxForm';
+import InputFieldPassword from '../ui/form/InputFieldPassword';
+import InputFieldText from '../ui/form/InputFieldText';
 
 interface ValuesProps {
   email: string;
@@ -40,7 +35,8 @@ export default function SignInForm(props: Props) {
       username: values.email,
       password: values.password,
       redirect: true,
-      callbackUrl: props.callbackUrl ?? 'http://localhost:3000/dashboard',
+      callbackUrl:
+        props.callbackUrl ?? 'http://localhost:3000/dashboard/producer/fincas',
     });
 
     return;
@@ -52,58 +48,13 @@ export default function SignInForm(props: Props) {
       onSubmit={signin}
       validationSchema={validationSchema}
     >
-      {({ errors, touched, isSubmitting }) => (
+      {({ isSubmitting }) => (
         <Form>
-          <Flex flexDirection='column'>
-            <FormControl
-              id='email'
-              isInvalid={Boolean(errors.email && touched.email)}
-            >
-              <FormLabel fontSize='sm' mb='8px'>
-                Correo
-              </FormLabel>
-              <Field as={Input} name='email' placeholder='Correo' />
-              <FormErrorMessage mt='8px' mb='16px'>
-                <ErrorMessage name='email' />
-              </FormErrorMessage>
-            </FormControl>
+          <Flex flexDirection='column' gap={3}>
+            <InputFieldText name={'email'} label={'Correo'} />
+            <InputFieldPassword name={'password'} label={'Contraseña'} />
 
-            <FormControl
-              id='password'
-              isInvalid={Boolean(errors.password && touched.password)}
-              mt='16px'
-            >
-              <FormLabel fontSize='sm' mb='8px'>
-                Contraseña
-              </FormLabel>
-              <Field
-                as={Input}
-                name='password'
-                type='password'
-                placeholder='Contraseña'
-              />
-              <FormErrorMessage mt='8px'>
-                <ErrorMessage name='password' />
-              </FormErrorMessage>
-            </FormControl>
-
-            <FormControl
-              id='rememberMe'
-              isInvalid={Boolean(errors.password && touched.password)}
-            >
-              <Field
-                as={Checkbox}
-                id='rememberMe'
-                name='rememberMe'
-                colorScheme='teal'
-                mt='20px'
-              >
-                Recuérdame
-              </Field>
-              <FormErrorMessage mt='8px'>
-                <ErrorMessage name='rememberMe' />
-              </FormErrorMessage>
-            </FormControl>
+            <CheckboxForm name={'rememberMe'} label={'Recuérdame'} />
 
             <Button
               mt='32px'
