@@ -1,10 +1,10 @@
 'use client';
 import { Box, Card, CardBody, Center } from '@chakra-ui/react';
 import React from 'react';
-import AddPortForm from '../../../../components/settings/AddPortForm';
+import AddHarborForm from '../../../../components/settings/AddHarborForm';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
-function AddPortPage() {
+function AddHarborPage() {
   return (
     <>
       <Box my={'auto'} mx={'auto'}>
@@ -20,7 +20,7 @@ function AddPortPage() {
             }}
           >
             <CardBody w='100%'>
-              <AddPortForm />
+              <AddHarborForm />
             </CardBody>
           </Card>
         </Center>
@@ -29,4 +29,4 @@ function AddPortPage() {
   );
 }
 
-export default IsOnboarding(AddPortPage);
+export default IsOnboarding(AddHarborPage);

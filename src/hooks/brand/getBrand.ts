@@ -1,8 +1,8 @@
 import { useQuery, UseQueryResult } from 'react-query';
 import axios from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
+import { BrandType } from '@/types/brand';
 import { serializeQueryResult } from '@/utils/serializeQueryResult';
-import { BrandType } from '../../types/brand';
 
 export const getBrand = ({ brandId }: { brandId: string }) => {
   return axios.get(`/box-brand/brand/${brandId}`);

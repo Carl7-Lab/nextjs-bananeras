@@ -94,7 +94,7 @@ export function getNavItems(): SidenavItem[] {
     },
     {
       label: 'Agregar Puerto',
-      to: '/dashboard/settings/add-port',
+      to: '/dashboard/settings/add-harbor',
     },
     {
       label: 'Agregar Cliente',

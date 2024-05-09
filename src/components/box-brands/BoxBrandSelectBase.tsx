@@ -16,43 +16,69 @@ import { usePagination } from '@/hooks/usePagination';
 
 export type PartialBoxBrandType = {
   id: string;
-  brandId: string;
   name: string;
   brandCode: string;
+  brand: {
+    id: string;
+    name: string;
+  };
 };
 
-const boxBrandsItems: PartialBoxBrandType[] = [
-  {
-    id: '1',
-    brandId: '1',
-    name: 'dole amarillo',
-    brandCode: 'DBL001',
-  },
-  {
-    id: '2',
-    brandId: '2',
-    name: 'chiquita morada',
-    brandCode: 'DBL002',
-  },
-  {
-    id: '3',
-    brandId: '3',
-    name: 'del monte morada',
-    brandCode: 'DBL003',
-  },
-  {
-    id: '4',
-    brandId: '1',
-    name: 'dole naranja',
-    brandCode: 'DBL004',
-  },
-  {
-    id: '5',
-    brandId: '2',
-    name: 'test',
-    brandCode: 'DBL005',
-  },
-];
+interface BoxBrandSelectBaseProps {
+  name?: string;
+  field?: FieldInputProps<any>;
+  placeholder: string;
+  setBoxBrand?: (brand: PartialBoxBrandType) => void;
+  onChange?: (newValue: PartialBoxBrandType) => void;
+}
+
+// const boxBrandsItems: PartialBoxBrandType[] = [
+//   {
+//     id: '1',
+//     name: 'dole amarillo',
+//     brandCode: 'DBL001',
+//     brand: {
+//       id: '1',
+//       name: 'Dole',
+//     },
+//   },
+//   {
+//     id: '2',
+//     name: 'chiquita morada',
+//     brandCode: 'DBL002',
+//     brand: {
+//       id: '2',
+//       name: 'Chiquita',
+//     },
+//   },
+//   {
+//     id: '3',
+//     name: 'del monte morada',
+//     brandCode: 'DBL003',
+//     brand: {
+//       id: '3',
+//       name: 'Del Monte',
+//     },
+//   },
+//   {
+//     id: '4',
+//     name: 'dole naranja',
+//     brandCode: 'DBL004',
+//     brand: {
+//       id: '1',
+//       name: 'Dole',
+//     },
+//   },
+//   {
+//     id: '5',
+//     name: 'test',
+//     brandCode: 'DBL005',
+//     brand: {
+//       id: '2',
+//       name: 'Chiquita',
+//     },
+//   },
+// ];
 
 const chakraStyles: ChakraStylesConfig<
   PartialBoxBrandType,
@@ -92,15 +118,15 @@ const brandComponents = {
   ),
 };
 
-const BoxBrandSelectBase: React.FC<{
-  setBoxBrand?: (brand: PartialBoxBrandType) => void;
-  onChange?: (newValue: PartialBoxBrandType) => void;
-  name?: string;
-  field?: FieldInputProps<any>;
-  placeholder: string;
-}> = ({ setBoxBrand, onChange, field, placeholder, name }) => {
-  //   const { paginationParams, filterProps } = usePagination();
-  //   const { data, isLoading, refetch } = useBoxBrands(paginationParams);
+const BoxBrandSelectBase: React.FC<BoxBrandSelectBaseProps> = ({
+  setBoxBrand,
+  onChange,
+  field,
+  placeholder,
+  name,
+}) => {
+  const { paginationParams, filterProps } = usePagination();
+  const { data, isLoading, refetch } = useBoxBrands(paginationParams);
 
   const handleChange = (newValue: SingleValue<PartialBoxBrandType>) => {
     if (setBoxBrand) {
@@ -125,26 +151,26 @@ const BoxBrandSelectBase: React.FC<{
       useBasicStyles
       chakraStyles={chakraStyles}
       noOptionsMessage={() => 'brand box not found'}
-      //   isLoading={isLoading}
-      //   options={data}
-      options={boxBrandsItems}
+      isLoading={isLoading}
+      options={data}
+      // options={boxBrandsItems}
       getOptionLabel={(boxBrand: PartialBoxBrandType) =>
-        `${boxBrand.brandId} - ${boxBrand.name}`
+        `${boxBrand.brand.name} - ${boxBrand.name}`
       }
       getOptionValue={(boxBrand: PartialBoxBrandType) => boxBrand.id}
       onChange={(newValue) => handleChange(newValue)}
-      //   value={
-      //     field?.value
-      //       ? data.find((opt: PartialBoxBrandType) => opt.id === field?.value)
-      //       : undefined
-      //   }
       value={
         field?.value
-          ? boxBrandsItems.find(
-              (opt: PartialBoxBrandType) => opt.id === field?.value
-            )
+          ? data.find((opt: PartialBoxBrandType) => opt.id === field?.value)
           : undefined
       }
+      // value={
+      //   field?.value
+      //     ? boxBrandsItems.find(
+      //         (opt: PartialBoxBrandType) => opt.id === field?.value
+      //       )
+      //     : undefined
+      // }
       placeholder={placeholder}
       //   onInputChange={(newValue) => {
       //     filterProps.setSearch(newValue);

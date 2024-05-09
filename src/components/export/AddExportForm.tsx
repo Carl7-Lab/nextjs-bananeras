@@ -1,21 +1,29 @@
 'use client';
-import { Button, Divider, Flex, Heading, SimpleGrid } from '@chakra-ui/react';
+import {
+  Button,
+  Divider,
+  Flex,
+  Heading,
+  SimpleGrid,
+  useToast,
+} from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import React from 'react';
+import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import SelectBoxBrand from './SelectBoxBrand';
-import SelectBoxBrand2 from './SelectBoxBrand2';
 import SelectClient from './SelectClient';
-import SelectPort from './SelectPort';
+import SelectHarbor from './SelectHarbor';
 import SelectProducer from './SelectProducer';
+import { useCreateExport } from '../../hooks/export/createExport';
 import InputFieldText from '../ui/form/InputFieldText';
 
 interface ValuesProps {
   boxBrand: number | '';
   boxQuantity: number;
-  merchant: string;
-  destinationPort: string;
-  client: string;
+  merchant: number | '';
+  destinationPort: number | '';
+  client: number | '';
   logisticShipSteam: string;
   logisticShippingLineSeal: string;
   logisticExtraSeal: string;
@@ -45,111 +53,61 @@ const validationSchema = Yup.object({
   logisticExtraSeal: Yup.string().required('Required'),
 });
 
-const brandBoxOpts = [
-  {
-    id: 1,
-    name: 'Dole amarillo',
-    brand: 'Dole',
-    code: 'DBL001',
-  },
-  {
-    id: 2,
-    name: 'Dole verde',
-    brand: 'Dole',
-    code: 'DBL002',
-  },
-  {
-    id: 3,
-    name: 'Chiquita verde',
-    brand: 'Chiquita',
-    code: 'CBL001',
-  },
-];
-
-const producerOpts = [
-  {
-    id: 1,
-    businessName: 'Bananera 1',
-    businessId: '0987654321001',
-    city: 'Machala',
-    address: 'Direccion 1',
-  },
-  {
-    id: 2,
-    businessName: 'Bananera 2',
-    businessId: '0987654322001',
-    city: 'Machala',
-    address: 'Direccion 2',
-  },
-  {
-    id: 3,
-    businessName: 'Bananera 3',
-    businessId: '0987654323001',
-    city: 'Machala',
-    address: 'Direccion 3',
-  },
-];
-
-const portOpts = [
-  {
-    id: 1,
-    country: 'Pais 1',
-    name: 'Puerto 1',
-    city: 'Ciudad 1',
-    transportTime: '8 hrs',
-    latitude: 1,
-    longitude: 1,
-  },
-  {
-    id: 2,
-    country: 'Pais 2',
-    name: 'Puerto 2',
-    city: 'Ciudad 2',
-    transportTime: '12 hrs',
-    latitude: 2,
-    longitude: 2,
-  },
-  {
-    id: 3,
-    country: 'Pais 3',
-    name: 'Puerto 3',
-    city: 'Ciudad 3',
-    transportTime: '16 hrs',
-    latitude: 3,
-    longitude: 3,
-  },
-];
-
-const clientOpts = [
-  {
-    id: 1,
-    businessName: 'Cliente 1',
-    businessId: '0987654321001',
-    type: 'Intermediario',
-    email: 'cliente1@correo.com',
-    phone: '0987654321',
-  },
-  {
-    id: 2,
-    businessName: 'Cliente 2',
-    businessId: '0987654322001',
-    type: 'Supermercado',
-    email: 'cliente2@correo.com',
-    phone: '0987654322',
-  },
-  {
-    id: 3,
-    businessName: 'Cliente 3',
-    businessId: '0987654323001',
-    type: 'Intermediario',
-    email: 'cliente3@correo.com',
-    phone: '0987654323',
-  },
-];
-
 const AddExportForm = () => {
-  const addExport = async (values: ValuesProps) => {
-    console.log('values: ', values);
+  const { createExport } = useCreateExport();
+  const toast = useToast();
+  const queryClient = useQueryClient();
+
+  const addExport = async (
+    values: ValuesProps,
+    actions: { resetForm: () => void }
+  ) => {
+    console.log('addExport values: ', values);
+
+    createExport(
+      {
+        boxQuantity: Number(values.boxQuantity),
+        boxBrand: {
+          id: values.boxBrand,
+        },
+        merchant: {
+          id: values.merchant,
+        },
+        harbor: {
+          id: values.destinationPort,
+        },
+        client: {
+          id: values.client,
+        },
+        shipSteam: values.logisticShipSteam,
+        shippingLineSeal: values.logisticShippingLineSeal,
+        extraSeal: values.logisticExtraSeal,
+      },
+      {
+        onError: (error) => {
+          toast({
+            title: 'Error.',
+            description: `${error.message}`,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        },
+        onSuccess: () => {
+          toast({
+            title: 'Exportacion creada',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+
+          queryClient.invalidateQueries('exports');
+          actions.resetForm();
+        },
+      }
+    );
+
+    return;
   };
 
   return (
@@ -159,7 +117,7 @@ const AddExportForm = () => {
         onSubmit={addExport}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting, values }) => (
+        {({ isSubmitting }) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>
@@ -167,46 +125,25 @@ const AddExportForm = () => {
               </Heading>
               <Divider mb={'16px'} />
 
-              <SelectBoxBrand2 name={'boxBrand'} name2={'boxQuantity'} />
-
-              {/* <Divider mb={'16px'} />
-
-              <SelectBoxBrand
-                name={'boxBrand'}
-                name2={'boxQuantity'}
-                label={'Marca de caja'}
-                options={brandBoxOpts}
-              /> */}
+              <SelectBoxBrand name={'boxBrand'} name2={'boxQuantity'} />
 
               <Heading fontSize={'2xl'} p={'12px'}>
                 Productor
               </Heading>
               <Divider mb={'16px'} />
-              <SelectProducer
-                name={'merchant'}
-                label={'Productor'}
-                options={producerOpts}
-              />
+              <SelectProducer name={'merchant'} isSubmitting={isSubmitting} />
 
               <Heading fontSize={'2xl'} p={'12px'}>
                 Puerto Destino
               </Heading>
               <Divider mb={'16px'} />
-              <SelectPort
-                name={'destinationPort'}
-                label={'Puerto'}
-                options={portOpts}
-              />
+              <SelectHarbor name={'destinationPort'} />
 
               <Heading fontSize={'2xl'} p={'12px'}>
                 Cliente
               </Heading>
               <Divider mb={'16px'} />
-              <SelectClient
-                name={'client'}
-                label={'Cliente'}
-                options={clientOpts}
-              />
+              <SelectClient name={'client'} />
 
               <Heading fontSize={'2xl'} p={'12px'}>
                 Logística
@@ -235,7 +172,6 @@ const AddExportForm = () => {
                 colorScheme='teal'
                 variant={'purple'}
                 isLoading={isSubmitting}
-                onClick={() => console.log('values: ', values)}
               >
                 Enviar
               </Button>

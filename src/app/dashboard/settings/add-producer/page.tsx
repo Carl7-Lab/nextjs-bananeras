@@ -1,6 +1,5 @@
 'use client';
 import { Box, Card, CardBody, Center } from '@chakra-ui/react';
-import { useSession } from 'next-auth/react';
 import React from 'react';
 import OnboardingForm from '../../../../components/onboarding/OnboardingForm';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';

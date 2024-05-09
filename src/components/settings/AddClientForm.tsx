@@ -1,7 +1,16 @@
-import { Button, Divider, Flex, Heading, SimpleGrid } from '@chakra-ui/react';
+import {
+  Button,
+  Divider,
+  Flex,
+  Heading,
+  SimpleGrid,
+  useToast,
+} from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import React from 'react';
+import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
+import { useCreateClient } from '../../hooks/client/createClient';
 import InputFieldSelector from '../ui/form/InputFieldSelector';
 import InputFieldText from '../ui/form/InputFieldText';
 
@@ -54,9 +63,43 @@ const AddClientForm = () => {
       id: 'Intermediary',
     },
   ];
+  const { createClient } = useCreateClient();
+  const toast = useToast();
+  const queryClient = useQueryClient();
 
-  const addClient = async (values: ValuesProps) => {
+  const addClient = async (
+    values: ValuesProps,
+    actions: { resetForm: () => void }
+  ) => {
     console.log('adding client: ', values);
+
+    createClient(
+      {
+        ...values,
+      },
+      {
+        onError: (error) => {
+          toast({
+            title: 'Error.',
+            description: `${error.message}`,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        },
+        onSuccess: () => {
+          toast({
+            title: 'Cliente creado',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+
+          queryClient.invalidateQueries('clients');
+          actions.resetForm();
+        },
+      }
+    );
   };
 
   return (

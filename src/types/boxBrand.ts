@@ -1,5 +1,5 @@
 export type BoxBrandType = {
-  id: string;
+  id: number | '';
   brand: { id: number };
   brandCode: string;
   hasPads: boolean | '';

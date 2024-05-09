@@ -1,8 +1,17 @@
 'use client';
-import { Button, Divider, Flex, Heading, SimpleGrid } from '@chakra-ui/react';
+import {
+  Button,
+  Divider,
+  Flex,
+  Heading,
+  SimpleGrid,
+  useToast,
+} from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import React from 'react';
+import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
+import { useCreateHarbor } from '@/hooks/harbor/createHarbor';
 import InputFieldText from '../ui/form/InputFieldText';
 
 interface ValuesProps {
@@ -46,16 +55,51 @@ const validationSchema = Yup.object({
     .required('Required'),
 });
 
-const AddPortForm = () => {
-  const addPort = async (values: ValuesProps) => {
-    console.log('adding port', values);
+const AddHarborForm = () => {
+  const { createHarbor } = useCreateHarbor();
+  const toast = useToast();
+  const queryClient = useQueryClient();
+
+  const addHarbor = async (
+    values: ValuesProps,
+    actions: { resetForm: () => void }
+  ) => {
+    // console.log('adding Harbor: ', values);
+
+    createHarbor(
+      {
+        ...values,
+      },
+      {
+        onError: (error) => {
+          toast({
+            title: 'Error.',
+            description: `${error.message}`,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        },
+        onSuccess: () => {
+          toast({
+            title: 'Productor creado',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+
+          queryClient.invalidateQueries('harbors');
+          actions.resetForm();
+        },
+      }
+    );
   };
 
   return (
     <>
       <Formik
         initialValues={initialValues}
-        onSubmit={addPort}
+        onSubmit={addHarbor}
         validationSchema={validationSchema}
       >
         {({ isSubmitting }) => (
@@ -97,4 +141,4 @@ const AddPortForm = () => {
   );
 };
 
-export default AddPortForm;
+export default AddHarborForm;

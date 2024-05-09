@@ -1,80 +1,34 @@
-import {
-  Box,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
-  Select,
-  SimpleGrid,
-} from '@chakra-ui/react';
-import { useField } from 'formik';
-import React, { useState } from 'react';
+import { Box, FormLabel, Input, SimpleGrid } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { PartialBoxBrandType } from '../box-brands/BoxBrandSelectBase';
+import InputFieldBoxBrandSelect from '../box-brands/InputFieldBoxBrandSelect';
 import InputFieldText from '../ui/form/InputFieldText';
 
-interface BrandOptionProps {
-  id: number;
-  name: string;
-  brand: string;
-  code: string;
-}
-
-interface InputFieldSelectorProps {
+interface SelectBoxBrandProps {
   name: string;
   name2: string;
-  label: string;
-  options: BrandOptionProps[];
 }
 
-const SelectBoxBrand: React.FC<InputFieldSelectorProps> = ({
-  name,
-  name2,
-  label,
-  options,
-}) => {
-  const [field, meta, helpers] = useField(name);
-  const [selectedBrand, setSelectedBrand] = useState<BrandOptionProps | null>(
-    null
-  );
+const SelectBoxBrand: React.FC<SelectBoxBrandProps> = ({ name, name2 }) => {
+  const [boxBrand, setBoxBrand] = useState<PartialBoxBrandType | null>(null);
 
-  const handleBrandChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedBrandId = Number(event.target.value);
-    const selectedBrand = options.find((opt) => opt.id === selectedBrandId);
-    setSelectedBrand(selectedBrand || null);
-    helpers.setValue(selectedBrandId !== 0 ? selectedBrandId : '');
-  };
+  // useEffect(() => {
+  //   console.log('boxBrand selectBoxBrand: ', boxBrand);
+  // }, [boxBrand]);
+
   return (
     <>
       <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
-        <FormControl id={name} isInvalid={!!meta.error && meta.touched}>
-          <FormLabel fontSize='sm' mb='8px'>
-            {label}
-          </FormLabel>
-          <Select
-            {...field}
-            onChange={handleBrandChange}
-            value={selectedBrand?.id || ''}
-          >
-            <option value={''}>-- Seleccione {label} --</option>
-            {options.map((option, index) => (
-              <option key={index} value={option.id}>
-                {option.name}
-              </option>
-            ))}
-          </Select>
-          {meta.error && meta.touched && (
-            <FormErrorMessage mt='8px' mb='16px'>
-              {meta.error}
-            </FormErrorMessage>
-          )}
-        </FormControl>
+        <InputFieldBoxBrandSelect
+          name={name}
+          label={'Marca de caja'}
+          placeholder={'Seleccione la marca'}
+          setBoxBrand={setBoxBrand}
+        />
 
         <Box>
-          <FormLabel>Marca</FormLabel>
-          <Input isReadOnly={true} value={selectedBrand?.brand || ''} />
-        </Box>
-        <Box>
           <FormLabel>Código</FormLabel>
-          <Input isReadOnly={true} value={selectedBrand?.code || ''} />
+          <Input isReadOnly={true} value={boxBrand?.brandCode || ''} />
         </Box>
 
         <InputFieldText name={name2} label={'Cantidad'} />

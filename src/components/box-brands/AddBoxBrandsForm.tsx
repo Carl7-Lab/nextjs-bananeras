@@ -9,9 +9,9 @@ import {
 } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import React from 'react';
+import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import { useCreateBoxBrand } from '@/hooks/box-brand/createBoxBrand';
-import { queryClient } from '@/lib/react-query';
 import InputFieldBrandSelect from './InputFieldBrandSelect';
 import InputFieldBooleanSelector from '../ui/form/InputFieldBooleanSelector';
 import InputFieldText from '../ui/form/InputFieldText';
@@ -82,6 +82,7 @@ const validationSchema = Yup.object({
 export default function AddBoxBrandsForm() {
   const toast = useToast();
   const { createBoxBrand } = useCreateBoxBrand();
+  const queryClient = useQueryClient();
 
   const addBoxBrands = async (
     values: ValuesProps,

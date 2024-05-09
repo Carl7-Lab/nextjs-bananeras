@@ -4,21 +4,38 @@ import {
   DropdownIndicatorProps,
   Select as ChakraSelect,
   GroupBase,
+  SingleValue,
   chakraComponents,
   CSSObjectWithLabel,
-  SingleValue,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
 import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
-import { useBrands } from '@/hooks/brand/getBrands';
-import { usePagination } from '@/hooks/usePagination';
-import { BrandType } from '@/types/brand';
+import { useHarbors } from '../../hooks/harbor/getHarbors';
+import { usePagination } from '../../hooks/usePagination';
+
+export type PartialHarborType = {
+  id: string;
+  name: string;
+  country: string;
+  city: string;
+  transportTime: string;
+  latitude: string;
+  longitude: string;
+};
+
+interface HarborSelectBaseProps {
+  name?: string;
+  field?: FieldInputProps<any>;
+  placeholder: string;
+  setHarbor?: (harbor: PartialHarborType) => void;
+  onChange?: (newValue: PartialHarborType) => void;
+}
 
 const chakraStyles: ChakraStylesConfig<
-  BrandType,
+  PartialHarborType,
   false,
-  GroupBase<BrandType>
+  GroupBase<PartialHarborType>
 > = {
   container: (provided) => ({
     ...provided,
@@ -39,9 +56,13 @@ const chakraStyles: ChakraStylesConfig<
   }),
 };
 
-const brandComponents = {
+const harborComponents = {
   DropdownIndicator: (
-    props: DropdownIndicatorProps<BrandType, false, GroupBase<BrandType>>
+    props: DropdownIndicatorProps<
+      PartialHarborType,
+      false,
+      GroupBase<PartialHarborType>
+    >
   ) => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
@@ -49,19 +70,24 @@ const brandComponents = {
   ),
 };
 
-const BrandSelectBase: React.FC<{
-  setBrand?: (brand: BrandType) => void;
-  onChange?: (newValue: BrandType) => void;
-  name: string;
-  field?: FieldInputProps<any>;
-  placeholder: string;
-}> = ({ setBrand, onChange, field, placeholder, name }) => {
+const HarborSelectBase: React.FC<HarborSelectBaseProps> = ({
+  name,
+  placeholder,
+  field,
+  onChange,
+  setHarbor,
+}) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useBrands(paginationParams);
+  const { data, isLoading, refetch } = useHarbors(paginationParams);
 
-  const handleChange = (newValue: SingleValue<BrandType>) => {
-    if (setBrand) setBrand(newValue as BrandType);
-    if (onChange) onChange(newValue as BrandType);
+  const handleChange = (newValue: SingleValue<PartialHarborType>) => {
+    if (setHarbor) {
+      setHarbor(newValue as PartialHarborType);
+    }
+
+    if (onChange) {
+      onChange(newValue as PartialHarborType);
+    }
   };
 
   return (
@@ -75,25 +101,21 @@ const BrandSelectBase: React.FC<{
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'brand box not found'}
+      noOptionsMessage={() => 'harbor not found'}
       isLoading={isLoading}
       options={data}
-      getOptionLabel={(brand: BrandType) => `${brand.name}`}
-      getOptionValue={(brand: BrandType) => brand.id}
+      getOptionLabel={(harbor: PartialHarborType) => `${harbor.name}`}
+      getOptionValue={(harbor: PartialHarborType) => harbor.id}
       onChange={(newValue) => handleChange(newValue)}
       value={
         field?.value
-          ? data.find((opt: BrandType) => opt.id === field?.value)
+          ? data.find((opt: PartialHarborType) => opt.id === field?.value)
           : undefined
       }
       placeholder={placeholder}
-      //   onInputChange={(newValue) => {
-      //     filterProps.setSearch(newValue);
-      //     refetch();
-      //   }}
-      components={brandComponents}
+      components={harborComponents}
     />
   );
 };
 
-export default BrandSelectBase;
+export default HarborSelectBase;

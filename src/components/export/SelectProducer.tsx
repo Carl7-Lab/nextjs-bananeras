@@ -1,85 +1,48 @@
-import {
-  Box,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
-  Select,
-  SimpleGrid,
-} from '@chakra-ui/react';
-import { useField } from 'formik';
-import React, { useState } from 'react';
-
-interface ProducerOptionProps {
-  id: number;
-  businessName: string;
-  businessId: string;
-  city: string;
-  address: string;
-}
+import { Box, FormLabel, Input, SimpleGrid } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import InputFieldProducerSelect from '../producer/InputFieldProducerSelect';
+import { PartialProducerType } from '../producer/ProducerSelectBase';
 
 interface InputFieldSelectorProps {
   name: string;
-  label: string;
-  options: ProducerOptionProps[];
+  isSubmitting?: boolean;
 }
 
 const SelectProducer: React.FC<InputFieldSelectorProps> = ({
   name,
-  label,
-  options,
+  isSubmitting,
 }) => {
-  const [field, meta, helpers] = useField(name);
-  const [selectedProducer, setSelectedProducer] =
-    useState<ProducerOptionProps | null>(null);
+  const [producer, setProducer] = useState<PartialProducerType | null>(null);
 
-  const handleProducerChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const selectedProducerId = Number(event.target.value);
-    const selectedProducer = options.find(
-      (opt) => opt.id === selectedProducerId
-    );
-    setSelectedProducer(selectedProducer || null);
-    helpers.setValue(selectedProducerId !== 0 ? selectedProducerId : '');
-  };
+  // useEffect(() => {
+  //   console.log('producer selectProducer: ', producer);
+  // }, [producer]);
+
+  useEffect(() => {
+    console.log('SelectProducer isSubmitting: ', isSubmitting);
+  }, [isSubmitting]);
+
   return (
     <>
       <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
-        <FormControl id={name} isInvalid={!!meta.error && meta.touched}>
-          <FormLabel fontSize='sm' mb='8px'>
-            {label}
-          </FormLabel>
-          <Select
-            {...field}
-            onChange={handleProducerChange}
-            value={selectedProducer?.id || ''}
-          >
-            <option value={''}>-- Seleccione {label} --</option>
-            {options.map((option, index) => (
-              <option key={index} value={option.id}>
-                {option.businessName}
-              </option>
-            ))}
-          </Select>
-          {meta.error && meta.touched && (
-            <FormErrorMessage mt='8px' mb='16px'>
-              {meta.error}
-            </FormErrorMessage>
-          )}
-        </FormControl>
+        <InputFieldProducerSelect
+          name={name}
+          label={'Productor'}
+          placeholder={'Seleccione el productor'}
+          setProducer={setProducer}
+        />
 
         <Box>
           <FormLabel>RUC</FormLabel>
-          <Input isReadOnly={true} value={selectedProducer?.businessId || ''} />
+          <Input isReadOnly={true} value={producer?.businessId || ''} />
         </Box>
         <Box>
           <FormLabel>Ciudad</FormLabel>
-          <Input isReadOnly={true} value={selectedProducer?.city || ''} />
+          <Input isReadOnly={true} value={producer?.city || ''} />
         </Box>
         <Box>
           <FormLabel>Dirección</FormLabel>
-          <Input isReadOnly={true} value={selectedProducer?.address || ''} />
+          <Input isReadOnly={true} value={producer?.address || ''} />
         </Box>
       </SimpleGrid>
     </>

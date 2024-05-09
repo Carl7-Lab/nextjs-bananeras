@@ -4,21 +4,37 @@ import {
   DropdownIndicatorProps,
   Select as ChakraSelect,
   GroupBase,
+  SingleValue,
   chakraComponents,
   CSSObjectWithLabel,
-  SingleValue,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
 import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
-import { useBrands } from '@/hooks/brand/getBrands';
-import { usePagination } from '@/hooks/usePagination';
-import { BrandType } from '@/types/brand';
+import { useClients } from '../../hooks/client/getClients';
+import { usePagination } from '../../hooks/usePagination';
+
+export type PartialClientType = {
+  id: string;
+  businessName: string;
+  businessId: string;
+  type: string;
+  email: string;
+  phone: string;
+};
+
+interface ClientSelectBaseProps {
+  name?: string;
+  field?: FieldInputProps<any>;
+  placeholder: string;
+  setClient?: (client: PartialClientType) => void;
+  onChange?: (newValue: PartialClientType) => void;
+}
 
 const chakraStyles: ChakraStylesConfig<
-  BrandType,
+  PartialClientType,
   false,
-  GroupBase<BrandType>
+  GroupBase<PartialClientType>
 > = {
   container: (provided) => ({
     ...provided,
@@ -39,9 +55,13 @@ const chakraStyles: ChakraStylesConfig<
   }),
 };
 
-const brandComponents = {
+const clientComponents = {
   DropdownIndicator: (
-    props: DropdownIndicatorProps<BrandType, false, GroupBase<BrandType>>
+    props: DropdownIndicatorProps<
+      PartialClientType,
+      false,
+      GroupBase<PartialClientType>
+    >
   ) => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
@@ -49,19 +69,24 @@ const brandComponents = {
   ),
 };
 
-const BrandSelectBase: React.FC<{
-  setBrand?: (brand: BrandType) => void;
-  onChange?: (newValue: BrandType) => void;
-  name: string;
-  field?: FieldInputProps<any>;
-  placeholder: string;
-}> = ({ setBrand, onChange, field, placeholder, name }) => {
+const ClientSelectBase: React.FC<ClientSelectBaseProps> = ({
+  name,
+  placeholder,
+  field,
+  onChange,
+  setClient,
+}) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useBrands(paginationParams);
+  const { data, isLoading, refetch } = useClients(paginationParams);
 
-  const handleChange = (newValue: SingleValue<BrandType>) => {
-    if (setBrand) setBrand(newValue as BrandType);
-    if (onChange) onChange(newValue as BrandType);
+  const handleChange = (newValue: SingleValue<PartialClientType>) => {
+    if (setClient) {
+      setClient(newValue as PartialClientType);
+    }
+
+    if (onChange) {
+      onChange(newValue as PartialClientType);
+    }
   };
 
   return (
@@ -75,25 +100,21 @@ const BrandSelectBase: React.FC<{
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'brand box not found'}
+      noOptionsMessage={() => 'client not found'}
       isLoading={isLoading}
       options={data}
-      getOptionLabel={(brand: BrandType) => `${brand.name}`}
-      getOptionValue={(brand: BrandType) => brand.id}
+      getOptionLabel={(client: PartialClientType) => `${client.businessName}`}
+      getOptionValue={(client: PartialClientType) => client.id}
       onChange={(newValue) => handleChange(newValue)}
       value={
         field?.value
-          ? data.find((opt: BrandType) => opt.id === field?.value)
+          ? data.find((opt: PartialClientType) => opt.id === field?.value)
           : undefined
       }
       placeholder={placeholder}
-      //   onInputChange={(newValue) => {
-      //     filterProps.setSearch(newValue);
-      //     refetch();
-      //   }}
-      components={brandComponents}
+      components={clientComponents}
     />
   );
 };
 
-export default BrandSelectBase;
+export default ClientSelectBase;

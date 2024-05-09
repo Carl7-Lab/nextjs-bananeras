@@ -1,8 +1,17 @@
-import { Button, Divider, Flex, Heading, SimpleGrid } from '@chakra-ui/react';
+import {
+  Button,
+  Divider,
+  Flex,
+  Heading,
+  SimpleGrid,
+  useToast,
+} from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
+import { useCreateMerchant } from '../../hooks/merchants/createMerchant';
 import { BACKEND_URL } from '../../lib/constants';
 import InputFieldText from '../ui/form/InputFieldText';
 
@@ -88,29 +97,13 @@ const validationSchema = Yup.object({
 
 export default function OnboardingForm() {
   const router = useRouter();
+  const pathname = usePathname();
+  const toast = useToast();
   const { data: session, status, update } = useSession();
+  const { createMerchant } = useCreateMerchant();
+  const queryClient = useQueryClient();
 
-  const sendOnboarding = async (values: ValuesProps) => {
-    const onboardingValues = {
-      businessName: values.businessName,
-      businessId: values.businessId,
-      address: values.address,
-      city: values.address,
-      business: {
-        name: values.businessObjName,
-        address: values.businessObjAddress,
-        area: Number(values.businessObjArea),
-        city: values.businessObjCity,
-        latitude: Number(values.businessObjLatitude),
-        longitude: Number(values.businessObjLongitude),
-        businessManager: {
-          name: values.businessManagerObjName,
-          email: values.businessManagerObjEmail,
-          phone: values.businessManagerObjPhone,
-        },
-      },
-    };
-
+  const onboarding = async (onboardingValues: any) => {
     const res = await fetch(BACKEND_URL + '/auth/exporter/onboarding', {
       method: 'POST',
       body: JSON.stringify(onboardingValues),
@@ -132,11 +125,81 @@ export default function OnboardingForm() {
     return;
   };
 
+  const creatingMerchant: any = async (
+    merchantValues: any,
+    actions: { resetForm: () => void }
+  ) => {
+    // console.log('creatingMerchant: ', merchantValues);
+    createMerchant(
+      {
+        ...merchantValues,
+      },
+      {
+        onError: (error) => {
+          toast({
+            title: 'Error.',
+            description: `${error.message}`,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        },
+        onSuccess: () => {
+          toast({
+            title: 'Productor creado',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+
+          queryClient.invalidateQueries('merchants');
+          actions.resetForm();
+        },
+      }
+    );
+  };
+
+  const onSubmit = async (
+    values: ValuesProps,
+    actions: { resetForm: () => void }
+  ) => {
+    const sendingValues = {
+      businessName: values.businessName,
+      businessId: values.businessId,
+      address: values.address,
+      city: values.address,
+      business: {
+        name: values.businessObjName,
+        address: values.businessObjAddress,
+        area: Number(values.businessObjArea),
+        city: values.businessObjCity,
+        latitude: Number(values.businessObjLatitude),
+        longitude: Number(values.businessObjLongitude),
+        businessManager: {
+          name: values.businessManagerObjName,
+          email: values.businessManagerObjEmail,
+          phone: values.businessManagerObjPhone,
+        },
+      },
+    };
+
+    // console.log('onsubmit sending values: ', sendingValues);
+
+    if (pathname === '/dashboard/settings/add-producer') {
+      console.log('onsubmit agregar Productor');
+      creatingMerchant(sendingValues, actions);
+    }
+
+    if (pathname === '/dashboard/onboarding') {
+      onboarding(sendingValues);
+    }
+  };
+
   return (
     <>
       <Formik
         initialValues={initialValues}
-        onSubmit={sendOnboarding}
+        onSubmit={onSubmit}
         validationSchema={validationSchema}
       >
         {({ isSubmitting }) => (
