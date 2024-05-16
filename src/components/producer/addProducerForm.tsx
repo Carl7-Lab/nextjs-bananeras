@@ -1,9 +1,20 @@
-import { Button, Divider, Flex, Heading, SimpleGrid } from '@chakra-ui/react';
+import {
+  Button,
+  Divider,
+  Flex,
+  Heading,
+  SimpleGrid,
+  useToast,
+} from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
+import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
+import { useCreateBusiness } from '../../hooks/business/createBusiness';
+import SelectProducer from '../export/SelectProducer';
 import InputFieldText from '../ui/form/InputFieldText';
 
 interface ValuesProps {
+  merchant: number | '';
   businessObjName: string;
   businessObjAddress: string;
   businessObjArea: number;
@@ -16,6 +27,7 @@ interface ValuesProps {
 }
 
 const initialValues: ValuesProps = {
+  merchant: '',
   businessObjName: '',
   businessObjAddress: '',
   businessObjArea: 0,
@@ -28,6 +40,7 @@ const initialValues: ValuesProps = {
 };
 
 const validationSchema = Yup.object({
+  merchant: Yup.number().required('Required'),
   businessObjName: Yup.string()
     .max(15, 'Must be 15 characters or less')
     .required('Required'),
@@ -38,7 +51,7 @@ const validationSchema = Yup.object({
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
   businessObjCity: Yup.string()
-    .max(15, 'Must be 15 characters or less')
+    .max(20, 'Must be 20 characters or less')
     .required('Required'),
   businessObjLatitude: Yup.number()
     .min(-90, 'Must be at least -90')
@@ -61,8 +74,54 @@ const validationSchema = Yup.object({
 });
 
 const AddProducerForm = () => {
-  const sendProducerForm = async (values: ValuesProps) => {
+  const { createBusiness } = useCreateBusiness();
+  const toast = useToast();
+  const queryClient = useQueryClient();
+
+  const sendProducerForm = async (
+    values: ValuesProps,
+    actions: { resetForm: () => void }
+  ) => {
     console.log('sending values: ', values);
+
+    createBusiness(
+      {
+        name: values.businessObjName,
+        address: values.businessObjAddress,
+        area: Number(values.businessObjArea),
+        city: values.businessObjCity,
+        latitude: Number(values.businessObjLatitude),
+        longitude: Number(values.businessObjLongitude),
+        businessManager: {
+          name: values.businessManagerObjName,
+          email: values.businessManagerObjEmail,
+          phone: values.businessManagerObjPhone,
+        },
+        merchant: Number(values.merchant),
+      },
+      {
+        onError: (error) => {
+          toast({
+            title: 'Error.',
+            description: `${error.message}`,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        },
+        onSuccess: () => {
+          toast({
+            title: 'Finca creada',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+
+          queryClient.invalidateQueries('businesses');
+          actions.resetForm();
+        },
+      }
+    );
 
     return;
   };
@@ -77,6 +136,12 @@ const AddProducerForm = () => {
         {({ isSubmitting }) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
+              <Heading fontSize={'2xl'} p={'12px'}>
+                Productor
+              </Heading>
+              <Divider mb={'16px'} />
+              <SelectProducer name={'merchant'} />
+
               <Heading fontSize={'2xl'} p={'16px'}>
                 Finca
               </Heading>

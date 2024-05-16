@@ -1,27 +1,19 @@
-import {
-  Box,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
-  Select,
-  SimpleGrid,
-} from '@chakra-ui/react';
-import { useField } from 'formik';
+import { Box, FormLabel, Input, SimpleGrid } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { PartialClientType } from '../client/ClientSelectBase';
 import InputFieldClientSelect from '../client/InputFieldClientSelect';
 
 interface InputFieldSelectorProps {
   name: string;
+  harbor?: number;
 }
 
-const SelectClient: React.FC<InputFieldSelectorProps> = ({ name }) => {
+const SelectClient: React.FC<InputFieldSelectorProps> = ({ name, harbor }) => {
   const [client, setClient] = useState<PartialClientType | null>(null);
 
-  // useEffect(() => {
-  //   console.log('client SelectClient: ', client);
-  // }, [client]);
+  useEffect(() => {
+    console.log('SelectClient harbor: ', harbor);
+  }, [harbor]);
 
   return (
     <>
@@ -31,6 +23,7 @@ const SelectClient: React.FC<InputFieldSelectorProps> = ({ name }) => {
           label={'Cliente'}
           placeholder={'Seleccione el Cliente'}
           setClient={setClient}
+          harbor={harbor}
         />
 
         <Box>

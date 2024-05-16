@@ -9,30 +9,25 @@ import {
   CSSObjectWithLabel,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
+import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
-import { useMerchants } from '../../hooks/merchants/getMerchants';
+import { useBusinesses } from '../../hooks/business/getBusinesses';
 import { usePagination } from '../../hooks/usePagination';
+import { BusinessType } from '../../types/business';
 
-export type PartialProducerType = {
-  id: string;
-  businessName: string;
-  businessId: string;
-  address: string;
-  city: string;
-};
-
-interface ProducerSelectBaseProps {
+interface BusinessSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
-  setProducer?: (producer: PartialProducerType) => void;
-  onChange?: (newValue: PartialProducerType) => void;
+  merchant?: number;
+  setBusiness?: (business: Partial<BusinessType>) => void;
+  onChange?: (newValue: Partial<BusinessType>) => void;
 }
 
 const chakraStyles: ChakraStylesConfig<
-  PartialProducerType,
+  Partial<BusinessType>,
   false,
-  GroupBase<PartialProducerType>
+  GroupBase<Partial<BusinessType>>
 > = {
   container: (provided) => ({
     ...provided,
@@ -53,12 +48,12 @@ const chakraStyles: ChakraStylesConfig<
   }),
 };
 
-const producerComponents = {
+const businessComponents = {
   DropdownIndicator: (
     props: DropdownIndicatorProps<
-      PartialProducerType,
+      Partial<BusinessType>,
       false,
-      GroupBase<PartialProducerType>
+      GroupBase<Partial<BusinessType>>
     >
   ) => (
     <chakraComponents.DropdownIndicator {...props}>
@@ -67,23 +62,27 @@ const producerComponents = {
   ),
 };
 
-const ProducerSelectBase: React.FC<ProducerSelectBaseProps> = ({
+const BusinessSelectBase: React.FC<BusinessSelectBaseProps> = ({
   name,
   placeholder,
   field,
+  merchant,
   onChange,
-  setProducer,
+  setBusiness,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useMerchants(paginationParams);
+  const { data, isLoading, refetch } = useBusinesses(
+    { ...paginationParams },
+    { id: merchant ?? 0 }
+  );
 
-  const handleChange = (newValue: SingleValue<PartialProducerType>) => {
-    if (setProducer) {
-      setProducer(newValue as PartialProducerType);
+  const handleChange = (newValue: SingleValue<Partial<BusinessType>>) => {
+    if (setBusiness) {
+      setBusiness(newValue as Partial<BusinessType>);
     }
 
     if (onChange) {
-      onChange(newValue as PartialProducerType);
+      onChange(newValue as Partial<BusinessType>);
     }
   };
 
@@ -98,23 +97,23 @@ const ProducerSelectBase: React.FC<ProducerSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'producer not found'}
+      noOptionsMessage={() => 'business not found'}
       isLoading={isLoading}
       options={data}
-      getOptionLabel={(producer: PartialProducerType) =>
-        `${producer.businessName}`
+      getOptionLabel={(business: Partial<BusinessType>) => `${business.name}`}
+      getOptionValue={(business: Partial<BusinessType>) =>
+        business.id ? business.id.toString() : ''
       }
-      getOptionValue={(producer: PartialProducerType) => producer.id}
       onChange={(newValue) => handleChange(newValue)}
       value={
         field?.value
-          ? data.find((opt: PartialProducerType) => opt.id === field?.value)
+          ? data.find((opt: Partial<BusinessType>) => opt.id === field?.value)
           : undefined
       }
       placeholder={placeholder}
-      components={producerComponents}
+      components={businessComponents}
     />
   );
 };
 
-export default ProducerSelectBase;
+export default BusinessSelectBase;

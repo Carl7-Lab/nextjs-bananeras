@@ -9,9 +9,9 @@ import {
   CSSObjectWithLabel,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
-import { useClients } from '../../hooks/client/getClients';
+import { useClientsByHarborId } from '../../hooks/client/getClientsByHarborId';
 import { usePagination } from '../../hooks/usePagination';
 
 export type PartialClientType = {
@@ -27,6 +27,7 @@ interface ClientSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
+  harbor?: number;
   setClient?: (client: PartialClientType) => void;
   onChange?: (newValue: PartialClientType) => void;
 }
@@ -73,11 +74,25 @@ const ClientSelectBase: React.FC<ClientSelectBaseProps> = ({
   name,
   placeholder,
   field,
+  harbor,
   onChange,
   setClient,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useClients(paginationParams);
+  const { data, isLoading, refetch } = useClientsByHarborId(
+    { ...paginationParams },
+    { id: harbor ?? 0 }
+  );
+
+  useEffect(() => {
+    console.log('ClientSelectBase harbor', harbor);
+  }, [harbor]);
+
+  useEffect(() => {
+    if (!!harbor) {
+      console.log('ClientSelectBase data', data);
+    }
+  }, [data, harbor]);
 
   const handleChange = (newValue: SingleValue<PartialClientType>) => {
     if (setClient) {

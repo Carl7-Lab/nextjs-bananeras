@@ -71,7 +71,7 @@ const validationSchema = Yup.object({
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
   businessObjCity: Yup.string()
-    .max(15, 'Must be 15 characters or less')
+    .max(20, 'Must be 20 characters or less')
     .required('Required'),
   businessObjLatitude: Yup.number()
     .min(-90, 'Must be at least -90')
@@ -186,7 +186,7 @@ export default function OnboardingForm() {
     // console.log('onsubmit sending values: ', sendingValues);
 
     if (pathname === '/dashboard/settings/add-producer') {
-      console.log('onsubmit agregar Productor');
+      // console.log('onsubmit agregar Productor');
       creatingMerchant(sendingValues, actions);
     }
 

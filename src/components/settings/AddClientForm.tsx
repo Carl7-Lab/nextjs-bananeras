@@ -11,6 +11,7 @@ import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import { useCreateClient } from '../../hooks/client/createClient';
+import InputFieldHarborMultiSelect from '../harbor/InputFieldHarborMultiSelect';
 import InputFieldSelector from '../ui/form/InputFieldSelector';
 import InputFieldText from '../ui/form/InputFieldText';
 
@@ -20,6 +21,7 @@ interface ValuesProps {
   type: '' | 'Supermarket' | 'Intermediary';
   email: string;
   phone: string;
+  harbors: number[] | null;
 }
 
 const initialValues: ValuesProps = {
@@ -28,6 +30,7 @@ const initialValues: ValuesProps = {
   type: '',
   email: '',
   phone: '',
+  harbors: null,
 };
 
 const validationSchema = Yup.object({
@@ -50,6 +53,10 @@ const validationSchema = Yup.object({
     .min(10, 'Must be at least 10 digits')
     .max(15, 'Must be 15 digits or less')
     .required('Required'),
+  harbors: Yup.array()
+    .min(1, 'At least one harbor must be selected')
+    .required('Required')
+    .of(Yup.number().required()),
 });
 
 const AddClientForm = () => {
@@ -71,11 +78,12 @@ const AddClientForm = () => {
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
-    console.log('adding client: ', values);
+    const { harbors, ...client } = values;
 
     createClient(
       {
-        ...values,
+        ...client,
+        harborId: harbors,
       },
       {
         onError: (error) => {
@@ -96,6 +104,7 @@ const AddClientForm = () => {
           });
 
           queryClient.invalidateQueries('clients');
+          queryClient.invalidateQueries('clientsByHarbor');
           actions.resetForm();
         },
       }
@@ -126,8 +135,15 @@ const AddClientForm = () => {
                   label={'Tipo'}
                   options={typesOpt}
                 />
+
                 <InputFieldText name={'email'} label={'Correo'} />
                 <InputFieldText name={'phone'} label={'Teléfono'} />
+
+                <InputFieldHarborMultiSelect
+                  name={'harbors'}
+                  label={'Puerto/s'}
+                  placeholder={'Seleccione el/los puerto/s'}
+                />
               </SimpleGrid>
 
               <Button

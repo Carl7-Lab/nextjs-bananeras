@@ -6,6 +6,10 @@ import * as Yup from 'yup';
 import { useCreateBrand } from '@/hooks/brand/createBrand';
 import InputFieldText from '../ui/form/InputFieldText';
 
+interface AddBrandFormProps {
+  onClose?: () => void;
+}
+
 interface ValuesProps {
   name: string;
 }
@@ -20,7 +24,7 @@ const validationSchema = Yup.object({
     .required('Required'),
 });
 
-export default function AddBrandForm() {
+export default function AddBrandForm({ onClose }: AddBrandFormProps) {
   const { createBrand } = useCreateBrand();
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -53,6 +57,7 @@ export default function AddBrandForm() {
 
           queryClient.invalidateQueries('brands');
           actions.resetForm();
+          !!onClose && onClose();
         },
       }
     );

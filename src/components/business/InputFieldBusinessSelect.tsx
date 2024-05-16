@@ -1,29 +1,30 @@
 import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react';
 import { useField } from 'formik';
 import React, { useEffect } from 'react';
-import ClientSelectBase, { PartialClientType } from './ClientSelectBase';
+import BusinessSelectBase from './BusinessSelectBase';
+import { BusinessType } from '../../types/business';
 
-interface InputFieldClientSelectProps {
+interface InputFieldBusinessSelectProps {
   name: string;
   label: string;
   placeholder: string;
-  harbor?: number;
-  setClient?: (client: PartialClientType) => void;
+  merchant?: number;
+  setBusiness?: (producer: Partial<BusinessType>) => void;
 }
 
-const InputFieldClientSelect: React.FC<InputFieldClientSelectProps> = ({
+const InputFieldBusinessSelect: React.FC<InputFieldBusinessSelectProps> = ({
   name,
   label,
   placeholder,
-  harbor,
-  setClient,
+  merchant,
+  setBusiness,
 }) => {
   const [field, meta, helpers] = useField(name);
 
   useEffect(() => {
-    console.log('InputFieldClientSelect harbor', harbor);
+    // console.log('InputFieldBusinessSelect merchant: ', merchant);
     helpers.setValue(null);
-  }, [helpers, harbor]);
+  }, [helpers, merchant]);
 
   return (
     <FormControl id={name} isInvalid={!!meta.error && meta.touched}>
@@ -31,13 +32,13 @@ const InputFieldClientSelect: React.FC<InputFieldClientSelectProps> = ({
         {label}
       </FormLabel>
 
-      <ClientSelectBase
+      <BusinessSelectBase
         name={name}
         placeholder={placeholder}
         onChange={(newValue) => helpers.setValue(newValue?.id)}
         field={field}
-        setClient={setClient}
-        harbor={harbor}
+        setBusiness={setBusiness}
+        merchant={merchant}
       />
 
       {meta.error && meta.touched && (
@@ -49,4 +50,4 @@ const InputFieldClientSelect: React.FC<InputFieldClientSelectProps> = ({
   );
 };
 
-export default InputFieldClientSelect;
+export default InputFieldBusinessSelect;

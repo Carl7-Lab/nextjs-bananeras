@@ -5,29 +5,17 @@ import { PartialProducerType } from '../producer/ProducerSelectBase';
 
 interface InputFieldSelectorProps {
   name: string;
-  isSubmitting?: boolean;
 }
 
-const SelectProducer: React.FC<InputFieldSelectorProps> = ({
-  name,
-  isSubmitting,
-}) => {
+const SelectProducer: React.FC<InputFieldSelectorProps> = ({ name }) => {
   const [producer, setProducer] = useState<PartialProducerType | null>(null);
-
-  // useEffect(() => {
-  //   console.log('producer selectProducer: ', producer);
-  // }, [producer]);
-
-  useEffect(() => {
-    console.log('SelectProducer isSubmitting: ', isSubmitting);
-  }, [isSubmitting]);
 
   return (
     <>
       <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
         <InputFieldProducerSelect
           name={name}
-          label={'Productor'}
+          label={'Productor/Razón Social'}
           placeholder={'Seleccione el productor'}
           setProducer={setProducer}
         />

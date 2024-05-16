@@ -12,6 +12,7 @@ import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import SelectBoxBrand from './SelectBoxBrand';
+import SelectBusiness from './SelectBusiness';
 import SelectClient from './SelectClient';
 import SelectHarbor from './SelectHarbor';
 import SelectProducer from './SelectProducer';
@@ -22,6 +23,7 @@ interface ValuesProps {
   boxBrand: number | '';
   boxQuantity: number;
   merchant: number | '';
+  business: number | '';
   destinationPort: number | '';
   client: number | '';
   logisticShipSteam: string;
@@ -33,6 +35,7 @@ const initialValues: ValuesProps = {
   boxBrand: '',
   boxQuantity: 0,
   merchant: '',
+  business: '',
   destinationPort: '',
   client: '',
   logisticShipSteam: '',
@@ -45,7 +48,8 @@ const validationSchema = Yup.object({
   boxQuantity: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
-  merchant: Yup.string().required('Required'),
+  merchant: Yup.number().required('Required'),
+  business: Yup.number().required('Required'),
   destinationPort: Yup.string().required('Required'),
   client: Yup.string().required('Required'),
   logisticShipSteam: Yup.string().required('Required'),
@@ -64,48 +68,48 @@ const AddExportForm = () => {
   ) => {
     console.log('addExport values: ', values);
 
-    createExport(
-      {
-        boxQuantity: Number(values.boxQuantity),
-        boxBrand: {
-          id: values.boxBrand,
-        },
-        merchant: {
-          id: values.merchant,
-        },
-        harbor: {
-          id: values.destinationPort,
-        },
-        client: {
-          id: values.client,
-        },
-        shipSteam: values.logisticShipSteam,
-        shippingLineSeal: values.logisticShippingLineSeal,
-        extraSeal: values.logisticExtraSeal,
-      },
-      {
-        onError: (error) => {
-          toast({
-            title: 'Error.',
-            description: `${error.message}`,
-            status: 'error',
-            duration: 5000,
-            isClosable: true,
-          });
-        },
-        onSuccess: () => {
-          toast({
-            title: 'Exportacion creada',
-            status: 'success',
-            duration: 5000,
-            isClosable: true,
-          });
+    // createExport(
+    //   {
+    //     boxQuantity: Number(values.boxQuantity),
+    //     boxBrand: {
+    //       id: values.boxBrand,
+    //     },
+    //     merchant: {
+    //       id: values.merchant,
+    //     },
+    //     harbor: {
+    //       id: values.destinationPort,
+    //     },
+    //     client: {
+    //       id: values.client,
+    //     },
+    //     shipSteam: values.logisticShipSteam,
+    //     shippingLineSeal: values.logisticShippingLineSeal,
+    //     extraSeal: values.logisticExtraSeal,
+    //   },
+    //   {
+    //     onError: (error) => {
+    //       toast({
+    //         title: 'Error.',
+    //         description: `${error.message}`,
+    //         status: 'error',
+    //         duration: 5000,
+    //         isClosable: true,
+    //       });
+    //     },
+    //     onSuccess: () => {
+    //       toast({
+    //         title: 'Exportacion creada',
+    //         status: 'success',
+    //         duration: 5000,
+    //         isClosable: true,
+    //       });
 
-          queryClient.invalidateQueries('exports');
-          actions.resetForm();
-        },
-      }
-    );
+    //       queryClient.invalidateQueries('exports');
+    //       actions.resetForm();
+    //     },
+    //   }
+    // );
 
     return;
   };
@@ -117,7 +121,7 @@ const AddExportForm = () => {
         onSubmit={addExport}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {({ isSubmitting, values, setValues }) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>
@@ -131,7 +135,18 @@ const AddExportForm = () => {
                 Productor
               </Heading>
               <Divider mb={'16px'} />
-              <SelectProducer name={'merchant'} isSubmitting={isSubmitting} />
+              <SelectProducer name={'merchant'} />
+
+              <Heading fontSize={'2xl'} p={'12px'}>
+                Finca
+              </Heading>
+              <Divider mb={'16px'} />
+              <SelectBusiness
+                name={'business'}
+                merchant={
+                  values?.merchant ? Number(values.merchant) : undefined
+                }
+              />
 
               <Heading fontSize={'2xl'} p={'12px'}>
                 Puerto Destino
@@ -143,7 +158,14 @@ const AddExportForm = () => {
                 Cliente
               </Heading>
               <Divider mb={'16px'} />
-              <SelectClient name={'client'} />
+              <SelectClient
+                name={'client'}
+                harbor={
+                  values?.destinationPort
+                    ? Number(values.destinationPort)
+                    : undefined
+                }
+              />
 
               <Heading fontSize={'2xl'} p={'12px'}>
                 Logística
@@ -172,6 +194,7 @@ const AddExportForm = () => {
                 colorScheme='teal'
                 variant={'purple'}
                 isLoading={isSubmitting}
+                onClick={() => console.log('AddExportForm values', values)}
               >
                 Enviar
               </Button>

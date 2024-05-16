@@ -11,6 +11,7 @@ import {
 import { FieldInputProps } from 'formik';
 import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
+import { useQueryClient } from 'react-query';
 import { useHarbors } from '../../hooks/harbor/getHarbors';
 import { usePagination } from '../../hooks/usePagination';
 
@@ -79,6 +80,7 @@ const HarborSelectBase: React.FC<HarborSelectBaseProps> = ({
 }) => {
   const { paginationParams, filterProps } = usePagination();
   const { data, isLoading, refetch } = useHarbors(paginationParams);
+  const queryClient = useQueryClient();
 
   const handleChange = (newValue: SingleValue<PartialHarborType>) => {
     if (setHarbor) {

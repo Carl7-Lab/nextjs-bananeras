@@ -4,35 +4,29 @@ import {
   DropdownIndicatorProps,
   Select as ChakraSelect,
   GroupBase,
-  SingleValue,
   chakraComponents,
   CSSObjectWithLabel,
+  MultiValue,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
+import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
-import { useMerchants } from '../../hooks/merchants/getMerchants';
+import { useHarbors } from '../../hooks/harbor/getHarbors';
 import { usePagination } from '../../hooks/usePagination';
+import { HarborType } from '../../types/harbor';
 
-export type PartialProducerType = {
-  id: string;
-  businessName: string;
-  businessId: string;
-  address: string;
-  city: string;
-};
-
-interface ProducerSelectBaseProps {
+interface HarborMultiSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
-  setProducer?: (producer: PartialProducerType) => void;
-  onChange?: (newValue: PartialProducerType) => void;
+  setHarbors?: (harbors: Partial<HarborType>[]) => void;
+  onChange?: (newValues: Partial<HarborType>[]) => void;
 }
 
 const chakraStyles: ChakraStylesConfig<
-  PartialProducerType,
-  false,
-  GroupBase<PartialProducerType>
+  Partial<HarborType>,
+  true,
+  GroupBase<Partial<HarborType>>
 > = {
   container: (provided) => ({
     ...provided,
@@ -53,12 +47,12 @@ const chakraStyles: ChakraStylesConfig<
   }),
 };
 
-const producerComponents = {
+const harborComponents = {
   DropdownIndicator: (
     props: DropdownIndicatorProps<
-      PartialProducerType,
-      false,
-      GroupBase<PartialProducerType>
+      Partial<HarborType>,
+      true,
+      GroupBase<Partial<HarborType>>
     >
   ) => (
     <chakraComponents.DropdownIndicator {...props}>
@@ -67,23 +61,23 @@ const producerComponents = {
   ),
 };
 
-const ProducerSelectBase: React.FC<ProducerSelectBaseProps> = ({
+const HarborMultiSelectBase: React.FC<HarborMultiSelectBaseProps> = ({
   name,
   placeholder,
   field,
   onChange,
-  setProducer,
+  setHarbors,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useMerchants(paginationParams);
+  const { data, isLoading, refetch } = useHarbors(paginationParams);
 
-  const handleChange = (newValue: SingleValue<PartialProducerType>) => {
-    if (setProducer) {
-      setProducer(newValue as PartialProducerType);
+  const handleChange = (newValues: MultiValue<Partial<HarborType>>) => {
+    if (setHarbors) {
+      setHarbors(newValues as Partial<HarborType>[]);
     }
 
     if (onChange) {
-      onChange(newValue as PartialProducerType);
+      onChange(newValues as Partial<HarborType>[]);
     }
   };
 
@@ -91,6 +85,7 @@ const ProducerSelectBase: React.FC<ProducerSelectBaseProps> = ({
     <ChakraSelect
       {...field}
       name={name}
+      isMulti
       menuPortalTarget={document.body}
       styles={{
         menuPortal: (provided) =>
@@ -98,23 +93,28 @@ const ProducerSelectBase: React.FC<ProducerSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'producer not found'}
+      noOptionsMessage={() => 'harbor not found'}
       isLoading={isLoading}
       options={data}
-      getOptionLabel={(producer: PartialProducerType) =>
-        `${producer.businessName}`
+      getOptionLabel={(harbor: Partial<HarborType>) =>
+        `${harbor.name} - ${harbor.id}`
       }
-      getOptionValue={(producer: PartialProducerType) => producer.id}
-      onChange={(newValue) => handleChange(newValue)}
+      getOptionValue={(harbor: Partial<HarborType>) =>
+        harbor.id ? harbor.id.toString() : ''
+      }
+      onChange={(newValues) => handleChange(newValues as Partial<HarborType>[])}
       value={
         field?.value
-          ? data.find((opt: PartialProducerType) => opt.id === field?.value)
-          : undefined
+          ? data.filter(
+              (opt: Partial<HarborType>) => field.value.indexOf(opt.id) >= 0
+            )
+          : []
       }
+      closeMenuOnSelect={false}
       placeholder={placeholder}
-      components={producerComponents}
+      components={harborComponents}
     />
   );
 };
 
-export default ProducerSelectBase;
+export default HarborMultiSelectBase;

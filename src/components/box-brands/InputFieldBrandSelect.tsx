@@ -1,6 +1,7 @@
 import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react';
 import { useField } from 'formik';
 import React from 'react';
+import AddBrandModal from './AddBrandModal';
 import BrandSelectBase from './BrandSelectBase';
 
 interface InputFieldBrandSelectProps {
@@ -18,8 +19,8 @@ const InputFieldBrandSelect: React.FC<InputFieldBrandSelectProps> = ({
 
   return (
     <FormControl id={name} isInvalid={!!meta.error && meta.touched}>
-      <FormLabel fontSize='sm' mb='8px'>
-        {label}
+      <FormLabel fontSize='sm' mb='8px' h={'21px'}>
+        {label} <AddBrandModal />
       </FormLabel>
 
       <BrandSelectBase
