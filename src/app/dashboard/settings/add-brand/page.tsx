@@ -1,7 +1,7 @@
 'use client';
 import { Box, Card, CardBody, Center } from '@chakra-ui/react';
 import React from 'react';
-import AddBrandForm from '../../../../components/settings/AddBrandForm';
+import AddBrandForm from '../../../../components/box-brands/specifications/brand/AddBrandForm';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
 function AddBrandPage() {

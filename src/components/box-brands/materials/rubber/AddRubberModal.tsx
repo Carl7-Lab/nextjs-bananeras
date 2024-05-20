@@ -4,15 +4,14 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalHeader,
   ModalOverlay,
   useDisclosure,
 } from '@chakra-ui/react';
 import React from 'react';
 import { AiFillPlusCircle } from 'react-icons/ai';
-import AddBrandForm from '../settings/AddBrandForm';
+import AddRubberForm from './AddRubberForm';
 
-const AddBrandModal = () => {
+const AddRubberModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -34,7 +33,7 @@ const AddBrandModal = () => {
         <ModalContent>
           <ModalCloseButton />
           <ModalBody>
-            <AddBrandForm onClose={onClose} />
+            <AddRubberForm onClose={onClose} />
           </ModalBody>
         </ModalContent>
       </Modal>
@@ -42,4 +41,4 @@ const AddBrandModal = () => {
   );
 };
 
-export default AddBrandModal;
+export default AddRubberModal;

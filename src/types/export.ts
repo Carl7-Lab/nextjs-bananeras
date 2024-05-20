@@ -1,4 +1,4 @@
-import { BoxBrandType } from './boxBrand';
+import { BoxBrandType } from './box-brand/boxBrand';
 import { ClientType } from './client';
 import { HarborType } from './harbor';
 import { MerchantType } from './merchant';

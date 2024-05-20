@@ -2,7 +2,7 @@ import { useMutation } from 'react-query';
 
 import axios from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
-import { BoxBrandType } from '@/types/boxBrand';
+import { BoxBrandType } from '@/types/box-brand/boxBrand';
 
 interface CreateBoxBrandResponse {
   brandId: string;

@@ -13,7 +13,7 @@ import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
 import { useBrands } from '@/hooks/brand/getBrands';
 import { usePagination } from '@/hooks/usePagination';
-import { BrandType } from '@/types/brand';
+import { BrandType } from '@/types/box-brand/specifications/brand';
 
 const chakraStyles: ChakraStylesConfig<
   BrandType,
