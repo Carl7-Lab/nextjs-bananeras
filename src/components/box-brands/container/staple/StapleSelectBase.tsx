@@ -11,6 +11,8 @@ import {
 import { FieldInputProps } from 'formik';
 import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
+import { useStaples } from '../../../../hooks/box-brand/container/staple/getStaples';
+import { usePagination } from '../../../../hooks/usePagination';
 import { StapleType } from '../../../../types/box-brand/container/staple';
 
 interface StapleSelectBaseProps {
@@ -21,23 +23,23 @@ interface StapleSelectBaseProps {
   onChange?: (newValue: Partial<StapleType>) => void;
 }
 
-const data: Partial<StapleType>[] = [
-  {
-    id: 1,
-    name: 'Grapa1',
-    quantityPerPack: 500,
-  },
-  {
-    id: 2,
-    name: 'Grapa2',
-    quantityPerPack: 750,
-  },
-  {
-    id: 3,
-    name: 'Grapa3',
-    quantityPerPack: 1000,
-  },
-];
+// const data: Partial<StapleType>[] = [
+//   {
+//     id: 1,
+//     name: 'Grapa1',
+//     quantityPerPack: 500,
+//   },
+//   {
+//     id: 2,
+//     name: 'Grapa2',
+//     quantityPerPack: 750,
+//   },
+//   {
+//     id: 3,
+//     name: 'Grapa3',
+//     quantityPerPack: 1000,
+//   },
+// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<StapleType>,
@@ -84,8 +86,8 @@ const StapleSelectBase: React.FC<StapleSelectBaseProps> = ({
   setStaple,
   onChange,
 }) => {
-  //   const { paginationParams, filterProps } = usePagination();
-  //   const { data, isLoading, refetch } = useStaples(paginationParams);
+  const { paginationParams, filterProps } = usePagination();
+  const { data, isLoading, refetch } = useStaples(paginationParams);
 
   const handleChange = (newValue: SingleValue<Partial<StapleType>>) => {
     if (setStaple) setStaple(newValue as Partial<StapleType>);
@@ -104,7 +106,7 @@ const StapleSelectBase: React.FC<StapleSelectBaseProps> = ({
       useBasicStyles
       chakraStyles={chakraStyles}
       noOptionsMessage={() => 'staple not found'}
-      //   isLoading={isLoading}
+      isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<StapleType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<StapleType>) =>

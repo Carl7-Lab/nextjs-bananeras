@@ -9,9 +9,9 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import { AiFillPlusCircle } from 'react-icons/ai';
-import AddStrappingForm from './AddStrappingForm';
+import AddStrippingForm from './AddStrippingForm';
 
-const AddStrappingModal = () => {
+const AddStrippingModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -33,7 +33,7 @@ const AddStrappingModal = () => {
         <ModalContent>
           <ModalCloseButton />
           <ModalBody>
-            <AddStrappingForm onClose={onClose} />
+            <AddStrippingForm onClose={onClose} />
           </ModalBody>
         </ModalContent>
       </Modal>
@@ -41,4 +41,4 @@ const AddStrappingModal = () => {
   );
 };
 
-export default AddStrappingModal;
+export default AddStrippingModal;

@@ -11,6 +11,8 @@ import {
 import { FieldInputProps } from 'formik';
 import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
+import { useBlockingSheets } from '../../../../hooks/box-brand/additions/blocking-sheet/getBlockingSheets';
+import { usePagination } from '../../../../hooks/usePagination';
 import { BlockingSheetType } from '../../../../types/box-brand/additions/blockingSheet';
 
 interface BlockingSheetSelectBaseProps {
@@ -21,20 +23,20 @@ interface BlockingSheetSelectBaseProps {
   onChange?: (newValue: Partial<BlockingSheetType>) => void;
 }
 
-const data: Partial<BlockingSheetType>[] = [
-  {
-    id: 1,
-    name: 'Lamina de bloque1',
-  },
-  {
-    id: 2,
-    name: 'Lamina de bloque2',
-  },
-  {
-    id: 3,
-    name: 'Lamina de bloque3',
-  },
-];
+// const data: Partial<BlockingSheetType>[] = [
+//   {
+//     id: 1,
+//     name: 'Lamina de bloque1',
+//   },
+//   {
+//     id: 2,
+//     name: 'Lamina de bloque2',
+//   },
+//   {
+//     id: 3,
+//     name: 'Lamina de bloque3',
+//   },
+// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<BlockingSheetType>,
@@ -81,8 +83,8 @@ const BlockingSheetSelectBase: React.FC<BlockingSheetSelectBaseProps> = ({
   setBlockingSheet,
   onChange,
 }) => {
-  //   const { paginationParams, filterProps } = usePagination();
-  //   const { data, isLoading, refetch } = useStaples(paginationParams);
+  const { paginationParams, filterProps } = usePagination();
+  const { data, isLoading, refetch } = useBlockingSheets(paginationParams);
 
   const handleChange = (newValue: SingleValue<Partial<BlockingSheetType>>) => {
     if (setBlockingSheet)
@@ -102,7 +104,7 @@ const BlockingSheetSelectBase: React.FC<BlockingSheetSelectBaseProps> = ({
       useBasicStyles
       chakraStyles={chakraStyles}
       noOptionsMessage={() => 'staple not found'}
-      //   isLoading={isLoading}
+      isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<BlockingSheetType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<BlockingSheetType>) =>

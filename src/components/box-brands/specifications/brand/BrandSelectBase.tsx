@@ -11,7 +11,7 @@ import {
 import { FieldInputProps } from 'formik';
 import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
-import { useBrands } from '@/hooks/brand/getBrands';
+import { useBrands } from '@/hooks/box-brand/specifications/brand/getBrands';
 import { usePagination } from '@/hooks/usePagination';
 import { BrandType } from '@/types/box-brand/specifications/brand';
 

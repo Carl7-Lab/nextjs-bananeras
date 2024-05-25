@@ -11,6 +11,8 @@ import {
 import { FieldInputProps } from 'formik';
 import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
+import { useRubbers } from '../../../../hooks/box-brand/materials/rubber/getRubbers';
+import { usePagination } from '../../../../hooks/usePagination';
 import { RubberType } from '../../../../types/box-brand/materials/rubber';
 
 interface RubberSelectBaseProps {
@@ -21,26 +23,26 @@ interface RubberSelectBaseProps {
   onChange?: (newValue: Partial<RubberType>) => void;
 }
 
-const data: Partial<RubberType>[] = [
-  {
-    id: 1,
-    name: 'Liga1',
-    quantityPerPack: 500,
-    color: 'color1',
-  },
-  {
-    id: 2,
-    name: 'Liga2',
-    quantityPerPack: 750,
-    color: 'color2',
-  },
-  {
-    id: 3,
-    name: 'Liga3',
-    quantityPerPack: 1000,
-    color: 'color3',
-  },
-];
+// const data: Partial<RubberType>[] = [
+//   {
+//     id: 1,
+//     name: 'Liga1',
+//     quantityPerPack: 500,
+//     color: 'color1',
+//   },
+//   {
+//     id: 2,
+//     name: 'Liga2',
+//     quantityPerPack: 750,
+//     color: 'color2',
+//   },
+//   {
+//     id: 3,
+//     name: 'Liga3',
+//     quantityPerPack: 1000,
+//     color: 'color3',
+//   },
+// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<RubberType>,
@@ -87,8 +89,8 @@ const RubberSelectBase: React.FC<RubberSelectBaseProps> = ({
   setRubber,
   onChange,
 }) => {
-  //   const { paginationParams, filterProps } = usePagination();
-  //   const { data, isLoading, refetch } = useRubbers(paginationParams);
+  const { paginationParams, filterProps } = usePagination();
+  const { data, isLoading, refetch } = useRubbers(paginationParams);
 
   const handleChange = (newValue: SingleValue<Partial<RubberType>>) => {
     if (setRubber) setRubber(newValue as Partial<RubberType>);
@@ -107,7 +109,7 @@ const RubberSelectBase: React.FC<RubberSelectBaseProps> = ({
       useBasicStyles
       chakraStyles={chakraStyles}
       noOptionsMessage={() => 'rubber not found'}
-      //   isLoading={isLoading}
+      isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<RubberType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<RubberType>) =>

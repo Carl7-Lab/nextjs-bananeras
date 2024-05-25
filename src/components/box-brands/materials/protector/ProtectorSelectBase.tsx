@@ -11,6 +11,8 @@ import {
 import { FieldInputProps } from 'formik';
 import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
+import { useProtectors } from '../../../../hooks/box-brand/materials/protector/getProtectors';
+import { usePagination } from '../../../../hooks/usePagination';
 import { ProtectorType } from '../../../../types/box-brand/materials/protector';
 
 interface ProtectorSelectBaseProps {
@@ -21,23 +23,23 @@ interface ProtectorSelectBaseProps {
   onChange?: (newValue: Partial<ProtectorType>) => void;
 }
 
-const data: Partial<ProtectorType>[] = [
-  {
-    id: 1,
-    name: 'Protector1',
-    quantityPerPack: 500,
-  },
-  {
-    id: 2,
-    name: 'Protector2',
-    quantityPerPack: 750,
-  },
-  {
-    id: 3,
-    name: 'Protector3',
-    quantityPerPack: 1000,
-  },
-];
+// const data: Partial<ProtectorType>[] = [
+//   {
+//     id: 1,
+//     name: 'Protector1',
+//     quantityPerPack: 500,
+//   },
+//   {
+//     id: 2,
+//     name: 'Protector2',
+//     quantityPerPack: 750,
+//   },
+//   {
+//     id: 3,
+//     name: 'Protector3',
+//     quantityPerPack: 1000,
+//   },
+// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<ProtectorType>,
@@ -84,8 +86,8 @@ const ProtectorSelectBase: React.FC<ProtectorSelectBaseProps> = ({
   setProtector,
   onChange,
 }) => {
-  //   const { paginationParams, filterProps } = usePagination();
-  //   const { data, isLoading, refetch } = useProtectors(paginationParams);
+  const { paginationParams, filterProps } = usePagination();
+  const { data, isLoading, refetch } = useProtectors(paginationParams);
 
   const handleChange = (newValue: SingleValue<Partial<ProtectorType>>) => {
     if (setProtector) setProtector(newValue as Partial<ProtectorType>);
@@ -104,7 +106,7 @@ const ProtectorSelectBase: React.FC<ProtectorSelectBaseProps> = ({
       useBasicStyles
       chakraStyles={chakraStyles}
       noOptionsMessage={() => 'protector not found'}
-      //   isLoading={isLoading}
+      isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<ProtectorType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<ProtectorType>) =>

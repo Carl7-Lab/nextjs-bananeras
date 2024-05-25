@@ -11,6 +11,8 @@ import {
 import { FieldInputProps } from 'formik';
 import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
+import { useCochibiols } from '../../../../hooks/box-brand/additions/cochibiol/getCochibiols';
+import { usePagination } from '../../../../hooks/usePagination';
 import { CochibiolType } from '../../../../types/box-brand/additions/cochibiol';
 
 interface CochibiolSelectBaseProps {
@@ -21,20 +23,20 @@ interface CochibiolSelectBaseProps {
   onChange?: (newValue: Partial<CochibiolType>) => void;
 }
 
-const data: Partial<CochibiolType>[] = [
-  {
-    id: 1,
-    name: 'Cochibiol1',
-  },
-  {
-    id: 2,
-    name: 'Cochibiol2',
-  },
-  {
-    id: 3,
-    name: 'Cochibiol3',
-  },
-];
+// const data: Partial<CochibiolType>[] = [
+//   {
+//     id: 1,
+//     name: 'Cochibiol1',
+//   },
+//   {
+//     id: 2,
+//     name: 'Cochibiol2',
+//   },
+//   {
+//     id: 3,
+//     name: 'Cochibiol3',
+//   },
+// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<CochibiolType>,
@@ -81,8 +83,8 @@ const CochibiolSelectBase: React.FC<CochibiolSelectBaseProps> = ({
   setCochibiol,
   onChange,
 }) => {
-  //   const { paginationParams, filterProps } = usePagination();
-  //   const { data, isLoading, refetch } = useCochibiols(paginationParams);
+  const { paginationParams, filterProps } = usePagination();
+  const { data, isLoading, refetch } = useCochibiols(paginationParams);
 
   const handleChange = (newValue: SingleValue<Partial<CochibiolType>>) => {
     if (setCochibiol) setCochibiol(newValue as Partial<CochibiolType>);
@@ -101,7 +103,7 @@ const CochibiolSelectBase: React.FC<CochibiolSelectBaseProps> = ({
       useBasicStyles
       chakraStyles={chakraStyles}
       noOptionsMessage={() => 'cochibiol not found'}
-      //   isLoading={isLoading}
+      isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<CochibiolType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<CochibiolType>) =>

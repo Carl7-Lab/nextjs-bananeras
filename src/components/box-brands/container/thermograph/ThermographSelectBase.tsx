@@ -11,6 +11,8 @@ import {
 import { FieldInputProps } from 'formik';
 import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
+import { useThermographs } from '../../../../hooks/box-brand/container/thermograph/getThermographs';
+import { usePagination } from '../../../../hooks/usePagination';
 import { ThermographType } from '../../../../types/box-brand/container/thermograph';
 
 interface ThermographSelectBaseProps {
@@ -21,23 +23,23 @@ interface ThermographSelectBaseProps {
   onChange?: (newValue: Partial<ThermographType>) => void;
 }
 
-const data: Partial<ThermographType>[] = [
-  {
-    id: 1,
-    name: 'Termografo1',
-    type: 'Tipo1',
-  },
-  {
-    id: 2,
-    name: 'Termografo2',
-    type: 'Tipo2',
-  },
-  {
-    id: 3,
-    name: 'Termografo3',
-    type: 'Tipo3',
-  },
-];
+// const data: Partial<ThermographType>[] = [
+//   {
+//     id: 1,
+//     name: 'Termografo1',
+//     type: 'Tipo1',
+//   },
+//   {
+//     id: 2,
+//     name: 'Termografo2',
+//     type: 'Tipo2',
+//   },
+//   {
+//     id: 3,
+//     name: 'Termografo3',
+//     type: 'Tipo3',
+//   },
+// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<ThermographType>,
@@ -84,8 +86,8 @@ const ThermographSelectBase: React.FC<ThermographSelectBaseProps> = ({
   setThermo,
   onChange,
 }) => {
-  //   const { paginationParams, filterProps } = usePagination();
-  //   const { data, isLoading, refetch } = useStaples(paginationParams);
+  const { paginationParams, filterProps } = usePagination();
+  const { data, isLoading, refetch } = useThermographs(paginationParams);
 
   const handleChange = (newValue: SingleValue<Partial<ThermographType>>) => {
     if (setThermo) setThermo(newValue as Partial<ThermographType>);
@@ -104,7 +106,7 @@ const ThermographSelectBase: React.FC<ThermographSelectBaseProps> = ({
       useBasicStyles
       chakraStyles={chakraStyles}
       noOptionsMessage={() => 'thermograph not found'}
-      //   isLoading={isLoading}
+      isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<ThermographType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<ThermographType>) =>

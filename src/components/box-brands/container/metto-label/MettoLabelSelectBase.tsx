@@ -11,6 +11,8 @@ import {
 import { FieldInputProps } from 'formik';
 import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
+import { useMettoLabels } from '../../../../hooks/box-brand/container/metto-label/getMettoLabels';
+import { usePagination } from '../../../../hooks/usePagination';
 import { MettoLabelType } from '../../../../types/box-brand/container/mettoLabel';
 
 interface MettoLabelSelectBaseProps {
@@ -21,29 +23,29 @@ interface MettoLabelSelectBaseProps {
   onChange?: (newValue: Partial<MettoLabelType>) => void;
 }
 
-const data: Partial<MettoLabelType>[] = [
-  {
-    id: 1,
-    name: 'MettoLabel1',
-    quantityPerPack: 500,
-    art: 'imagen1',
-    code: 'code001',
-  },
-  {
-    id: 2,
-    name: 'MettoLabel2',
-    quantityPerPack: 750,
-    art: 'imagen2',
-    code: 'code002',
-  },
-  {
-    id: 3,
-    name: 'MettoLabel3',
-    quantityPerPack: 1000,
-    art: 'imagen3',
-    code: 'code003',
-  },
-];
+// const data: Partial<MettoLabelType>[] = [
+//   {
+//     id: 1,
+//     name: 'MettoLabel1',
+//     quantityPerPack: 500,
+//     art: 'imagen1',
+//     code: 'code001',
+//   },
+//   {
+//     id: 2,
+//     name: 'MettoLabel2',
+//     quantityPerPack: 750,
+//     art: 'imagen2',
+//     code: 'code002',
+//   },
+//   {
+//     id: 3,
+//     name: 'MettoLabel3',
+//     quantityPerPack: 1000,
+//     art: 'imagen3',
+//     code: 'code003',
+//   },
+// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<MettoLabelType>,
@@ -90,8 +92,8 @@ const MettoLabelSelectBase: React.FC<MettoLabelSelectBaseProps> = ({
   setMettoLabel,
   onChange,
 }) => {
-  //   const { paginationParams, filterProps } = usePagination();
-  //   const { data, isLoading, refetch } = useStaples(paginationParams);
+  const { paginationParams, filterProps } = usePagination();
+  const { data, isLoading, refetch } = useMettoLabels(paginationParams);
 
   const handleChange = (newValue: SingleValue<Partial<MettoLabelType>>) => {
     if (setMettoLabel) setMettoLabel(newValue as Partial<MettoLabelType>);
@@ -110,7 +112,7 @@ const MettoLabelSelectBase: React.FC<MettoLabelSelectBaseProps> = ({
       useBasicStyles
       chakraStyles={chakraStyles}
       noOptionsMessage={() => 'metto label not found'}
-      //   isLoading={isLoading}
+      isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<MettoLabelType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<MettoLabelType>) =>

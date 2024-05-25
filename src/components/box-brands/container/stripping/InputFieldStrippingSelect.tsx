@@ -1,16 +1,16 @@
 import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react';
 import { useField } from 'formik';
 import React from 'react';
-import AddStrappingModal from './AddStrappingModal';
-import StrappingSelectBase from './StrappingSelectBase';
+import AddStrippingModal from './AddStrippingModal';
+import StrippingSelectBase from './StrippingSelectBase';
 
-interface InputFieldStrappingSelectProps {
+interface InputFieldStrippingSelectProps {
   name: string;
   label: string;
   placeholder: string;
 }
 
-const InputFieldStrappingSelect: React.FC<InputFieldStrappingSelectProps> = ({
+const InputFieldStrippingSelect: React.FC<InputFieldStrippingSelectProps> = ({
   name,
   label,
   placeholder,
@@ -20,10 +20,10 @@ const InputFieldStrappingSelect: React.FC<InputFieldStrappingSelectProps> = ({
   return (
     <FormControl id={name} isInvalid={!!meta.error && meta.touched}>
       <FormLabel fontSize='sm' mb='8px' h={'21px'}>
-        {label} <AddStrappingModal />
+        {label} <AddStrippingModal />
       </FormLabel>
 
-      <StrappingSelectBase
+      <StrippingSelectBase
         name={name}
         placeholder={placeholder}
         onChange={(newValue) => helpers.setValue(newValue?.id)}
@@ -39,4 +39,4 @@ const InputFieldStrappingSelect: React.FC<InputFieldStrappingSelectProps> = ({
   );
 };
 
-export default InputFieldStrappingSelect;
+export default InputFieldStrippingSelect;

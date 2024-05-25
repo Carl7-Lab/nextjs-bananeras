@@ -11,6 +11,8 @@ import {
 import { FieldInputProps } from 'formik';
 import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
+import { useSachets } from '../../../../hooks/box-brand/materials/sachet/getSachets';
+import { usePagination } from '../../../../hooks/usePagination';
 import { SachetType } from '../../../../types/box-brand/materials/sachet';
 
 interface SachetSelectBaseProps {
@@ -21,26 +23,26 @@ interface SachetSelectBaseProps {
   onChange?: (newValue: Partial<SachetType>) => void;
 }
 
-const data: Partial<SachetType>[] = [
-  {
-    id: 1,
-    name: 'Sachet1',
-    quantityPerPack: 500,
-    type: 'type1',
-  },
-  {
-    id: 2,
-    name: 'Sachet2',
-    quantityPerPack: 750,
-    type: 'type2',
-  },
-  {
-    id: 3,
-    name: 'Sachet3',
-    quantityPerPack: 1000,
-    type: 'type3',
-  },
-];
+// const data: Partial<SachetType>[] = [
+//   {
+//     id: 1,
+//     name: 'Sachet1',
+//     quantityPerPack: 500,
+//     type: 'type1',
+//   },
+//   {
+//     id: 2,
+//     name: 'Sachet2',
+//     quantityPerPack: 750,
+//     type: 'type2',
+//   },
+//   {
+//     id: 3,
+//     name: 'Sachet3',
+//     quantityPerPack: 1000,
+//     type: 'type3',
+//   },
+// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<SachetType>,
@@ -87,8 +89,8 @@ const SachetSelectBase: React.FC<SachetSelectBaseProps> = ({
   setSachet,
   onChange,
 }) => {
-  //   const { paginationParams, filterProps } = usePagination();
-  //   const { data, isLoading, refetch } = useSachets(paginationParams);
+  const { paginationParams, filterProps } = usePagination();
+  const { data, isLoading, refetch } = useSachets(paginationParams);
 
   const handleChange = (newValue: SingleValue<Partial<SachetType>>) => {
     if (setSachet) setSachet(newValue as Partial<SachetType>);
@@ -107,7 +109,7 @@ const SachetSelectBase: React.FC<SachetSelectBaseProps> = ({
       useBasicStyles
       chakraStyles={chakraStyles}
       noOptionsMessage={() => 'sachet not found'}
-      //   isLoading={isLoading}
+      isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<SachetType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<SachetType>) =>

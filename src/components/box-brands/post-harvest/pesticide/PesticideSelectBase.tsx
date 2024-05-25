@@ -11,6 +11,8 @@ import {
 import { FieldInputProps } from 'formik';
 import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
+import { usePesticides } from '../../../../hooks/box-brand/post-harvest/pesticide/getPesticides';
+import { usePagination } from '../../../../hooks/usePagination';
 import { PesticideType } from '../../../../types/box-brand/post-harvest/pesticide';
 
 interface PesticideSelectBaseProps {
@@ -21,20 +23,20 @@ interface PesticideSelectBaseProps {
   onChange?: (newValue: Partial<PesticideType>) => void;
 }
 
-const data: Partial<PesticideType>[] = [
-  {
-    id: 1,
-    name: 'Pesticida1',
-  },
-  {
-    id: 2,
-    name: 'Pesticida2',
-  },
-  {
-    id: 3,
-    name: 'Pesticida3',
-  },
-];
+// const data: Partial<PesticideType>[] = [
+//   {
+//     id: 1,
+//     name: 'Pesticida1',
+//   },
+//   {
+//     id: 2,
+//     name: 'Pesticida2',
+//   },
+//   {
+//     id: 3,
+//     name: 'Pesticida3',
+//   },
+// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<PesticideType>,
@@ -81,8 +83,8 @@ const PesticideSelectBase: React.FC<PesticideSelectBaseProps> = ({
   setPesticide,
   onChange,
 }) => {
-  //   const { paginationParams, filterProps } = usePagination();
-  //   const { data, isLoading, refetch } = usePesticides(paginationParams);
+  const { paginationParams, filterProps } = usePagination();
+  const { data, isLoading, refetch } = usePesticides(paginationParams);
 
   const handleChange = (newValue: SingleValue<Partial<PesticideType>>) => {
     if (setPesticide) setPesticide(newValue as Partial<PesticideType>);
@@ -101,7 +103,7 @@ const PesticideSelectBase: React.FC<PesticideSelectBaseProps> = ({
       useBasicStyles
       chakraStyles={chakraStyles}
       noOptionsMessage={() => 'staple not found'}
-      //   isLoading={isLoading}
+      isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<PesticideType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<PesticideType>) =>

@@ -11,6 +11,8 @@ import {
 import { FieldInputProps } from 'formik';
 import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
+import { useBands } from '../../../../hooks/box-brand/materials/band/getBands';
+import { usePagination } from '../../../../hooks/usePagination';
 import { BandType } from '../../../../types/box-brand/materials/band';
 
 interface BandSelectBaseProps {
@@ -21,26 +23,26 @@ interface BandSelectBaseProps {
   onChange?: (newValue: Partial<BandType>) => void;
 }
 
-const data: Partial<BandType>[] = [
-  {
-    id: 1,
-    name: 'Banda1',
-    quantityPerPack: 500,
-    color: 'color1',
-  },
-  {
-    id: 2,
-    name: 'Banda2',
-    quantityPerPack: 750,
-    color: 'color2',
-  },
-  {
-    id: 3,
-    name: 'Banda3',
-    quantityPerPack: 1000,
-    color: 'color3',
-  },
-];
+// const data: Partial<BandType>[] = [
+//   {
+//     id: 1,
+//     name: 'Banda1',
+//     quantityPerPack: 500,
+//     color: 'color1',
+//   },
+//   {
+//     id: 2,
+//     name: 'Banda2',
+//     quantityPerPack: 750,
+//     color: 'color2',
+//   },
+//   {
+//     id: 3,
+//     name: 'Banda3',
+//     quantityPerPack: 1000,
+//     color: 'color3',
+//   },
+// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<BandType>,
@@ -87,8 +89,8 @@ const BandSelectBase: React.FC<BandSelectBaseProps> = ({
   setBand,
   onChange,
 }) => {
-  //   const { paginationParams, filterProps } = usePagination();
-  //   const { data, isLoading, refetch } = useBands(paginationParams);
+  const { paginationParams, filterProps } = usePagination();
+  const { data, isLoading, refetch } = useBands(paginationParams);
 
   const handleChange = (newValue: SingleValue<Partial<BandType>>) => {
     if (setBand) setBand(newValue as Partial<BandType>);
@@ -107,7 +109,7 @@ const BandSelectBase: React.FC<BandSelectBaseProps> = ({
       useBasicStyles
       chakraStyles={chakraStyles}
       noOptionsMessage={() => 'band not found'}
-      //   isLoading={isLoading}
+      isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<BandType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<BandType>) =>

@@ -3,7 +3,7 @@ import { Form, Formik } from 'formik';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
-import { useCreateBrand } from '@/hooks/brand/createBrand';
+import { useCreateBrand } from '@/hooks/box-brand/specifications/brand/createBrand';
 import InputFieldText from '../../../ui/form/InputFieldText';
 
 interface AddBrandFormProps {

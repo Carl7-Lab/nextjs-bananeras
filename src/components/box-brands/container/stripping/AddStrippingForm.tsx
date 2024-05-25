@@ -4,7 +4,7 @@ import React from 'react';
 import * as Yup from 'yup';
 import InputFieldText from '../../../ui/form/InputFieldText';
 
-interface AddStrappingFormProps {
+interface AddStrippingFormProps {
   onClose?: () => void;
 }
 
@@ -33,9 +33,9 @@ const validationSchema = Yup.object({
     .required('Required'),
 });
 
-const AddStrappingForm = ({ onClose }: AddStrappingFormProps) => {
-  const addStrapping = async (values: ValuesProps) => {
-    console.log('AddStrappingForm values: ', values);
+const AddStrippingForm = ({ onClose }: AddStrippingFormProps) => {
+  const addStripping = async (values: ValuesProps) => {
+    console.log('AddStrippingForm values: ', values);
 
     !!onClose && onClose();
     return;
@@ -45,7 +45,7 @@ const AddStrappingForm = ({ onClose }: AddStrappingFormProps) => {
     <>
       <Formik
         initialValues={initialValues}
-        onSubmit={addStrapping}
+        onSubmit={addStripping}
         validationSchema={validationSchema}
       >
         {({ isSubmitting }) => (
@@ -78,4 +78,4 @@ const AddStrappingForm = ({ onClose }: AddStrappingFormProps) => {
   );
 };
 
-export default AddStrappingForm;
+export default AddStrippingForm;

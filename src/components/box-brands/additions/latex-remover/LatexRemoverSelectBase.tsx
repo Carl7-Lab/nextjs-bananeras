@@ -11,6 +11,8 @@ import {
 import { FieldInputProps } from 'formik';
 import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
+import { useLatexRemovers } from '../../../../hooks/box-brand/additions/latex-remover/getLatexRemovers';
+import { usePagination } from '../../../../hooks/usePagination';
 import { LatexRemoverType } from '../../../../types/box-brand/additions/latexRemover';
 
 interface LatexRemoverSelectBaseProps {
@@ -21,20 +23,20 @@ interface LatexRemoverSelectBaseProps {
   onChange?: (newValue: Partial<LatexRemoverType>) => void;
 }
 
-const data: Partial<LatexRemoverType>[] = [
-  {
-    id: 1,
-    name: 'Removedor de Latex1',
-  },
-  {
-    id: 2,
-    name: 'Removedor de Latex2',
-  },
-  {
-    id: 3,
-    name: 'Removedor de Latex3',
-  },
-];
+// const data: Partial<LatexRemoverType>[] = [
+//   {
+//     id: 1,
+//     name: 'Removedor de Latex1',
+//   },
+//   {
+//     id: 2,
+//     name: 'Removedor de Latex2',
+//   },
+//   {
+//     id: 3,
+//     name: 'Removedor de Latex3',
+//   },
+// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<LatexRemoverType>,
@@ -81,8 +83,8 @@ const LatexRemoverSelectBase: React.FC<LatexRemoverSelectBaseProps> = ({
   setLatexRemover,
   onChange,
 }) => {
-  //   const { paginationParams, filterProps } = usePagination();
-  //   const { data, isLoading, refetch } = useStaples(paginationParams);
+  const { paginationParams, filterProps } = usePagination();
+  const { data, isLoading, refetch } = useLatexRemovers(paginationParams);
 
   const handleChange = (newValue: SingleValue<Partial<LatexRemoverType>>) => {
     if (setLatexRemover) setLatexRemover(newValue as Partial<LatexRemoverType>);
@@ -100,8 +102,8 @@ const LatexRemoverSelectBase: React.FC<LatexRemoverSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'staple not found'}
-      //   isLoading={isLoading}
+      noOptionsMessage={() => 'latex remover not found'}
+      isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<LatexRemoverType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<LatexRemoverType>) =>

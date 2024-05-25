@@ -11,41 +11,43 @@ import {
 import { FieldInputProps } from 'formik';
 import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
-import { StrappingType } from '../../../../types/box-brand/container/strapping';
+import { useStrippings } from '../../../../hooks/box-brand/container/stripping/getStrippings';
+import { usePagination } from '../../../../hooks/usePagination';
+import { StrippingType } from '../../../../types/box-brand/container/stripping';
 
-interface StrappingSelectBaseProps {
+interface StrippingSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
-  setStrapping?: (strapping: Partial<StrappingType>) => void;
-  onChange?: (newValue: Partial<StrappingType>) => void;
+  setStripping?: (stripping: Partial<StrippingType>) => void;
+  onChange?: (newValue: Partial<StrippingType>) => void;
 }
 
-const data: Partial<StrappingType>[] = [
-  {
-    id: 1,
-    name: 'Zuncho1',
-    weightPerPack: 20,
-    color: 'Color1',
-  },
-  {
-    id: 2,
-    name: 'Zuncho2',
-    weightPerPack: 40,
-    color: 'Color2',
-  },
-  {
-    id: 3,
-    name: 'Zuncho3',
-    weightPerPack: 60,
-    color: 'Color3',
-  },
-];
+// const data: Partial<StrippingType>[] = [
+//   {
+//     id: 1,
+//     name: 'Zuncho1',
+//     weightPerPack: 20,
+//     color: 'Color1',
+//   },
+//   {
+//     id: 2,
+//     name: 'Zuncho2',
+//     weightPerPack: 40,
+//     color: 'Color2',
+//   },
+//   {
+//     id: 3,
+//     name: 'Zuncho3',
+//     weightPerPack: 60,
+//     color: 'Color3',
+//   },
+// ];
 
 const chakraStyles: ChakraStylesConfig<
-  Partial<StrappingType>,
+  Partial<StrippingType>,
   false,
-  GroupBase<Partial<StrappingType>>
+  GroupBase<Partial<StrippingType>>
 > = {
   container: (provided) => ({
     ...provided,
@@ -66,12 +68,12 @@ const chakraStyles: ChakraStylesConfig<
   }),
 };
 
-const strappingComponents = {
+const strippingComponents = {
   DropdownIndicator: (
     props: DropdownIndicatorProps<
-      Partial<StrappingType>,
+      Partial<StrippingType>,
       false,
-      GroupBase<Partial<StrappingType>>
+      GroupBase<Partial<StrippingType>>
     >
   ) => (
     <chakraComponents.DropdownIndicator {...props}>
@@ -80,19 +82,19 @@ const strappingComponents = {
   ),
 };
 
-const StrappingSelectBase: React.FC<StrappingSelectBaseProps> = ({
+const StrippingSelectBase: React.FC<StrippingSelectBaseProps> = ({
   name,
   field,
   placeholder,
-  setStrapping,
+  setStripping,
   onChange,
 }) => {
-  //   const { paginationParams, filterProps } = usePagination();
-  //   const { data, isLoading, refetch } = useStrappings(paginationParams);
+  const { paginationParams, filterProps } = usePagination();
+  const { data, isLoading, refetch } = useStrippings(paginationParams);
 
-  const handleChange = (newValue: SingleValue<Partial<StrappingType>>) => {
-    if (setStrapping) setStrapping(newValue as Partial<StrappingType>);
-    if (onChange) onChange(newValue as Partial<StrappingType>);
+  const handleChange = (newValue: SingleValue<Partial<StrippingType>>) => {
+    if (setStripping) setStripping(newValue as Partial<StrippingType>);
+    if (onChange) onChange(newValue as Partial<StrippingType>);
   };
 
   return (
@@ -106,17 +108,17 @@ const StrappingSelectBase: React.FC<StrappingSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'strapping not found'}
-      //   isLoading={isLoading}
+      noOptionsMessage={() => 'stripping not found'}
+      isLoading={isLoading}
       options={data}
-      getOptionLabel={(opt: Partial<StrappingType>) => `${opt.name}`}
-      getOptionValue={(opt: Partial<StrappingType>) =>
+      getOptionLabel={(opt: Partial<StrippingType>) => `${opt.name}`}
+      getOptionValue={(opt: Partial<StrippingType>) =>
         opt.id ? opt.id.toString() : ''
       }
       onChange={(newValue) => handleChange(newValue)}
       value={
         field?.value
-          ? data.find((opt: Partial<StrappingType>) => opt.id === field?.value)
+          ? data.find((opt: Partial<StrippingType>) => opt.id === field?.value)
           : undefined
       }
       placeholder={placeholder}
@@ -124,9 +126,9 @@ const StrappingSelectBase: React.FC<StrappingSelectBaseProps> = ({
       //     filterProps.setSearch(newValue);
       //     refetch();
       //   }}
-      components={strappingComponents}
+      components={strippingComponents}
     />
   );
 };
 
-export default StrappingSelectBase;
+export default StrippingSelectBase;

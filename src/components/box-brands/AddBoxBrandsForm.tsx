@@ -18,7 +18,7 @@ import InputFieldLatexRemoverSelect from './additions/latex-remover/InputFieldLa
 import InputFieldMettoLabelSelect from './container/metto-label/InputFieldMettoLabelSelect';
 import InputFieldSealSelect from './container/seal/InputFieldSealSelect';
 import InputFieldStapleSelect from './container/staple/InputFieldStapleSelect';
-import InputFieldStrappingSelect from './container/strapping/InputFieldStrappingSelect';
+import InputFieldStrippingSelect from './container/stripping/InputFieldStrippingSelect';
 import InputFieldThermographSelect from './container/thermograph/InputFieldThermographSelect';
 import InputFieldBandSelect from './materials/band/InputFieldBandSelect';
 import InputFieldClusterBagSelect from './materials/cluster-bag/InputFieldClusterBagSelect';
@@ -79,8 +79,8 @@ interface ValuesProps {
   // select
   stapleId: number | '';
   stapleIdQuantity: number | '';
-  strappingId: number | '';
-  strappingIdQuantity: number | '';
+  strippingId: number | '';
+  strippingIdQuantity: number | '';
   thermographId: number | '';
   thermographIdQuantity: number | '';
   sealId: number | '';
@@ -143,8 +143,8 @@ const initialValues: ValuesProps = {
 
   stapleId: '',
   stapleIdQuantity: '',
-  strappingId: '',
-  strappingIdQuantity: '',
+  strippingId: '',
+  strippingIdQuantity: '',
   thermographId: '',
   thermographIdQuantity: '',
   sealId: '',
@@ -281,10 +281,10 @@ const validationSchema = Yup.object({
   stapleIdQuantity: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
-  strappingId: Yup.number()
+  strippingId: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
-  strappingIdQuantity: Yup.number()
+  strippingIdQuantity: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
   thermographId: Yup.number()
@@ -642,13 +642,13 @@ export default function AddBoxBrandsForm() {
                   />
                 </Flex>
                 <Flex gap={2}>
-                  <InputFieldStrappingSelect
-                    name={'strappingId'}
+                  <InputFieldStrippingSelect
+                    name={'strippingId'}
                     label={'Zuncho'}
                     placeholder={'Seleccione la grapa'}
                   />
                   <InputFieldQuatity
-                    name={'strappingIdQuantity'}
+                    name={'strippingIdQuantity'}
                     label={'Cantidad'}
                   />
                 </Flex>

@@ -11,6 +11,8 @@ import {
 import { FieldInputProps } from 'formik';
 import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
+import { useLabels } from '../../../../hooks/box-brand/materials/label/getLabels';
+import { usePagination } from '../../../../hooks/usePagination';
 import { LabelType } from '../../../../types/box-brand/materials/label';
 
 interface LabelSelectBaseProps {
@@ -21,26 +23,26 @@ interface LabelSelectBaseProps {
   onChange?: (newValue: Partial<LabelType>) => void;
 }
 
-const data: Partial<LabelType>[] = [
-  {
-    id: 1,
-    name: 'Etiqueta1',
-    quantityPerRoll: 500,
-    description: 'Descipcion1',
-  },
-  {
-    id: 2,
-    name: 'Etiqueta2',
-    quantityPerRoll: 750,
-    description: 'Descipcion2',
-  },
-  {
-    id: 3,
-    name: 'Etiqueta3',
-    quantityPerRoll: 1000,
-    description: 'Descipcion3',
-  },
-];
+// const data: Partial<LabelType>[] = [
+//   {
+//     id: 1,
+//     name: 'Etiqueta1',
+//     quantityPerRoll: 500,
+//     description: 'Descipcion1',
+//   },
+//   {
+//     id: 2,
+//     name: 'Etiqueta2',
+//     quantityPerRoll: 750,
+//     description: 'Descipcion2',
+//   },
+//   {
+//     id: 3,
+//     name: 'Etiqueta3',
+//     quantityPerRoll: 1000,
+//     description: 'Descipcion3',
+//   },
+// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<LabelType>,
@@ -87,8 +89,8 @@ const LabelSelectBase: React.FC<LabelSelectBaseProps> = ({
   setLabel,
   onChange,
 }) => {
-  //   const { paginationParams, filterProps } = usePagination();
-  //   const { data, isLoading, refetch } = useLabels(paginationParams);
+  const { paginationParams, filterProps } = usePagination();
+  const { data, isLoading, refetch } = useLabels(paginationParams);
 
   const handleChange = (newValue: SingleValue<Partial<LabelType>>) => {
     if (setLabel) setLabel(newValue as Partial<LabelType>);
@@ -107,7 +109,7 @@ const LabelSelectBase: React.FC<LabelSelectBaseProps> = ({
       useBasicStyles
       chakraStyles={chakraStyles}
       noOptionsMessage={() => 'label not found'}
-      //   isLoading={isLoading}
+      isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<LabelType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<LabelType>) =>

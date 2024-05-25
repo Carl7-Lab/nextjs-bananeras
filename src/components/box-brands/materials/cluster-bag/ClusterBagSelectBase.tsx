@@ -11,6 +11,8 @@ import {
 import { FieldInputProps } from 'formik';
 import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
+import { useClusterBags } from '../../../../hooks/box-brand/materials/cluster-bag/getClusterBags';
+import { usePagination } from '../../../../hooks/usePagination';
 import { ClusterBagType } from '../../../../types/box-brand/materials/clusterBag';
 
 interface ClusterBagSelectBaseProps {
@@ -21,29 +23,29 @@ interface ClusterBagSelectBaseProps {
   onChange?: (newValue: Partial<ClusterBagType>) => void;
 }
 
-const data: Partial<ClusterBagType>[] = [
-  {
-    id: 1,
-    name: 'Cluster Bag1',
-    quantityPerPack: 500,
-    art: 'Arte1',
-    dimensions: 'dimensions1',
-  },
-  {
-    id: 2,
-    name: 'Cluster Bag2',
-    quantityPerPack: 750,
-    art: 'Arte2',
-    dimensions: 'dimensions2',
-  },
-  {
-    id: 3,
-    name: 'Cluster Bag3',
-    quantityPerPack: 1000,
-    art: 'Arte3',
-    dimensions: 'dimensions3',
-  },
-];
+// const data: Partial<ClusterBagType>[] = [
+//   {
+//     id: 1,
+//     name: 'Cluster Bag1',
+//     quantityPerPack: 500,
+//     art: 'Arte1',
+//     dimensions: 'dimensions1',
+//   },
+//   {
+//     id: 2,
+//     name: 'Cluster Bag2',
+//     quantityPerPack: 750,
+//     art: 'Arte2',
+//     dimensions: 'dimensions2',
+//   },
+//   {
+//     id: 3,
+//     name: 'Cluster Bag3',
+//     quantityPerPack: 1000,
+//     art: 'Arte3',
+//     dimensions: 'dimensions3',
+//   },
+// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<ClusterBagType>,
@@ -90,8 +92,8 @@ const ClusterBagSelectBase: React.FC<ClusterBagSelectBaseProps> = ({
   setClusterBag,
   onChange,
 }) => {
-  //   const { paginationParams, filterProps } = usePagination();
-  //   const { data, isLoading, refetch } = useClusterBags(paginationParams);
+  const { paginationParams, filterProps } = usePagination();
+  const { data, isLoading, refetch } = useClusterBags(paginationParams);
 
   const handleChange = (newValue: SingleValue<Partial<ClusterBagType>>) => {
     if (setClusterBag) setClusterBag(newValue as Partial<ClusterBagType>);
@@ -110,7 +112,7 @@ const ClusterBagSelectBase: React.FC<ClusterBagSelectBaseProps> = ({
       useBasicStyles
       chakraStyles={chakraStyles}
       noOptionsMessage={() => 'cluster bag not found'}
-      //   isLoading={isLoading}
+      isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<ClusterBagType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<ClusterBagType>) =>

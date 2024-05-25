@@ -11,6 +11,8 @@ import {
 import { FieldInputProps } from 'formik';
 import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
+import { useSeals } from '../../../../hooks/box-brand/container/seal/getSeals';
+import { usePagination } from '../../../../hooks/usePagination';
 import { SealType } from '../../../../types/box-brand/container/seal';
 
 interface SealSelectBaseProps {
@@ -21,23 +23,23 @@ interface SealSelectBaseProps {
   onChange?: (newValue: Partial<SealType>) => void;
 }
 
-const data: Partial<SealType>[] = [
-  {
-    id: 1,
-    name: 'Sello1',
-    type: 'Tipo1',
-  },
-  {
-    id: 2,
-    name: 'Sello2',
-    type: 'Tipo2',
-  },
-  {
-    id: 3,
-    name: 'Sello3',
-    type: 'Tipo3',
-  },
-];
+// const data: Partial<SealType>[] = [
+//   {
+//     id: 1,
+//     name: 'Sello1',
+//     type: 'Tipo1',
+//   },
+//   {
+//     id: 2,
+//     name: 'Sello2',
+//     type: 'Tipo2',
+//   },
+//   {
+//     id: 3,
+//     name: 'Sello3',
+//     type: 'Tipo3',
+//   },
+// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<SealType>,
@@ -84,8 +86,8 @@ const SealSelectBase: React.FC<SealSelectBaseProps> = ({
   setSeal,
   onChange,
 }) => {
-  //   const { paginationParams, filterProps } = usePagination();
-  //   const { data, isLoading, refetch } = useSeals(paginationParams);
+  const { paginationParams, filterProps } = usePagination();
+  const { data, isLoading, refetch } = useSeals(paginationParams);
 
   const handleChange = (newValue: SingleValue<Partial<SealType>>) => {
     if (setSeal) setSeal(newValue as Partial<SealType>);
@@ -104,7 +106,7 @@ const SealSelectBase: React.FC<SealSelectBaseProps> = ({
       useBasicStyles
       chakraStyles={chakraStyles}
       noOptionsMessage={() => 'seal not found'}
-      //   isLoading={isLoading}
+      isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<SealType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<SealType>) =>
