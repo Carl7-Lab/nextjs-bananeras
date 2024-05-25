@@ -1,7 +1,9 @@
-import { Button, Divider, Flex, Heading } from '@chakra-ui/react';
+import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import React from 'react';
+import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
+import { useCreateLabel } from '../../../../hooks/box-brand/materials/label/createLabel';
 import InputFieldText from '../../../ui/form/InputFieldText';
 
 interface AddLabelFormProps {
@@ -37,10 +39,44 @@ const validationSchema = Yup.object({
 });
 
 const AddLabelForm = ({ onClose }: AddLabelFormProps) => {
-  const addLabel = async (values: ValuesProps) => {
-    console.log('AddLabelForm values: ', values);
+  const { createLabel } = useCreateLabel();
+  const toast = useToast();
+  const queryClient = useQueryClient();
 
-    !!onClose && onClose();
+  const addLabel = async (
+    values: ValuesProps,
+    actions: { resetForm: () => void }
+  ) => {
+    createLabel(
+      {
+        ...values,
+        quantityPerRoll: Number(values.quantityPerRoll),
+      },
+      {
+        onError: (error) => {
+          toast({
+            title: 'Error.',
+            description: `${error.message}`,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        },
+        onSuccess: () => {
+          toast({
+            title: 'Etiqueta creada',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+
+          queryClient.invalidateQueries('labels');
+          actions.resetForm();
+          !!onClose && onClose();
+        },
+      }
+    );
+
     return;
   };
 

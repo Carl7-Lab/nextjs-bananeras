@@ -1,7 +1,9 @@
-import { Button, Divider, Flex, Heading } from '@chakra-ui/react';
+import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import React from 'react';
+import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
+import { useCreatePesticide } from '../../../../hooks/box-brand/post-harvest/pesticide/createPesticide';
 import InputFieldText from '../../../ui/form/InputFieldText';
 
 interface AddPesticideFormProps {
@@ -44,10 +46,44 @@ const validationSchema = Yup.object({
 });
 
 const AddPesticideForm = ({ onClose }: AddPesticideFormProps) => {
-  const addPesticide = async (values: ValuesProps) => {
-    console.log('AddStapleForm values: ', values);
+  const { createPesticide } = useCreatePesticide();
+  const toast = useToast();
+  const queryClient = useQueryClient();
 
-    !!onClose && onClose();
+  const addPesticide = async (
+    values: ValuesProps,
+    actions: { resetForm: () => void }
+  ) => {
+    createPesticide(
+      {
+        ...values,
+        dose: Number(values.dose),
+      },
+      {
+        onError: (error) => {
+          toast({
+            title: 'Error.',
+            description: `${error.message}`,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        },
+        onSuccess: () => {
+          toast({
+            title: 'Marca creada',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+
+          queryClient.invalidateQueries('pesticides');
+          actions.resetForm();
+          !!onClose && onClose();
+        },
+      }
+    );
+
     return;
   };
 

@@ -1,7 +1,9 @@
-import { Button, Divider, Flex, Heading } from '@chakra-ui/react';
+import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import React from 'react';
+import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
+import { useCreateLatexRemover } from '../../../../hooks/box-brand/additions/latex-remover/createLatexRemover';
 import InputFieldText from '../../../ui/form/InputFieldText';
 
 interface AddLatexRemoverFormProps {
@@ -11,7 +13,7 @@ interface AddLatexRemoverFormProps {
 interface ValuesProps {
   name: string;
   activeIngredient: string;
-  dose: string;
+  dose: number | '';
 }
 
 const initialValues: ValuesProps = {
@@ -27,16 +29,51 @@ const validationSchema = Yup.object({
   activeIngredient: Yup.string()
     .max(15, 'Must be 15 characters or less')
     .required('Required'),
-  dose: Yup.string()
-    .max(15, 'Must be 15 characters or less')
+  dose: Yup.number()
+    .moreThan(0, 'Must be greater than 0')
+    .lessThan(10000, 'Must be lower than 10000 boxes')
     .required('Required'),
 });
 
 const AddLatexRemoverForm = ({ onClose }: AddLatexRemoverFormProps) => {
-  const addLatexRemover = async (values: ValuesProps) => {
-    console.log('AddLatexRemoverForm values: ', values);
+  const { createLatexRemover } = useCreateLatexRemover();
+  const toast = useToast();
+  const queryClient = useQueryClient();
 
-    !!onClose && onClose();
+  const addLatexRemover = async (
+    values: ValuesProps,
+    actions: { resetForm: () => void }
+  ) => {
+    createLatexRemover(
+      {
+        ...values,
+        dose: Number(values.dose),
+      },
+      {
+        onError: (error) => {
+          toast({
+            title: 'Error.',
+            description: `${error.message}`,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        },
+        onSuccess: () => {
+          toast({
+            title: 'Removedor de Latex creado',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+
+          queryClient.invalidateQueries('latexRemovers');
+          actions.resetForm();
+          !!onClose && onClose();
+        },
+      }
+    );
+
     return;
   };
 

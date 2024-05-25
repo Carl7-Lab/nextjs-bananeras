@@ -1,7 +1,9 @@
-import { Button, Divider, Flex, Heading } from '@chakra-ui/react';
+import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import React from 'react';
+import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
+import { useCreateCertificate } from '../../../../hooks/box-brand/specifications/certificate/createCertificate';
 import InputFieldText from '../../../ui/form/InputFieldText';
 
 interface AddCertificateFormProps {
@@ -28,10 +30,43 @@ const validationSchema = Yup.object({
 });
 
 const AddCertificateForm = ({ onClose }: AddCertificateFormProps) => {
-  const addCertificate = async (values: ValuesProps) => {
-    console.log('AddCertificateForm values', values);
+  const { createCertificate } = useCreateCertificate();
+  const toast = useToast();
+  const queryClient = useQueryClient();
 
-    !!onClose && onClose();
+  const addCertificate = async (
+    values: ValuesProps,
+    actions: { resetForm: () => void }
+  ) => {
+    createCertificate(
+      {
+        ...values,
+      },
+      {
+        onError: (error) => {
+          toast({
+            title: 'Error.',
+            description: `${error.message}`,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        },
+        onSuccess: () => {
+          toast({
+            title: 'Certificado creado',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+
+          queryClient.invalidateQueries('certificates');
+          actions.resetForm();
+          !!onClose && onClose();
+        },
+      }
+    );
+
     return;
   };
 

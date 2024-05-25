@@ -1,7 +1,9 @@
-import { Button, Divider, Flex, Heading } from '@chakra-ui/react';
+import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import React from 'react';
+import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
+import { useCreateSeal } from '../../../../hooks/box-brand/container/seal/createSeal';
 import InputFieldText from '../../../ui/form/InputFieldText';
 
 interface AddSealFormProps {
@@ -28,10 +30,43 @@ const validationSchema = Yup.object({
 });
 
 const AddSealForm = ({ onClose }: AddSealFormProps) => {
-  const addSeal = async (values: ValuesProps) => {
-    console.log('AddSealForm values: ', values);
+  const { createSeal } = useCreateSeal();
+  const toast = useToast();
+  const queryClient = useQueryClient();
 
-    !!onClose && onClose();
+  const addSeal = async (
+    values: ValuesProps,
+    actions: { resetForm: () => void }
+  ) => {
+    createSeal(
+      {
+        ...values,
+      },
+      {
+        onError: (error) => {
+          toast({
+            title: 'Error.',
+            description: `${error.message}`,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        },
+        onSuccess: () => {
+          toast({
+            title: 'Sello creado',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+
+          queryClient.invalidateQueries('seals');
+          actions.resetForm();
+          !!onClose && onClose();
+        },
+      }
+    );
+
     return;
   };
 

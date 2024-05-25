@@ -1,7 +1,9 @@
-import { Button, Divider, Flex, Heading } from '@chakra-ui/react';
+import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import React from 'react';
+import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
+import { useCreateBand } from '../../../../hooks/box-brand/materials/band/createBand';
 import InputFieldText from '../../../ui/form/InputFieldText';
 
 interface AddBandFormProps {
@@ -34,10 +36,44 @@ const validationSchema = Yup.object({
 });
 
 const AddBandForm = ({ onClose }: AddBandFormProps) => {
-  const addBand = async (values: ValuesProps) => {
-    console.log('AddBandForm values: ', values);
+  const { createBand } = useCreateBand();
+  const toast = useToast();
+  const queryClient = useQueryClient();
 
-    !!onClose && onClose();
+  const addBand = async (
+    values: ValuesProps,
+    actions: { resetForm: () => void }
+  ) => {
+    createBand(
+      {
+        ...values,
+        quantityPerPack: Number(values.quantityPerPack),
+      },
+      {
+        onError: (error) => {
+          toast({
+            title: 'Error.',
+            description: `${error.message}`,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        },
+        onSuccess: () => {
+          toast({
+            title: 'Banda creada',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+
+          queryClient.invalidateQueries('bands');
+          actions.resetForm();
+          !!onClose && onClose();
+        },
+      }
+    );
+
     return;
   };
 

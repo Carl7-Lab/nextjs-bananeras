@@ -1,7 +1,9 @@
-import { Button, Divider, Flex, Heading } from '@chakra-ui/react';
+import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import React from 'react';
+import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
+import { useCreateMettoLabel } from '../../../../hooks/box-brand/container/metto-label/createMettoLabel';
 import InputFieldText from '../../../ui/form/InputFieldText';
 
 interface AddMettoLabelFormProps {
@@ -39,10 +41,44 @@ const validationSchema = Yup.object({
 });
 
 const AddMettoLabelForm = ({ onClose }: AddMettoLabelFormProps) => {
-  const AddMettoLabel = async (values: ValuesProps) => {
-    console.log('AddMettoLabelForm values: ', values);
+  const { createMettoLabel } = useCreateMettoLabel();
+  const toast = useToast();
+  const queryClient = useQueryClient();
 
-    !!onClose && onClose();
+  const AddMettoLabel = async (
+    values: ValuesProps,
+    actions: { resetForm: () => void }
+  ) => {
+    createMettoLabel(
+      {
+        ...values,
+        quantityPerPack: Number(values.quantityPerPack),
+      },
+      {
+        onError: (error) => {
+          toast({
+            title: 'Error.',
+            description: `${error.message}`,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        },
+        onSuccess: () => {
+          toast({
+            title: 'Etiqueta metto creada',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+
+          queryClient.invalidateQueries('mettoLabels');
+          actions.resetForm();
+          !!onClose && onClose();
+        },
+      }
+    );
+
     return;
   };
 

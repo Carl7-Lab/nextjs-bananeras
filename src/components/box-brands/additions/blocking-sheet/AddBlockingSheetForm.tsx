@@ -1,7 +1,9 @@
-import { Button, Divider, Flex, Heading } from '@chakra-ui/react';
+import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import React from 'react';
+import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
+import { useCreateBlockingSheet } from '../../../../hooks/box-brand/additions/blocking-sheet/createBlockingSheet';
 import InputFieldText from '../../../ui/form/InputFieldText';
 
 interface AddBlockingSheetFormProps {
@@ -28,10 +30,43 @@ const validationSchema = Yup.object({
 });
 
 const AddBlockingSheetForm = ({ onClose }: AddBlockingSheetFormProps) => {
-  const addBlockingSheet = async (values: ValuesProps) => {
-    console.log('AddBlockingSheetForm values: ', values);
+  const { createBlockingSheet } = useCreateBlockingSheet();
+  const toast = useToast();
+  const queryClient = useQueryClient();
 
-    !!onClose && onClose();
+  const addBlockingSheet = async (
+    values: ValuesProps,
+    actions: { resetForm: () => void }
+  ) => {
+    createBlockingSheet(
+      {
+        ...values,
+      },
+      {
+        onError: (error) => {
+          toast({
+            title: 'Error.',
+            description: `${error.message}`,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        },
+        onSuccess: () => {
+          toast({
+            title: 'Lamina de Bloque creada',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+
+          queryClient.invalidateQueries('blockingSheets');
+          actions.resetForm();
+          !!onClose && onClose();
+        },
+      }
+    );
+
     return;
   };
 

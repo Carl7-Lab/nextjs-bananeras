@@ -1,7 +1,9 @@
-import { Button, Divider, Flex, Heading } from '@chakra-ui/react';
+import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import React from 'react';
+import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
+import { useCreateThermograph } from '../../../../hooks/box-brand/container/thermograph/createThermograph';
 import InputFieldText from '../../../ui/form/InputFieldText';
 
 interface AddThermographFormProps {
@@ -28,10 +30,43 @@ const validationSchema = Yup.object({
 });
 
 const AddThermographForm = ({ onClose }: AddThermographFormProps) => {
-  const addThermo = async (values: ValuesProps) => {
-    console.log('AddThermographForm values: ', values);
+  const { createThermograph } = useCreateThermograph();
+  const toast = useToast();
+  const queryClient = useQueryClient();
 
-    !!onClose && onClose();
+  const addThermo = async (
+    values: ValuesProps,
+    actions: { resetForm: () => void }
+  ) => {
+    createThermograph(
+      {
+        ...values,
+      },
+      {
+        onError: (error) => {
+          toast({
+            title: 'Error.',
+            description: `${error.message}`,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        },
+        onSuccess: () => {
+          toast({
+            title: 'Termografo creada',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+
+          queryClient.invalidateQueries('thermographs');
+          actions.resetForm();
+          !!onClose && onClose();
+        },
+      }
+    );
+
     return;
   };
 

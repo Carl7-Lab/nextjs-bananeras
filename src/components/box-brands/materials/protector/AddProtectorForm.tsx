@@ -1,7 +1,9 @@
-import { Button, Divider, Flex, Heading } from '@chakra-ui/react';
+import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import React from 'react';
+import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
+import { useCreateProtector } from '../../../../hooks/box-brand/materials/protector/createProtector';
 import InputFieldText from '../../../ui/form/InputFieldText';
 
 interface AddProtectorFormProps {
@@ -29,10 +31,44 @@ const validationSchema = Yup.object({
 });
 
 const AddProtectorForm = ({ onClose }: AddProtectorFormProps) => {
-  const addProtector = async (values: ValuesProps) => {
-    console.log('AddProtectorForm values: ', values);
+  const { createProtector } = useCreateProtector();
+  const toast = useToast();
+  const queryClient = useQueryClient();
 
-    !!onClose && onClose();
+  const addProtector = async (
+    values: ValuesProps,
+    actions: { resetForm: () => void }
+  ) => {
+    createProtector(
+      {
+        ...values,
+        quantityPerPack: Number(values.quantityPerPack),
+      },
+      {
+        onError: (error) => {
+          toast({
+            title: 'Error.',
+            description: `${error.message}`,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        },
+        onSuccess: () => {
+          toast({
+            title: 'Protector creado',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+
+          queryClient.invalidateQueries('protectors');
+          actions.resetForm();
+          !!onClose && onClose();
+        },
+      }
+    );
+
     return;
   };
 

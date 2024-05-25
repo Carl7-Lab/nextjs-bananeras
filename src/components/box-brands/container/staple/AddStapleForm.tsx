@@ -1,7 +1,9 @@
-import { Button, Divider, Flex, Heading } from '@chakra-ui/react';
+import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import React from 'react';
+import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
+import { useCreateStaple } from '../../../../hooks/box-brand/container/staple/createStaple';
 import InputFieldText from '../../../ui/form/InputFieldText';
 
 interface AddStapleFormProps {
@@ -29,10 +31,44 @@ const validationSchema = Yup.object({
 });
 
 const AddStapleForm = ({ onClose }: AddStapleFormProps) => {
-  const addStaple = async (values: ValuesProps) => {
-    console.log('AddStapleForm values: ', values);
+  const { createStaple } = useCreateStaple();
+  const toast = useToast();
+  const queryClient = useQueryClient();
 
-    !!onClose && onClose();
+  const addStaple = async (
+    values: ValuesProps,
+    actions: { resetForm: () => void }
+  ) => {
+    createStaple(
+      {
+        ...values,
+        quantityPerPack: Number(values.quantityPerPack),
+      },
+      {
+        onError: (error) => {
+          toast({
+            title: 'Error.',
+            description: `${error.message}`,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        },
+        onSuccess: () => {
+          toast({
+            title: 'Grapa creada',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+
+          queryClient.invalidateQueries('staples');
+          actions.resetForm();
+          !!onClose && onClose();
+        },
+      }
+    );
+
     return;
   };
 

@@ -1,7 +1,9 @@
-import { Button, Divider, Flex, Heading } from '@chakra-ui/react';
+import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import React from 'react';
+import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
+import { useCreateSachet } from '../../../../hooks/box-brand/materials/sachet/createSachet';
 import InputFieldText from '../../../ui/form/InputFieldText';
 
 interface AddSachetFormProps {
@@ -34,10 +36,44 @@ const validationSchema = Yup.object({
 });
 
 const AddSachetForm = ({ onClose }: AddSachetFormProps) => {
-  const addSachet = async (values: ValuesProps) => {
-    console.log('AddSachetForm values: ', values);
+  const { createSachet } = useCreateSachet();
+  const toast = useToast();
+  const queryClient = useQueryClient();
 
-    !!onClose && onClose();
+  const addSachet = async (
+    values: ValuesProps,
+    actions: { resetForm: () => void }
+  ) => {
+    createSachet(
+      {
+        ...values,
+        quantityPerPack: Number(values.quantityPerPack),
+      },
+      {
+        onError: (error) => {
+          toast({
+            title: 'Error.',
+            description: `${error.message}`,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        },
+        onSuccess: () => {
+          toast({
+            title: 'Sachet creada',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+
+          queryClient.invalidateQueries('sachets');
+          actions.resetForm();
+          !!onClose && onClose();
+        },
+      }
+    );
+
     return;
   };
 

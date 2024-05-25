@@ -1,7 +1,9 @@
-import { Button, Divider, Flex, Heading } from '@chakra-ui/react';
+import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import React from 'react';
+import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
+import { useCreateStripping } from '../../../../hooks/box-brand/container/stripping/createStripping';
 import InputFieldText from '../../../ui/form/InputFieldText';
 
 interface AddStrippingFormProps {
@@ -34,10 +36,44 @@ const validationSchema = Yup.object({
 });
 
 const AddStrippingForm = ({ onClose }: AddStrippingFormProps) => {
-  const addStripping = async (values: ValuesProps) => {
-    console.log('AddStrippingForm values: ', values);
+  const { createStripping } = useCreateStripping();
+  const toast = useToast();
+  const queryClient = useQueryClient();
 
-    !!onClose && onClose();
+  const addStripping = async (
+    values: ValuesProps,
+    actions: { resetForm: () => void }
+  ) => {
+    createStripping(
+      {
+        ...values,
+        weightPerPack: Number(values.weightPerPack),
+      },
+      {
+        onError: (error) => {
+          toast({
+            title: 'Error.',
+            description: `${error.message}`,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        },
+        onSuccess: () => {
+          toast({
+            title: 'Zuncho creado',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+
+          queryClient.invalidateQueries('strippings');
+          actions.resetForm();
+          !!onClose && onClose();
+        },
+      }
+    );
+
     return;
   };
 
