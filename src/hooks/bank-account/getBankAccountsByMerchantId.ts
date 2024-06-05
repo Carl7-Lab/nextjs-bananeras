@@ -9,17 +9,17 @@ interface Body {
   id: number;
 }
 
-function listBusinesses(params: Params, body: Body) {
-  return axios.get(`/merchant/${body.id}/business`, { params });
+function listBankAccountByMerchantId(params: Params, body: Body) {
+  return axios.get(`/bank-account/merchant/${body.id}`, { params });
 }
 
-export function useBusinessesByMerchantId(
+export function useBankAccountByMerchantId(
   { search = '', page = 1, limit = 10 }: Params,
   { id }: Body
 ) {
   const result = useQuery(
-    ['businesses', search, page, limit, id],
-    () => listBusinesses({ search, page, limit }, { id }),
+    ['bankAccountsByMerchantId', search, page, limit],
+    () => listBankAccountByMerchantId({ search, page, limit }, { id }),
     {
       keepPreviousData: true,
     }

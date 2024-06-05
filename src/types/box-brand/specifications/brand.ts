@@ -1,4 +1,4 @@
 export type BrandType = {
-  id: string;
+  id: number | '';
   name: string;
 };

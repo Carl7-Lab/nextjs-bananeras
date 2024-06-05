@@ -1,6 +1,6 @@
 'use client';
 import { Box, Card, CardBody, Center } from '@chakra-ui/react';
-import AddBoxBrandsForm from '../../../../components/box-brands/AddBoxBrandsForm';
+import AddBoxBrandsForm from '@/components/box-brands/AddBoxBrandsForm';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
 function AgregarPage() {

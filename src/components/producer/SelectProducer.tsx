@@ -1,14 +1,24 @@
 import { Box, FormLabel, Input, SimpleGrid } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import InputFieldProducerSelect from '../producer/InputFieldProducerSelect';
-import { PartialProducerType } from '../producer/ProducerSelectBase';
+import InputFieldProducerSelect from './InputFieldProducerSelect';
+import { PartialProducerType } from './ProducerSelectBase';
 
-interface InputFieldSelectorProps {
+interface SelectProducerProps {
   name: string;
+  setProducerSelect?: (producer: PartialProducerType | null) => void;
 }
 
-const SelectProducer: React.FC<InputFieldSelectorProps> = ({ name }) => {
+const SelectProducer: React.FC<SelectProducerProps> = ({
+  name,
+  setProducerSelect,
+}) => {
   const [producer, setProducer] = useState<PartialProducerType | null>(null);
+
+  useEffect(() => {
+    if (!!setProducerSelect) {
+      setProducerSelect(producer);
+    }
+  }, [producer, setProducerSelect]);
 
   return (
     <>

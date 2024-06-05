@@ -8,21 +8,25 @@ import { useField } from 'formik';
 
 interface InputFieldProps {
   name: string;
-  label: string;
+  label?: string;
   placeholder?: string;
+  defaultValue?: string;
 }
 
 const InputFieldText: React.FC<InputFieldProps> = ({
   name,
   label,
   placeholder,
+  defaultValue,
 }) => {
   const [field, meta] = useField(name);
   return (
     <FormControl id={name} isInvalid={!!meta.error && meta.touched}>
-      <FormLabel fontSize='sm' mb='8px'>
-        {label}
-      </FormLabel>
+      {label && (
+        <FormLabel fontSize='sm' mb='8px'>
+          {label}
+        </FormLabel>
+      )}
       <Input {...field} placeholder={placeholder || label} />
       {meta.error && meta.touched && (
         <FormErrorMessage mt='8px' mb='16px'>

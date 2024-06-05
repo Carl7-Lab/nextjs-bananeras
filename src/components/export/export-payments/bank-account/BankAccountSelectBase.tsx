@@ -11,31 +11,22 @@ import {
 import { FieldInputProps } from 'formik';
 import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
-import { useClientsByHarborId } from '../../hooks/client/getClientsByHarborId';
-import { usePagination } from '../../hooks/usePagination';
+import { useBankAccounts } from '../../../../hooks/bank-account/getBankAccounts';
+import { usePagination } from '../../../../hooks/usePagination';
+import { BankAccountType } from '../../../../types/bankAccount';
 
-export type PartialClientType = {
-  id: string;
-  businessName: string;
-  businessId: string;
-  type: string;
-  email: string;
-  phone: string;
-};
-
-interface ClientSelectBaseProps {
+interface BankAccountSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
-  harbor?: number;
-  setClient?: (client: PartialClientType) => void;
-  onChange?: (newValue: PartialClientType) => void;
+  setBankAccount?: (bankAccount: Partial<BankAccountType>) => void;
+  onChange?: (newValue: Partial<BankAccountType>) => void;
 }
 
 const chakraStyles: ChakraStylesConfig<
-  PartialClientType,
+  Partial<BankAccountType>,
   false,
-  GroupBase<PartialClientType>
+  GroupBase<Partial<BankAccountType>>
 > = {
   container: (provided) => ({
     ...provided,
@@ -56,12 +47,12 @@ const chakraStyles: ChakraStylesConfig<
   }),
 };
 
-const clientComponents = {
+const bankAccountComponents = {
   DropdownIndicator: (
     props: DropdownIndicatorProps<
-      PartialClientType,
+      Partial<BankAccountType>,
       false,
-      GroupBase<PartialClientType>
+      GroupBase<Partial<BankAccountType>>
     >
   ) => (
     <chakraComponents.DropdownIndicator {...props}>
@@ -70,27 +61,23 @@ const clientComponents = {
   ),
 };
 
-const ClientSelectBase: React.FC<ClientSelectBaseProps> = ({
+const BankAccountSelectBase: React.FC<BankAccountSelectBaseProps> = ({
   name,
   placeholder,
   field,
-  harbor,
   onChange,
-  setClient,
+  setBankAccount,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useClientsByHarborId(
-    { ...paginationParams },
-    { id: harbor ?? 0 }
-  );
+  const { data, isLoading, refetch } = useBankAccounts(paginationParams);
 
-  const handleChange = (newValue: SingleValue<PartialClientType>) => {
-    if (setClient) {
-      setClient(newValue as PartialClientType);
+  const handleChange = (newValue: SingleValue<Partial<BankAccountType>>) => {
+    if (setBankAccount) {
+      setBankAccount(newValue as Partial<BankAccountType>);
     }
 
     if (onChange) {
-      onChange(newValue as PartialClientType);
+      onChange(newValue as Partial<BankAccountType>);
     }
   };
 
@@ -105,21 +92,29 @@ const ClientSelectBase: React.FC<ClientSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'client not found'}
+      noOptionsMessage={() => 'bank account not found'}
       isLoading={isLoading}
       options={data}
-      getOptionLabel={(client: PartialClientType) => `${client.businessName}`}
-      getOptionValue={(client: PartialClientType) => client.id}
+      getOptionLabel={(bankAccount: Partial<BankAccountType>) =>
+        `${bankAccount.bank} - ${bankAccount.accountNumber} `
+      }
+      getOptionValue={(bankAccount: Partial<BankAccountType>) =>
+        bankAccount.id !== undefined && bankAccount.id !== null
+          ? bankAccount.id.toString()
+          : ''
+      }
       onChange={(newValue) => handleChange(newValue)}
       value={
         field?.value
-          ? data.find((opt: PartialClientType) => opt.id === field?.value)
+          ? data.find(
+              (opt: Partial<BankAccountType>) => opt.id === field?.value
+            )
           : undefined
       }
       placeholder={placeholder}
-      components={clientComponents}
+      components={bankAccountComponents}
     />
   );
 };
 
-export default ClientSelectBase;
+export default BankAccountSelectBase;

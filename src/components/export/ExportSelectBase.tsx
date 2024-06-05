@@ -11,31 +11,22 @@ import {
 import { FieldInputProps } from 'formik';
 import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
-import { useClientsByHarborId } from '../../hooks/client/getClientsByHarborId';
+import { ExportType } from '@/types/export';
+import { useExportsNotSent } from '../../hooks/export/getExportsNotSend';
 import { usePagination } from '../../hooks/usePagination';
 
-export type PartialClientType = {
-  id: string;
-  businessName: string;
-  businessId: string;
-  type: string;
-  email: string;
-  phone: string;
-};
-
-interface ClientSelectBaseProps {
+interface ExportSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
-  harbor?: number;
-  setClient?: (client: PartialClientType) => void;
-  onChange?: (newValue: PartialClientType) => void;
+  setExport?: (exportSelected: Partial<ExportType>) => void;
+  onChange?: (newValue: Partial<ExportType>) => void;
 }
 
 const chakraStyles: ChakraStylesConfig<
-  PartialClientType,
+  Partial<ExportType>,
   false,
-  GroupBase<PartialClientType>
+  GroupBase<Partial<ExportType>>
 > = {
   container: (provided) => ({
     ...provided,
@@ -56,12 +47,12 @@ const chakraStyles: ChakraStylesConfig<
   }),
 };
 
-const clientComponents = {
+const brandComponents = {
   DropdownIndicator: (
     props: DropdownIndicatorProps<
-      PartialClientType,
+      Partial<ExportType>,
       false,
-      GroupBase<PartialClientType>
+      GroupBase<Partial<ExportType>>
     >
   ) => (
     <chakraComponents.DropdownIndicator {...props}>
@@ -70,27 +61,22 @@ const clientComponents = {
   ),
 };
 
-const ClientSelectBase: React.FC<ClientSelectBaseProps> = ({
+const ExportSelectBase: React.FC<ExportSelectBaseProps> = ({
   name,
-  placeholder,
   field,
-  harbor,
+  placeholder,
   onChange,
-  setClient,
+  setExport,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useClientsByHarborId(
-    { ...paginationParams },
-    { id: harbor ?? 0 }
-  );
+  const { data, isLoading, refetch } = useExportsNotSent(paginationParams);
 
-  const handleChange = (newValue: SingleValue<PartialClientType>) => {
-    if (setClient) {
-      setClient(newValue as PartialClientType);
+  const handleChange = (newValue: SingleValue<Partial<ExportType>>) => {
+    if (setExport) {
+      setExport(newValue as Partial<ExportType>);
     }
-
     if (onChange) {
-      onChange(newValue as PartialClientType);
+      onChange(newValue as Partial<ExportType>);
     }
   };
 
@@ -105,21 +91,23 @@ const ClientSelectBase: React.FC<ClientSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'client not found'}
+      noOptionsMessage={() => 'export not found'}
       isLoading={isLoading}
       options={data}
-      getOptionLabel={(client: PartialClientType) => `${client.businessName}`}
-      getOptionValue={(client: PartialClientType) => client.id}
+      getOptionLabel={(opt: Partial<ExportType>) => `${opt.id}`}
+      getOptionValue={(opt: Partial<ExportType>) =>
+        opt.id ? opt.id.toString() : ''
+      }
       onChange={(newValue) => handleChange(newValue)}
       value={
         field?.value
-          ? data.find((opt: PartialClientType) => opt.id === field?.value)
+          ? data.find((opt: Partial<ExportType>) => opt.id === field?.value)
           : undefined
       }
       placeholder={placeholder}
-      components={clientComponents}
+      components={brandComponents}
     />
   );
 };
 
-export default ClientSelectBase;
+export default ExportSelectBase;

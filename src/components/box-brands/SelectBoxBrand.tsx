@@ -1,7 +1,7 @@
 import { Box, FormLabel, Input, SimpleGrid } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import { PartialBoxBrandType } from '../box-brands/BoxBrandSelectBase';
-import InputFieldBoxBrandSelect from '../box-brands/InputFieldBoxBrandSelect';
+import { PartialBoxBrandType } from './BoxBrandSelectBase';
+import InputFieldBoxBrandSelect from './InputFieldBoxBrandSelect';
 import InputFieldText from '../ui/form/InputFieldText';
 
 interface SelectBoxBrandProps {
@@ -11,10 +11,6 @@ interface SelectBoxBrandProps {
 
 const SelectBoxBrand: React.FC<SelectBoxBrandProps> = ({ name, name2 }) => {
   const [boxBrand, setBoxBrand] = useState<PartialBoxBrandType | null>(null);
-
-  // useEffect(() => {
-  //   console.log('boxBrand selectBoxBrand: ', boxBrand);
-  // }, [boxBrand]);
 
   return (
     <>

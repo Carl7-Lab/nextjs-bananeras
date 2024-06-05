@@ -26,7 +26,7 @@ import InputFieldLabelSelect from './materials/label/InputFieldLabelSelect';
 import InputFieldProtectorSelect from './materials/protector/InputFieldProtectorSelect';
 import InputFieldRubberSelect from './materials/rubber/InputFieldRubberSelect';
 import InputFieldSachetSelect from './materials/sachet/InputFieldSachetSelect';
-import InputFieldPesticideSelect from './post-harvest/pesticide/InputFieldPesticideSelect';
+import InputFieldPesticideMultiSelect from './post-harvest/pesticide/InputFieldPesticideMultiSelect';
 import InputFieldBrandSelect from './specifications/brand/InputFieldBrandSelect';
 import InputFieldCertificateMultiSelect from './specifications/certificate/InputFieldCertificateMultiSelect';
 import InputFieldQuatity from '../ui/form/InputFieldQuatity';
@@ -40,7 +40,7 @@ interface ValuesProps {
   boxQuantity: number | '';
   netWeightBox: number | '';
   grossWeightBox: number | '';
-  certificates: number | '';
+  certificates: number[] | null;
 
   // materials
   bottomType: string;
@@ -51,21 +51,21 @@ interface ValuesProps {
   spongeType: string;
   // select
   labelId: number | '';
-  labelIdQuantity: number | '';
+  labelQuantity: number | '';
   bandId: number | '';
-  bandIdQuantity: number | '';
+  bandQuantity: number | '';
   sachetId: number | '';
-  sachetIdQuantity: number | '';
+  sachetQuantity: number | '';
   rubberId: number | '';
-  rubberIdQuantity: number | '';
+  rubberQuantity: number | '';
   protectorId: number | '';
-  protectorIdQuantity: number | '';
+  protectorQuantity: number | '';
   clusterBagId: number | '';
-  clusterBagIdQuantity: number | '';
+  clusterBagQuantity: number | '';
 
   // post harvest
-  pesticideId: number | '';
-  pesticideIdQuantity: number | '';
+  pesticide: number[] | null;
+  pesticideQuantity: number | '';
 
   // container
   palletsType: string;
@@ -78,26 +78,26 @@ interface ValuesProps {
   reinforcementTypeQuantity: number | '';
   // select
   stapleId: number | '';
-  stapleIdQuantity: number | '';
+  stapleQuantity: number | '';
   strippingId: number | '';
-  strippingIdQuantity: number | '';
+  strippingQuantity: number | '';
   thermographId: number | '';
-  thermographIdQuantity: number | '';
+  thermographQuantity: number | '';
   sealId: number | '';
-  sealIdQuantity: number | '';
+  sealQuantity: number | '';
   mettoLabelId: number | '';
-  mettoLabelIdQuantity: number | '';
+  mettoLabelQuantity: number | '';
 
   // additions
   packingTapeType: string;
   packingTapeTypeQuantity: number | '';
   // select
   latexRemoverId: number | '';
-  latexRemoverIdQuantity: number | '';
+  latexRemoverQuantity: number | '';
   cochibiolId: number | '';
-  cochibiolIdQuantity: number | '';
+  cochibiolQuantity: number | '';
   blockingSheetId: number | '';
-  blockingSheetIdQuantity: number | '';
+  blockingSheetQuantity: number | '';
 }
 
 const initialValues: ValuesProps = {
@@ -107,7 +107,7 @@ const initialValues: ValuesProps = {
   boxQuantity: '',
   netWeightBox: '',
   grossWeightBox: '',
-  certificates: '',
+  certificates: null,
 
   bottomType: '',
   lidType: '',
@@ -117,20 +117,20 @@ const initialValues: ValuesProps = {
   spongeType: '',
 
   labelId: '',
-  labelIdQuantity: '',
+  labelQuantity: '',
   bandId: '',
-  bandIdQuantity: '',
+  bandQuantity: '',
   sachetId: '',
-  sachetIdQuantity: '',
+  sachetQuantity: '',
   rubberId: '',
-  rubberIdQuantity: '',
+  rubberQuantity: '',
   protectorId: '',
-  protectorIdQuantity: '',
+  protectorQuantity: '',
   clusterBagId: '',
-  clusterBagIdQuantity: '',
+  clusterBagQuantity: '',
 
-  pesticideId: '',
-  pesticideIdQuantity: '',
+  pesticide: null,
+  pesticideQuantity: '',
 
   palletsType: '',
   palletsTypeQuantity: '',
@@ -142,25 +142,25 @@ const initialValues: ValuesProps = {
   reinforcementTypeQuantity: '',
 
   stapleId: '',
-  stapleIdQuantity: '',
+  stapleQuantity: '',
   strippingId: '',
-  strippingIdQuantity: '',
+  strippingQuantity: '',
   thermographId: '',
-  thermographIdQuantity: '',
+  thermographQuantity: '',
   sealId: '',
-  sealIdQuantity: '',
+  sealQuantity: '',
   mettoLabelId: '',
-  mettoLabelIdQuantity: '',
+  mettoLabelQuantity: '',
 
   packingTapeType: '',
   packingTapeTypeQuantity: '',
 
   latexRemoverId: '',
-  latexRemoverIdQuantity: '',
+  latexRemoverQuantity: '',
   cochibiolId: '',
-  cochibiolIdQuantity: '',
+  cochibiolQuantity: '',
   blockingSheetId: '',
-  blockingSheetIdQuantity: '',
+  blockingSheetQuantity: '',
 };
 
 const validationSchema = Yup.object({
@@ -209,44 +209,45 @@ const validationSchema = Yup.object({
   labelId: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
-  labelIdQuantity: Yup.number()
+  labelQuantity: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
   bandId: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
-  bandIdQuantity: Yup.number()
+  bandQuantity: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
   sachetId: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
-  sachetIdQuantity: Yup.number()
+  sachetQuantity: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
   rubberId: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
-  rubberIdQuantity: Yup.number()
+  rubberQuantity: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
   protectorId: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
-  protectorIdQuantity: Yup.number()
+  protectorQuantity: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
   clusterBagId: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
-  clusterBagIdQuantity: Yup.number()
+  clusterBagQuantity: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
 
-  pesticideId: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
-  pesticideIdQuantity: Yup.number()
+  pesticide: Yup.array()
+    .min(1, 'At least one harbor must be selected')
+    .required('Required')
+    .of(Yup.number().required()),
+  pesticideQuantity: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
 
@@ -278,31 +279,31 @@ const validationSchema = Yup.object({
   stapleId: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
-  stapleIdQuantity: Yup.number()
+  stapleQuantity: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
   strippingId: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
-  strippingIdQuantity: Yup.number()
+  strippingQuantity: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
   thermographId: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
-  thermographIdQuantity: Yup.number()
+  thermographQuantity: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
   sealId: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
-  sealIdQuantity: Yup.number()
+  sealQuantity: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
   mettoLabelId: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
-  mettoLabelIdQuantity: Yup.number()
+  mettoLabelQuantity: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
 
@@ -316,19 +317,19 @@ const validationSchema = Yup.object({
   latexRemoverId: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
-  latexRemoverIdQuantity: Yup.number()
+  latexRemoverQuantity: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
   cochibiolId: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
-  cochibiolIdQuantity: Yup.number()
+  cochibiolQuantity: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
   blockingSheetId: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
-  blockingSheetIdQuantity: Yup.number()
+  blockingSheetQuantity: Yup.number()
     .moreThan(0, 'Must be greater than 0')
     .required('Required'),
 });
@@ -430,43 +431,109 @@ export default function AddBoxBrandsForm() {
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
-    console.log('AddBoxBrandsForm values: ', values);
-    // const { brandId, ...rest } = values;
+    const {
+      // specifications
+      brandId,
+      certificates,
+      // materials
+      labelId,
+      bandId,
+      sachetId,
+      rubberId,
+      protectorId,
+      clusterBagId,
+      // post harvest
+      pesticide,
+      // container
+      stapleId,
+      strippingId,
+      thermographId,
+      sealId,
+      mettoLabelId,
+      // additions
+      latexRemoverId,
+      cochibiolId,
+      blockingSheetId,
 
-    // const sendValues = {
-    //   ...rest,
-    //   brand: {
-    //     id: Number(values.brandId),
-    //   },
-    // };
+      ...rest
+    } = values;
 
-    // createBoxBrand(
-    //   {
-    //     ...sendValues,
-    //   },
-    //   {
-    //     onError: (error) => {
-    //       toast({
-    //         title: 'Error.',
-    //         description: `${error.message}`,
-    //         status: 'error',
-    //         duration: 5000,
-    //         isClosable: true,
-    //       });
-    //     },
-    //     onSuccess: () => {
-    //       toast({
-    //         title: 'Marca de caja creada',
-    //         status: 'success',
-    //         duration: 5000,
-    //         isClosable: true,
-    //       });
+    const sendValues = {
+      ...rest,
+      // specifications
+      boxQuantity: Number(rest.boxQuantity),
+      netWeightBox: Number(rest.netWeightBox),
+      grossWeightBox: Number(rest.grossWeightBox),
+      brand: { id: Number(values.brandId) },
+      certificateId: certificates,
+      // materials
+      label: { id: Number(values.labelId) },
+      labelQuantity: Number(values.labelQuantity),
+      band: { id: Number(values.bandId) },
+      bandQuantity: Number(values.bandQuantity),
+      sachet: { id: Number(values.sachetId) },
+      sachetQuantity: Number(values.sachetQuantity),
+      rubber: { id: Number(values.rubberId) },
+      rubberQuantity: Number(values.rubberQuantity),
+      protector: { id: Number(values.protectorId) },
+      protectorQuantity: Number(values.protectorQuantity),
+      clusterBag: { id: Number(values.clusterBagId) },
+      clusterBagQuantity: Number(values.clusterBagQuantity),
+      // post harvest
+      pesticideId: pesticide,
+      pesticideQuantity: Number(values.pesticideQuantity),
+      // container
+      palletsTypeQuantity: Number(values.palletsTypeQuantity),
+      miniPalletsTypeQuantity: Number(values.miniPalletsTypeQuantity),
+      cornerTypeQuantity: Number(values.cornerTypeQuantity),
+      reinforcementTypeQuantity: Number(values.reinforcementTypeQuantity),
+      staple: { id: Number(values.stapleId) },
+      stapleQuantity: Number(values.stapleQuantity),
+      stripping: { id: Number(values.strippingId) },
+      strippingQuantity: Number(values.strippingQuantity),
+      thermograph: { id: Number(values.thermographId) },
+      thermographQuantity: Number(values.thermographQuantity),
+      seal: { id: Number(values.sealId) },
+      sealQuantity: Number(values.sealQuantity),
+      mettoLabel: { id: Number(values.mettoLabelId) },
+      mettoLabelQuantity: Number(values.mettoLabelQuantity),
+      // additions
+      packingTapeTypeQuantity: Number(values.packingTapeTypeQuantity),
+      latexRemover: { id: Number(values.latexRemoverId) },
+      latexRemoverQuantity: Number(values.latexRemoverQuantity),
+      cochibiol: { id: Number(values.cochibiolId) },
+      cochibiolQuantity: Number(values.cochibiolQuantity),
+      blockingSheet: { id: Number(values.blockingSheetId) },
+      blockingSheetQuantity: Number(values.blockingSheetQuantity),
+    };
 
-    //       queryClient.invalidateQueries('brands');
-    //       actions.resetForm();
-    //     },
-    //   }
-    // );
+    createBoxBrand(
+      {
+        ...sendValues,
+      },
+      {
+        onError: (error) => {
+          toast({
+            title: 'Error.',
+            description: `${error.message}`,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        },
+        onSuccess: () => {
+          toast({
+            title: 'Marca de caja creada',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+
+          queryClient.invalidateQueries('boxBrands');
+          actions.resetForm();
+        },
+      }
+    );
 
     return;
   };
@@ -537,7 +604,7 @@ export default function AddBoxBrandsForm() {
                     placeholder={'Seleccione la etiqueta'}
                   />
                   <InputFieldQuatity
-                    name={'labelIdQuantity'}
+                    name={'labelQuantity'}
                     label={'Cantidad'}
                   />
                 </Flex>
@@ -547,10 +614,7 @@ export default function AddBoxBrandsForm() {
                     label={'Banda'}
                     placeholder={'Seleccione la banda'}
                   />
-                  <InputFieldQuatity
-                    name={'bandIdQuantity'}
-                    label={'Cantidad'}
-                  />
+                  <InputFieldQuatity name={'bandQuantity'} label={'Cantidad'} />
                 </Flex>
                 <Flex gap={2}>
                   <InputFieldSachetSelect
@@ -559,7 +623,7 @@ export default function AddBoxBrandsForm() {
                     placeholder={'Seleccione el sachet'}
                   />
                   <InputFieldQuatity
-                    name={'sachetIdQuantity'}
+                    name={'sachetQuantity'}
                     label={'Cantidad'}
                   />
                 </Flex>
@@ -570,7 +634,7 @@ export default function AddBoxBrandsForm() {
                     placeholder={'Seleccione la liga'}
                   />
                   <InputFieldQuatity
-                    name={'rubberIdQuantity'}
+                    name={'rubberQuantity'}
                     label={'Cantidad'}
                   />
                 </Flex>
@@ -581,7 +645,7 @@ export default function AddBoxBrandsForm() {
                     placeholder={'Seleccione el protector'}
                   />
                   <InputFieldQuatity
-                    name={'protectorIdQuantity'}
+                    name={'protectorQuantity'}
                     label={'Cantidad'}
                   />
                 </Flex>
@@ -592,7 +656,7 @@ export default function AddBoxBrandsForm() {
                     placeholder={'Seleccione el cluster bag'}
                   />
                   <InputFieldQuatity
-                    name={'clusterBagIdQuantity'}
+                    name={'clusterBagQuantity'}
                     label={'Cantidad'}
                   />
                 </Flex>
@@ -604,13 +668,13 @@ export default function AddBoxBrandsForm() {
               <Divider mb={'16px'} />
               <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
                 <Flex gap={2}>
-                  <InputFieldPesticideSelect
-                    name={'pesticideId'}
+                  <InputFieldPesticideMultiSelect
+                    name={'pesticide'}
                     label={'Pesticida'}
                     placeholder={'Seleccione el pesticida'}
                   />
                   <InputFieldQuatity
-                    name={'pesticideIdQuantity'}
+                    name={'pesticideQuantity'}
                     label={'Cantidad'}
                   />
                 </Flex>
@@ -637,7 +701,7 @@ export default function AddBoxBrandsForm() {
                     placeholder={'Seleccione la grapa'}
                   />
                   <InputFieldQuatity
-                    name={'stapleIdQuantity'}
+                    name={'stapleQuantity'}
                     label={'Cantidad'}
                   />
                 </Flex>
@@ -648,7 +712,7 @@ export default function AddBoxBrandsForm() {
                     placeholder={'Seleccione la grapa'}
                   />
                   <InputFieldQuatity
-                    name={'strippingIdQuantity'}
+                    name={'strippingQuantity'}
                     label={'Cantidad'}
                   />
                 </Flex>
@@ -659,7 +723,7 @@ export default function AddBoxBrandsForm() {
                     placeholder={'Seleccione el termografo'}
                   />
                   <InputFieldQuatity
-                    name={'thermographIdQuantity'}
+                    name={'thermographQuantity'}
                     label={'Cantidad'}
                   />
                 </Flex>
@@ -669,10 +733,7 @@ export default function AddBoxBrandsForm() {
                     label={'Sello'}
                     placeholder={'Seleccione el sello'}
                   />
-                  <InputFieldQuatity
-                    name={'sealIdQuantity'}
-                    label={'Cantidad'}
-                  />
+                  <InputFieldQuatity name={'sealQuantity'} label={'Cantidad'} />
                 </Flex>
                 <Flex gap={2}>
                   <InputFieldMettoLabelSelect
@@ -681,7 +742,7 @@ export default function AddBoxBrandsForm() {
                     placeholder={'Seleccione la etiqueta Metto'}
                   />
                   <InputFieldQuatity
-                    name={'mettoLabelIdQuantity'}
+                    name={'mettoLabelQuantity'}
                     label={'Cantidad'}
                   />
                 </Flex>
@@ -710,18 +771,19 @@ export default function AddBoxBrandsForm() {
                     placeholder={'Seleccione la removedor de latex'}
                   />
                   <InputFieldQuatity
-                    name={'latexRemoverIdQuantity'}
+                    name={'latexRemoverQuantity'}
                     label={'Cantidad'}
                   />
                 </Flex>
                 <Flex gap={2}>
+                  {/* cochibiol por insecticida */}
                   <InputFieldCochibiolSelect
                     name={'cochibiolId'}
-                    label={'Cochibiol'}
+                    label={'Insecticida'}
                     placeholder={'Seleccione el cochibiol'}
                   />
                   <InputFieldQuatity
-                    name={'cochibiolIdQuantity'}
+                    name={'cochibiolQuantity'}
                     label={'Cantidad'}
                   />
                 </Flex>
@@ -732,7 +794,7 @@ export default function AddBoxBrandsForm() {
                     placeholder={'Seleccione la lamina de bloque'}
                   />
                   <InputFieldQuatity
-                    name={'blockingSheetIdQuantity'}
+                    name={'blockingSheetQuantity'}
                     label={'Cantidad'}
                   />
                 </Flex>
@@ -746,9 +808,6 @@ export default function AddBoxBrandsForm() {
                 colorScheme='teal'
                 variant={'purple'}
                 isLoading={isSubmitting}
-                onClick={() =>
-                  console.log('AddBoxBrandsForm onClick values: ', values)
-                }
               >
                 Enviar
               </Button>

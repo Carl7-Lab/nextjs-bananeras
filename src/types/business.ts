@@ -1,7 +1,7 @@
 import { BusinessManagerType } from './bussinessManager';
 
 export type BusinessType = {
-  id: number;
+  id: number | '';
   name: string;
   address: string;
   area: number;

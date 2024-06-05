@@ -1,22 +1,21 @@
 import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react';
 import { useField } from 'formik';
-import React, { useEffect } from 'react';
-import ClientSelectBase, { PartialClientType } from './ClientSelectBase';
+import React from 'react';
+import ExportSelectBase from './ExportSelectBase';
+import { ExportType } from '../../types/export';
 
-interface InputFieldClientSelectProps {
+interface InputFieldExportSelectProps {
   name: string;
   label: string;
   placeholder: string;
-  harbor?: number;
-  setClient?: (client: PartialClientType) => void;
+  setExport?: (exportSelected: Partial<ExportType>) => void;
 }
 
-const InputFieldClientSelect: React.FC<InputFieldClientSelectProps> = ({
+const InputFieldExportSelect: React.FC<InputFieldExportSelectProps> = ({
   name,
   label,
   placeholder,
-  harbor,
-  setClient,
+  setExport,
 }) => {
   const [field, meta, helpers] = useField(name);
 
@@ -26,13 +25,12 @@ const InputFieldClientSelect: React.FC<InputFieldClientSelectProps> = ({
         {label}
       </FormLabel>
 
-      <ClientSelectBase
+      <ExportSelectBase
         name={name}
         placeholder={placeholder}
         onChange={(newValue) => helpers.setValue(newValue?.id)}
         field={field}
-        setClient={setClient}
-        harbor={harbor}
+        setExport={setExport}
       />
 
       {meta.error && meta.touched && (
@@ -44,4 +42,4 @@ const InputFieldClientSelect: React.FC<InputFieldClientSelectProps> = ({
   );
 };
 
-export default InputFieldClientSelect;
+export default InputFieldExportSelect;

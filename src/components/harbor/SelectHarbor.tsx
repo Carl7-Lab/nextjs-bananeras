@@ -1,22 +1,18 @@
 import { Box, FormLabel, Input, SimpleGrid } from '@chakra-ui/react';
 import { usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { PartialHarborType } from '../harbor/HarborSelectBase';
-import InputFieldHarborSelect from '../harbor/InputFieldHarborSelect';
+import { PartialHarborType } from './HarborSelectBase';
+import InputFieldHarborSelect from './InputFieldHarborSelect';
 
-interface InputFieldSelectorProps {
+interface SelectHarborProps {
   name: string;
 }
 
-const SelectHarbor: React.FC<InputFieldSelectorProps> = ({ name }) => {
+const SelectHarbor: React.FC<SelectHarborProps> = ({ name }) => {
   const [harbor, setHarbor] = useState<PartialHarborType | null>(null);
   const pathname = usePathname();
 
   const hideComponent = pathname !== '/dashboard/settings/add-client';
-
-  useEffect(() => {
-    console.log('harbor SelectHarbor', harbor);
-  }, [harbor]);
 
   return (
     <>

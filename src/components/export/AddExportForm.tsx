@@ -11,12 +11,12 @@ import { Form, Formik } from 'formik';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
-import SelectBoxBrand from './SelectBoxBrand';
-import SelectBusiness from './SelectBusiness';
-import SelectClient from './SelectClient';
-import SelectHarbor from './SelectHarbor';
-import SelectProducer from './SelectProducer';
 import { useCreateExport } from '../../hooks/export/createExport';
+import SelectBoxBrand from '../box-brands/SelectBoxBrand';
+import SelectBusiness from '../business/SelectBusiness';
+import SelectClient from '../client/SelectClient';
+import SelectHarbor from '../harbor/SelectHarbor';
+import SelectProducer from '../producer/SelectProducer';
 import InputFieldText from '../ui/form/InputFieldText';
 
 interface ValuesProps {
@@ -68,48 +68,51 @@ const AddExportForm = () => {
   ) => {
     console.log('addExport values: ', values);
 
-    // createExport(
-    //   {
-    //     boxQuantity: Number(values.boxQuantity),
-    //     boxBrand: {
-    //       id: values.boxBrand,
-    //     },
-    //     merchant: {
-    //       id: values.merchant,
-    //     },
-    //     harbor: {
-    //       id: values.destinationPort,
-    //     },
-    //     client: {
-    //       id: values.client,
-    //     },
-    //     shipSteam: values.logisticShipSteam,
-    //     shippingLineSeal: values.logisticShippingLineSeal,
-    //     extraSeal: values.logisticExtraSeal,
-    //   },
-    //   {
-    //     onError: (error) => {
-    //       toast({
-    //         title: 'Error.',
-    //         description: `${error.message}`,
-    //         status: 'error',
-    //         duration: 5000,
-    //         isClosable: true,
-    //       });
-    //     },
-    //     onSuccess: () => {
-    //       toast({
-    //         title: 'Exportacion creada',
-    //         status: 'success',
-    //         duration: 5000,
-    //         isClosable: true,
-    //       });
+    createExport(
+      {
+        boxQuantity: Number(values.boxQuantity),
+        boxBrand: {
+          id: values.boxBrand,
+        },
+        merchant: {
+          id: values.merchant,
+        },
+        business: {
+          id: values.business,
+        },
+        harbor: {
+          id: values.destinationPort,
+        },
+        client: {
+          id: values.client,
+        },
+        shipSteam: values.logisticShipSteam,
+        shippingLineSeal: values.logisticShippingLineSeal,
+        extraSeal: values.logisticExtraSeal,
+      },
+      {
+        onError: (error) => {
+          toast({
+            title: 'Error.',
+            description: `${error.message}`,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        },
+        onSuccess: () => {
+          toast({
+            title: 'Exportacion creada',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
 
-    //       queryClient.invalidateQueries('exports');
-    //       actions.resetForm();
-    //     },
-    //   }
-    // );
+          queryClient.invalidateQueries('exports');
+          actions.resetForm();
+        },
+      }
+    );
 
     return;
   };

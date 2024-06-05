@@ -19,6 +19,10 @@ export function getNavItems(): SidenavItem[] {
       label: 'Agregar Fincas ',
       to: '/dashboard/producer/add-fincas',
     },
+    {
+      label: 'Agregar Cuenta Bancaria',
+      to: '/dashboard/producer/add-bank-account',
+    },
   ];
 
   const exportMenu: SidenavMenuItem[] = [
@@ -99,6 +103,14 @@ export function getNavItems(): SidenavItem[] {
     {
       label: 'Agregar Cliente',
       to: '/dashboard/settings/add-client',
+    },
+    {
+      label: 'Exportaciones Pendientes',
+      to: '/dashboard/settings/pending-exports',
+    },
+    {
+      label: 'Pagos de Exportaciones Pendientes',
+      to: '/dashboard/settings/pending-payments',
     },
   ];
 
