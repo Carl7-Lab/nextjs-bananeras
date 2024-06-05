@@ -1,10 +1,9 @@
 'use client';
 import { Box, Card, CardBody, Center } from '@chakra-ui/react';
 import React from 'react';
-import AddProducerForm from '../../../../components/producer/AddProducerForm';
-import IsOnboarding from '../../../../components/ui/IsOnboarding';
+import AddBankAccountForm from '../../../../components/producer/AddBankAccountForm';
 
-function AddBusinessPage() {
+const AddBankAccountPage = () => {
   return (
     <Box my={'20px'} mx={'auto'}>
       <Center>
@@ -20,12 +19,12 @@ function AddBusinessPage() {
           mb={'20px'}
         >
           <CardBody w='100%'>
-            <AddProducerForm />
+            <AddBankAccountForm />
           </CardBody>
         </Card>
       </Center>
     </Box>
   );
-}
+};
 
-export default IsOnboarding(AddBusinessPage);
+export default AddBankAccountPage;

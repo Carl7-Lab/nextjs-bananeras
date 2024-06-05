@@ -10,14 +10,14 @@ export const getClient = ({ clientId }: { clientId: string }) => {
 
 type QueryFnType = typeof getClient;
 
-type UseExportOptions = {
+type UseClientOptions = {
   clientId: string;
   config?: QueryConfig<QueryFnType>;
 };
 
-export const useExport = ({
+export const useClient = ({
   clientId,
-}: UseExportOptions): UseQueryResult<ClientType> => {
+}: UseClientOptions): UseQueryResult<ClientType> => {
   const result = useQuery(['client', clientId], () => getClient({ clientId }), {
     keepPreviousData: true,
   });

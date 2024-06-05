@@ -11,7 +11,7 @@ import {
 import { FieldInputProps } from 'formik';
 import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
-import { useBusinesses } from '../../hooks/business/getBusinesses';
+import { useBusinessesByMerchantId } from '../../hooks/business/getBusinesses';
 import { usePagination } from '../../hooks/usePagination';
 import { BusinessType } from '../../types/business';
 
@@ -71,7 +71,7 @@ const BusinessSelectBase: React.FC<BusinessSelectBaseProps> = ({
   setBusiness,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useBusinesses(
+  const { data, isLoading, refetch } = useBusinessesByMerchantId(
     { ...paginationParams },
     { id: merchant ?? 0 }
   );

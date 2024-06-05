@@ -10,14 +10,14 @@ export const getHarbor = ({ harborId }: { harborId: string }) => {
 
 type QueryFnType = typeof getHarbor;
 
-type UseExportOptions = {
+type UseHarborOptions = {
   harborId: string;
   config?: QueryConfig<QueryFnType>;
 };
 
-export const useExport = ({
+export const useHarbor = ({
   harborId,
-}: UseExportOptions): UseQueryResult<HarborType> => {
+}: UseHarborOptions): UseQueryResult<HarborType> => {
   const result = useQuery(['harbor', harborId], () => getHarbor({ harborId }), {
     keepPreviousData: true,
   });
