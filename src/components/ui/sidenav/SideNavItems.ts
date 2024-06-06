@@ -16,6 +16,10 @@ export function getNavItems(): SidenavItem[] {
       to: '/dashboard/producer/fincas',
     },
     {
+      label: 'Agregar Productor',
+      to: '/dashboard/producer/add-producer',
+    },
+    {
       label: 'Agregar Fincas ',
       to: '/dashboard/producer/add-fincas',
     },
@@ -42,8 +46,12 @@ export function getNavItems(): SidenavItem[] {
       to: '/dashboard/box-brands/search',
     },
     {
-      label: 'Agregar',
-      to: '/dashboard/box-brands/add',
+      label: 'Agregar Tipo de Caja',
+      to: '/dashboard/box-brands/add-box-brand',
+    },
+    {
+      label: 'Agregar Marca de Caja',
+      to: '/dashboard/box-brands/add-brand',
     },
   ];
 
@@ -88,14 +96,6 @@ export function getNavItems(): SidenavItem[] {
     },
   ];
   const settingsMenu: SidenavMenuItem[] = [
-    {
-      label: 'Agregar Marca',
-      to: '/dashboard/settings/add-brand',
-    },
-    {
-      label: 'Agregar Productor',
-      to: '/dashboard/settings/add-producer',
-    },
     {
       label: 'Agregar Puerto',
       to: '/dashboard/settings/add-harbor',
