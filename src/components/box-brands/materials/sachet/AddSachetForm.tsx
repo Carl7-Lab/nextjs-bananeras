@@ -104,7 +104,6 @@ const AddSachetForm = ({ onClose }: AddSachetFormProps) => {
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                variant={'purple'}
                 isLoading={isSubmitting}
               >
                 Agregar

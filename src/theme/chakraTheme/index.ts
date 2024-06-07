@@ -1,8 +1,8 @@
 import { extendTheme } from '@chakra-ui/react';
 
-import * as additions from '@/theme/additions';
-import * as components from '@/theme/components';
-import { globalStyles } from '@/theme/styles';
+import * as additions from '@/theme/chakraTheme/additions';
+import * as components from '@/theme/chakraTheme/components';
+import { globalStyles } from '@/theme/chakraTheme/styles';
 
 const overrides = {
   ...globalStyles,

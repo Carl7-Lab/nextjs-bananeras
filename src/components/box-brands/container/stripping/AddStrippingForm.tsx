@@ -101,7 +101,6 @@ const AddStrippingForm = ({ onClose }: AddStrippingFormProps) => {
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                variant={'purple'}
                 isLoading={isSubmitting}
               >
                 Agregar

@@ -195,7 +195,6 @@ const AddExportForm = () => {
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                variant={'purple'}
                 isLoading={isSubmitting}
                 onClick={() => console.log('AddExportForm values', values)}
               >

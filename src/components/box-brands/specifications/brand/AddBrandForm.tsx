@@ -87,7 +87,6 @@ export default function AddBrandForm({ onClose }: AddBrandFormProps) {
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                variant={'purple'}
                 isLoading={isSubmitting}
               >
                 Agregar

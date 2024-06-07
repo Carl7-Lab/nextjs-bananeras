@@ -79,7 +79,7 @@ const BrandSelectBase: React.FC<{
       isLoading={isLoading}
       options={data}
       getOptionLabel={(brand: BrandType) => `${brand.name}`}
-      getOptionValue={(brand: BrandType) => brand.id}
+      getOptionValue={(brand: BrandType) => brand.id.toString()}
       onChange={(newValue) => handleChange(newValue)}
       value={
         field?.value
