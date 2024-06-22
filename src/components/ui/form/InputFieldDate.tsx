@@ -1,18 +1,19 @@
 import {
   FormControl,
-  FormLabel,
   FormErrorMessage,
+  FormLabel,
   Input,
 } from '@chakra-ui/react';
 import { useField } from 'formik';
+import React from 'react';
 
-interface InputFieldProps {
+interface InputFieldDateProps {
   name: string;
   label?: string;
   placeholder?: string;
 }
 
-const InputFieldText: React.FC<InputFieldProps> = ({
+const InputFieldDate: React.FC<InputFieldDateProps> = ({
   name,
   label,
   placeholder,
@@ -25,7 +26,8 @@ const InputFieldText: React.FC<InputFieldProps> = ({
           {label}
         </FormLabel>
       )}
-      <Input {...field} placeholder={placeholder || label} />
+      <Input {...field} placeholder={placeholder || label} type={'date'} />
+
       {meta.error && meta.touched && (
         <FormErrorMessage mt='8px' mb='16px'>
           {meta.error}
@@ -35,4 +37,4 @@ const InputFieldText: React.FC<InputFieldProps> = ({
   );
 };
 
-export default InputFieldText;
+export default InputFieldDate;

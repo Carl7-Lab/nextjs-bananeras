@@ -12,16 +12,18 @@ import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import { useCreateClient } from '../../hooks/client/createClient';
 import InputFieldHarborMultiSelect from '../harbor/InputFieldHarborMultiSelect';
+import InputFieldShippingCompanyMultiSelect from '../shipping-company/InputFieldShippingCompanyMultiSelect';
 import InputFieldSelector from '../ui/form/InputFieldSelector';
 import InputFieldText from '../ui/form/InputFieldText';
 
 interface ValuesProps {
   businessName: string;
   businessId: string;
-  type: '' | 'Supermarket' | 'Intermediary';
+  type: '' | 'Supermercado' | 'Intermediario';
   email: string;
   phone: string;
   harbors: number[] | null;
+  shippingCompanies: number[] | null;
 }
 
 const initialValues: ValuesProps = {
@@ -31,6 +33,7 @@ const initialValues: ValuesProps = {
   email: '',
   phone: '',
   harbors: null,
+  shippingCompanies: null,
 };
 
 const validationSchema = Yup.object({
@@ -43,7 +46,7 @@ const validationSchema = Yup.object({
     .required('Required'),
   type: Yup.string()
     .required('Required')
-    .oneOf(['Supermarket', 'Intermediary'], 'You must selected'),
+    .oneOf(['Supermercado', 'Intermediario'], 'You must selected'),
   email: Yup.string()
     .email('Invalid email')
     .max(50, 'Must be 50 characters or less')
@@ -57,17 +60,21 @@ const validationSchema = Yup.object({
     .min(1, 'At least one harbor must be selected')
     .required('Required')
     .of(Yup.number().required()),
+  shippingCompanies: Yup.array()
+    .min(1, 'At least one shipping company must be selected')
+    .required('Required')
+    .of(Yup.number().required()),
 });
 
 const AddClientForm = () => {
   const typesOpt = [
     {
       name: 'Supermercado',
-      id: 'Supermarket',
+      id: 'Supermercado',
     },
     {
       name: 'Intermediario',
-      id: 'Intermediary',
+      id: 'Intermediario',
     },
   ];
   const { createClient } = useCreateClient();
@@ -79,36 +86,39 @@ const AddClientForm = () => {
     actions: { resetForm: () => void }
   ) => {
     const { harbors, ...client } = values;
+    console.log('addClient values: ', values);
 
-    createClient(
-      {
-        ...client,
-        harborId: harbors,
-      },
-      {
-        onError: (error) => {
-          toast({
-            title: 'Error.',
-            description: `${error.message}`,
-            status: 'error',
-            duration: 5000,
-            isClosable: true,
-          });
-        },
-        onSuccess: () => {
-          toast({
-            title: 'Cliente creado',
-            status: 'success',
-            duration: 5000,
-            isClosable: true,
-          });
+    // createClient(
+    //   {
+    //     ...client,
+    //     harborId: harbors,
+    //   },
+    //   {
+    //     onError: (error) => {
+    //       toast({
+    //         title: 'Error.',
+    //         description: `${error.message}`,
+    //         status: 'error',
+    //         duration: 5000,
+    //         isClosable: true,
+    //       });
+    //     },
+    //     onSuccess: () => {
+    //       toast({
+    //         title: 'Cliente creado',
+    //         status: 'success',
+    //         duration: 5000,
+    //         isClosable: true,
+    //       });
 
-          queryClient.invalidateQueries('clients');
-          queryClient.invalidateQueries('clientsByHarbor');
-          actions.resetForm();
-        },
-      }
-    );
+    //       queryClient.invalidateQueries('clients');
+    //       queryClient.invalidateQueries('clientsByHarbor');
+    //       actions.resetForm();
+    //     },
+    //   }
+    // );
+
+    return;
   };
 
   return (
@@ -127,7 +137,10 @@ const AddClientForm = () => {
               <Divider mb={'16px'} />
 
               <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
-                <InputFieldText name={'businessName'} label={'Razón Social'} />
+                <InputFieldText
+                  name={'businessName'}
+                  label={'Nombre/Razón Social'}
+                />
                 <InputFieldText name={'businessId'} label={'RUC'} />
 
                 <InputFieldSelector
@@ -143,6 +156,12 @@ const AddClientForm = () => {
                   name={'harbors'}
                   label={'Puerto/s'}
                   placeholder={'Seleccione el/los puerto/s'}
+                />
+
+                <InputFieldShippingCompanyMultiSelect
+                  name={'shippingCompanies'}
+                  label={'Navieros'}
+                  placeholder={'Seleccione el/los navieros'}
                 />
               </SimpleGrid>
 

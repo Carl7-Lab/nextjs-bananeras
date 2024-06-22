@@ -1,38 +1,38 @@
 import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react';
 import { useField } from 'formik';
 import React from 'react';
-import AddHarborModal from './AddHarborModal';
-import HarborMultiSelectBase from './HarborMultiSelectBase';
-import { HarborType } from '../../types/harbor';
+import AddRequirementModal from './AddRequirementModal';
+import RequirementMultiSelectBase from './RequirementMultiSelectBase';
+import { RequirementType } from '../../../types/requirement';
 
-interface InputFieldHarborMultiSelectProps {
+interface InputFieldRequirementMultiSelectProps {
   name: string;
   label: string;
   placeholder: string;
-  setHarbors?: (harbors: Partial<HarborType>[]) => void;
+  setRequirements?: (requirements: Partial<RequirementType>[]) => void;
 }
 
-const InputFieldHarborMultiSelect: React.FC<
-  InputFieldHarborMultiSelectProps
-> = ({ name, label, placeholder, setHarbors }) => {
+const InputFieldRequirementMultiSelect: React.FC<
+  InputFieldRequirementMultiSelectProps
+> = ({ name, label, placeholder, setRequirements }) => {
   const [field, meta, helpers] = useField(name);
 
   return (
     <FormControl id={name} isInvalid={!!meta.error && meta.touched}>
       <FormLabel fontSize='sm' mb='8px'>
-        {label} <AddHarborModal />
+        {label} <AddRequirementModal />
       </FormLabel>
 
-      <HarborMultiSelectBase
+      <RequirementMultiSelectBase
         name={name}
         placeholder={placeholder}
         onChange={(newValues) =>
           helpers.setValue(
-            newValues.map((item: Partial<HarborType>) => item.id)
+            newValues.map((item: Partial<RequirementType>) => item.id)
           )
         }
         field={field}
-        setHarbors={setHarbors}
+        setRequirements={setRequirements}
       />
 
       {meta.error && meta.touched && (
@@ -44,4 +44,4 @@ const InputFieldHarborMultiSelect: React.FC<
   );
 };
 
-export default InputFieldHarborMultiSelect;
+export default InputFieldRequirementMultiSelect;

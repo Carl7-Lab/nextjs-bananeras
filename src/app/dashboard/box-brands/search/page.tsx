@@ -1,4 +1,5 @@
 'use client';
+import { Box, Center } from '@chakra-ui/react';
 import {
   MaterialReactTable,
   useMaterialReactTable,
@@ -11,48 +12,13 @@ import { useBrands } from '../../../../hooks/box-brand/specifications/brand/getB
 import { usePagination } from '../../../../hooks/usePagination';
 import { BrandType } from '../../../../types/box-brand/specifications/brand';
 
-interface Person {
-  name: string;
-  age: number;
-}
-
-const dataP: Person[] = [
-  {
-    name: 'John',
-    age: 30,
-  },
-  {
-    name: 'Sara',
-    age: 25,
-  },
-];
-
 function SearchBoxBrandPage() {
   const { paginationParams, filterProps } = usePagination();
-  const { data: dataB, isLoading, refetch } = useBrands(paginationParams);
+  const { data = [], isLoading, refetch } = useBrands(paginationParams);
 
-  console.log(dataB);
+  console.log(data);
 
-  const columnsP = useMemo<MRT_ColumnDef<Person>[]>(
-    () => [
-      {
-        accessorKey: 'name',
-        header: 'Name',
-        muiTableHeadCellProps: { style: { color: 'green' } },
-        enableHiding: false,
-      },
-      {
-        accessorFn: (originalRow) => Number(originalRow.age),
-        id: 'age',
-        header: 'Age',
-        Header: <i style={{ color: 'red' }}>Age</i>,
-        Cell: ({ cell }) => <i>{cell.getValue<number>().toLocaleString()}</i>,
-      },
-    ],
-    []
-  );
-
-  const columnsB = useMemo<MRT_ColumnDef<Partial<BrandType>>[]>(
+  const columns = useMemo<MRT_ColumnDef<Partial<BrandType>>[]>(
     () => [
       {
         accessorKey: 'name',
@@ -64,18 +30,20 @@ function SearchBoxBrandPage() {
     []
   );
 
-  const tableP = useMaterialReactTable({
-    columns: columnsP,
-    data: dataP,
+  const table = useMaterialReactTable({
+    columns,
+    data,
     enableRowSelection: true,
     enableColumnOrdering: true,
     enableGlobalFilter: false,
   });
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <MaterialReactTable table={tableP} />
-    </div>
+    <Box my={'auto'} mx={'auto'}>
+      <Center>
+        <MaterialReactTable table={table} />
+      </Center>
+    </Box>
   );
 }
 

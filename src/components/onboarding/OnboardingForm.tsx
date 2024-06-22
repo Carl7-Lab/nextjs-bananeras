@@ -13,6 +13,7 @@ import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import { useCreateMerchant } from '../../hooks/merchants/createMerchant';
 import { BACKEND_URL } from '../../lib/constants';
+import InputFieldCertificateMultiSelect from '../box-brands/specifications/certificate/InputFieldCertificateMultiSelect';
 import InputFieldText from '../ui/form/InputFieldText';
 
 interface ValuesProps {
@@ -26,6 +27,7 @@ interface ValuesProps {
   businessObjCity: string;
   businessObjLatitude: number;
   businessObjLongitude: number;
+  businesscertificates: number[] | null;
   businessManagerObjName: string;
   businessManagerObjEmail: string;
   businessManagerObjPhone: string;
@@ -42,6 +44,7 @@ const initialValues: ValuesProps = {
   businessObjCity: '',
   businessObjLatitude: 0,
   businessObjLongitude: 0,
+  businesscertificates: null,
   businessManagerObjName: '',
   businessManagerObjEmail: '',
   businessManagerObjPhone: '',
@@ -81,6 +84,10 @@ const validationSchema = Yup.object({
     .min(-180, 'Must be at least -180')
     .max(180, 'Must be at most 180')
     .required('Required'),
+  businesscertificates: Yup.array()
+    // .min(1, 'At least one requirement must be selected')
+    // .required('Required')
+    .of(Yup.number().required()),
   businessManagerObjName: Yup.string()
     .max(15, 'Must be 15 characters or less')
     .required('Required'),
@@ -129,34 +136,34 @@ export default function OnboardingForm() {
     merchantValues: any,
     actions: { resetForm: () => void }
   ) => {
-    // console.log('creatingMerchant: ', merchantValues);
-    createMerchant(
-      {
-        ...merchantValues,
-      },
-      {
-        onError: (error) => {
-          toast({
-            title: 'Error.',
-            description: `${error.message}`,
-            status: 'error',
-            duration: 5000,
-            isClosable: true,
-          });
-        },
-        onSuccess: () => {
-          toast({
-            title: 'Productor creado',
-            status: 'success',
-            duration: 5000,
-            isClosable: true,
-          });
+    console.log('creatingMerchant: ', merchantValues);
+    // createMerchant(
+    //   {
+    //     ...merchantValues,
+    //   },
+    //   {
+    //     onError: (error) => {
+    //       toast({
+    //         title: 'Error.',
+    //         description: `${error.message}`,
+    //         status: 'error',
+    //         duration: 5000,
+    //         isClosable: true,
+    //       });
+    //     },
+    //     onSuccess: () => {
+    //       toast({
+    //         title: 'Productor creado',
+    //         status: 'success',
+    //         duration: 5000,
+    //         isClosable: true,
+    //       });
 
-          queryClient.invalidateQueries('merchants');
-          actions.resetForm();
-        },
-      }
-    );
+    //       queryClient.invalidateQueries('merchants');
+    //       actions.resetForm();
+    //     },
+    //   }
+    // );
   };
 
   const onSubmit = async (
@@ -237,6 +244,11 @@ export default function OnboardingForm() {
                 <InputFieldText
                   name={'businessObjLongitude'}
                   label={'Longitud'}
+                />
+                <InputFieldCertificateMultiSelect
+                  name={'businesscertificates'}
+                  label={'Certificados'}
+                  placeholder={'Seleccione el/los certificados'}
                 />
               </SimpleGrid>
 
