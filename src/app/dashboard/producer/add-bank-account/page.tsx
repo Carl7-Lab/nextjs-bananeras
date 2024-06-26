@@ -2,6 +2,7 @@
 import { Box, Card, CardBody, Center } from '@chakra-ui/react';
 import React from 'react';
 import AddBankAccountForm from '../../../../components/producer/AddBankAccountForm';
+import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
 const AddBankAccountPage = () => {
   return (
@@ -27,4 +28,4 @@ const AddBankAccountPage = () => {
   );
 };
 
-export default AddBankAccountPage;
+export default IsOnboarding(AddBankAccountPage);

@@ -1,4 +1,4 @@
-export type CochibiolType = {
+export type InsecticideType = {
   id: number | '';
   name: string;
   activeIngredient: string;

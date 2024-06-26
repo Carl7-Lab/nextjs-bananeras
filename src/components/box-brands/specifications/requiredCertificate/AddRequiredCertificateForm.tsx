@@ -1,9 +1,10 @@
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
-import { useCreateCertificate } from '../../../../hooks/box-brand/specifications/certificate/createCertificate';
+import { useCreateRequiredCertificate } from '../../../../hooks/box-brand/specifications/certificate/createRequiredCertificate';
 import InputFieldText from '../../../ui/form/InputFieldText';
 
 interface AddCertificateFormProps {
@@ -12,45 +13,56 @@ interface AddCertificateFormProps {
 
 interface ValuesProps {
   name: string;
-  certificateCode: string;
 }
 
 const initialValues: ValuesProps = {
   name: '',
-  certificateCode: '',
 };
 
 const validationSchema = Yup.object({
   name: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
-  certificateCode: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(15, 'Debe tener 15 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
 });
 
 const AddCertificateForm = ({ onClose }: AddCertificateFormProps) => {
-  const { createCertificate } = useCreateCertificate();
+  const { createRequiredCertificate } = useCreateRequiredCertificate();
   const toast = useToast();
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   const addCertificate = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
-    createCertificate(
+    createRequiredCertificate(
       {
         ...values,
       },
       {
-        onError: (error) => {
+        onError: (error: any) => {
+          const { response } = error;
+          const { data } = response;
+          const { statusCode, message, error: errorTitle, model, prop } = data;
+
           toast({
-            title: 'Error.',
-            description: `${error.message}`,
+            title: `Error ${statusCode}: ${errorTitle} `,
+            description: `${message}`,
             status: 'error',
             duration: 5000,
             isClosable: true,
           });
+
+          if (statusCode === 401) {
+            router.push('/api/auth/signout');
+          }
         },
         onSuccess: () => {
           toast({
@@ -60,7 +72,7 @@ const AddCertificateForm = ({ onClose }: AddCertificateFormProps) => {
             isClosable: true,
           });
 
-          queryClient.invalidateQueries('certificates');
+          queryClient.invalidateQueries('requiredCertificates');
           actions.resetForm();
           !!onClose && onClose();
         },
@@ -85,7 +97,6 @@ const AddCertificateForm = ({ onClose }: AddCertificateFormProps) => {
               </Heading>
               <Divider mb={'16px'} />
               <InputFieldText name={'name'} label={'Nombre'} />
-              <InputFieldText name={'certificateCode'} label={'Código'} />
 
               <Button
                 mt='32px'

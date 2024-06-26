@@ -5,14 +5,14 @@ import { serializeQueryResult } from '@/utils/serializeQueryResult';
 
 type Params = PaginationParams;
 
-function listCertificates(params: Params) {
-  return axios.get('/box-brand/certificate', { params });
+function listInsecticides(params: Params) {
+  return axios.get('/box-brand/insecticide', { params });
 }
 
-export function useCertificates({ search = '', page = 1, limit = 10 }: Params) {
+export function useInsecticides({ search = '', page = 1, limit = 10 }: Params) {
   const result = useQuery(
-    ['certificates', search, page, limit],
-    () => listCertificates({ search, page, limit }),
+    ['insecticides', search, page, limit],
+    () => listInsecticides({ search, page, limit }),
     {
       keepPreviousData: true,
     }

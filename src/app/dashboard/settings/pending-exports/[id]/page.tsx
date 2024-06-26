@@ -3,6 +3,7 @@ import { Box, Card, CardBody, Center, Heading } from '@chakra-ui/react';
 import { redirect, useParams } from 'next/navigation';
 import React, { useLayoutEffect } from 'react';
 import SentMaterialsExportForm from '../../../../../components/export/SentMaterialsExportForm';
+import IsOnboarding from '../../../../../components/ui/IsOnboarding';
 import { useExport } from '../../../../../hooks/export/getExport';
 import { ExportType } from '../../../../../types/export';
 
@@ -47,4 +48,4 @@ const PendingExportPage = () => {
   );
 };
 
-export default PendingExportPage;
+export default IsOnboarding(PendingExportPage);

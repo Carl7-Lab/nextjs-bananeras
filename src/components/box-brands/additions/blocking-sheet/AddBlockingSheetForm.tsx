@@ -1,5 +1,6 @@
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
@@ -22,16 +23,31 @@ const initialValues: ValuesProps = {
 
 const validationSchema = Yup.object({
   name: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(20, 'Debe tener 20 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
   dimensions: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(15, 'Debe tener 15 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
 });
 
 const AddBlockingSheetForm = ({ onClose }: AddBlockingSheetFormProps) => {
   const { createBlockingSheet } = useCreateBlockingSheet();
   const toast = useToast();
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   const addBlockingSheet = async (
@@ -43,14 +59,22 @@ const AddBlockingSheetForm = ({ onClose }: AddBlockingSheetFormProps) => {
         ...values,
       },
       {
-        onError: (error) => {
+        onError: (error: any) => {
+          const { response } = error;
+          const { data } = response;
+          const { statusCode, message, error: errorTitle, model, prop } = data;
+
           toast({
-            title: 'Error.',
-            description: `${error.message}`,
+            title: `Error ${statusCode}: ${errorTitle} `,
+            description: `${message}`,
             status: 'error',
             duration: 5000,
             isClosable: true,
           });
+
+          if (statusCode === 401) {
+            router.push('/api/auth/signout');
+          }
         },
         onSuccess: () => {
           toast({

@@ -1,19 +1,19 @@
 import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react';
 import { useField } from 'formik';
 import React from 'react';
-import AddCertificateModal from './AddCertificateModal';
-import CertificateMultiSelectBase from './CertificateMultiSelectBase';
-import { CertificateType } from '../../../../types/box-brand/specifications/certificate';
+import AddCertificateModal from './AddRequiredCertificateModal';
+import RequiredCertificateMultiSelectBase from './RequiredCertificateMultiSelectBase';
+import { RequiredCertificateType } from '../../../../types/box-brand/specifications/requiredCertificate';
 
-interface InputFieldCertificateMultiSelectProps {
+interface InputFieldRequiredCertificateMultiSelectProps {
   name: string;
   label: string;
   placeholder: string;
-  setCertificates?: (certificates: Partial<CertificateType>[]) => void;
+  setCertificates?: (certificates: Partial<RequiredCertificateType>[]) => void;
 }
 
-const InputFieldCertificateMultiSelect: React.FC<
-  InputFieldCertificateMultiSelectProps
+const InputFieldRequiredCertificateMultiSelect: React.FC<
+  InputFieldRequiredCertificateMultiSelectProps
 > = ({ name, label, placeholder, setCertificates }) => {
   const [field, meta, helpers] = useField(name);
 
@@ -23,12 +23,12 @@ const InputFieldCertificateMultiSelect: React.FC<
         {label} <AddCertificateModal />
       </FormLabel>
 
-      <CertificateMultiSelectBase
+      <RequiredCertificateMultiSelectBase
         name={name}
         placeholder={placeholder}
         onChange={(newValues) =>
           helpers.setValue(
-            newValues.map((item: Partial<CertificateType>) => item.id)
+            newValues.map((item: Partial<RequiredCertificateType>) => item.id)
           )
         }
         field={field}
@@ -44,4 +44,4 @@ const InputFieldCertificateMultiSelect: React.FC<
   );
 };
 
-export default InputFieldCertificateMultiSelect;
+export default InputFieldRequiredCertificateMultiSelect;

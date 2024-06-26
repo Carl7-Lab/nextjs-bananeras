@@ -13,7 +13,7 @@ import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
 import { useBusinessesByMerchantId } from '../../hooks/business/getBusinesses';
 import { usePagination } from '../../hooks/usePagination';
-import { BusinessType } from '../../types/business';
+import { BusinessType } from '../../types/merchant/business';
 
 interface BusinessSelectBaseProps {
   name?: string;

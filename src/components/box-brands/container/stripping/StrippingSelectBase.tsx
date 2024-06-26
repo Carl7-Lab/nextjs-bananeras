@@ -9,7 +9,8 @@ import {
   CSSObjectWithLabel,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
 import { useStrippings } from '../../../../hooks/box-brand/container/stripping/getStrippings';
 import { usePagination } from '../../../../hooks/usePagination';
@@ -22,27 +23,6 @@ interface StrippingSelectBaseProps {
   setStripping?: (stripping: Partial<StrippingType>) => void;
   onChange?: (newValue: Partial<StrippingType>) => void;
 }
-
-// const data: Partial<StrippingType>[] = [
-//   {
-//     id: 1,
-//     name: 'Zuncho1',
-//     weightPerPack: 20,
-//     color: 'Color1',
-//   },
-//   {
-//     id: 2,
-//     name: 'Zuncho2',
-//     weightPerPack: 40,
-//     color: 'Color2',
-//   },
-//   {
-//     id: 3,
-//     name: 'Zuncho3',
-//     weightPerPack: 60,
-//     color: 'Color3',
-//   },
-// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<StrippingType>,
@@ -90,7 +70,21 @@ const StrippingSelectBase: React.FC<StrippingSelectBaseProps> = ({
   onChange,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useStrippings(paginationParams);
+  const { data, isLoading, refetch, error } = useStrippings(paginationParams);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data } = response;
+      const { statusCode, message, error: errorTitle, model, prop } = data;
+
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
 
   const handleChange = (newValue: SingleValue<Partial<StrippingType>>) => {
     if (setStripping) setStripping(newValue as Partial<StrippingType>);
@@ -108,7 +102,11 @@ const StrippingSelectBase: React.FC<StrippingSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'stripping not found'}
+      noOptionsMessage={() =>
+        !!error
+          ? (error as any).response.data.message
+          : 'Ya no hay zuncho/s disponible/s'
+      }
       isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<StrippingType>) => `${opt.name}`}

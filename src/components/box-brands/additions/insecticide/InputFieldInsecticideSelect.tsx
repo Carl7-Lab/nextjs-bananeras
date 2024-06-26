@@ -1,29 +1,27 @@
 import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react';
 import { useField } from 'formik';
 import React from 'react';
-import AddCochibiolModal from './AddCochibiolModal';
-import CochibiolSelectBase from './CochibiolSelectBase';
+import AddInsecticideModal from './AddInsecticideModal';
+import InsecticideSelectBase from './InsecticideSelectBase';
 
-interface InputFieldCochibiolSelectProps {
+interface InputFieldInsecticideSelectProps {
   name: string;
   label: string;
   placeholder: string;
 }
 
-const InputFieldCochibiolSelect: React.FC<InputFieldCochibiolSelectProps> = ({
-  name,
-  label,
-  placeholder,
-}) => {
+const InputFieldInsecticideSelect: React.FC<
+  InputFieldInsecticideSelectProps
+> = ({ name, label, placeholder }) => {
   const [field, meta, helpers] = useField(name);
 
   return (
     <FormControl id={name} isInvalid={!!meta.error && meta.touched}>
       <FormLabel fontSize='sm' mb='8px' h={'21px'}>
-        {label} <AddCochibiolModal />
+        {label} <AddInsecticideModal />
       </FormLabel>
 
-      <CochibiolSelectBase
+      <InsecticideSelectBase
         name={name}
         placeholder={placeholder}
         onChange={(newValue) => helpers.setValue(newValue?.id)}
@@ -39,4 +37,4 @@ const InputFieldCochibiolSelect: React.FC<InputFieldCochibiolSelectProps> = ({
   );
 };
 
-export default InputFieldCochibiolSelect;
+export default InputFieldInsecticideSelect;

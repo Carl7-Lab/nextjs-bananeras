@@ -3,5 +3,5 @@ export type ClusterBagType = {
   name: string;
   art: string;
   dimensions: string;
-  quantityPerPack: number;
+  quantityPerPack: number | '';
 };

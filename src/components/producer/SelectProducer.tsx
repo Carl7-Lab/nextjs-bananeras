@@ -30,17 +30,26 @@ const SelectProducer: React.FC<SelectProducerProps> = ({
           setProducer={setProducer}
         />
 
+        {/* No se agregado información */}
         <Box>
           <FormLabel>RUC</FormLabel>
           <Input isReadOnly={true} value={producer?.businessId || ''} />
         </Box>
         <Box>
           <FormLabel>Ciudad</FormLabel>
-          <Input isReadOnly={true} value={producer?.city || ''} />
+          <Input
+            isReadOnly={true}
+            value={producer?.city || ''}
+            placeholder={producer ? 'No se ha agregado información' : ''}
+          />
         </Box>
         <Box>
           <FormLabel>Dirección</FormLabel>
-          <Input isReadOnly={true} value={producer?.address || ''} />
+          <Input
+            isReadOnly={true}
+            value={producer?.address || ''}
+            placeholder={producer ? 'No se ha agregado información' : ''}
+          />
         </Box>
       </SimpleGrid>
     </>

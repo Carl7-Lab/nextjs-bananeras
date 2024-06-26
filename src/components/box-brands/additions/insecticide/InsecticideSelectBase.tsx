@@ -9,39 +9,25 @@ import {
   CSSObjectWithLabel,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
-import { useCochibiols } from '../../../../hooks/box-brand/additions/cochibiol/getCochibiols';
+import { useInsecticides } from '../../../../hooks/box-brand/additions/insecticide/getInsecticides';
 import { usePagination } from '../../../../hooks/usePagination';
-import { CochibiolType } from '../../../../types/box-brand/additions/cochibiol';
+import { InsecticideType } from '../../../../types/box-brand/additions/insecticide';
 
-interface CochibiolSelectBaseProps {
+interface InsecticideSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
-  setCochibiol?: (cochibiol: Partial<CochibiolType>) => void;
-  onChange?: (newValue: Partial<CochibiolType>) => void;
+  setInsecticide?: (insecticide: Partial<InsecticideType>) => void;
+  onChange?: (newValue: Partial<InsecticideType>) => void;
 }
 
-// const data: Partial<CochibiolType>[] = [
-//   {
-//     id: 1,
-//     name: 'Cochibiol1',
-//   },
-//   {
-//     id: 2,
-//     name: 'Cochibiol2',
-//   },
-//   {
-//     id: 3,
-//     name: 'Cochibiol3',
-//   },
-// ];
-
 const chakraStyles: ChakraStylesConfig<
-  Partial<CochibiolType>,
+  Partial<InsecticideType>,
   false,
-  GroupBase<Partial<CochibiolType>>
+  GroupBase<Partial<InsecticideType>>
 > = {
   container: (provided) => ({
     ...provided,
@@ -62,12 +48,12 @@ const chakraStyles: ChakraStylesConfig<
   }),
 };
 
-const cochibiolComponents = {
+const insecticideComponents = {
   DropdownIndicator: (
     props: DropdownIndicatorProps<
-      Partial<CochibiolType>,
+      Partial<InsecticideType>,
       false,
-      GroupBase<Partial<CochibiolType>>
+      GroupBase<Partial<InsecticideType>>
     >
   ) => (
     <chakraComponents.DropdownIndicator {...props}>
@@ -76,19 +62,33 @@ const cochibiolComponents = {
   ),
 };
 
-const CochibiolSelectBase: React.FC<CochibiolSelectBaseProps> = ({
+const InsecticideSelectBase: React.FC<InsecticideSelectBaseProps> = ({
   name,
   field,
   placeholder,
-  setCochibiol,
+  setInsecticide,
   onChange,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useCochibiols(paginationParams);
+  const { data, isLoading, refetch, error } = useInsecticides(paginationParams);
+  const router = useRouter();
 
-  const handleChange = (newValue: SingleValue<Partial<CochibiolType>>) => {
-    if (setCochibiol) setCochibiol(newValue as Partial<CochibiolType>);
-    if (onChange) onChange(newValue as Partial<CochibiolType>);
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data } = response;
+      const { statusCode, message, error: errorTitle, model, prop } = data;
+
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
+
+  const handleChange = (newValue: SingleValue<Partial<InsecticideType>>) => {
+    if (setInsecticide) setInsecticide(newValue as Partial<InsecticideType>);
+    if (onChange) onChange(newValue as Partial<InsecticideType>);
   };
 
   return (
@@ -102,17 +102,23 @@ const CochibiolSelectBase: React.FC<CochibiolSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'cochibiol not found'}
+      noOptionsMessage={() =>
+        !!error
+          ? (error as any).response.data.message
+          : 'Ya no hay etiqueta/s disponible/s'
+      }
       isLoading={isLoading}
       options={data}
-      getOptionLabel={(opt: Partial<CochibiolType>) => `${opt.name}`}
-      getOptionValue={(opt: Partial<CochibiolType>) =>
+      getOptionLabel={(opt: Partial<InsecticideType>) => `${opt.name}`}
+      getOptionValue={(opt: Partial<InsecticideType>) =>
         opt.id ? opt.id.toString() : ''
       }
       onChange={(newValue) => handleChange(newValue)}
       value={
         field?.value
-          ? data.find((opt: Partial<CochibiolType>) => opt.id === field?.value)
+          ? data.find(
+              (opt: Partial<InsecticideType>) => opt.id === field?.value
+            )
           : undefined
       }
       placeholder={placeholder}
@@ -120,9 +126,9 @@ const CochibiolSelectBase: React.FC<CochibiolSelectBaseProps> = ({
       //     filterProps.setSearch(newValue);
       //     refetch();
       //   }}
-      components={cochibiolComponents}
+      components={insecticideComponents}
     />
   );
 };
 
-export default CochibiolSelectBase;
+export default InsecticideSelectBase;

@@ -9,7 +9,8 @@ import {
   CSSObjectWithLabel,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
 import { useProtectors } from '../../../../hooks/box-brand/materials/protector/getProtectors';
 import { usePagination } from '../../../../hooks/usePagination';
@@ -22,24 +23,6 @@ interface ProtectorSelectBaseProps {
   setProtector?: (protector: Partial<ProtectorType>) => void;
   onChange?: (newValue: Partial<ProtectorType>) => void;
 }
-
-// const data: Partial<ProtectorType>[] = [
-//   {
-//     id: 1,
-//     name: 'Protector1',
-//     quantityPerPack: 500,
-//   },
-//   {
-//     id: 2,
-//     name: 'Protector2',
-//     quantityPerPack: 750,
-//   },
-//   {
-//     id: 3,
-//     name: 'Protector3',
-//     quantityPerPack: 1000,
-//   },
-// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<ProtectorType>,
@@ -87,7 +70,21 @@ const ProtectorSelectBase: React.FC<ProtectorSelectBaseProps> = ({
   onChange,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useProtectors(paginationParams);
+  const { data, isLoading, refetch, error } = useProtectors(paginationParams);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data } = response;
+      const { statusCode, message, error: errorTitle, model, prop } = data;
+
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
 
   const handleChange = (newValue: SingleValue<Partial<ProtectorType>>) => {
     if (setProtector) setProtector(newValue as Partial<ProtectorType>);
@@ -105,7 +102,11 @@ const ProtectorSelectBase: React.FC<ProtectorSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'protector not found'}
+      noOptionsMessage={() =>
+        !!error
+          ? (error as any).response.data.message
+          : 'Ya no hay protector/es disponible/s'
+      }
       isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<ProtectorType>) => `${opt.name}`}

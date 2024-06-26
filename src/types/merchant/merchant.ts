@@ -6,5 +6,7 @@ export type MerchantType = {
   businessId: string;
   address: string;
   city: string;
-  business: Partial<BusinessType>;
+  email: string;
+  contractType: string;
+  businesses: Partial<BusinessType>[];
 };

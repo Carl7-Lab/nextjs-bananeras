@@ -2,6 +2,7 @@
 import { Box, Center } from '@chakra-ui/react';
 import React from 'react';
 import PendingPaymentList from '../../../../components/export/export-payments/PendingPaymentList';
+import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
 function ExportPaymentspage() {
   return (
@@ -13,4 +14,4 @@ function ExportPaymentspage() {
   );
 }
 
-export default ExportPaymentspage;
+export default IsOnboarding(ExportPaymentspage);

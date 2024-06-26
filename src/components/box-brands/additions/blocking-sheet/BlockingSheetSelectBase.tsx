@@ -9,7 +9,8 @@ import {
   CSSObjectWithLabel,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
 import { useBlockingSheets } from '../../../../hooks/box-brand/additions/blocking-sheet/getBlockingSheets';
 import { usePagination } from '../../../../hooks/usePagination';
@@ -22,21 +23,6 @@ interface BlockingSheetSelectBaseProps {
   setBlockingSheet?: (blockingSheet: Partial<BlockingSheetType>) => void;
   onChange?: (newValue: Partial<BlockingSheetType>) => void;
 }
-
-// const data: Partial<BlockingSheetType>[] = [
-//   {
-//     id: 1,
-//     name: 'Lamina de bloque1',
-//   },
-//   {
-//     id: 2,
-//     name: 'Lamina de bloque2',
-//   },
-//   {
-//     id: 3,
-//     name: 'Lamina de bloque3',
-//   },
-// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<BlockingSheetType>,
@@ -84,7 +70,22 @@ const BlockingSheetSelectBase: React.FC<BlockingSheetSelectBaseProps> = ({
   onChange,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useBlockingSheets(paginationParams);
+  const { data, isLoading, refetch, error } =
+    useBlockingSheets(paginationParams);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data } = response;
+      const { statusCode, message, error: errorTitle, model, prop } = data;
+
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
 
   const handleChange = (newValue: SingleValue<Partial<BlockingSheetType>>) => {
     if (setBlockingSheet)
@@ -103,7 +104,11 @@ const BlockingSheetSelectBase: React.FC<BlockingSheetSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'staple not found'}
+      noOptionsMessage={() =>
+        !!error
+          ? (error as any).response.data.message
+          : 'Ya no hay etiqueta/s disponible/s'
+      }
       isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<BlockingSheetType>) => `${opt.name}`}

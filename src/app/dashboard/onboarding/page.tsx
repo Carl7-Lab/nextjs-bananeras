@@ -7,10 +7,11 @@ import OnboardingForm from '../../../components/onboarding/OnboardingForm';
 
 export default function OnBoardingPage() {
   const { data: session } = useSession();
-  const isOnboarded = !!session?.user?.exporterId;
+  const isOnboarded = session?.user?.onboardingStatus;
 
   useLayoutEffect(() => {
-    if (isOnboarded) {
+    console.log('OnBoardingPage isOnboarded: ', isOnboarded);
+    if (isOnboarded === 'done') {
       return redirect('/dashboard/producer/fincas');
     }
   }, [isOnboarded]);

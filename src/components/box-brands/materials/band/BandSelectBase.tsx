@@ -9,7 +9,8 @@ import {
   CSSObjectWithLabel,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
 import { useBands } from '../../../../hooks/box-brand/materials/band/getBands';
 import { usePagination } from '../../../../hooks/usePagination';
@@ -22,27 +23,6 @@ interface BandSelectBaseProps {
   setBand?: (band: Partial<BandType>) => void;
   onChange?: (newValue: Partial<BandType>) => void;
 }
-
-// const data: Partial<BandType>[] = [
-//   {
-//     id: 1,
-//     name: 'Banda1',
-//     quantityPerPack: 500,
-//     color: 'color1',
-//   },
-//   {
-//     id: 2,
-//     name: 'Banda2',
-//     quantityPerPack: 750,
-//     color: 'color2',
-//   },
-//   {
-//     id: 3,
-//     name: 'Banda3',
-//     quantityPerPack: 1000,
-//     color: 'color3',
-//   },
-// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<BandType>,
@@ -90,7 +70,21 @@ const BandSelectBase: React.FC<BandSelectBaseProps> = ({
   onChange,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useBands(paginationParams);
+  const { data, isLoading, refetch, error } = useBands(paginationParams);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data } = response;
+      const { statusCode, message, error: errorTitle, model, prop } = data;
+
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
 
   const handleChange = (newValue: SingleValue<Partial<BandType>>) => {
     if (setBand) setBand(newValue as Partial<BandType>);
@@ -108,7 +102,11 @@ const BandSelectBase: React.FC<BandSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'band not found'}
+      noOptionsMessage={() =>
+        !!error
+          ? (error as any).response.data.message
+          : 'Ya no hay banda/s disponible/s'
+      }
       isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<BandType>) => `${opt.name}`}

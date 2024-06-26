@@ -7,19 +7,21 @@ import {
   SimpleGrid,
   useToast,
 } from '@chakra-ui/react';
-import { Form, Formik } from 'formik';
-import React from 'react';
+import { Form, Formik, FormikHelpers } from 'formik';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import { useCreateBoxBrand } from '@/hooks/box-brand/createBoxBrand';
 import InputFieldBlockingSheetSelect from './additions/blocking-sheet/InputFieldBlockingSheetSelect';
-import InputFieldCochibiolSelect from './additions/cochibiol/InputFieldCochibiolSelect';
+import InputFieldInsecticideMultiSelect from './additions/insecticide/InputFieldInsecticideMultiSelect';
 import InputFieldLatexRemoverSelect from './additions/latex-remover/InputFieldLatexRemoverSelect';
 import InputFieldMettoLabelSelect from './container/metto-label/InputFieldMettoLabelSelect';
 import InputFieldSealSelect from './container/seal/InputFieldSealSelect';
 import InputFieldStapleSelect from './container/staple/InputFieldStapleSelect';
 import InputFieldStrippingSelect from './container/stripping/InputFieldStrippingSelect';
 import InputFieldThermographSelect from './container/thermograph/InputFieldThermographSelect';
+import InputFieldsBanContainer from './InputFieldsBanContainer';
 import InputFieldBandSelect from './materials/band/InputFieldBandSelect';
 import InputFieldClusterBagSelect from './materials/cluster-bag/InputFieldClusterBagSelect';
 import InputFieldLabelSelect from './materials/label/InputFieldLabelSelect';
@@ -28,8 +30,9 @@ import InputFieldRubberSelect from './materials/rubber/InputFieldRubberSelect';
 import InputFieldSachetSelect from './materials/sachet/InputFieldSachetSelect';
 import InputFieldPesticideMultiSelect from './post-harvest/pesticide/InputFieldPesticideMultiSelect';
 import InputFieldBrandSelect from './specifications/brand/InputFieldBrandSelect';
-import InputFieldCertificateMultiSelect from './specifications/certificate/InputFieldCertificateMultiSelect';
-import InputFieldQuatity from '../ui/form/InputFieldQuatity';
+import InputFieldRequiredCertificateMultiSelect from './specifications/requiredCertificate/InputFieldRequiredCertificateMultiSelect';
+import InputFieldNumber from '../ui/form/InputFieldNumber';
+import InputFieldQuantity from '../ui/form/InputFieldQuantity';
 import InputFieldText from '../ui/form/InputFieldText';
 
 interface ValuesProps {
@@ -40,15 +43,21 @@ interface ValuesProps {
   boxQuantity: number | '';
   netWeightBox: number | '';
   grossWeightBox: number | '';
-  certificates: number[] | null;
+  requiredCertificates: number[] | null;
 
   // materials
   bottomType: string;
+  bottomTypeQuantity: number | '';
   lidType: string;
+  lidTypeQuantity: number | '';
   coverType: string;
+  coverTypeQuantity: number | '';
   cardboardType: string;
+  cardboardTypeQuantity: number | '';
   padType: string;
+  padTypeQuantity: number | '';
   spongeType: string;
+  spongeTypeQuantity: number | '';
   // select
   labelId: number | '';
   labelQuantity: number | '';
@@ -64,8 +73,8 @@ interface ValuesProps {
   clusterBagQuantity: number | '';
 
   // post harvest
-  pesticide: number[] | null;
-  pesticideQuantity: number | '';
+  pesticides: number[] | null;
+  pesticidesQuantity: number | '';
 
   // container
   palletsType: string;
@@ -94,8 +103,8 @@ interface ValuesProps {
   // select
   latexRemoverId: number | '';
   latexRemoverQuantity: number | '';
-  cochibiolId: number | '';
-  cochibiolQuantity: number | '';
+  insecticides: number[] | null;
+  insecticidesQuantity: number | '';
   blockingSheetId: number | '';
   blockingSheetQuantity: number | '';
 }
@@ -107,14 +116,20 @@ const initialValues: ValuesProps = {
   boxQuantity: '',
   netWeightBox: '',
   grossWeightBox: '',
-  certificates: null,
+  requiredCertificates: null,
 
   bottomType: '',
+  bottomTypeQuantity: '',
   lidType: '',
+  lidTypeQuantity: '',
   coverType: '',
+  coverTypeQuantity: '',
   cardboardType: '',
+  cardboardTypeQuantity: '',
   padType: '',
+  padTypeQuantity: '',
   spongeType: '',
+  spongeTypeQuantity: '',
 
   labelId: '',
   labelQuantity: '',
@@ -129,8 +144,8 @@ const initialValues: ValuesProps = {
   clusterBagId: '',
   clusterBagQuantity: '',
 
-  pesticide: null,
-  pesticideQuantity: '',
+  pesticides: null,
+  pesticidesQuantity: '',
 
   palletsType: '',
   palletsTypeQuantity: '',
@@ -157,198 +172,392 @@ const initialValues: ValuesProps = {
 
   latexRemoverId: '',
   latexRemoverQuantity: '',
-  cochibiolId: '',
-  cochibiolQuantity: '',
+  insecticides: null,
+  insecticidesQuantity: '',
   blockingSheetId: '',
   blockingSheetQuantity: '',
 };
 
 const validationSchema = Yup.object({
   brandId: Yup.number()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   name: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
-  brandCode: Yup.string().required('Required'),
+    .max(15, 'Debe tener 15 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  brandCode: Yup.string()
+    .transform((value) => value.trim())
+    .required('Requerido'),
   boxQuantity: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .lessThan(10000, 'Must be lower than 10000 boxes')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .lessThan(10000, 'Debe ser menor que 10000 cajas')
+    .required('Requerido'),
   netWeightBox: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .lessThan(100, 'Must be lower than 100 pounds')
-    .required('Required'),
+    .moreThan(0, 'Debe ser mayor que 0')
+    .lessThan(100, 'Debe ser menor que 100 libras')
+    .test(
+      'is-decimal',
+      'Debe tener como máximo 2 decimales',
+      (value) => (value + '').match(/^\d+(\.\d{1,2})?$/) !== null
+    )
+    .required('Requerido'),
   grossWeightBox: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
-  certificates: Yup.array()
-    .min(1, 'At least one harbor must be selected')
-    .required('Required')
-    .of(Yup.number().required()),
+    .moreThan(0, 'Debe ser mayor que 0')
+    .lessThan(100, 'Debe ser menor que 100 libras')
+    .min(Yup.ref('netWeightBox'), 'Debe ser mayor que el peso neto de la caja')
+    .test(
+      'is-decimal',
+      'Debe tener como máximo 2 decimales',
+      (value) => (value + '').match(/^\d+(\.\d{1,2})?$/) !== null
+    )
+    .required('Requerido'),
+  requiredCertificates: Yup.array()
+    .min(1, 'Debe seleccionar al menos un certificado')
+    .of(Yup.number().required())
+    .nullable()
+    .required('Requerido'),
 
   bottomType: Yup.string()
-    .max(20, 'Must be 20 characters or less')
-    .required('Required'),
+    .max(20, 'Debe tener 20 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  bottomTypeQuantity: Yup.number()
+    .required('Requerido')
+    .when('bottomType', {
+      is: 'N/A',
+      then: (schema) => schema.oneOf([0], 'Debe ser 0 si fondo es N/A'),
+      otherwise: (schema) => schema.moreThan(0, 'Debe ser mayor que 0'),
+    }),
   lidType: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(20, 'Debe tener 20 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  lidTypeQuantity: Yup.number()
+    .required('Requerido')
+    .when('lidType', {
+      is: 'N/A',
+      then: (schema) => schema.oneOf([0], 'Debe ser 0 si fondo es N/A'),
+      otherwise: (schema) => schema.moreThan(0, 'Debe ser mayor que 0'),
+    }),
   coverType: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(20, 'Debe tener 20 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  coverTypeQuantity: Yup.number()
+    .required('Requerido')
+    .when('coverType', {
+      is: 'N/A',
+      then: (schema) => schema.oneOf([0], 'Debe ser 0 si fondo es N/A'),
+      otherwise: (schema) => schema.moreThan(0, 'Debe ser mayor que 0'),
+    }),
   cardboardType: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(20, 'Debe tener 20 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  cardboardTypeQuantity: Yup.number()
+    .required('Requerido')
+    .when('cardboardType', {
+      is: 'N/A',
+      then: (schema) => schema.oneOf([0], 'Debe ser 0 si fondo es N/A'),
+      otherwise: (schema) => schema.moreThan(0, 'Debe ser mayor que 0'),
+    }),
   padType: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(20, 'Debe tener 20 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  padTypeQuantity: Yup.number()
+    .required('Requerido')
+    .when('padType', {
+      is: 'N/A',
+      then: (schema) => schema.oneOf([0], 'Debe ser 0 si fondo es N/A'),
+      otherwise: (schema) => schema.moreThan(0, 'Debe ser mayor que 0'),
+    }),
   spongeType: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(20, 'Debe tener 20 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  spongeTypeQuantity: Yup.number()
+    .required('Requerido')
+    .when('spongeType', {
+      is: 'N/A',
+      then: (schema) => schema.oneOf([0], 'Debe ser 0 si fondo es N/A'),
+      otherwise: (schema) => schema.moreThan(0, 'Debe ser mayor que 0'),
+    }),
 
   labelId: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   labelQuantity: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   bandId: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   bandQuantity: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   sachetId: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   sachetQuantity: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   rubberId: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   rubberQuantity: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   protectorId: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   protectorQuantity: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   clusterBagId: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   clusterBagQuantity: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
 
-  pesticide: Yup.array()
-    .min(1, 'At least one harbor must be selected')
-    .required('Required')
-    .of(Yup.number().required()),
-  pesticideQuantity: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+  pesticides: Yup.array()
+    .min(1, 'Debe seleccionar al menos un pesticida')
+    .of(Yup.number().required())
+    .nullable()
+    .required('Requerido'),
+  pesticidesQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
 
   palletsType: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(20, 'Debe tener 20 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
   palletsTypeQuantity: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .required('Requerido')
+    .integer('Debe ser un número entero')
+    .when('palletsType', {
+      is: 'N/A',
+      then: (schema) => schema.oneOf([0], 'Debe ser 0 si fondo es N/A'),
+      otherwise: (schema) => schema.moreThan(0, 'Debe ser mayor que 0'),
+    }),
   miniPalletsType: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(20, 'Debe tener 20 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
   miniPalletsTypeQuantity: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .required('Requerido')
+    .integer('Debe ser un número entero')
+    .when('miniPalletsType', {
+      is: 'N/A',
+      then: (schema) => schema.oneOf([0], 'Debe ser 0 si fondo es N/A'),
+      otherwise: (schema) => schema.moreThan(0, 'Debe ser mayor que 0'),
+    }),
   cornerType: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(20, 'Debe tener 20 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
   cornerTypeQuantity: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .required('Requerido')
+    .integer('Debe ser un número entero')
+    .when('cornerType', {
+      is: 'N/A',
+      then: (schema) => schema.oneOf([0], 'Debe ser 0 si fondo es N/A'),
+      otherwise: (schema) => schema.moreThan(0, 'Debe ser mayor que 0'),
+    }),
   reinforcementType: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(20, 'Debe tener 20 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
   reinforcementTypeQuantity: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .required('Requerido')
+    .integer('Debe ser un número entero')
+    .when('reinforcementType', {
+      is: 'N/A',
+      then: (schema) => schema.oneOf([0], 'Debe ser 0 si fondo es N/A'),
+      otherwise: (schema) => schema.moreThan(0, 'Debe ser mayor que 0'),
+    }),
 
   stapleId: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   stapleQuantity: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   strippingId: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   strippingQuantity: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   thermographId: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   thermographQuantity: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   sealId: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   sealQuantity: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   mettoLabelId: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   mettoLabelQuantity: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
 
   packingTapeType: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(15, 'Debe tener 15 caracteres o menos')
+    .transform((value) => value.trim())
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .required('Requerido'),
   packingTapeTypeQuantity: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
 
   latexRemoverId: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   latexRemoverQuantity: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
-  cochibiolId: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
-  cochibiolQuantity: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  insecticides: Yup.number()
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  insecticidesQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   blockingSheetId: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   blockingSheetQuantity: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
 });
 
-interface InputFieldTextProps {
+interface InputFieldProps {
   name: string;
   label: string;
   placeholder?: string;
 }
 
-const specificationsInputFields: InputFieldTextProps[] = [
+const specificationsInputFieldsText: InputFieldProps[] = [
   { name: 'name', label: 'Tipo' },
   { name: 'brandCode', label: 'Código' },
+];
+
+const specificationsInputFieldsNumber: InputFieldProps[] = [
   { name: 'boxQuantity', label: 'Número de cajas/Contenedor' },
   { name: 'netWeightBox', label: 'Peso Neto de Caja' },
   { name: 'grossWeightBox', label: 'Peso Bruto de Caja' },
 ];
-// TODO: peso de caja agregar seleccion de unidades lb o kg
-// TODO: dimensiones de cartulina agregar seleccion de unidades m, cm y in
+
 interface MaterialsInputFieldsProps {
   name1: string;
   label1: string;
@@ -360,37 +569,37 @@ const materialsInputFields: MaterialsInputFieldsProps[] = [
   {
     name1: 'bottomType',
     label1: 'Fondo',
-    name2: 'boxQuantity',
+    name2: 'bottomTypeQuantity',
     label2: 'Cantidad',
   },
   {
     name1: 'lidType',
     label1: 'Tapa',
-    name2: 'boxQuantity',
+    name2: 'lidTypeQuantity',
     label2: 'Cantidad',
   },
   {
     name1: 'coverType',
     label1: 'Funda',
-    name2: 'boxQuantity',
+    name2: 'coverTypeQuantity',
     label2: 'Cantidad',
   },
   {
     name1: 'cardboardType',
     label1: 'Cartulina',
-    name2: 'boxQuantity',
+    name2: 'cardboardTypeQuantity',
     label2: 'Cantidad',
   },
   {
     name1: 'padType',
     label1: 'Pad',
-    name2: 'boxQuantity',
+    name2: 'padTypeQuantity',
     label2: 'Cantidad',
   },
   {
     name1: 'spongeType',
     label1: 'Esponja',
-    name2: 'boxQuantity',
+    name2: 'spongeTypeQuantity',
     label2: 'Cantidad',
   },
 ];
@@ -423,114 +632,52 @@ const containersInputFields: MaterialsInputFieldsProps[] = [
 ];
 
 export default function AddBoxBrandsForm() {
+  const router = useRouter();
   const toast = useToast();
   const { createBoxBrand } = useCreateBoxBrand();
   const queryClient = useQueryClient();
 
   const addBoxBrands = async (
     values: ValuesProps,
-    actions: { resetForm: () => void }
+    formikHelpers: FormikHelpers<ValuesProps>
   ) => {
-    const {
-      // specifications
-      brandId,
-      certificates,
-      // materials
-      labelId,
-      bandId,
-      sachetId,
-      rubberId,
-      protectorId,
-      clusterBagId,
-      // post harvest
-      pesticide,
-      // container
-      stapleId,
-      strippingId,
-      thermographId,
-      sealId,
-      mettoLabelId,
-      // additions
-      latexRemoverId,
-      cochibiolId,
-      blockingSheetId,
-
-      ...rest
-    } = values;
-
-    const sendValues = {
-      ...rest,
-      // specifications
-      boxQuantity: Number(rest.boxQuantity),
-      netWeightBox: Number(rest.netWeightBox),
-      grossWeightBox: Number(rest.grossWeightBox),
-      brand: { id: Number(values.brandId) },
-      certificateId: certificates,
-      // materials
-      label: { id: Number(values.labelId) },
-      labelQuantity: Number(values.labelQuantity),
-      band: { id: Number(values.bandId) },
-      bandQuantity: Number(values.bandQuantity),
-      sachet: { id: Number(values.sachetId) },
-      sachetQuantity: Number(values.sachetQuantity),
-      rubber: { id: Number(values.rubberId) },
-      rubberQuantity: Number(values.rubberQuantity),
-      protector: { id: Number(values.protectorId) },
-      protectorQuantity: Number(values.protectorQuantity),
-      clusterBag: { id: Number(values.clusterBagId) },
-      clusterBagQuantity: Number(values.clusterBagQuantity),
-      // post harvest
-      pesticideId: pesticide,
-      pesticideQuantity: Number(values.pesticideQuantity),
-      // container
-      palletsTypeQuantity: Number(values.palletsTypeQuantity),
-      miniPalletsTypeQuantity: Number(values.miniPalletsTypeQuantity),
-      cornerTypeQuantity: Number(values.cornerTypeQuantity),
-      reinforcementTypeQuantity: Number(values.reinforcementTypeQuantity),
-      staple: { id: Number(values.stapleId) },
-      stapleQuantity: Number(values.stapleQuantity),
-      stripping: { id: Number(values.strippingId) },
-      strippingQuantity: Number(values.strippingQuantity),
-      thermograph: { id: Number(values.thermographId) },
-      thermographQuantity: Number(values.thermographQuantity),
-      seal: { id: Number(values.sealId) },
-      sealQuantity: Number(values.sealQuantity),
-      mettoLabel: { id: Number(values.mettoLabelId) },
-      mettoLabelQuantity: Number(values.mettoLabelQuantity),
-      // additions
-      packingTapeTypeQuantity: Number(values.packingTapeTypeQuantity),
-      latexRemover: { id: Number(values.latexRemoverId) },
-      latexRemoverQuantity: Number(values.latexRemoverQuantity),
-      cochibiol: { id: Number(values.cochibiolId) },
-      cochibiolQuantity: Number(values.cochibiolQuantity),
-      blockingSheet: { id: Number(values.blockingSheetId) },
-      blockingSheetQuantity: Number(values.blockingSheetQuantity),
-    };
-
     createBoxBrand(
       {
-        ...sendValues,
+        ...values,
       },
       {
-        onError: (error) => {
+        onError: (error: any) => {
+          const { response } = error;
+          const { data } = response;
+          const { statusCode, message, error: errorTitle, model, prop } = data;
+
           toast({
-            title: 'Error.',
-            description: `${error.message}`,
+            title: `Error ${statusCode}: ${errorTitle} `,
+            description: `${message}`,
             status: 'error',
             duration: 5000,
             isClosable: true,
           });
+
+          if (statusCode === 401) {
+            router.push('/api/auth/signout');
+          }
+
+          if (model === 'BoxBrand' && prop === 'brandCode') {
+            formikHelpers.setFieldTouched(`${prop}`, true, false);
+            formikHelpers.setFieldError(`${prop}`, message);
+          }
         },
         onSuccess: () => {
           toast({
-            title: 'Marca de caja creada',
+            title: 'Tipo de caja creada',
             status: 'success',
             duration: 5000,
             isClosable: true,
           });
 
           queryClient.invalidateQueries('boxBrands');
-          actions.resetForm();
+          formikHelpers.resetForm();
         },
       }
     );
@@ -564,7 +711,7 @@ export default function AddBoxBrandsForm() {
                   label={'Marca'}
                   placeholder={'Seleccione la marca'}
                 />
-                {specificationsInputFields.map((field, index) => (
+                {specificationsInputFieldsText.map((field, index) => (
                   <InputFieldText
                     key={index}
                     name={field.name}
@@ -572,9 +719,17 @@ export default function AddBoxBrandsForm() {
                     placeholder={field.placeholder}
                   />
                 ))}
-                <InputFieldCertificateMultiSelect
-                  name={'certificates'}
-                  label={'Cerificado/s'}
+                {specificationsInputFieldsNumber.map((field, index) => (
+                  <InputFieldNumber
+                    key={index}
+                    name={field.name}
+                    label={field.label}
+                    placeholder={field.placeholder}
+                  />
+                ))}
+                <InputFieldRequiredCertificateMultiSelect
+                  name={'requiredCertificates'}
+                  label={'Cerificado/s Requerido/s'}
                   placeholder={'Seleccione el/los certificado/s'}
                 />
               </SimpleGrid>
@@ -588,10 +743,11 @@ export default function AddBoxBrandsForm() {
                   ({ name1, label1, name2, label2 }, index) => (
                     <Flex key={index} gap={2}>
                       <InputFieldText name={name1} label={label1} />
-                      <InputFieldQuatity
+                      <InputFieldQuantity
                         isReadOnly={true}
                         name={name2}
                         label={label2}
+                        quantity={values.boxQuantity}
                       />
                     </Flex>
                   )
@@ -603,7 +759,7 @@ export default function AddBoxBrandsForm() {
                     label={'Etiqueta'}
                     placeholder={'Seleccione la etiqueta'}
                   />
-                  <InputFieldQuatity
+                  <InputFieldQuantity
                     name={'labelQuantity'}
                     label={'Cantidad'}
                   />
@@ -614,7 +770,10 @@ export default function AddBoxBrandsForm() {
                     label={'Banda'}
                     placeholder={'Seleccione la banda'}
                   />
-                  <InputFieldQuatity name={'bandQuantity'} label={'Cantidad'} />
+                  <InputFieldQuantity
+                    name={'bandQuantity'}
+                    label={'Cantidad'}
+                  />
                 </Flex>
                 <Flex gap={2}>
                   <InputFieldSachetSelect
@@ -622,7 +781,7 @@ export default function AddBoxBrandsForm() {
                     label={'Sachet'}
                     placeholder={'Seleccione el sachet'}
                   />
-                  <InputFieldQuatity
+                  <InputFieldQuantity
                     name={'sachetQuantity'}
                     label={'Cantidad'}
                   />
@@ -633,7 +792,7 @@ export default function AddBoxBrandsForm() {
                     label={'Liga'}
                     placeholder={'Seleccione la liga'}
                   />
-                  <InputFieldQuatity
+                  <InputFieldQuantity
                     name={'rubberQuantity'}
                     label={'Cantidad'}
                   />
@@ -644,7 +803,7 @@ export default function AddBoxBrandsForm() {
                     label={'Protector'}
                     placeholder={'Seleccione el protector'}
                   />
-                  <InputFieldQuatity
+                  <InputFieldQuantity
                     name={'protectorQuantity'}
                     label={'Cantidad'}
                   />
@@ -655,7 +814,7 @@ export default function AddBoxBrandsForm() {
                     label={'Cluster Bag'}
                     placeholder={'Seleccione el cluster bag'}
                   />
-                  <InputFieldQuatity
+                  <InputFieldQuantity
                     name={'clusterBagQuantity'}
                     label={'Cantidad'}
                   />
@@ -669,12 +828,12 @@ export default function AddBoxBrandsForm() {
               <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
                 <Flex gap={2}>
                   <InputFieldPesticideMultiSelect
-                    name={'pesticide'}
+                    name={'pesticides'}
                     label={'Pesticida'}
                     placeholder={'Seleccione el pesticida'}
                   />
-                  <InputFieldQuatity
-                    name={'pesticideQuantity'}
+                  <InputFieldQuantity
+                    name={'pesticidesQuantity'}
                     label={'Cantidad'}
                   />
                 </Flex>
@@ -687,10 +846,13 @@ export default function AddBoxBrandsForm() {
               <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
                 {containersInputFields.map(
                   ({ name1, label1, name2, label2 }, index) => (
-                    <Flex key={index} gap={2}>
-                      <InputFieldText name={name1} label={label1} />
-                      <InputFieldQuatity name={name2} label={label2} />
-                    </Flex>
+                    <InputFieldsBanContainer
+                      key={index}
+                      name1={name1}
+                      label1={label1}
+                      name2={name2}
+                      label2={label2}
+                    />
                   )
                 )}
 
@@ -700,7 +862,7 @@ export default function AddBoxBrandsForm() {
                     label={'Grapa'}
                     placeholder={'Seleccione la grapa'}
                   />
-                  <InputFieldQuatity
+                  <InputFieldQuantity
                     name={'stapleQuantity'}
                     label={'Cantidad'}
                   />
@@ -709,9 +871,9 @@ export default function AddBoxBrandsForm() {
                   <InputFieldStrippingSelect
                     name={'strippingId'}
                     label={'Zuncho'}
-                    placeholder={'Seleccione la grapa'}
+                    placeholder={'Seleccione el zuncho'}
                   />
-                  <InputFieldQuatity
+                  <InputFieldQuantity
                     name={'strippingQuantity'}
                     label={'Cantidad'}
                   />
@@ -722,7 +884,7 @@ export default function AddBoxBrandsForm() {
                     label={'Termografo'}
                     placeholder={'Seleccione el termografo'}
                   />
-                  <InputFieldQuatity
+                  <InputFieldQuantity
                     name={'thermographQuantity'}
                     label={'Cantidad'}
                   />
@@ -733,7 +895,10 @@ export default function AddBoxBrandsForm() {
                     label={'Sello'}
                     placeholder={'Seleccione el sello'}
                   />
-                  <InputFieldQuatity name={'sealQuantity'} label={'Cantidad'} />
+                  <InputFieldQuantity
+                    name={'sealQuantity'}
+                    label={'Cantidad'}
+                  />
                 </Flex>
                 <Flex gap={2}>
                   <InputFieldMettoLabelSelect
@@ -741,7 +906,7 @@ export default function AddBoxBrandsForm() {
                     label={'Etiqueta Metto'}
                     placeholder={'Seleccione la etiqueta Metto'}
                   />
-                  <InputFieldQuatity
+                  <InputFieldQuantity
                     name={'mettoLabelQuantity'}
                     label={'Cantidad'}
                   />
@@ -753,16 +918,12 @@ export default function AddBoxBrandsForm() {
               </Heading>
               <Divider mb={'16px'} />
               <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
-                <Flex gap={2}>
-                  <InputFieldText
-                    name={'packingTapeType'}
-                    label={'Cinta de embalaje'}
-                  />
-                  <InputFieldQuatity
-                    name={'packingTapeTypeQuantity'}
-                    label={'Cantidad'}
-                  />
-                </Flex>
+                <InputFieldsBanContainer
+                  name1={'packingTapeType'}
+                  label1={'Cinta de embalaje'}
+                  name2={'packingTapeTypeQuantity'}
+                  label2={'Cantidad'}
+                />
 
                 <Flex gap={2}>
                   <InputFieldLatexRemoverSelect
@@ -770,20 +931,19 @@ export default function AddBoxBrandsForm() {
                     label={'Removedor de latex'}
                     placeholder={'Seleccione la removedor de latex'}
                   />
-                  <InputFieldQuatity
+                  <InputFieldQuantity
                     name={'latexRemoverQuantity'}
                     label={'Cantidad'}
                   />
                 </Flex>
                 <Flex gap={2}>
-                  {/* cochibiol por insecticida */}
-                  <InputFieldCochibiolSelect
-                    name={'cochibiolId'}
+                  <InputFieldInsecticideMultiSelect
+                    name={'insecticides'}
                     label={'Insecticida'}
-                    placeholder={'Seleccione el cochibiol'}
+                    placeholder={'Seleccione el Insecticida'}
                   />
-                  <InputFieldQuatity
-                    name={'cochibiolQuantity'}
+                  <InputFieldQuantity
+                    name={'insecticidesQuantity'}
                     label={'Cantidad'}
                   />
                 </Flex>
@@ -793,7 +953,7 @@ export default function AddBoxBrandsForm() {
                     label={'Lamina de bloque'}
                     placeholder={'Seleccione la lamina de bloque'}
                   />
-                  <InputFieldQuatity
+                  <InputFieldQuantity
                     name={'blockingSheetQuantity'}
                     label={'Cantidad'}
                   />
@@ -807,6 +967,7 @@ export default function AddBoxBrandsForm() {
                 type='submit'
                 colorScheme='teal'
                 isLoading={isSubmitting}
+                onClick={() => console.log('valores del formulario: ', values)}
               >
                 Enviar
               </Button>

@@ -1,7 +1,7 @@
 'use client';
 import { Box, Card, CardBody, Center } from '@chakra-ui/react';
 import React from 'react';
-import AddProducerForm from '../../../../components/producer/AddProducerForm';
+import AddBusinessForm from '../../../../components/producer/AddBusinessForm';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
 function AddBusinessPage() {
@@ -20,7 +20,7 @@ function AddBusinessPage() {
           mb={'20px'}
         >
           <CardBody w='100%'>
-            <AddProducerForm />
+            <AddBusinessForm />
           </CardBody>
         </Card>
       </Center>

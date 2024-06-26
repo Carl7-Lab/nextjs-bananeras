@@ -1,5 +1,6 @@
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
@@ -20,12 +21,14 @@ const initialValues: ValuesProps = {
 
 const validationSchema = Yup.object({
   name: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(20, 'Debe tener 20 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .required('Requerido'),
 });
 
 export default function AddBrandForm({ onClose }: AddBrandFormProps) {
   const { createBrand } = useCreateBrand();
+  const router = useRouter();
   const toast = useToast();
   const queryClient = useQueryClient();
 
@@ -38,14 +41,21 @@ export default function AddBrandForm({ onClose }: AddBrandFormProps) {
         ...values,
       },
       {
-        onError: (error) => {
+        onError: (error: any) => {
+          const { response } = error;
+          const { data } = response;
+          const { statusCode, message, error: errorTitle, model, prop } = data;
           toast({
-            title: 'Error.',
-            description: `${error.message}`,
+            title: `Error ${statusCode}: ${errorTitle} `,
+            description: `${message}`,
             status: 'error',
             duration: 5000,
             isClosable: true,
           });
+
+          if (statusCode === 401) {
+            router.push('/api/auth/signout');
+          }
         },
         onSuccess: () => {
           toast({

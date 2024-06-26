@@ -1,9 +1,11 @@
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import { useCreateMettoLabel } from '../../../../hooks/box-brand/container/metto-label/createMettoLabel';
+import InputFieldNumber from '../../../ui/form/InputFieldNumber';
 import InputFieldText from '../../../ui/form/InputFieldText';
 
 interface AddMettoLabelFormProps {
@@ -26,23 +28,32 @@ const initialValues: ValuesProps = {
 
 const validationSchema = Yup.object({
   name: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(20, 'Debe tener 20 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
   quantityPerPack: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .lessThan(10000, 'Must be lower than 10000 boxes')
-    .required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .lessThan(10000, 'Debe ser menor que 10000 ')
+    .required('Requerido'),
   art: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(15, 'Debe tener 15 caracteres o menos')
+    .required('Requerido'),
   code: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(15, 'Debe tener 15 caracteres o menos')
+    .required('Requerido'),
 });
 
 const AddMettoLabelForm = ({ onClose }: AddMettoLabelFormProps) => {
   const { createMettoLabel } = useCreateMettoLabel();
   const toast = useToast();
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   const AddMettoLabel = async (
@@ -52,17 +63,24 @@ const AddMettoLabelForm = ({ onClose }: AddMettoLabelFormProps) => {
     createMettoLabel(
       {
         ...values,
-        quantityPerPack: Number(values.quantityPerPack),
       },
       {
-        onError: (error) => {
+        onError: (error: any) => {
+          const { response } = error;
+          const { data } = response;
+          const { statusCode, message, error: errorTitle, model, prop } = data;
+
           toast({
-            title: 'Error.',
-            description: `${error.message}`,
+            title: `Error ${statusCode}: ${errorTitle} `,
+            description: `${message}`,
             status: 'error',
             duration: 5000,
             isClosable: true,
           });
+
+          if (statusCode === 401) {
+            router.push('/api/auth/signout');
+          }
         },
         onSuccess: () => {
           toast({
@@ -97,7 +115,7 @@ const AddMettoLabelForm = ({ onClose }: AddMettoLabelFormProps) => {
               </Heading>
               <Divider mb={'16px'} />
               <InputFieldText name={'name'} label={'Nombre'} />
-              <InputFieldText
+              <InputFieldNumber
                 name={'quantityPerPack'}
                 label={'Cantidad por funda'}
               />

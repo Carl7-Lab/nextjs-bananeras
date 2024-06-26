@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import { AiFillPlusCircle } from 'react-icons/ai';
-import AddCertificateForm from './AddCertificateForm';
+import AddCertificateForm from './AddRequiredCertificateForm';
 
 const AddCertificateModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();

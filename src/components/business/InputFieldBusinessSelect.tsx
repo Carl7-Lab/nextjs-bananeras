@@ -2,7 +2,7 @@ import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react';
 import { useField } from 'formik';
 import React, { useEffect } from 'react';
 import BusinessSelectBase from './BusinessSelectBase';
-import { BusinessType } from '../../types/business';
+import { BusinessType } from '../../types/merchant/business';
 
 interface InputFieldBusinessSelectProps {
   name: string;

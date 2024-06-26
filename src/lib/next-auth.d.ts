@@ -8,6 +8,7 @@ declare module 'next-auth' {
       email: string;
       name: string;
       exporterId: string;
+      onboardingStatus: string;
     };
     accessToken: string;
     refreshToken: string;
@@ -21,6 +22,7 @@ declare module 'next-auth/jwt' {
       email: string;
       name: string;
       exporterId: string;
+      onboardingStatus: string;
     };
     accessToken: string;
     refreshToken: string;

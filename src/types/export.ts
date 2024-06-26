@@ -1,8 +1,8 @@
 import { BoxBrandType } from './box-brand/boxBrand';
-import { BusinessType } from './business';
+import { BusinessType } from './merchant/business';
 import { ClientType } from './client';
 import { HarborType } from './harbor';
-import { MerchantType } from './merchant';
+import { MerchantType } from './merchant/merchant';
 
 export type ExportType = {
   id: number;

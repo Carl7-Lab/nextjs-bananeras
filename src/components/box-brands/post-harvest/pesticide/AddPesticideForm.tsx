@@ -1,9 +1,11 @@
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import { useCreatePesticide } from '../../../../hooks/box-brand/post-harvest/pesticide/createPesticide';
+import InputFieldNumber from '../../../ui/form/InputFieldNumber';
 import InputFieldText from '../../../ui/form/InputFieldText';
 
 interface AddPesticideFormProps {
@@ -28,26 +30,60 @@ const initialValues: ValuesProps = {
 
 const validationSchema = Yup.object({
   name: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(15, 'Debe tener 15 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
   brandName: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(15, 'Debe tener 15 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
   activeIngredient: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(15, 'Debe tener 15 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
   dose: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .lessThan(10000, 'Must be lower than 10000 boxes')
-    .required('Required'),
+    .moreThan(0, 'Debe ser mayor que 0')
+    .lessThan(10000, 'Debe ser menor que 10000 ')
+    .test(
+      'is-decimal',
+      'Debe tener como máximo 3 decimales',
+      (value) => (value + '').match(/^\d+(\.\d{1,3})?$/) !== null
+    )
+    .required('Requerido'),
   presentation: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(15, 'Debe tener 15 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
 });
 
 const AddPesticideForm = ({ onClose }: AddPesticideFormProps) => {
   const { createPesticide } = useCreatePesticide();
   const toast = useToast();
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   const addPesticide = async (
@@ -57,17 +93,25 @@ const AddPesticideForm = ({ onClose }: AddPesticideFormProps) => {
     createPesticide(
       {
         ...values,
-        dose: Number(values.dose),
+        // dose: Number(values.dose),
       },
       {
-        onError: (error) => {
+        onError: (error: any) => {
+          const { response } = error;
+          const { data } = response;
+          const { statusCode, message, error: errorTitle, model, prop } = data;
+
           toast({
-            title: 'Error.',
-            description: `${error.message}`,
+            title: `Error ${statusCode}: ${errorTitle} `,
+            description: `${message}`,
             status: 'error',
             duration: 5000,
             isClosable: true,
           });
+
+          if (statusCode === 401) {
+            router.push('/api/auth/signout');
+          }
         },
         onSuccess: () => {
           toast({
@@ -107,7 +151,7 @@ const AddPesticideForm = ({ onClose }: AddPesticideFormProps) => {
                 name={'activeIngredient'}
                 label={'Ingrediente activo'}
               />
-              <InputFieldText name={'dose'} label={'Dosis'} />
+              <InputFieldNumber name={'dose'} label={'Dosis'} />
               <InputFieldText name={'presentation'} label={'Presentacion'} />
 
               <Button

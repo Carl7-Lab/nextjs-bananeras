@@ -9,9 +9,9 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import { AiFillPlusCircle } from 'react-icons/ai';
-import AddCochibiolForm from './AddCochibiolForm';
+import AddInsecticideForm from './AddInsecticideForm';
 
-const AddCochibiolModal = () => {
+const AddInsecticideModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -33,7 +33,7 @@ const AddCochibiolModal = () => {
         <ModalContent>
           <ModalCloseButton />
           <ModalBody>
-            <AddCochibiolForm onClose={onClose} />
+            <AddInsecticideForm onClose={onClose} />
           </ModalBody>
         </ModalContent>
       </Modal>
@@ -41,4 +41,4 @@ const AddCochibiolModal = () => {
   );
 };
 
-export default AddCochibiolModal;
+export default AddInsecticideModal;

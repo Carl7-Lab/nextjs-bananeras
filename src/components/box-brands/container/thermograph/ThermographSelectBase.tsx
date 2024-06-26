@@ -9,7 +9,8 @@ import {
   CSSObjectWithLabel,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
 import { useThermographs } from '../../../../hooks/box-brand/container/thermograph/getThermographs';
 import { usePagination } from '../../../../hooks/usePagination';
@@ -22,24 +23,6 @@ interface ThermographSelectBaseProps {
   setThermo?: (thermo: Partial<ThermographType>) => void;
   onChange?: (newValue: Partial<ThermographType>) => void;
 }
-
-// const data: Partial<ThermographType>[] = [
-//   {
-//     id: 1,
-//     name: 'Termografo1',
-//     type: 'Tipo1',
-//   },
-//   {
-//     id: 2,
-//     name: 'Termografo2',
-//     type: 'Tipo2',
-//   },
-//   {
-//     id: 3,
-//     name: 'Termografo3',
-//     type: 'Tipo3',
-//   },
-// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<ThermographType>,
@@ -87,7 +70,21 @@ const ThermographSelectBase: React.FC<ThermographSelectBaseProps> = ({
   onChange,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useThermographs(paginationParams);
+  const { data, isLoading, refetch, error } = useThermographs(paginationParams);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data } = response;
+      const { statusCode, message, error: errorTitle, model, prop } = data;
+
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
 
   const handleChange = (newValue: SingleValue<Partial<ThermographType>>) => {
     if (setThermo) setThermo(newValue as Partial<ThermographType>);
@@ -105,7 +102,11 @@ const ThermographSelectBase: React.FC<ThermographSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'thermograph not found'}
+      noOptionsMessage={() =>
+        !!error
+          ? (error as any).response.data.message
+          : 'Ya no hay termografo/s disponible/s'
+      }
       isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<ThermographType>) => `${opt.name}`}

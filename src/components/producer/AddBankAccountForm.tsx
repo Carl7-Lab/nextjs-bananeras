@@ -6,7 +6,8 @@ import {
   SimpleGrid,
   useToast,
 } from '@chakra-ui/react';
-import { Form, Formik } from 'formik';
+import { Form, Formik, FormikHelpers } from 'formik';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
@@ -17,17 +18,17 @@ import InputFieldSelector from '../ui/form/InputFieldSelector';
 import InputFieldText from '../ui/form/InputFieldText';
 
 interface ValuesProps {
-  merchant: number | '';
+  merchantId: number | '';
   bank: string;
   owner: string;
   ownerID: string;
   accountNumber: string;
-  type: 'Ahorro' | 'Corriente' | '';
+  type: 'Cta Ahorro' | 'Cta Corriente' | '';
   email: string;
 }
 
 const initialValues: ValuesProps = {
-  merchant: '',
+  merchantId: '',
   bank: '',
   owner: '',
   ownerID: '',
@@ -37,29 +38,56 @@ const initialValues: ValuesProps = {
 };
 
 const validationSchema = Yup.object({
-  merchant: Yup.number().required('Required'),
+  merchantId: Yup.number()
+    .integer('Debe ser un número entero')
+    .required('Requerido')
+    .typeError('Debe ser un número'),
   bank: Yup.string()
-    .max(20, 'Must be 20 characters or less')
-    .required('Required'),
+    .max(20, 'Debe tener 20 caracteres o menos')
+    .transform((value) => value.trim())
+    .required('Requerido')
+    .matches(/^[a-zA-Z\s]+$/, 'Debe contener solo letras y espacios'),
   owner: Yup.string()
-    .max(30, 'Must be 30 characters or less')
-    .required('Required'),
+    .max(30, 'Debe tener 30 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(
+      /^[a-zA-Z0-9\s]+$/,
+      'Solo debe contener letras, números y espacios'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
   ownerID: Yup.string()
-    .matches(/^[0-9]+$/, 'Must be only digits')
+    .matches(/^[0-9]+$/, 'Debe contener solo dígitos')
     .test(
       'len',
-      'Must be 10 or 13 characters',
+      'Debe tener 10 o 13 caracteres',
       (val) => val?.length === 10 || val?.length === 13
-    ),
+    )
+    .required('Requerido'),
   accountNumber: Yup.string()
-    .matches(/^[0-9]+$/, 'Must be only digits')
-    .length(10, 'accountNumber must be 10 characters')
-    .required('Required'),
+    .matches(/^[0-9]+$/, 'Debe contener solo dígitos')
+    .transform((value) => value.trim())
+    .length(10, 'Debe tener 10 caracteres')
+    .required('Requerido'),
   type: Yup.string()
-    .oneOf(['Ahorro', 'Corriente'], 'Invalid account type')
-    .required('Required'),
-  email: Yup.string().email('Invalid email address').optional(),
+    .oneOf(['Cta Ahorro', 'Cta Corriente'], 'Tipo de cuenta inválido')
+    .required('Requerido'),
+  email: Yup.string()
+    .email('Correo electrónico inválido')
+    .max(50, 'Debe tener 50 caracteres o menos')
+    .optional(),
 });
+
+const typesOpt = [
+  {
+    name: 'Cta Ahorro',
+    id: 'Cta Ahorro',
+  },
+  {
+    name: 'Cta Corriente',
+    id: 'Cta Corriente',
+  },
+];
 
 const AddBankAccountForm = () => {
   const [initialValuesBankAccount, setInitialValuesBankAccount] =
@@ -67,24 +95,14 @@ const AddBankAccountForm = () => {
   const [producer, setProducer] = useState<PartialProducerType | null>(null);
   const { createBankAccount } = useCreateBankAccount();
   const toast = useToast();
+  const router = useRouter();
   const queryClient = useQueryClient();
-
-  const typesOpt = [
-    {
-      name: 'Cta Ahorro',
-      id: 'Ahorro',
-    },
-    {
-      name: 'Cta Corriente',
-      id: 'Corriente',
-    },
-  ];
 
   useEffect(() => {
     if (!!producer) {
       setInitialValuesBankAccount((prevValues) => ({
         ...prevValues,
-        merchant: Number(producer.id!),
+        merchantId: Number(producer.id!),
         owner: producer.businessName,
         ownerID: producer.businessId,
       }));
@@ -93,26 +111,35 @@ const AddBankAccountForm = () => {
 
   const addBankAccount = async (
     values: ValuesProps,
-    actions: { resetForm: () => void }
+    formikHelpers: FormikHelpers<ValuesProps>
   ) => {
-    console.log('sending values: ', values);
-
     createBankAccount(
       {
         ...values,
-        merchant: {
-          id: Number(values.merchant),
-        },
       },
       {
-        onError: (error) => {
+        onError: (error: any) => {
+          const { response } = error;
+          const { data } = response;
+          const { statusCode, message, error: errorTitle, model, prop } = data;
           toast({
-            title: 'Error.',
-            description: `${error.message}`,
+            title: `Error ${statusCode}: ${errorTitle} `,
+            description: `${message}`,
             status: 'error',
             duration: 5000,
             isClosable: true,
           });
+
+          if (statusCode === 401) {
+            router.push('/api/auth/signout');
+          }
+
+          if (!!model && !!prop) {
+            if (model === 'BankAccount' && prop === 'accountNumber') {
+              formikHelpers.setFieldTouched(`${prop}`, true, false);
+              formikHelpers.setFieldError(`${prop}`, message);
+            }
+          }
         },
         onSuccess: () => {
           toast({
@@ -123,7 +150,7 @@ const AddBankAccountForm = () => {
           });
 
           queryClient.invalidateQueries('bankAccountsByMerchantId');
-          actions.resetForm();
+          formikHelpers.resetForm();
         },
       }
     );
@@ -143,7 +170,10 @@ const AddBankAccountForm = () => {
               Productor
             </Heading>
             <Divider mb={'16px'} />
-            <SelectProducer name={'merchant'} setProducerSelect={setProducer} />
+            <SelectProducer
+              name={'merchantId'}
+              setProducerSelect={setProducer}
+            />
 
             <Heading fontSize={'2xl'} p={'12px'}>
               Datos de cuenta bancaria

@@ -9,7 +9,8 @@ import {
   chakraComponents,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
 import { useStaples } from '../../../../hooks/box-brand/container/staple/getStaples';
 import { usePagination } from '../../../../hooks/usePagination';
@@ -22,24 +23,6 @@ interface StapleSelectBaseProps {
   setStaple?: (staple: Partial<StapleType>) => void;
   onChange?: (newValue: Partial<StapleType>) => void;
 }
-
-// const data: Partial<StapleType>[] = [
-//   {
-//     id: 1,
-//     name: 'Grapa1',
-//     quantityPerPack: 500,
-//   },
-//   {
-//     id: 2,
-//     name: 'Grapa2',
-//     quantityPerPack: 750,
-//   },
-//   {
-//     id: 3,
-//     name: 'Grapa3',
-//     quantityPerPack: 1000,
-//   },
-// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<StapleType>,
@@ -87,7 +70,21 @@ const StapleSelectBase: React.FC<StapleSelectBaseProps> = ({
   onChange,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useStaples(paginationParams);
+  const { data, isLoading, refetch, error } = useStaples(paginationParams);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data } = response;
+      const { statusCode, message, error: errorTitle, model, prop } = data;
+
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
 
   const handleChange = (newValue: SingleValue<Partial<StapleType>>) => {
     if (setStaple) setStaple(newValue as Partial<StapleType>);
@@ -105,7 +102,11 @@ const StapleSelectBase: React.FC<StapleSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'staple not found'}
+      noOptionsMessage={() =>
+        !!error
+          ? (error as any).response.data.message
+          : 'Ya no hay grapa/s disponible/s'
+      }
       isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<StapleType>) => `${opt.name}`}

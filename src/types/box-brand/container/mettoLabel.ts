@@ -1,7 +1,7 @@
 export type MettoLabelType = {
   id: number | '';
   name: string;
-  quantityPerPack: number;
+  quantityPerPack: number | '';
   art: string;
   code: string;
 };

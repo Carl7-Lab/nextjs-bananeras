@@ -9,7 +9,8 @@ import {
   CSSObjectWithLabel,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
 import { useSachets } from '../../../../hooks/box-brand/materials/sachet/getSachets';
 import { usePagination } from '../../../../hooks/usePagination';
@@ -22,27 +23,6 @@ interface SachetSelectBaseProps {
   setSachet?: (sachet: Partial<SachetType>) => void;
   onChange?: (newValue: Partial<SachetType>) => void;
 }
-
-// const data: Partial<SachetType>[] = [
-//   {
-//     id: 1,
-//     name: 'Sachet1',
-//     quantityPerPack: 500,
-//     type: 'type1',
-//   },
-//   {
-//     id: 2,
-//     name: 'Sachet2',
-//     quantityPerPack: 750,
-//     type: 'type2',
-//   },
-//   {
-//     id: 3,
-//     name: 'Sachet3',
-//     quantityPerPack: 1000,
-//     type: 'type3',
-//   },
-// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<SachetType>,
@@ -90,7 +70,21 @@ const SachetSelectBase: React.FC<SachetSelectBaseProps> = ({
   onChange,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useSachets(paginationParams);
+  const { data, isLoading, refetch, error } = useSachets(paginationParams);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data } = response;
+      const { statusCode, message, error: errorTitle, model, prop } = data;
+
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
 
   const handleChange = (newValue: SingleValue<Partial<SachetType>>) => {
     if (setSachet) setSachet(newValue as Partial<SachetType>);
@@ -108,7 +102,11 @@ const SachetSelectBase: React.FC<SachetSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'sachet not found'}
+      noOptionsMessage={() =>
+        !!error
+          ? (error as any).response.data.message
+          : 'Ya no hay sachet/s disponible/s'
+      }
       isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<SachetType>) => `${opt.name}`}

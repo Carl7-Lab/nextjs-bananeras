@@ -59,18 +59,26 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user, trigger, session }) {
-      if (trigger === 'update' && session?.exporterId) {
-        token.user.exporterId = session.exporterId;
+      console.log('**********************');
+      console.log('token: ', token);
+      console.log('user: ', user);
+      console.log('trigger: ', trigger);
+      console.log('session: ', session);
+
+      if (trigger === 'update' && session?.onboardingStatus) {
+        token.user.onboardingStatus = session.onboardingStatus;
       }
       if (user) return { ...token, ...user };
       if (new Date().getTime() < token.exp) return token;
 
       return await refreshToken(token);
     },
+
     async session({ token, session }) {
       session.user = token.user;
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
+      session.user.onboardingStatus = token.user.onboardingStatus;
       return session;
     },
   },

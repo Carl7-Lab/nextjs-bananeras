@@ -9,7 +9,8 @@ import {
   CSSObjectWithLabel,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
 import { usePesticides } from '../../../../hooks/box-brand/post-harvest/pesticide/getPesticides';
 import { usePagination } from '../../../../hooks/usePagination';
@@ -69,7 +70,21 @@ const PesticideMultiSelectBase: React.FC<PesticideMultiSelectBaseProps> = ({
   setPesticides,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = usePesticides(paginationParams);
+  const { data, isLoading, refetch, error } = usePesticides(paginationParams);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data } = response;
+      const { statusCode, message, error: errorTitle, model, prop } = data;
+
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
 
   const handleChange = (newValues: MultiValue<Partial<PesticideType>>) => {
     if (setPesticides) {
@@ -93,11 +108,15 @@ const PesticideMultiSelectBase: React.FC<PesticideMultiSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'pesticide not found'}
+      noOptionsMessage={() =>
+        !!error
+          ? (error as any).response.data.message
+          : 'Ya no hay pesticida/s disponible/s'
+      }
       isLoading={isLoading}
       options={data}
       getOptionLabel={(pesticide: Partial<PesticideType>) =>
-        `${pesticide.name} - ${pesticide.id}`
+        `${pesticide.brandName} - ${pesticide.name}`
       }
       getOptionValue={(pesticide: Partial<PesticideType>) =>
         pesticide.id ? pesticide.id.toString() : ''

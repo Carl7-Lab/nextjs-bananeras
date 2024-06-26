@@ -5,14 +5,18 @@ import { serializeQueryResult } from '@/utils/serializeQueryResult';
 
 type Params = PaginationParams;
 
-function listCochibiols(params: Params) {
-  return axios.get('/box-brand/cochibiol', { params });
+function listRequiredCertificates(params: Params) {
+  return axios.get('/box-brand/certificate', { params });
 }
 
-export function useCochibiols({ search = '', page = 1, limit = 10 }: Params) {
+export function useRequiredCertificates({
+  search = '',
+  page = 1,
+  limit = 10,
+}: Params) {
   const result = useQuery(
-    ['cochibiols', search, page, limit],
-    () => listCochibiols({ search, page, limit }),
+    ['requiredCertificates', search, page, limit],
+    () => listRequiredCertificates({ search, page, limit }),
     {
       keepPreviousData: true,
     }

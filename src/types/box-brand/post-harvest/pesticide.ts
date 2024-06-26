@@ -3,6 +3,6 @@ export type PesticideType = {
   name: string;
   brandName: string;
   activeIngredient: string;
-  dose: number;
+  dose: number | '';
   presentation: string;
 };

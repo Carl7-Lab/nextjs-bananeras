@@ -7,13 +7,15 @@ export default function IsOnboarding(Component: any) {
   return function IsMerchantId(props: any) {
     const { data: session, status } = useSession();
 
-    const isOnboarded = !!session?.user?.exporterId;
+    const isOnboarded = session?.user?.onboardingStatus;
 
     useEffect(() => {
-      if (!isOnboarded && status === 'authenticated') {
+      console.log('IsOnboarding isOnboarded: ', isOnboarded);
+      console.log('IsOnboarding status: ', status);
+      if (isOnboarded === 'pending' && status === 'authenticated') {
         return redirect('/dashboard/onboarding');
       }
-    }, [status]);
+    }, [isOnboarded, status]);
 
     if (!isOnboarded) {
       return null;

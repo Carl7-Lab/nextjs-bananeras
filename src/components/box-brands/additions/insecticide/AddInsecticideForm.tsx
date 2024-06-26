@@ -1,12 +1,14 @@
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
-import { useCreateCochibiol } from '../../../../hooks/box-brand/additions/cochibiol/createCochibiol';
+import { useCreateInsecticide } from '../../../../hooks/box-brand/additions/insecticide/createInsecticide';
+import InputFieldNumber from '../../../ui/form/InputFieldNumber';
 import InputFieldText from '../../../ui/form/InputFieldText';
 
-interface AddCochibiolFormProps {
+interface AddInsecticideFormProps {
   onClose?: () => void;
 }
 
@@ -24,50 +26,77 @@ const initialValues: ValuesProps = {
 
 const validationSchema = Yup.object({
   name: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(15, 'Debe tener 15 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
   activeIngredient: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(15, 'Debe tener 15 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
   dose: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .lessThan(10000, 'Must be lower than 10000 boxes')
-    .required('Required'),
+    .moreThan(0, 'Debe ser mayor que 0')
+    .lessThan(10000, 'Debe ser menor que 10000 ')
+    .test(
+      'is-decimal',
+      'Debe tener como máximo 3 decimales',
+      (value) => (value + '').match(/^\d+(\.\d{1,3})?$/) !== null
+    )
+    .required('Requerido'),
 });
 
-const AddCochibiolForm = ({ onClose }: AddCochibiolFormProps) => {
-  const { createCochibiol } = useCreateCochibiol();
+const AddInsecticideForm = ({ onClose }: AddInsecticideFormProps) => {
+  const { createInsecticide } = useCreateInsecticide();
   const toast = useToast();
+  const router = useRouter();
   const queryClient = useQueryClient();
 
-  const addCochibiol = async (
+  const addInsecticide = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
-    createCochibiol(
+    createInsecticide(
       {
         ...values,
-        dose: Number(values.dose),
       },
       {
-        onError: (error) => {
+        onError: (error: any) => {
+          const { response } = error;
+          const { data } = response;
+          const { statusCode, message, error: errorTitle, model, prop } = data;
+
           toast({
-            title: 'Error.',
-            description: `${error.message}`,
+            title: `Error ${statusCode}: ${errorTitle} `,
+            description: `${message}`,
             status: 'error',
             duration: 5000,
             isClosable: true,
           });
+
+          if (statusCode === 401) {
+            router.push('/api/auth/signout');
+          }
         },
         onSuccess: () => {
           toast({
-            title: 'Cochibiol creado',
+            title: 'Insecticide creado',
             status: 'success',
             duration: 5000,
             isClosable: true,
           });
 
-          queryClient.invalidateQueries('cochibiols');
+          queryClient.invalidateQueries('insecticides');
           actions.resetForm();
           !!onClose && onClose();
         },
@@ -81,14 +110,14 @@ const AddCochibiolForm = ({ onClose }: AddCochibiolFormProps) => {
     <>
       <Formik
         initialValues={initialValues}
-        onSubmit={addCochibiol}
+        onSubmit={addInsecticide}
         validationSchema={validationSchema}
       >
         {({ isSubmitting }) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>
-                Agregar Cochibiol
+                Agregar Insecticide
               </Heading>
               <Divider mb={'16px'} />
               <InputFieldText name={'name'} label={'Nombre'} />
@@ -96,7 +125,7 @@ const AddCochibiolForm = ({ onClose }: AddCochibiolFormProps) => {
                 name={'activeIngredient'}
                 label={'Ingrediente activo'}
               />
-              <InputFieldText name={'dose'} label={'Dosis'} />
+              <InputFieldNumber name={'dose'} label={'Dosis'} />
 
               <Button
                 mt='32px'
@@ -116,4 +145,4 @@ const AddCochibiolForm = ({ onClose }: AddCochibiolFormProps) => {
   );
 };
 
-export default AddCochibiolForm;
+export default AddInsecticideForm;

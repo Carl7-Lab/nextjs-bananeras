@@ -9,7 +9,8 @@ import {
   SingleValue,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
 import { useLatexRemovers } from '../../../../hooks/box-brand/additions/latex-remover/getLatexRemovers';
 import { usePagination } from '../../../../hooks/usePagination';
@@ -22,21 +23,6 @@ interface LatexRemoverSelectBaseProps {
   setLatexRemover?: (latexRemover: Partial<LatexRemoverType>) => void;
   onChange?: (newValue: Partial<LatexRemoverType>) => void;
 }
-
-// const data: Partial<LatexRemoverType>[] = [
-//   {
-//     id: 1,
-//     name: 'Removedor de Latex1',
-//   },
-//   {
-//     id: 2,
-//     name: 'Removedor de Latex2',
-//   },
-//   {
-//     id: 3,
-//     name: 'Removedor de Latex3',
-//   },
-// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<LatexRemoverType>,
@@ -84,7 +70,22 @@ const LatexRemoverSelectBase: React.FC<LatexRemoverSelectBaseProps> = ({
   onChange,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useLatexRemovers(paginationParams);
+  const { data, isLoading, refetch, error } =
+    useLatexRemovers(paginationParams);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data } = response;
+      const { statusCode, message, error: errorTitle, model, prop } = data;
+
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
 
   const handleChange = (newValue: SingleValue<Partial<LatexRemoverType>>) => {
     if (setLatexRemover) setLatexRemover(newValue as Partial<LatexRemoverType>);
@@ -102,7 +103,11 @@ const LatexRemoverSelectBase: React.FC<LatexRemoverSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'latex remover not found'}
+      noOptionsMessage={() =>
+        !!error
+          ? (error as any).response.data.message
+          : 'Ya no hay etiqueta/s disponible/s'
+      }
       isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<LatexRemoverType>) => `${opt.name}`}

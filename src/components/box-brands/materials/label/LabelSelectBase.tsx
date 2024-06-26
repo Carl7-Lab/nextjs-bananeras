@@ -9,7 +9,8 @@ import {
   CSSObjectWithLabel,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
 import { useLabels } from '../../../../hooks/box-brand/materials/label/getLabels';
 import { usePagination } from '../../../../hooks/usePagination';
@@ -22,27 +23,6 @@ interface LabelSelectBaseProps {
   setLabel?: (label: Partial<LabelType>) => void;
   onChange?: (newValue: Partial<LabelType>) => void;
 }
-
-// const data: Partial<LabelType>[] = [
-//   {
-//     id: 1,
-//     name: 'Etiqueta1',
-//     quantityPerRoll: 500,
-//     description: 'Descipcion1',
-//   },
-//   {
-//     id: 2,
-//     name: 'Etiqueta2',
-//     quantityPerRoll: 750,
-//     description: 'Descipcion2',
-//   },
-//   {
-//     id: 3,
-//     name: 'Etiqueta3',
-//     quantityPerRoll: 1000,
-//     description: 'Descipcion3',
-//   },
-// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<LabelType>,
@@ -90,7 +70,21 @@ const LabelSelectBase: React.FC<LabelSelectBaseProps> = ({
   onChange,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useLabels(paginationParams);
+  const { data, isLoading, refetch, error } = useLabels(paginationParams);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data } = response;
+      const { statusCode, message, error: errorTitle, model, prop } = data;
+
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
 
   const handleChange = (newValue: SingleValue<Partial<LabelType>>) => {
     if (setLabel) setLabel(newValue as Partial<LabelType>);
@@ -108,7 +102,11 @@ const LabelSelectBase: React.FC<LabelSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'label not found'}
+      noOptionsMessage={() =>
+        !!error
+          ? (error as any).response.data.message
+          : 'Ya no hay etiqueta/s disponible/s'
+      }
       isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<LabelType>) => `${opt.name}`}

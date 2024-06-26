@@ -3,6 +3,7 @@ import { Box, Card, CardBody, Center, Heading } from '@chakra-ui/react';
 import { redirect, useParams } from 'next/navigation';
 import React, { useLayoutEffect } from 'react';
 import PendingPaymentForm from '../../../../../components/export/export-payments/PendingPaymentForm';
+import IsOnboarding from '../../../../../components/ui/IsOnboarding';
 import { useExportSent } from '../../../../../hooks/export/export-sent/getExportSent';
 import { ExportSentType } from '../../../../../types/exportSent';
 
@@ -49,4 +50,4 @@ function ExportPaymentPage() {
   );
 }
 
-export default ExportPaymentPage;
+export default IsOnboarding(ExportPaymentPage);

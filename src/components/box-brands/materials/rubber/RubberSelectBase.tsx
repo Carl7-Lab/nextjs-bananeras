@@ -9,7 +9,8 @@ import {
   CSSObjectWithLabel,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
 import { useRubbers } from '../../../../hooks/box-brand/materials/rubber/getRubbers';
 import { usePagination } from '../../../../hooks/usePagination';
@@ -22,27 +23,6 @@ interface RubberSelectBaseProps {
   setRubber?: (rubber: Partial<RubberType>) => void;
   onChange?: (newValue: Partial<RubberType>) => void;
 }
-
-// const data: Partial<RubberType>[] = [
-//   {
-//     id: 1,
-//     name: 'Liga1',
-//     quantityPerPack: 500,
-//     color: 'color1',
-//   },
-//   {
-//     id: 2,
-//     name: 'Liga2',
-//     quantityPerPack: 750,
-//     color: 'color2',
-//   },
-//   {
-//     id: 3,
-//     name: 'Liga3',
-//     quantityPerPack: 1000,
-//     color: 'color3',
-//   },
-// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<RubberType>,
@@ -90,7 +70,21 @@ const RubberSelectBase: React.FC<RubberSelectBaseProps> = ({
   onChange,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useRubbers(paginationParams);
+  const { data, isLoading, refetch, error } = useRubbers(paginationParams);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data } = response;
+      const { statusCode, message, error: errorTitle, model, prop } = data;
+
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
 
   const handleChange = (newValue: SingleValue<Partial<RubberType>>) => {
     if (setRubber) setRubber(newValue as Partial<RubberType>);
@@ -108,7 +102,11 @@ const RubberSelectBase: React.FC<RubberSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'rubber not found'}
+      noOptionsMessage={() =>
+        !!error
+          ? (error as any).response.data.message
+          : 'Ya no hay liga/s disponible/s'
+      }
       isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<RubberType>) => `${opt.name}`}

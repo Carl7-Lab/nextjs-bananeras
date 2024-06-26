@@ -1,7 +1,7 @@
 'use client';
 import { Box, Card, CardBody, Center } from '@chakra-ui/react';
 import React from 'react';
-import OnboardingForm from '../../../../components/onboarding/OnboardingForm';
+import AddProducerForm from '../../../../components/producer/AddProducerForm';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
 function AddProductorPage() {
@@ -21,7 +21,7 @@ function AddProductorPage() {
             mb={'20px'}
           >
             <CardBody w='100%'>
-              <OnboardingForm />
+              <AddProducerForm />
             </CardBody>
           </Card>
         </Center>

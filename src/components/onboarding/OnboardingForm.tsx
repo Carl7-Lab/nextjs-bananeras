@@ -3,34 +3,61 @@ import {
   Divider,
   Flex,
   Heading,
+  Box,
   SimpleGrid,
   useToast,
 } from '@chakra-ui/react';
-import { Form, Formik } from 'formik';
-import { usePathname, useRouter } from 'next/navigation';
+import { FieldArray, Form, Formik, FormikHelpers } from 'formik';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
-import { useCreateMerchant } from '../../hooks/merchants/createMerchant';
-import { BACKEND_URL } from '../../lib/constants';
-import InputFieldCertificateMultiSelect from '../box-brands/specifications/certificate/InputFieldCertificateMultiSelect';
+import { useCreateOnboarding } from '../../hooks/merchants/createOnboarding';
+import InputFieldDate from '../ui/form/InputFieldDate';
+import InputFieldNumber from '../ui/form/InputFieldNumber';
+import InputFieldSelector from '../ui/form/InputFieldSelector';
 import InputFieldText from '../ui/form/InputFieldText';
+
+interface ContactsProps {
+  name: string;
+  role: string;
+  email: string;
+  phone: string;
+}
+
+interface BusinessCodesProps {
+  code: string;
+}
+
+interface CertificatesProps {
+  name: string;
+  certificateCode: string;
+  issueDate: Date | '';
+  expirationDate: Date | '';
+}
+
+interface BusinessesProps {
+  name: string;
+  city: string;
+  address: string;
+  fruitType: string;
+  area: number;
+  latitude: number | '';
+  longitude: number | '';
+  codeMAGAP: string;
+  certificates: CertificatesProps[];
+  businessCodes: BusinessCodesProps[];
+  contacts: ContactsProps[];
+}
 
 interface ValuesProps {
   businessName: string;
   businessId: string;
   address: string;
   city: string;
-  businessObjName: string;
-  businessObjAddress: string;
-  businessObjArea: number;
-  businessObjCity: string;
-  businessObjLatitude: number;
-  businessObjLongitude: number;
-  businesscertificates: number[] | null;
-  businessManagerObjName: string;
-  businessManagerObjEmail: string;
-  businessManagerObjPhone: string;
+  email: string;
+  contractType: '' | 'Contrato' | 'Spot';
+  businesses: BusinessesProps[];
 }
 
 const initialValues: ValuesProps = {
@@ -38,169 +65,251 @@ const initialValues: ValuesProps = {
   businessId: '',
   address: '',
   city: '',
-  businessObjName: '',
-  businessObjAddress: '',
-  businessObjArea: 0,
-  businessObjCity: '',
-  businessObjLatitude: 0,
-  businessObjLongitude: 0,
-  businesscertificates: null,
-  businessManagerObjName: '',
-  businessManagerObjEmail: '',
-  businessManagerObjPhone: '',
+  email: '',
+  contractType: '',
+  businesses: [
+    {
+      name: '',
+      city: '',
+      address: '',
+      fruitType: '',
+      area: 0,
+      latitude: '',
+      longitude: '',
+      codeMAGAP: '',
+      certificates: [
+        { name: '', certificateCode: '', issueDate: '', expirationDate: '' },
+      ],
+      businessCodes: [{ code: '' }],
+      contacts: [{ name: '', role: '', email: '', phone: '' }],
+    },
+  ],
 };
+
+const contactSchema = Yup.object().shape({
+  name: Yup.string()
+    .max(30, 'Debe tener 30 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^[a-zA-Z\s]+$/, 'Solo debe contener letras y espacios')
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  role: Yup.string()
+    .max(20, 'Debe tener 20 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  email: Yup.string()
+    .email('Correo electrónico inválido')
+    .max(50, 'Debe tener 50 caracteres o menos')
+    .transform((value) => value.trim()),
+  phone: Yup.string()
+    .matches(/^(\+593|0)9\d{8}$/, 'Debe comenzar con el prefijo +593 o 09')
+    .transform((value) => value.trim())
+    .required('Requerido'),
+});
+
+const businessCodeSchema = Yup.object().shape({
+  code: Yup.string()
+    .max(20, 'Debe tener 10 caracteres o menos')
+    .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
+    .transform((value) => value.trim())
+    .required('Requerido'),
+});
+
+const certificateSchema = Yup.object().shape({
+  name: Yup.string()
+    .max(30, 'Debe tener 30 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  certificateCode: Yup.string()
+    .max(20, 'Debe tener 20 caracteres o menos')
+    .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  issueDate: Yup.date().nullable().required('Requerido'),
+  expirationDate: Yup.date()
+    .nullable()
+    .required('Requerido')
+    .min(
+      Yup.ref('issueDate'),
+      'La fecha de expiración debe ser posterior a la fecha de emisión'
+    ),
+});
+
+const businessSchema = Yup.object().shape({
+  name: Yup.string()
+    .max(15, 'Debe tener 15 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(
+      /^[a-zA-Z0-9\s]+$/,
+      'Solo debe contener letras, números y espacios'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  city: Yup.string()
+    .max(20, 'Debe tener 20 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^[a-zA-Z\s]+$/, 'Solo debe contener letras y espacios')
+    .transform((value) => value.trim()),
+  address: Yup.string()
+    .max(50, 'Debe tener 50 caracteres o menos')
+    .matches(/^[a-zA-Z0-9\s.,'-]+$/, 'Dirección no válida')
+    .transform((value) => value.trim()),
+  fruitType: Yup.string()
+    .oneOf(['Organica', 'Convencional'], 'Tipo de fruta no válido')
+    .required('Requerido'),
+  area: Yup.number().moreThan(0, 'Debe ser mayor que 0').required('Requerido'),
+  latitude: Yup.number()
+    .min(-90, 'Debe ser al menos -90')
+    .max(90, 'Debe ser como máximo 90'),
+  longitude: Yup.number()
+    .min(-180, 'Debe ser al menos -180')
+    .max(180, 'Debe ser como máximo 180'),
+  codeMAGAP: Yup.string()
+    .max(20, 'Debe tener 20 caracteres o menos')
+    .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  certificates: Yup.array()
+    .of(certificateSchema)
+    .min(1, 'Debe tener al menos un certificado'),
+  businessCodes: Yup.array()
+    .of(businessCodeSchema)
+    .min(1, 'Debe tener al menos un código'),
+  contacts: Yup.array()
+    .of(contactSchema)
+    .min(1, 'Debe tener al menos un contacto'),
+});
 
 const validationSchema = Yup.object({
   businessName: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(15, 'Debe tener 15 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(
+      /^[a-zA-Z0-9\s]+$/,
+      'Solo debe contener letras, números y espacios'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
   businessId: Yup.string()
-    .length(13, 'Must be exactly 13 characters')
-    .matches(/^\d+$/, 'Must be a number')
-    .required('Required'),
+    .length(13, 'Debe tener exactamente 13 caracteres')
+    .matches(
+      /^\d{10}001$/,
+      'El RUC del negocio debe estar en el formato xxxxxxxxxx001'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
   address: Yup.string()
-    .min(13, 'Must be 13 characters or less')
-    .required('Required'),
+    .transform((value) => value.trim())
+    .max(50, 'Debe tener 50 caracteres o menos')
+    .matches(/^[a-zA-Z0-9\s.,'-]+$/, 'Dirección no válida'),
   city: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
-  businessObjName: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
-  businessObjAddress: Yup.string()
-    .min(13, 'Must be 13 characters or less')
-    .required('Required'),
-  businessObjArea: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
-  businessObjCity: Yup.string()
-    .max(20, 'Must be 20 characters or less')
-    .required('Required'),
-  businessObjLatitude: Yup.number()
-    .min(-90, 'Must be at least -90')
-    .max(90, 'Must be at most 90')
-    .required('Required'),
-  businessObjLongitude: Yup.number()
-    .min(-180, 'Must be at least -180')
-    .max(180, 'Must be at most 180')
-    .required('Required'),
-  businesscertificates: Yup.array()
-    // .min(1, 'At least one requirement must be selected')
-    // .required('Required')
-    .of(Yup.number().required()),
-  businessManagerObjName: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
-  businessManagerObjEmail: Yup.string()
-    .email('Invalid email')
-    .max(50, 'Must be 50 characters or less')
-    .required('Required'),
-  businessManagerObjPhone: Yup.string()
-    .matches(/^[0-9]+$/, 'Must be a valid phone number')
-    .min(10, 'Must be at least 10 digits')
-    .max(15, 'Must be 15 digits or less')
-    .required('Required'),
+    .transform((value) => value.trim())
+    .max(15, 'Debe tener 15 caracteres o menos')
+    .matches(/^[a-zA-Z\s]+$/, 'Solo debe contener letras y espacios'),
+  email: Yup.string()
+    .transform((value) => value.trim())
+    .email('Correo electrónico inválido')
+    .max(50, 'Debe tener 50 caracteres o menos'),
+  contractType: Yup.string()
+    .oneOf(['Contrato', 'Spot'], 'Tipo de contrato invalido')
+    .required('Requerido'),
+  businesses: Yup.array()
+    .of(businessSchema)
+    .min(1, 'Debe tener al menos una finca'),
 });
 
 export default function OnboardingForm() {
   const router = useRouter();
-  const pathname = usePathname();
   const toast = useToast();
-  const { data: session, status, update } = useSession();
-  const { createMerchant } = useCreateMerchant();
+  const { update } = useSession();
+  const { createOnboarding } = useCreateOnboarding();
   const queryClient = useQueryClient();
-
-  const onboarding = async (onboardingValues: any) => {
-    const res = await fetch(BACKEND_URL + '/auth/exporter/onboarding', {
-      method: 'POST',
-      body: JSON.stringify(onboardingValues),
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: `Bearer ${session?.refreshToken}`,
-      },
-    });
-
-    if (!res.ok) {
-      alert(res.statusText);
-      return;
-    }
-    const response = await res.json();
-
-    await update({ exporterId: response.id });
-
-    router.push('/dashboard/productor/fincas');
-    return;
-  };
-
-  const creatingMerchant: any = async (
-    merchantValues: any,
-    actions: { resetForm: () => void }
-  ) => {
-    console.log('creatingMerchant: ', merchantValues);
-    // createMerchant(
-    //   {
-    //     ...merchantValues,
-    //   },
-    //   {
-    //     onError: (error) => {
-    //       toast({
-    //         title: 'Error.',
-    //         description: `${error.message}`,
-    //         status: 'error',
-    //         duration: 5000,
-    //         isClosable: true,
-    //       });
-    //     },
-    //     onSuccess: () => {
-    //       toast({
-    //         title: 'Productor creado',
-    //         status: 'success',
-    //         duration: 5000,
-    //         isClosable: true,
-    //       });
-
-    //       queryClient.invalidateQueries('merchants');
-    //       actions.resetForm();
-    //     },
-    //   }
-    // );
-  };
 
   const onSubmit = async (
     values: ValuesProps,
-    actions: { resetForm: () => void }
+    formikHelpers: FormikHelpers<ValuesProps>
   ) => {
-    const sendingValues = {
-      businessName: values.businessName,
-      businessId: values.businessId,
-      address: values.address,
-      city: values.address,
-      business: {
-        name: values.businessObjName,
-        address: values.businessObjAddress,
-        area: Number(values.businessObjArea),
-        city: values.businessObjCity,
-        latitude: Number(values.businessObjLatitude),
-        longitude: Number(values.businessObjLongitude),
-        businessManager: {
-          name: values.businessManagerObjName,
-          email: values.businessManagerObjEmail,
-          phone: values.businessManagerObjPhone,
-        },
+    console.log('onSubmit values: ', values);
+
+    createOnboarding(
+      {
+        ...values,
       },
-    };
+      {
+        onError: (error: any) => {
+          const { response } = error;
+          const { data } = response;
+          const { statusCode, message, error: errorTitle, model, prop } = data;
+          {
+            toast({
+              title: `Error ${statusCode}: ${errorTitle} `,
+              description: `${message}`,
+              status: 'error',
+              duration: 5000,
+              isClosable: true,
+            });
 
-    // console.log('onsubmit sending values: ', sendingValues);
+            if (statusCode === 401) {
+              router.push('/api/auth/signout');
+            }
 
-    if (pathname === '/dashboard/settings/add-producer') {
-      // console.log('onsubmit agregar Productor');
-      creatingMerchant(sendingValues, actions);
-    }
+            if (!!model && !!prop) {
+              if (model === 'Merchant' && prop === 'businessId') {
+                formikHelpers.setFieldTouched(`${prop}`, true, false);
+                formikHelpers.setFieldError(`${prop}`, message);
+              }
+              if (model === 'Business' && prop === 'codeMAGAP') {
+                formikHelpers.setFieldTouched(
+                  `businesses[0].${prop}`,
+                  true,
+                  false
+                );
+                formikHelpers.setFieldError(`businesses[0].${prop}`, message);
+              }
+            }
+          }
+        },
+        onSuccess: async () => {
+          toast({
+            title: 'Productor creado',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
 
-    if (pathname === '/dashboard/onboarding') {
-      onboarding(sendingValues);
-    }
+          queryClient.invalidateQueries('merchants');
+          formikHelpers.resetForm();
+
+          await update({ onboardingStatus: 'done' });
+          router.push('/dashboard/productor/fincas');
+        },
+      }
+    );
   };
+
+  const ContractOpt = [
+    {
+      name: 'Contrato',
+      id: 'Contrato',
+    },
+    {
+      name: 'Spot',
+      id: 'Spot',
+    },
+  ];
+
+  const FruitTypeOpt = [
+    {
+      name: 'Convencional',
+      id: 'Convencional',
+    },
+    {
+      name: 'Organica',
+      id: 'Organica',
+    },
+  ];
 
   return (
     <>
@@ -209,7 +318,7 @@ export default function OnboardingForm() {
         onSubmit={onSubmit}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {({ isSubmitting, values }) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>
@@ -222,6 +331,12 @@ export default function OnboardingForm() {
                 <InputFieldText name={'businessId'} label={'RUC'} />
                 <InputFieldText name={'city'} label={'Ciudad'} />
                 <InputFieldText name={'address'} label={'Dirección'} />
+                <InputFieldText name={'email'} label={'Email'} />
+                <InputFieldSelector
+                  name={'contractType'}
+                  label={'Tipo de Contrato'}
+                  options={ContractOpt}
+                />
               </SimpleGrid>
 
               <Heading fontSize={'2xl'} p={'16px'}>
@@ -230,47 +345,152 @@ export default function OnboardingForm() {
               <Divider mb={'16px'} />
 
               <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
-                <InputFieldText name={'businessObjName'} label={'Nombre'} />
-                <InputFieldText name={'businessObjArea'} label={'Área'} />
-                <InputFieldText name={'businessObjCity'} label={'Ciudad'} />
+                <InputFieldText name={'businesses[0].name'} label={'Nombre'} />
+                <InputFieldNumber name={'businesses[0].area'} label={'Área'} />
                 <InputFieldText
-                  name={'businessObjLatitude'}
-                  label={'Latitud'}
+                  name={'businesses[0].codeMAGAP'}
+                  label={'Código MAGAP'}
                 />
+                <InputFieldSelector
+                  name={'businesses[0].fruitType'}
+                  label={'Tipo de Fruta'}
+                  options={FruitTypeOpt}
+                />
+                <InputFieldText name={'businesses[0].city'} label={'Ciudad'} />
                 <InputFieldText
-                  name={'businessObjAddress'}
+                  name={'businesses[0].address'}
                   label={'Dirección'}
                 />
-                <InputFieldText
-                  name={'businessObjLongitude'}
-                  label={'Longitud'}
+                <InputFieldNumber
+                  name={'businesses[0].latitude'}
+                  label={'Latitud'}
                 />
-                <InputFieldCertificateMultiSelect
-                  name={'businesscertificates'}
-                  label={'Certificados'}
-                  placeholder={'Seleccione el/los certificados'}
+                <InputFieldNumber
+                  name={'businesses[0].longitude'}
+                  label={'Longitud'}
                 />
               </SimpleGrid>
 
               <Heading fontSize={'2xl'} p={'16px'}>
-                Responsable
+                Certificados
               </Heading>
               <Divider mb={'16px'} />
 
-              <InputFieldText
-                name={'businessManagerObjName'}
-                label={'Nombre'}
-              />
               <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
                 <InputFieldText
-                  name={'businessManagerObjEmail'}
-                  label={'Email'}
+                  name={'businesses[0].certificates[0].name'}
+                  label={'Nombre'}
                 />
                 <InputFieldText
-                  name={'businessManagerObjPhone'}
-                  label={'Phone'}
+                  name={'businesses[0].certificates[0].certificateCode'}
+                  label={'Código de certificado'}
+                />
+                <InputFieldDate
+                  name={'businesses[0].certificates[0].issueDate'}
+                  label={'Fecha de emisión'}
+                />
+                <InputFieldDate
+                  name={'businesses[0].certificates[0].expirationDate'}
+                  label={'Fecha de expiración'}
                 />
               </SimpleGrid>
+
+              <Heading fontSize={'2xl'} p={'16px'}>
+                Códigos de Finca
+              </Heading>
+              <Divider mb={'16px'} />
+
+              <FieldArray name='businesses[0].businessCodes'>
+                {({ push, remove }) => (
+                  <>
+                    <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+                      {values.businesses[0].businessCodes.map(
+                        (_businessCode, index) => (
+                          <InputFieldText
+                            key={index}
+                            name={`businesses[0].businessCodes[${index}].code`}
+                            label={'Código'}
+                            isDisabledRemove={
+                              values.businesses[0].businessCodes.length === 1
+                            }
+                            onClickRemove={() => {
+                              remove(index);
+                            }}
+                          />
+                        )
+                      )}
+                      {values.businesses[0].businessCodes.length % 2 !== 0 && (
+                        <Box></Box>
+                      )}
+                      <Box></Box>
+                      <Button onClick={() => push({ code: '' })} mb='10px'>
+                        Agregar Código
+                      </Button>
+                    </SimpleGrid>
+                  </>
+                )}
+              </FieldArray>
+
+              <Heading fontSize={'2xl'} p={'16px'}>
+                Contactos
+              </Heading>
+              <Divider mb={'16px'} />
+
+              <FieldArray name='businesses[0].contacts'>
+                {({ push, remove }) => (
+                  <>
+                    {values.businesses[0].contacts.map((_contact, index) => (
+                      <div key={index}>
+                        <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+                          <InputFieldText
+                            name={`businesses[0].contacts[${index}].name`}
+                            label={'Nombre'}
+                          />
+                          <InputFieldText
+                            name={`businesses[0].contacts[${index}].role`}
+                            label={'Role'}
+                          />
+                          <InputFieldText
+                            name={`businesses[0].contacts[${index}].email`}
+                            label={'Email'}
+                          />
+                          <InputFieldText
+                            name={`businesses[0].contacts[${index}].phone`}
+                            label={'Teléfono'}
+                          />
+                          <Box></Box>
+                          <Button
+                            variant='solid'
+                            colorScheme='red'
+                            isDisabled={
+                              values.businesses[0].contacts.length === 1
+                            }
+                            onClick={() => remove(index)}
+                          >
+                            Eliminar Contacto
+                          </Button>
+                        </SimpleGrid>
+                        <Divider
+                          mt={'16px'}
+                          mb={'8px'}
+                          borderWidth={'2px'}
+                          variant={'dashed'}
+                        />
+                      </div>
+                    ))}
+                    <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+                      <Box></Box>
+                      <Button
+                        onClick={() =>
+                          push({ name: '', role: '', email: '', phone: '' })
+                        }
+                      >
+                        Agregar Contacto
+                      </Button>
+                    </SimpleGrid>
+                  </>
+                )}
+              </FieldArray>
 
               <Button
                 mt='32px'

@@ -9,7 +9,8 @@ import {
   CSSObjectWithLabel,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
 import { useSeals } from '../../../../hooks/box-brand/container/seal/getSeals';
 import { usePagination } from '../../../../hooks/usePagination';
@@ -22,24 +23,6 @@ interface SealSelectBaseProps {
   setSeal?: (seal: Partial<SealType>) => void;
   onChange?: (newValue: Partial<SealType>) => void;
 }
-
-// const data: Partial<SealType>[] = [
-//   {
-//     id: 1,
-//     name: 'Sello1',
-//     type: 'Tipo1',
-//   },
-//   {
-//     id: 2,
-//     name: 'Sello2',
-//     type: 'Tipo2',
-//   },
-//   {
-//     id: 3,
-//     name: 'Sello3',
-//     type: 'Tipo3',
-//   },
-// ];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<SealType>,
@@ -87,7 +70,21 @@ const SealSelectBase: React.FC<SealSelectBaseProps> = ({
   onChange,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useSeals(paginationParams);
+  const { data, isLoading, refetch, error } = useSeals(paginationParams);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data } = response;
+      const { statusCode, message, error: errorTitle, model, prop } = data;
+
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
 
   const handleChange = (newValue: SingleValue<Partial<SealType>>) => {
     if (setSeal) setSeal(newValue as Partial<SealType>);
@@ -105,7 +102,11 @@ const SealSelectBase: React.FC<SealSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'seal not found'}
+      noOptionsMessage={() =>
+        !!error
+          ? (error as any).response.data.message
+          : 'Ya no hay sello/s disponible/s'
+      }
       isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<SealType>) => `${opt.name}`}

@@ -1,9 +1,11 @@
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import { useCreateLabel } from '../../../../hooks/box-brand/materials/label/createLabel';
+import InputFieldNumber from '../../../ui/form/InputFieldNumber';
 import InputFieldText from '../../../ui/form/InputFieldText';
 
 interface AddLabelFormProps {
@@ -26,21 +28,31 @@ const initialValues: ValuesProps = {
 
 const validationSchema = Yup.object({
   name: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(15, 'Debe tener 15 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
   quantityPerRoll: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .lessThan(10000, 'Must be lower than 10000 boxes')
-    .required('Required'),
-  art: Yup.string().required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .lessThan(10000, 'Debe ser menor que 10000 ')
+    .required('Requerido'),
+  art: Yup.string().required('Requerido'),
   description: Yup.string()
-    .max(50, 'Must be 50 characters or less')
-    .required('Required'),
+    .max(50, 'Debe tener 50 caracteres o menos')
+    .min(10, 'Debe tener 10 caracteres o más')
+    .required('Requerido'),
 });
 
 const AddLabelForm = ({ onClose }: AddLabelFormProps) => {
   const { createLabel } = useCreateLabel();
   const toast = useToast();
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   const addLabel = async (
@@ -50,17 +62,24 @@ const AddLabelForm = ({ onClose }: AddLabelFormProps) => {
     createLabel(
       {
         ...values,
-        quantityPerRoll: Number(values.quantityPerRoll),
       },
       {
-        onError: (error) => {
+        onError: (error: any) => {
+          const { response } = error;
+          const { data } = response;
+          const { statusCode, message, error: errorTitle, model, prop } = data;
+
           toast({
-            title: 'Error.',
-            description: `${error.message}`,
+            title: `Error ${statusCode}: ${errorTitle} `,
+            description: `${message}`,
             status: 'error',
             duration: 5000,
             isClosable: true,
           });
+
+          if (statusCode === 401) {
+            router.push('/api/auth/signout');
+          }
         },
         onSuccess: () => {
           toast({
@@ -95,7 +114,7 @@ const AddLabelForm = ({ onClose }: AddLabelFormProps) => {
               </Heading>
               <Divider mb={'16px'} />
               <InputFieldText name={'name'} label={'Nombre'} />
-              <InputFieldText
+              <InputFieldNumber
                 name={'quantityPerRoll'}
                 label={'Cantidad por rollo'}
               />
