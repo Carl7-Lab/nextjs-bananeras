@@ -28,8 +28,10 @@ const validationSchema = Yup.object({
     .max(15, 'Must be 15 characters or less')
     .required('Required'),
   code: Yup.string()
-    .max(20, 'Must be 20 characters or less')
-    .required('Required'),
+    .max(20, 'Debe tener 10 caracteres o menos')
+    .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
+    .transform((value) => value.trim())
+    .required('Requerido'),
   issueDate: Yup.date().required('Required').typeError('Must be a valid date'),
   expirationDate: Yup.date()
     .required('Required')
@@ -42,8 +44,6 @@ const AddRequirementForm: React.FC<AddRequirementFormProps> = ({ onClose }) => {
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
-    console.log('AddRequirementForm values: ', values);
-
     return;
   };
 
@@ -62,7 +62,7 @@ const AddRequirementForm: React.FC<AddRequirementFormProps> = ({ onClose }) => {
             <Divider mb={'16px'} />
             <InputFieldText name={'name'} label={'Nombre'} />
             <InputFieldText name={'code'} label={'Código'} />
-            <InputFieldDate name={'issueDate'} label={'Fecha de Emisión '} />
+            <InputFieldDate name={'issueDate'} label={'Fecha de Emisión'} />
             <InputFieldDate
               name={'expirationDate'}
               label={'Fecha de Expiración'}

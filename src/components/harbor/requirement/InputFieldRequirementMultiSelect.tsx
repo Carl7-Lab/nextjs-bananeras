@@ -3,7 +3,7 @@ import { useField } from 'formik';
 import React from 'react';
 import AddRequirementModal from './AddRequirementModal';
 import RequirementMultiSelectBase from './RequirementMultiSelectBase';
-import { RequirementType } from '../../../types/requirement';
+import { RequirementType } from '../../../types/requirementSC';
 
 interface InputFieldRequirementMultiSelectProps {
   name: string;

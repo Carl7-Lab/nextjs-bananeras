@@ -46,7 +46,9 @@ const validationSchema = Yup.object({
     .max(15, 'Debe tener 15 caracteres o menos')
     .required('Requerido'),
   code: Yup.string()
-    .max(15, 'Debe tener 15 caracteres o menos')
+    .max(20, 'Debe tener 10 caracteres o menos')
+    .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
+    .transform((value) => value.trim())
     .required('Requerido'),
 });
 

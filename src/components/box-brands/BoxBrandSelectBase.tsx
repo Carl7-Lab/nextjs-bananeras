@@ -131,11 +131,9 @@ const BoxBrandSelectBase: React.FC<BoxBrandSelectBaseProps> = ({
   const handleChange = (newValue: SingleValue<PartialBoxBrandType>) => {
     if (setBoxBrand) {
       setBoxBrand(newValue as PartialBoxBrandType);
-      //   console.log('value BoxBrandSelect setBoxBrand: ', newValue);
     }
     if (onChange) {
       onChange(newValue as PartialBoxBrandType);
-      //   console.log('value BoxBrandSelect onChange: ', newValue);
     }
   };
 

@@ -7,6 +7,6 @@ export type ClientType = {
   type: string;
   email: string;
   phone: string;
-  harborId: number[] | null;
-  harbors: Partial<HarborType>[];
+  harbors: number[] | null;
+  shippingCompanies: number[] | null;
 };

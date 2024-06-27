@@ -10,7 +10,6 @@ export default function OnBoardingPage() {
   const isOnboarded = session?.user?.onboardingStatus;
 
   useLayoutEffect(() => {
-    console.log('OnBoardingPage isOnboarded: ', isOnboarded);
     if (isOnboarded === 'done') {
       return redirect('/dashboard/producer/fincas');
     }

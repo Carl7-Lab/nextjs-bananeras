@@ -18,9 +18,9 @@ const ProfilePage = async (props: Props) => {
       'Content-Type': 'application/json',
     },
   });
-  console.log('session: ', session);
+  // console.log('session: ', session);
   const user = await response.json();
-  console.log('user: ', user);
+  // console.log('user: ', user);
 
   const isOnboarding = !!user.exporterId;
 

@@ -229,8 +229,6 @@ const AddProducerForm = () => {
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
   ) => {
-    console.log('onSubmit values: ', values);
-
     createMerchant(
       {
         ...values,

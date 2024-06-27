@@ -967,7 +967,6 @@ export default function AddBoxBrandsForm() {
                 type='submit'
                 colorScheme='teal'
                 isLoading={isSubmitting}
-                onClick={() => console.log('valores del formulario: ', values)}
               >
                 Enviar
               </Button>

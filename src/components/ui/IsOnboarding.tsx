@@ -10,8 +10,6 @@ export default function IsOnboarding(Component: any) {
     const isOnboarded = session?.user?.onboardingStatus;
 
     useEffect(() => {
-      console.log('IsOnboarding isOnboarded: ', isOnboarded);
-      console.log('IsOnboarding status: ', status);
       if (isOnboarded === 'pending' && status === 'authenticated') {
         return redirect('/dashboard/onboarding');
       }

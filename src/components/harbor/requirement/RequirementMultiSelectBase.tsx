@@ -11,7 +11,7 @@ import {
 import { FieldInputProps } from 'formik';
 import React from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
-import { RequirementType } from '../../../types/requirement';
+import { RequirementType } from '../../../types/requirementSC';
 
 interface RequirementMultiSelectBaseProps {
   name?: string;

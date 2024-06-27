@@ -59,12 +59,6 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user, trigger, session }) {
-      console.log('**********************');
-      console.log('token: ', token);
-      console.log('user: ', user);
-      console.log('trigger: ', trigger);
-      console.log('session: ', session);
-
       if (trigger === 'update' && session?.onboardingStatus) {
         token.user.onboardingStatus = session.onboardingStatus;
       }

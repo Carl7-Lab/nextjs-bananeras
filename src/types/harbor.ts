@@ -1,9 +1,16 @@
+import { RequirementSCType } from './requirementSC';
+
 export type HarborType = {
   id: number | '';
-  name: string;
+  type: string;
   country: string;
   city: string;
-  transportTime: string;
-  latitude: number;
-  longitude: number;
+  location: string;
+  name: string;
+  latitude: number | '';
+  longitude: number | '';
+  openTime: string;
+  closeTime: string;
+  shippingCompanies: number[] | null;
+  requirementsSC: Partial<RequirementSCType>[];
 };

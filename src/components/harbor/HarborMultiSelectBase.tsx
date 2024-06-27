@@ -9,9 +9,10 @@ import {
   MultiValue,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
-import { useHarbors } from '../../hooks/harbor/getHarbors';
+import { useHarbors } from '../../hooks/export/harbor/getHarbors';
 import { usePagination } from '../../hooks/usePagination';
 import { HarborType } from '../../types/harbor';
 
@@ -69,7 +70,21 @@ const HarborMultiSelectBase: React.FC<HarborMultiSelectBaseProps> = ({
   setHarbors,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useHarbors(paginationParams);
+  const { data, isLoading, refetch, error } = useHarbors(paginationParams);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data } = response;
+      const { statusCode, message, error: errorTitle, model, prop } = data;
+
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
 
   const handleChange = (newValues: MultiValue<Partial<HarborType>>) => {
     if (setHarbors) {
@@ -93,11 +108,15 @@ const HarborMultiSelectBase: React.FC<HarborMultiSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'harbor not found'}
+      noOptionsMessage={() =>
+        !!error
+          ? (error as any).response.data.message
+          : 'Ya no hay puerto/s disponible/s'
+      }
       isLoading={isLoading}
       options={data}
       getOptionLabel={(harbor: Partial<HarborType>) =>
-        `${harbor.name} - ${harbor.id}`
+        `${harbor.name} - ${harbor.type}`
       }
       getOptionValue={(harbor: Partial<HarborType>) =>
         harbor.id ? harbor.id.toString() : ''

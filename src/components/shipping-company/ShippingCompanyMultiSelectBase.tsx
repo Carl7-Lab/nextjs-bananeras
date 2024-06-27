@@ -9,8 +9,11 @@ import {
   CSSObjectWithLabel,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
+import { useShippingCompanies } from '../../hooks/export/shippingCompany/getShippingCompanies';
+import { usePagination } from '../../hooks/usePagination';
 import { ShippingCompanyType } from '../../types/shippingCompany';
 
 interface ShippingCompanyMultiSelectBaseProps {
@@ -22,12 +25,6 @@ interface ShippingCompanyMultiSelectBaseProps {
   ) => void;
   onChange?: (newValues: Partial<ShippingCompanyType>[]) => void;
 }
-
-const data: Partial<ShippingCompanyType>[] = [
-  { id: 1, name: 'Shipping Company 1', estDuration: '8 hrs' },
-  { id: 2, name: 'Shipping Company 2', estDuration: '12 hrs' },
-  { id: 3, name: 'Shipping Company 3', estDuration: '16 hrs' },
-];
 
 const chakraStyles: ChakraStylesConfig<
   Partial<ShippingCompanyType>,
@@ -70,8 +67,23 @@ const shippingCompanyComponents = {
 const ShippingCompanyMultiSelectBase: React.FC<
   ShippingCompanyMultiSelectBaseProps
 > = ({ name, placeholder, field, onChange, setShippingCompanies }) => {
-  //   const { paginationParams, filterProps } = usePagination();
-  //   const { data, isLoading, refetch } = useHarbors(paginationParams);
+  const { paginationParams, filterProps } = usePagination();
+  const { data, isLoading, refetch, error } =
+    useShippingCompanies(paginationParams);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data } = response;
+      const { statusCode, message, error: errorTitle, model, prop } = data;
+
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
 
   const handleChange = (
     newValues: MultiValue<Partial<ShippingCompanyType>>
@@ -97,11 +109,15 @@ const ShippingCompanyMultiSelectBase: React.FC<
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'shipping company not found'}
-      //   isLoading={isLoading}
+      noOptionsMessage={() =>
+        !!error
+          ? (error as any).response.data.message
+          : 'Ya no hay naviero/s disponible/s'
+      }
+      isLoading={isLoading}
       options={data}
       getOptionLabel={(shippingCompany: Partial<ShippingCompanyType>) =>
-        `${shippingCompany.name} - ${shippingCompany.id}`
+        `${shippingCompany.name}`
       }
       getOptionValue={(shippingCompany: Partial<ShippingCompanyType>) =>
         shippingCompany.id ? shippingCompany.id.toString() : ''

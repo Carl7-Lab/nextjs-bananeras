@@ -231,8 +231,6 @@ export default function OnboardingForm() {
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
   ) => {
-    console.log('onSubmit values: ', values);
-
     createOnboarding(
       {
         ...values,

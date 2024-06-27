@@ -6,11 +6,12 @@ import {
   SimpleGrid,
   useToast,
 } from '@chakra-ui/react';
-import { Form, Formik } from 'formik';
+import { Form, Formik, FormikHelpers } from 'formik';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
-import { useCreateClient } from '../../hooks/client/createClient';
+import { useCreateClient } from '../../hooks/export/client/createClient';
 import InputFieldHarborMultiSelect from '../harbor/InputFieldHarborMultiSelect';
 import InputFieldShippingCompanyMultiSelect from '../shipping-company/InputFieldShippingCompanyMultiSelect';
 import InputFieldSelector from '../ui/form/InputFieldSelector';
@@ -38,32 +39,44 @@ const initialValues: ValuesProps = {
 
 const validationSchema = Yup.object({
   businessName: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .max(15, 'Debe tener 15 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
   businessId: Yup.string()
-    .length(13, 'Must be exactly 13 characters')
-    .matches(/^\d+$/, 'Must be a number')
-    .required('Required'),
+    .length(13, 'Debe tener exactamente 13 caracteres')
+    .matches(
+      /^\d{10}001$/,
+      'El RUC del negocio debe estar en el formato xxxxxxxxxx001'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
   type: Yup.string()
-    .required('Required')
-    .oneOf(['Supermercado', 'Intermediario'], 'You must selected'),
+    .required('Requerido')
+    .oneOf(['Supermercado', 'Intermediario'], 'Tipo invalido'),
   email: Yup.string()
-    .email('Invalid email')
-    .max(50, 'Must be 50 characters or less')
-    .required('Required'),
+    .transform((value) => value.trim())
+    .email('Correo electrónico inválido')
+    .max(50, 'Debe tener 50 caracteres o menos'),
   phone: Yup.string()
-    .matches(/^[0-9]+$/, 'Must be a valid phone number')
-    .min(10, 'Must be at least 10 digits')
-    .max(15, 'Must be 15 digits or less')
-    .required('Required'),
+    .matches(/^(\+593|0)9\d{8}$/, 'Debe comenzar con el prefijo +593 o 09')
+    .transform((value) => value.trim())
+    .required('Requerido'),
   harbors: Yup.array()
-    .min(1, 'At least one harbor must be selected')
-    .required('Required')
-    .of(Yup.number().required()),
+    .min(1, 'Debe seleccionar al menos un puerto')
+    .of(Yup.number().required())
+    .nullable()
+    .required('Requerido'),
   shippingCompanies: Yup.array()
-    .min(1, 'At least one shipping company must be selected')
-    .required('Required')
-    .of(Yup.number().required()),
+    .min(1, 'Debe seleccionar al menos un naviero')
+    .of(Yup.number().required())
+    .nullable()
+    .required('Requerido'),
 });
 
 const AddClientForm = () => {
@@ -78,45 +91,51 @@ const AddClientForm = () => {
     },
   ];
   const { createClient } = useCreateClient();
+  const router = useRouter();
   const toast = useToast();
   const queryClient = useQueryClient();
 
   const addClient = async (
     values: ValuesProps,
-    actions: { resetForm: () => void }
+    formikHelpers: FormikHelpers<ValuesProps>
   ) => {
-    const { harbors, ...client } = values;
-    console.log('addClient values: ', values);
+    createClient(
+      {
+        ...values,
+      },
+      {
+        onError: (error: any) => {
+          const { response } = error;
+          const { data } = response;
+          const { statusCode, message, error: errorTitle, model, prop } = data;
+          {
+            toast({
+              title: `Error ${statusCode}: ${errorTitle} `,
+              description: `${message}`,
+              status: 'error',
+              duration: 5000,
+              isClosable: true,
+            });
 
-    // createClient(
-    //   {
-    //     ...client,
-    //     harborId: harbors,
-    //   },
-    //   {
-    //     onError: (error) => {
-    //       toast({
-    //         title: 'Error.',
-    //         description: `${error.message}`,
-    //         status: 'error',
-    //         duration: 5000,
-    //         isClosable: true,
-    //       });
-    //     },
-    //     onSuccess: () => {
-    //       toast({
-    //         title: 'Cliente creado',
-    //         status: 'success',
-    //         duration: 5000,
-    //         isClosable: true,
-    //       });
+            if (statusCode === 401) {
+              router.push('/api/auth/signout');
+            }
+          }
+        },
+        onSuccess: () => {
+          toast({
+            title: 'Cliente creado',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
 
-    //       queryClient.invalidateQueries('clients');
-    //       queryClient.invalidateQueries('clientsByHarbor');
-    //       actions.resetForm();
-    //     },
-    //   }
-    // );
+          queryClient.invalidateQueries('clients');
+          queryClient.invalidateQueries('clientsByHarbor');
+          formikHelpers.resetForm();
+        },
+      }
+    );
 
     return;
   };

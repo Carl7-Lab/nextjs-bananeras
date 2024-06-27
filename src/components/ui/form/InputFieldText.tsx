@@ -61,10 +61,10 @@ const InputFieldText: React.FC<InputFieldProps> = ({
         }
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isBan?.state]);
 
   const banClick = () => {
-    console.log('banClick: ', label);
     if (isBan?.setBanState) {
       isBan.setBanState();
     }

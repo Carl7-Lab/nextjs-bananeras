@@ -35,8 +35,24 @@ export function getNavItems(): SidenavItem[] {
       to: '/dashboard/export/search',
     },
     {
-      label: 'Agregar',
+      label: 'Iniciar Exportacion',
       to: '/dashboard/export/add-export',
+    },
+    {
+      label: 'Envio de Insumos',
+      to: '/dashboard/export/supply-shipment',
+    },
+    {
+      label: 'Pagos Pendientes a Productores',
+      to: '/dashboard/export/producer-pending-payments',
+    },
+    {
+      label: 'Agregar Cliente',
+      to: '/dashboard/export/add-client',
+    },
+    {
+      label: 'Agregar Puerto',
+      to: '/dashboard/export/add-harbor',
     },
   ];
 
@@ -95,24 +111,7 @@ export function getNavItems(): SidenavItem[] {
       to: '/dashboard/penalidades/cajas-estropeadas',
     },
   ];
-  const settingsMenu: SidenavMenuItem[] = [
-    {
-      label: 'Agregar Puerto',
-      to: '/dashboard/settings/add-harbor',
-    },
-    {
-      label: 'Agregar Cliente',
-      to: '/dashboard/settings/add-client',
-    },
-    {
-      label: 'Exportaciones Pendientes',
-      to: '/dashboard/settings/pending-exports',
-    },
-    {
-      label: 'Pagos de Exportaciones Pendientes',
-      to: '/dashboard/settings/pending-payments',
-    },
-  ];
+  const settingsMenu: SidenavMenuItem[] = [];
 
   const navItems: SidenavItem[] = [
     {
