@@ -1,18 +1,20 @@
 import { Box, FormLabel, Input, SimpleGrid } from '@chakra-ui/react';
 import { usePathname } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
-import { PartialHarborType } from './HarborSelectBase';
+import React, { useState } from 'react';
 import InputFieldHarborSelect from './InputFieldHarborSelect';
+import { HarborType } from '../../types/harbor';
 
 interface SelectHarborProps {
   name: string;
 }
 
 const SelectHarbor: React.FC<SelectHarborProps> = ({ name }) => {
-  const [harbor, setHarbor] = useState<PartialHarborType | null>(null);
+  const [harbor, setHarbor] = useState<Partial<HarborType> | null>(null);
   const pathname = usePathname();
 
   const hideComponent = pathname !== '/dashboard/settings/add-client';
+
+  console.log('harbor: ', harbor);
 
   return (
     <>
@@ -26,10 +28,10 @@ const SelectHarbor: React.FC<SelectHarborProps> = ({ name }) => {
 
         {hideComponent && (
           <>
-            <Box>
+            {/* <Box>
               <FormLabel>Tiempo de transporte</FormLabel>
               <Input isReadOnly={true} value={harbor?.transportTime || ''} />
-            </Box>
+            </Box> */}
             <Box>
               <FormLabel>País</FormLabel>
               <Input isReadOnly={true} value={harbor?.country || ''} />
@@ -39,7 +41,14 @@ const SelectHarbor: React.FC<SelectHarborProps> = ({ name }) => {
               <Input
                 isReadOnly={true}
                 value={
-                  harbor?.latitude !== undefined ? `${harbor?.latitude}` : ''
+                  harbor?.latitude !== undefined && harbor?.latitude !== null
+                    ? `${harbor?.latitude}`
+                    : ''
+                }
+                placeholder={
+                  harbor?.latitude !== undefined && harbor?.latitude === null
+                    ? 'No se ha ingresado el valor'
+                    : ''
                 }
               />
             </Box>
@@ -52,7 +61,14 @@ const SelectHarbor: React.FC<SelectHarborProps> = ({ name }) => {
               <Input
                 isReadOnly={true}
                 value={
-                  harbor?.longitude !== undefined ? `${harbor?.longitude}` : ''
+                  harbor?.longitude !== undefined && harbor?.longitude !== null
+                    ? `${harbor?.longitude}`
+                    : ''
+                }
+                placeholder={
+                  harbor?.longitude !== undefined && harbor?.longitude === null
+                    ? 'No se ha ingresado el valor'
+                    : ''
                 }
               />
             </Box>

@@ -1,13 +1,14 @@
 import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react';
 import { useField } from 'formik';
 import React from 'react';
-import HarborSelectBase, { PartialHarborType } from './HarborSelectBase';
+import HarborSelectBase from './HarborSelectBase';
+import { HarborType } from '../../types/harbor';
 
 interface InputFieldHarborSelectProps {
   name: string;
   label: string;
   placeholder: string;
-  setHarbor?: (harbor: PartialHarborType) => void;
+  setHarbor?: (harbor: Partial<HarborType>) => void;
 }
 
 const InputFieldHarborSelect: React.FC<InputFieldHarborSelectProps> = ({

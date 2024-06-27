@@ -1,13 +1,14 @@
 import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react';
 import { useField } from 'formik';
 import React from 'react';
-import BoxBrandSelectBase, { PartialBoxBrandType } from './BoxBrandSelectBase';
+import BoxBrandSelectBase from './BoxBrandSelectBase';
+import { BoxBrandType } from '../../types/box-brand/boxBrand';
 
 interface InputFieldBoxBrandSelectProps {
   name: string;
   label: string;
   placeholder: string;
-  setBoxBrand?: (brand: PartialBoxBrandType) => void;
+  setBoxBrand?: (brand: Partial<BoxBrandType>) => void;
 }
 
 const InputFieldBoxBrandSelect: React.FC<InputFieldBoxBrandSelectProps> = ({

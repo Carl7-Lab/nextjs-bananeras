@@ -194,6 +194,8 @@ const validationSchema = Yup.object({
     .transform((value) => value.trim())
     .required('Requerido'),
   brandCode: Yup.string()
+    .max(20, 'Debe tener 10 caracteres o menos')
+    .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
     .transform((value) => value.trim())
     .required('Requerido'),
   boxQuantity: Yup.number()

@@ -1,14 +1,15 @@
 import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react';
 import { useField } from 'formik';
-import React, { useEffect } from 'react';
-import ClientSelectBase, { PartialClientType } from './ClientSelectBase';
+import React from 'react';
+import ClientSelectBase from './ClientSelectBase';
+import { ClientType } from '../../types/client';
 
 interface InputFieldClientSelectProps {
   name: string;
   label: string;
   placeholder: string;
   harbor?: number;
-  setClient?: (client: PartialClientType) => void;
+  setClient?: (client: Partial<ClientType>) => void;
 }
 
 const InputFieldClientSelect: React.FC<InputFieldClientSelectProps> = ({

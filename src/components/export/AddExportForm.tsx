@@ -8,6 +8,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
@@ -20,45 +21,75 @@ import SelectProducer from '../producer/SelectProducer';
 import InputFieldText from '../ui/form/InputFieldText';
 
 interface ValuesProps {
-  boxBrand: number | '';
-  boxQuantity: number;
-  merchant: number | '';
-  business: number | '';
-  destinationPort: number | '';
-  client: number | '';
-  logisticShipSteam: string;
-  logisticShippingLineSeal: string;
-  logisticExtraSeal: string;
+  boxBrandId: number | '';
+  boxQuantity: number | '';
+  merchantId: number | '';
+  businessId: number | '';
+  harborId: number | '';
+  clientId: number | '';
+  shipSteam: string;
+  shippingLineSeal: string;
+  extraSeal: string;
 }
 
 const initialValues: ValuesProps = {
-  boxBrand: '',
+  boxBrandId: '',
   boxQuantity: 0,
-  merchant: '',
-  business: '',
-  destinationPort: '',
-  client: '',
-  logisticShipSteam: '',
-  logisticShippingLineSeal: '',
-  logisticExtraSeal: '',
+  merchantId: '',
+  businessId: '',
+  harborId: '',
+  clientId: '',
+  shipSteam: '',
+  shippingLineSeal: '',
+  extraSeal: '',
 };
 
 const validationSchema = Yup.object({
-  boxBrand: Yup.string().required('Required'),
+  boxBrandId: Yup.number()
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   boxQuantity: Yup.number()
-    .moreThan(0, 'Must be greater than 0')
-    .required('Required'),
-  merchant: Yup.number().required('Required'),
-  business: Yup.number().required('Required'),
-  destinationPort: Yup.string().required('Required'),
-  client: Yup.string().required('Required'),
-  logisticShipSteam: Yup.string().required('Required'),
-  logisticShippingLineSeal: Yup.string().required('Required'),
-  logisticExtraSeal: Yup.string().required('Required'),
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .lessThan(10000, 'Debe ser menor que 10000 cajas')
+    .required('Requerido'),
+  merchantId: Yup.number()
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  businessId: Yup.number()
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  harborId: Yup.number()
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  clientId: Yup.number()
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  shipSteam: Yup.string()
+    .max(20, 'Debe tener 10 caracteres o menos')
+    .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  shippingLineSeal: Yup.string()
+    .max(20, 'Debe tener 10 caracteres o menos')
+    .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  extraSeal: Yup.string()
+    .max(20, 'Debe tener 10 caracteres o menos')
+    .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
+    .transform((value) => value.trim())
+    .required('Requerido'),
 });
 
 const AddExportForm = () => {
   const { createExport } = useCreateExport();
+  const router = useRouter();
   const toast = useToast();
   const queryClient = useQueryClient();
 
@@ -70,35 +101,25 @@ const AddExportForm = () => {
 
     createExport(
       {
-        boxQuantity: Number(values.boxQuantity),
-        boxBrand: {
-          id: values.boxBrand,
-        },
-        merchant: {
-          id: values.merchant,
-        },
-        business: {
-          id: values.business,
-        },
-        harbor: {
-          id: values.destinationPort,
-        },
-        client: {
-          id: values.client,
-        },
-        shipSteam: values.logisticShipSteam,
-        shippingLineSeal: values.logisticShippingLineSeal,
-        extraSeal: values.logisticExtraSeal,
+        ...values,
       },
       {
-        onError: (error) => {
+        onError: (error: any) => {
+          const { response } = error;
+          const { data } = response;
+          const { statusCode, message, error: errorTitle, model, prop } = data;
+
           toast({
-            title: 'Error.',
-            description: `${error.message}`,
+            title: `Error ${statusCode}: ${errorTitle} `,
+            description: `${message}`,
             status: 'error',
             duration: 5000,
             isClosable: true,
           });
+
+          if (statusCode === 401) {
+            router.push('/api/auth/signout');
+          }
         },
         onSuccess: () => {
           toast({
@@ -124,7 +145,7 @@ const AddExportForm = () => {
         onSubmit={addExport}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting, values, setValues }) => (
+        {({ isSubmitting, values }) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>
@@ -132,22 +153,22 @@ const AddExportForm = () => {
               </Heading>
               <Divider mb={'16px'} />
 
-              <SelectBoxBrand name={'boxBrand'} name2={'boxQuantity'} />
+              <SelectBoxBrand name={'boxBrandId'} name2={'boxQuantity'} />
 
               <Heading fontSize={'2xl'} p={'12px'}>
                 Productor
               </Heading>
               <Divider mb={'16px'} />
-              <SelectProducer name={'merchant'} />
+              <SelectProducer name={'merchantId'} />
 
               <Heading fontSize={'2xl'} p={'12px'}>
                 Finca
               </Heading>
               <Divider mb={'16px'} />
               <SelectBusiness
-                name={'business'}
+                name={'businessId'}
                 merchant={
-                  values?.merchant ? Number(values.merchant) : undefined
+                  values?.merchantId ? Number(values.merchantId) : undefined
                 }
               />
 
@@ -155,19 +176,15 @@ const AddExportForm = () => {
                 Puerto Destino
               </Heading>
               <Divider mb={'16px'} />
-              <SelectHarbor name={'destinationPort'} />
+              <SelectHarbor name={'harborId'} />
 
               <Heading fontSize={'2xl'} p={'12px'}>
                 Cliente
               </Heading>
               <Divider mb={'16px'} />
               <SelectClient
-                name={'client'}
-                harbor={
-                  values?.destinationPort
-                    ? Number(values.destinationPort)
-                    : undefined
-                }
+                name={'clientId'}
+                harbor={values?.harborId ? Number(values.harborId) : undefined}
               />
 
               <Heading fontSize={'2xl'} p={'12px'}>
@@ -175,18 +192,12 @@ const AddExportForm = () => {
               </Heading>
               <Divider mb={'16px'} />
               <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+                <InputFieldText name={'shipSteam'} label={'Vapor del buque'} />
                 <InputFieldText
-                  name={'logisticShipSteam'}
-                  label={'Vapor del buque'}
-                />
-                <InputFieldText
-                  name={'logisticShippingLineSeal'}
+                  name={'shippingLineSeal'}
                   label={'Sello de Naviera'}
                 />
-                <InputFieldText
-                  name={'logisticExtraSeal'}
-                  label={'Sellos extra'}
-                />
+                <InputFieldText name={'extraSeal'} label={'Sellos extra'} />
               </SimpleGrid>
 
               <Button
@@ -196,7 +207,6 @@ const AddExportForm = () => {
                 type='submit'
                 colorScheme='teal'
                 isLoading={isSubmitting}
-                onClick={() => console.log('AddExportForm values', values)}
               >
                 Enviar
               </Button>

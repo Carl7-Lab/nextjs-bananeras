@@ -9,34 +9,25 @@ import {
   CSSObjectWithLabel,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
-import { useQueryClient } from 'react-query';
 import { useHarbors } from '../../hooks/export/harbor/getHarbors';
 import { usePagination } from '../../hooks/usePagination';
-
-export type PartialHarborType = {
-  id: string;
-  name: string;
-  country: string;
-  city: string;
-  transportTime: string;
-  latitude: string;
-  longitude: string;
-};
+import { HarborType } from '../../types/harbor';
 
 interface HarborSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
-  setHarbor?: (harbor: PartialHarborType) => void;
-  onChange?: (newValue: PartialHarborType) => void;
+  setHarbor?: (harbor: Partial<HarborType>) => void;
+  onChange?: (newValue: Partial<HarborType>) => void;
 }
 
 const chakraStyles: ChakraStylesConfig<
-  PartialHarborType,
+  Partial<HarborType>,
   false,
-  GroupBase<PartialHarborType>
+  GroupBase<Partial<HarborType>>
 > = {
   container: (provided) => ({
     ...provided,
@@ -60,9 +51,9 @@ const chakraStyles: ChakraStylesConfig<
 const harborComponents = {
   DropdownIndicator: (
     props: DropdownIndicatorProps<
-      PartialHarborType,
+      Partial<HarborType>,
       false,
-      GroupBase<PartialHarborType>
+      GroupBase<Partial<HarborType>>
     >
   ) => (
     <chakraComponents.DropdownIndicator {...props}>
@@ -79,16 +70,29 @@ const HarborSelectBase: React.FC<HarborSelectBaseProps> = ({
   setHarbor,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useHarbors(paginationParams);
-  const queryClient = useQueryClient();
+  const { data, isLoading, refetch, error } = useHarbors(paginationParams);
+  const router = useRouter();
 
-  const handleChange = (newValue: SingleValue<PartialHarborType>) => {
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data } = response;
+      const { statusCode, message, error: errorTitle, model, prop } = data;
+
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
+
+  const handleChange = (newValue: SingleValue<Partial<HarborType>>) => {
     if (setHarbor) {
-      setHarbor(newValue as PartialHarborType);
+      setHarbor(newValue as Partial<HarborType>);
     }
 
     if (onChange) {
-      onChange(newValue as PartialHarborType);
+      onChange(newValue as Partial<HarborType>);
     }
   };
 
@@ -103,15 +107,21 @@ const HarborSelectBase: React.FC<HarborSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'harbor not found'}
+      noOptionsMessage={() =>
+        !!error
+          ? (error as any).response.data.message
+          : 'Ya no hay puerto/s disponible/s'
+      }
       isLoading={isLoading}
       options={data}
-      getOptionLabel={(harbor: PartialHarborType) => `${harbor.name}`}
-      getOptionValue={(harbor: PartialHarborType) => harbor.id}
+      getOptionLabel={(opt: Partial<HarborType>) => `${opt.name}`}
+      getOptionValue={(opt: Partial<HarborType>) =>
+        opt.id ? opt.id.toString() : ''
+      }
       onChange={(newValue) => handleChange(newValue)}
       value={
         field?.value
-          ? data.find((opt: PartialHarborType) => opt.id === field?.value)
+          ? data.find((opt: Partial<HarborType>) => opt.id === field?.value)
           : undefined
       }
       placeholder={placeholder}

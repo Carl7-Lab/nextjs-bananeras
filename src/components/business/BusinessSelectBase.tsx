@@ -9,7 +9,8 @@ import {
   CSSObjectWithLabel,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
 import { useBusinessesByMerchantId } from '../../hooks/business/getBusinesses';
 import { usePagination } from '../../hooks/usePagination';
@@ -71,10 +72,24 @@ const BusinessSelectBase: React.FC<BusinessSelectBaseProps> = ({
   setBusiness,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useBusinessesByMerchantId(
+  const { data, isLoading, refetch, error } = useBusinessesByMerchantId(
     { ...paginationParams },
     { id: merchant ?? 0 }
   );
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data } = response;
+      const { statusCode, message, error: errorTitle, model, prop } = data;
+
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
 
   const handleChange = (newValue: SingleValue<Partial<BusinessType>>) => {
     if (setBusiness) {
@@ -97,7 +112,11 @@ const BusinessSelectBase: React.FC<BusinessSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'business not found'}
+      noOptionsMessage={() =>
+        !!error
+          ? (error as any).response.data.message
+          : 'Ya no hay finca/s disponible/s'
+      }
       isLoading={isLoading}
       options={data}
       getOptionLabel={(business: Partial<BusinessType>) => `${business.name}`}

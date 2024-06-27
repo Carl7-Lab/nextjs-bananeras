@@ -1,8 +1,8 @@
 import { Box, FormLabel, Input, SimpleGrid } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
-import { PartialBoxBrandType } from './BoxBrandSelectBase';
+import React, { useState } from 'react';
 import InputFieldBoxBrandSelect from './InputFieldBoxBrandSelect';
-import InputFieldText from '../ui/form/InputFieldText';
+import { BoxBrandType } from '../../types/box-brand/boxBrand';
+import InputFieldNumber from '../ui/form/InputFieldNumber';
 
 interface SelectBoxBrandProps {
   name: string;
@@ -10,7 +10,7 @@ interface SelectBoxBrandProps {
 }
 
 const SelectBoxBrand: React.FC<SelectBoxBrandProps> = ({ name, name2 }) => {
-  const [boxBrand, setBoxBrand] = useState<PartialBoxBrandType | null>(null);
+  const [boxBrand, setBoxBrand] = useState<Partial<BoxBrandType> | null>(null);
 
   return (
     <>
@@ -27,7 +27,7 @@ const SelectBoxBrand: React.FC<SelectBoxBrandProps> = ({ name, name2 }) => {
           <Input isReadOnly={true} value={boxBrand?.brandCode || ''} />
         </Box>
 
-        <InputFieldText name={name2} label={'Cantidad'} />
+        <InputFieldNumber name={name2} label={'Cantidad'} />
       </SimpleGrid>
     </>
   );

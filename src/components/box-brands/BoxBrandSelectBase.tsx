@@ -9,81 +9,25 @@ import {
   SingleValue,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
 import { useBoxBrands } from '@/hooks/box-brand/getBoxBrands';
 import { usePagination } from '@/hooks/usePagination';
-
-export type PartialBoxBrandType = {
-  id: string;
-  name: string;
-  brandCode: string;
-  brand: {
-    id: string;
-    name: string;
-  };
-};
+import { BoxBrandType } from '../../types/box-brand/boxBrand';
 
 interface BoxBrandSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
-  setBoxBrand?: (brand: PartialBoxBrandType) => void;
-  onChange?: (newValue: PartialBoxBrandType) => void;
+  setBoxBrand?: (brand: Partial<BoxBrandType>) => void;
+  onChange?: (newValue: Partial<BoxBrandType>) => void;
 }
 
-// const boxBrandsItems: PartialBoxBrandType[] = [
-//   {
-//     id: '1',
-//     name: 'dole amarillo',
-//     brandCode: 'DBL001',
-//     brand: {
-//       id: '1',
-//       name: 'Dole',
-//     },
-//   },
-//   {
-//     id: '2',
-//     name: 'chiquita morada',
-//     brandCode: 'DBL002',
-//     brand: {
-//       id: '2',
-//       name: 'Chiquita',
-//     },
-//   },
-//   {
-//     id: '3',
-//     name: 'del monte morada',
-//     brandCode: 'DBL003',
-//     brand: {
-//       id: '3',
-//       name: 'Del Monte',
-//     },
-//   },
-//   {
-//     id: '4',
-//     name: 'dole naranja',
-//     brandCode: 'DBL004',
-//     brand: {
-//       id: '1',
-//       name: 'Dole',
-//     },
-//   },
-//   {
-//     id: '5',
-//     name: 'test',
-//     brandCode: 'DBL005',
-//     brand: {
-//       id: '2',
-//       name: 'Chiquita',
-//     },
-//   },
-// ];
-
 const chakraStyles: ChakraStylesConfig<
-  PartialBoxBrandType,
+  Partial<BoxBrandType>,
   false,
-  GroupBase<PartialBoxBrandType>
+  GroupBase<Partial<BoxBrandType>>
 > = {
   container: (provided) => ({
     ...provided,
@@ -107,9 +51,9 @@ const chakraStyles: ChakraStylesConfig<
 const brandComponents = {
   DropdownIndicator: (
     props: DropdownIndicatorProps<
-      PartialBoxBrandType,
+      Partial<BoxBrandType>,
       false,
-      GroupBase<PartialBoxBrandType>
+      GroupBase<Partial<BoxBrandType>>
     >
   ) => (
     <chakraComponents.DropdownIndicator {...props}>
@@ -126,14 +70,28 @@ const BoxBrandSelectBase: React.FC<BoxBrandSelectBaseProps> = ({
   name,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useBoxBrands(paginationParams);
+  const { data, isLoading, refetch, error } = useBoxBrands(paginationParams);
+  const router = useRouter();
 
-  const handleChange = (newValue: SingleValue<PartialBoxBrandType>) => {
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data } = response;
+      const { statusCode, message, error: errorTitle, model, prop } = data;
+
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
+
+  const handleChange = (newValue: SingleValue<Partial<BoxBrandType>>) => {
     if (setBoxBrand) {
-      setBoxBrand(newValue as PartialBoxBrandType);
+      setBoxBrand(newValue as Partial<BoxBrandType>);
     }
     if (onChange) {
-      onChange(newValue as PartialBoxBrandType);
+      onChange(newValue as Partial<BoxBrandType>);
     }
   };
 
@@ -148,27 +106,25 @@ const BoxBrandSelectBase: React.FC<BoxBrandSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'brand box not found'}
+      noOptionsMessage={() =>
+        !!error
+          ? (error as any).response.data.message
+          : 'Ya no hay tipo/s de caja disponible/s'
+      }
       isLoading={isLoading}
       options={data}
-      // options={boxBrandsItems}
-      getOptionLabel={(boxBrand: PartialBoxBrandType) =>
-        `${boxBrand.brand.name} - ${boxBrand.name}`
+      getOptionLabel={(opt: Partial<BoxBrandType>) =>
+        `${opt.brand?.name} - ${opt.name}`
       }
-      getOptionValue={(boxBrand: PartialBoxBrandType) => boxBrand.id}
+      getOptionValue={(opt: Partial<BoxBrandType>) =>
+        opt.id ? opt.id.toString() : ''
+      }
       onChange={(newValue) => handleChange(newValue)}
       value={
         field?.value
-          ? data.find((opt: PartialBoxBrandType) => opt.id === field?.value)
+          ? data.find((opt: Partial<BoxBrandType>) => opt.id === field?.value)
           : undefined
       }
-      // value={
-      //   field?.value
-      //     ? boxBrandsItems.find(
-      //         (opt: PartialBoxBrandType) => opt.id === field?.value
-      //       )
-      //     : undefined
-      // }
       placeholder={placeholder}
       //   onInputChange={(newValue) => {
       //     filterProps.setSearch(newValue);

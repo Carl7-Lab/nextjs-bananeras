@@ -9,33 +9,26 @@ import {
   CSSObjectWithLabel,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
 import { useClientsByHarborId } from '../../hooks/export/client/getClientsByHarborId';
 import { usePagination } from '../../hooks/usePagination';
-
-export type PartialClientType = {
-  id: string;
-  businessName: string;
-  businessId: string;
-  type: string;
-  email: string;
-  phone: string;
-};
+import { ClientType } from '../../types/client';
 
 interface ClientSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
   harbor?: number;
-  setClient?: (client: PartialClientType) => void;
-  onChange?: (newValue: PartialClientType) => void;
+  setClient?: (client: Partial<ClientType>) => void;
+  onChange?: (newValue: Partial<ClientType>) => void;
 }
 
 const chakraStyles: ChakraStylesConfig<
-  PartialClientType,
+  Partial<ClientType>,
   false,
-  GroupBase<PartialClientType>
+  GroupBase<Partial<ClientType>>
 > = {
   container: (provided) => ({
     ...provided,
@@ -59,9 +52,9 @@ const chakraStyles: ChakraStylesConfig<
 const clientComponents = {
   DropdownIndicator: (
     props: DropdownIndicatorProps<
-      PartialClientType,
+      Partial<ClientType>,
       false,
-      GroupBase<PartialClientType>
+      GroupBase<Partial<ClientType>>
     >
   ) => (
     <chakraComponents.DropdownIndicator {...props}>
@@ -79,18 +72,33 @@ const ClientSelectBase: React.FC<ClientSelectBaseProps> = ({
   setClient,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useClientsByHarborId(
+  const { data, isLoading, refetch, error } = useClientsByHarborId(
     { ...paginationParams },
     { id: harbor ?? 0 }
   );
 
-  const handleChange = (newValue: SingleValue<PartialClientType>) => {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data } = response;
+      const { statusCode, message, error: errorTitle, model, prop } = data;
+
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
+
+  const handleChange = (newValue: SingleValue<Partial<ClientType>>) => {
     if (setClient) {
-      setClient(newValue as PartialClientType);
+      setClient(newValue as Partial<ClientType>);
     }
 
     if (onChange) {
-      onChange(newValue as PartialClientType);
+      onChange(newValue as Partial<ClientType>);
     }
   };
 
@@ -105,15 +113,21 @@ const ClientSelectBase: React.FC<ClientSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'client not found'}
+      noOptionsMessage={() =>
+        !!error
+          ? (error as any).response.data.message
+          : 'Ya no hay cliente/s disponible/s'
+      }
       isLoading={isLoading}
       options={data}
-      getOptionLabel={(client: PartialClientType) => `${client.businessName}`}
-      getOptionValue={(client: PartialClientType) => client.id}
+      getOptionLabel={(opt: Partial<ClientType>) => `${opt.businessName}`}
+      getOptionValue={(opt: Partial<ClientType>) =>
+        opt.id ? opt.id.toString() : ''
+      }
       onChange={(newValue) => handleChange(newValue)}
       value={
         field?.value
-          ? data.find((opt: PartialClientType) => opt.id === field?.value)
+          ? data.find((opt: Partial<ClientType>) => opt.id === field?.value)
           : undefined
       }
       placeholder={placeholder}

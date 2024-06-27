@@ -9,30 +9,25 @@ import {
   CSSObjectWithLabel,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
 import { useMerchants } from '../../hooks/merchants/getMerchants';
 import { usePagination } from '../../hooks/usePagination';
-
-export type PartialProducerType = {
-  id: string;
-  businessName: string;
-  businessId: string;
-  address: string;
-  city: string;
-};
+import { MerchantType } from '../../types/merchant/merchant';
 
 interface ProducerSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
-  setProducer?: (producer: PartialProducerType) => void;
-  onChange?: (newValue: PartialProducerType) => void;
+  setProducer?: (producer: Partial<MerchantType>) => void;
+  onChange?: (newValue: Partial<MerchantType>) => void;
 }
 
 const chakraStyles: ChakraStylesConfig<
-  PartialProducerType,
+  Partial<MerchantType>,
   false,
-  GroupBase<PartialProducerType>
+  GroupBase<Partial<MerchantType>>
 > = {
   container: (provided) => ({
     ...provided,
@@ -56,9 +51,9 @@ const chakraStyles: ChakraStylesConfig<
 const producerComponents = {
   DropdownIndicator: (
     props: DropdownIndicatorProps<
-      PartialProducerType,
+      Partial<MerchantType>,
       false,
-      GroupBase<PartialProducerType>
+      GroupBase<Partial<MerchantType>>
     >
   ) => (
     <chakraComponents.DropdownIndicator {...props}>
@@ -75,15 +70,29 @@ const ProducerSelectBase: React.FC<ProducerSelectBaseProps> = ({
   setProducer,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useMerchants(paginationParams);
+  const { data, isLoading, refetch, error } = useMerchants(paginationParams);
+  const router = useRouter();
 
-  const handleChange = (newValue: SingleValue<PartialProducerType>) => {
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data } = response;
+      const { statusCode, message, error: errorTitle, model, prop } = data;
+
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
+
+  const handleChange = (newValue: SingleValue<Partial<MerchantType>>) => {
     if (setProducer) {
-      setProducer(newValue as PartialProducerType);
+      setProducer(newValue as Partial<MerchantType>);
     }
 
     if (onChange) {
-      onChange(newValue as PartialProducerType);
+      onChange(newValue as Partial<MerchantType>);
     }
   };
 
@@ -98,17 +107,21 @@ const ProducerSelectBase: React.FC<ProducerSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'producer not found'}
+      noOptionsMessage={() =>
+        !!error
+          ? (error as any).response.data.message
+          : 'Ya no hay productor/es disponible/s'
+      }
       isLoading={isLoading}
       options={data}
-      getOptionLabel={(producer: PartialProducerType) =>
-        `${producer.businessName}`
+      getOptionLabel={(opt: Partial<MerchantType>) => `${opt.businessName}`}
+      getOptionValue={(opt: Partial<MerchantType>) =>
+        opt.id ? opt.id.toString() : ''
       }
-      getOptionValue={(producer: PartialProducerType) => producer.id}
       onChange={(newValue) => handleChange(newValue)}
       value={
         field?.value
-          ? data.find((opt: PartialProducerType) => opt.id === field?.value)
+          ? data.find((opt: Partial<MerchantType>) => opt.id === field?.value)
           : undefined
       }
       placeholder={placeholder}
