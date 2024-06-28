@@ -50,9 +50,12 @@ const AddProtectorForm = ({ onClose }: AddProtectorFormProps) => {
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
+    const { quantityPerPack, ...protectorData } = values;
+
     createProtector(
       {
-        ...values,
+        ...protectorData,
+        quantityPerPack: Number(quantityPerPack),
       },
       {
         onError: (error: any) => {

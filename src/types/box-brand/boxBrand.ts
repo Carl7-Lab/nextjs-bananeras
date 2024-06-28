@@ -1,4 +1,5 @@
 import { BlockingSheetType } from './additions/blockingSheet';
+import { InsecticideType } from './additions/insecticide';
 import { LatexRemoverType } from './additions/latexRemover';
 import { MettoLabelType } from './container/mettoLabel';
 import { SealType } from './container/seal';
@@ -11,6 +12,7 @@ import { LabelType } from './materials/label';
 import { ProtectorType } from './materials/protector';
 import { RubberType } from './materials/rubber';
 import { SachetType } from './materials/sachet';
+import { PesticideType } from './post-harvest/pesticide';
 import { BrandType } from './specifications/brand';
 
 export type BoxBrandType = {
@@ -57,8 +59,9 @@ export type BoxBrandType = {
   clusterBagId: number | '';
   clusterBagQuantity: number | '';
   // post harvest
-  pesticides: number[] | null;
+  pesticides: number[] | null | Partial<PesticideType>[];
   pesticidesQuantity: number | '';
+  // pesticideList: Partial<PesticideType>[];
   // container
   palletsType: string;
   palletsTypeQuantity: number | '';
@@ -91,8 +94,9 @@ export type BoxBrandType = {
   latexRemover: Partial<LatexRemoverType>;
   latexRemoverId: number | '';
   latexRemoverQuantity: number | '';
-  insecticides: number[] | null;
+  insecticides: number[] | null | Partial<InsecticideType>[];
   insecticidesQuantity: number | '';
+  // insecticideList: Partial<InsecticideType>[];
   blockingSheet: Partial<BlockingSheetType>;
   blockingSheetId: number | '';
   blockingSheetQuantity: number | '';

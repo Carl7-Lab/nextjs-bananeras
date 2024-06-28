@@ -32,7 +32,11 @@ const SelectClient: React.FC<SelectClientProps> = ({ name, harbor }) => {
         </Box>
         <Box>
           <FormLabel>Correo</FormLabel>
-          <Input isReadOnly={true} value={client?.email || ''} />
+          <Input
+            isReadOnly={true}
+            value={client?.email || ''}
+            placeholder={client ? 'No se ha agregado información' : ''}
+          />
         </Box>
         <Box>
           <FormLabel>Teléfono</FormLabel>

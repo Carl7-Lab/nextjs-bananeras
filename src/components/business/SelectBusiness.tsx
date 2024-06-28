@@ -24,15 +24,27 @@ const SelectBusiness: React.FC<SelectBusinessProps> = ({ name, merchant }) => {
 
         <Box>
           <FormLabel>Área</FormLabel>
-          <Input isReadOnly={true} value={business?.area || ''} />
+          <Input
+            isReadOnly={true}
+            value={business?.area || ''}
+            placeholder={business ? 'No se ha agregado información' : ''}
+          />
         </Box>
         <Box>
           <FormLabel>Ciudad</FormLabel>
-          <Input isReadOnly={true} value={business?.city || ''} />
+          <Input
+            isReadOnly={true}
+            value={business?.city || ''}
+            placeholder={business ? 'No se ha agregado información' : ''}
+          />
         </Box>
         <Box>
           <FormLabel>Dirección</FormLabel>
-          <Input isReadOnly={true} value={business?.address || ''} />
+          <Input
+            isReadOnly={true}
+            value={business?.address || ''}
+            placeholder={business ? 'No se ha agregado información' : ''}
+          />
         </Box>
       </SimpleGrid>
     </>

@@ -70,7 +70,7 @@ const HarborSelectBase: React.FC<HarborSelectBaseProps> = ({
   setHarbor,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch, error } = useHarbors(paginationParams);
+  const { data = [], isLoading, refetch, error } = useHarbors(paginationParams);
   const router = useRouter();
 
   useEffect(() => {

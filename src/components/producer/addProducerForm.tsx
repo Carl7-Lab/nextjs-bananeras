@@ -158,7 +158,14 @@ const businessSchema = Yup.object().shape({
   fruitType: Yup.string()
     .oneOf(['Organica', 'Convencional'], 'Tipo de fruta no válido')
     .required('Requerido'),
-  area: Yup.number().moreThan(0, 'Debe ser mayor que 0').required('Requerido'),
+  area: Yup.number()
+    .moreThan(0, 'Debe ser mayor que 0')
+    .test(
+      'is-decimal',
+      'Debe tener como máximo 2 decimales',
+      (value) => (value + '').match(/^\d+(\.\d{1,2})?$/) !== null
+    )
+    .required('Requerido'),
   latitude: Yup.number()
     .min(-90, 'Debe ser al menos -90')
     .max(90, 'Debe ser como máximo 90'),
@@ -229,9 +236,13 @@ const AddProducerForm = () => {
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
   ) => {
+    const { businesses, ...producerData } = values;
+    const { area, ...businessData } = businesses[0];
+
     createMerchant(
       {
-        ...values,
+        ...producerData,
+        businesses: [{ area: Number(area), ...businessData }],
       },
       {
         onError: (error: any) => {

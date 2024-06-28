@@ -9,10 +9,11 @@ import {
   CSSObjectWithLabel,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
 import { ExportType } from '@/types/export';
-import { useExportsNotSent } from '../../hooks/export/getExportsNotSend';
+import { useExportsPending } from '../../hooks/export/getExportsPending';
 import { usePagination } from '../../hooks/usePagination';
 
 interface ExportSelectBaseProps {
@@ -69,7 +70,22 @@ const ExportSelectBase: React.FC<ExportSelectBaseProps> = ({
   setExport,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useExportsNotSent(paginationParams);
+  const { data, isLoading, refetch, error } =
+    useExportsPending(paginationParams);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data } = response;
+      const { statusCode, message, error: errorTitle, model, prop } = data;
+
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
 
   const handleChange = (newValue: SingleValue<Partial<ExportType>>) => {
     if (setExport) {
@@ -91,7 +107,11 @@ const ExportSelectBase: React.FC<ExportSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'export not found'}
+      noOptionsMessage={() =>
+        !!error
+          ? (error as any).response.data.message
+          : 'Ya no hay exportacion/es pendiente/s'
+      }
       isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<ExportType>) => `${opt.id}`}

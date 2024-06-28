@@ -62,9 +62,12 @@ const AddMettoLabelForm = ({ onClose }: AddMettoLabelFormProps) => {
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
+    const { quantityPerPack, ...mettoLabelData } = values;
+
     createMettoLabel(
       {
-        ...values,
+        ...mettoLabelData,
+        quantityPerPack: Number(quantityPerPack),
       },
       {
         onError: (error: any) => {

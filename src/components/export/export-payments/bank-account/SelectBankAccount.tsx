@@ -1,15 +1,33 @@
 import { Box, FormLabel, Input, SimpleGrid } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import InputFieldBankAccountSelect from './InputFieldBankAccountSelect';
 import { BankAccountType } from '../../../../types/bankAccount';
 
 interface SelectBankAccountProps {
   name: string;
+  bankAccountSelect?: Partial<BankAccountType>;
+  setBankAccountSelect?: (bankAccount: Partial<BankAccountType> | null) => void;
 }
 
-const SelectBankAccount: React.FC<SelectBankAccountProps> = ({ name }) => {
+const SelectBankAccount: React.FC<SelectBankAccountProps> = ({
+  name,
+  bankAccountSelect,
+  setBankAccountSelect,
+}) => {
   const [bankAccount, setBankAccount] =
     useState<Partial<BankAccountType> | null>(null);
+
+  useEffect(() => {
+    if (!!bankAccountSelect) {
+      setBankAccount(bankAccountSelect);
+    }
+  }, [bankAccountSelect]);
+
+  useEffect(() => {
+    if (!!setBankAccountSelect) {
+      setBankAccountSelect(bankAccount);
+    }
+  }, [bankAccount, setBankAccountSelect]);
 
   return (
     <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>

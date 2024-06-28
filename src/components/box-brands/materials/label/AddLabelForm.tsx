@@ -59,9 +59,11 @@ const AddLabelForm = ({ onClose }: AddLabelFormProps) => {
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
+    const { quantityPerRoll, ...labelData } = values;
     createLabel(
       {
-        ...values,
+        ...labelData,
+        quantityPerRoll: Number(quantityPerRoll),
       },
       {
         onError: (error: any) => {

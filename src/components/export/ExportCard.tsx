@@ -15,14 +15,15 @@ import { ExportType } from '../../types/export';
 
 interface ExportCardProps {
   exportItem: Partial<ExportType>;
+  pathname: string;
 }
 
-const ExportCard: React.FC<ExportCardProps> = ({ exportItem }) => {
+const ExportCard: React.FC<ExportCardProps> = ({ exportItem, pathname }) => {
   const router = useRouter();
 
   const handleClick = () => {
-    console.log(`export ${exportItem.id}: `, exportItem);
-    router.push(`/dashboard/settings/pending-exports/${exportItem.id}`);
+    // console.log(`export ${exportItem.id}: `, exportItem);
+    router.push(`${pathname}/${exportItem.id}`);
   };
 
   const details = [
@@ -32,10 +33,6 @@ const ExportCard: React.FC<ExportCardProps> = ({ exportItem }) => {
     },
     { label: 'Productor', value: exportItem.merchant?.businessName },
     { label: 'Finca', value: exportItem.business?.name },
-    {
-      label: 'Administrador',
-      value: exportItem.business?.businessManager?.name,
-    },
     { label: 'Puerto Destino', value: exportItem.harbor?.name },
     { label: 'Cliente', value: exportItem.client?.businessName },
   ];
@@ -50,19 +47,38 @@ const ExportCard: React.FC<ExportCardProps> = ({ exportItem }) => {
       <CardBody>
         <VStack spacing={4} align='stretch'>
           {details.map((detail, index) => (
-            <Box key={index}>
-              <Heading fontSize='lg' display='inline-block'>
-                {detail.label}:{' '}
-                <Text
-                  as='span'
-                  fontSize='md'
-                  fontWeight={'normal'}
-                  color='gray.600'
-                >
-                  {detail.value}
-                </Text>
-              </Heading>
-            </Box>
+            <VStack key={index} spacing={4} align={'stretch'}>
+              <Box>
+                <Heading fontSize='lg' display='inline-block'>
+                  {detail.label}:{' '}
+                  <Text
+                    as='span'
+                    fontSize='md'
+                    fontWeight={'normal'}
+                    color='gray.600'
+                  >
+                    {detail.value}
+                  </Text>
+                </Heading>
+              </Box>
+              {detail.label === 'Finca' && (
+                <VStack align={'stretch'}>
+                  <Heading fontSize='lg'>Contactos: </Heading>
+                  {exportItem.business?.contacts?.map((contact) => (
+                    <VStack key={contact.id} align={'stretch'}>
+                      <Text
+                        as='span'
+                        fontSize='md'
+                        fontWeight={'normal'}
+                        color='gray.600'
+                      >
+                        {contact.name} - {contact.phone}
+                      </Text>
+                    </VStack>
+                  ))}
+                </VStack>
+              )}
+            </VStack>
           ))}
         </VStack>
       </CardBody>

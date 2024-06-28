@@ -5,14 +5,22 @@ import { MerchantType } from '../../types/merchant/merchant';
 
 interface SelectProducerProps {
   name: string;
+  producerSelect?: Partial<MerchantType>;
   setProducerSelect?: (producer: Partial<MerchantType> | null) => void;
 }
 
 const SelectProducer: React.FC<SelectProducerProps> = ({
   name,
+  producerSelect,
   setProducerSelect,
 }) => {
   const [producer, setProducer] = useState<Partial<MerchantType> | null>(null);
+
+  useEffect(() => {
+    if (!!producerSelect) {
+      setProducer(producerSelect);
+    }
+  }, [producerSelect]);
 
   useEffect(() => {
     if (!!setProducerSelect) {

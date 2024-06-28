@@ -15,16 +15,18 @@ import { ExportSentType } from '../../../types/exportSent';
 
 interface PendingPaymentCardProps {
   exportSentItem: Partial<ExportSentType>;
+  pathname: string;
 }
 
 const PendingPaymentCard: React.FC<PendingPaymentCardProps> = ({
   exportSentItem,
+  pathname,
 }) => {
   const router = useRouter();
 
   const handleClick = () => {
     console.log(`export ${exportSentItem.id}: `, exportSentItem);
-    router.push(`/dashboard/settings/pending-payments/${exportSentItem.id}`);
+    router.push(`${pathname}/${exportSentItem.id}`);
   };
 
   const details = [

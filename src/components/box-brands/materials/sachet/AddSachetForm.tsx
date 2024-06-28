@@ -62,9 +62,12 @@ const AddSachetForm = ({ onClose }: AddSachetFormProps) => {
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
+    const { quantityPerPack, ...sachetData } = values;
+
     createSachet(
       {
-        ...values,
+        ...sachetData,
+        quantityPerPack: Number(quantityPerPack),
       },
       {
         onError: (error: any) => {

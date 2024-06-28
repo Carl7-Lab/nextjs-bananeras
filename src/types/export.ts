@@ -20,5 +20,5 @@ export type ExportType = {
   shipSteam: string;
   shippingLineSeal: string;
   extraSeal: string;
-  done: boolean;
+  pendingExportSent: boolean;
 };

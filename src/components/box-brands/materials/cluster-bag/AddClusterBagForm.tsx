@@ -58,9 +58,12 @@ const AddClusterBagForm = ({ onClose }: AddClusterBagFormProps) => {
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
+    const { quantityPerPack, ...clusterBagData } = values;
+
     createClusterBag(
       {
-        ...values,
+        ...clusterBagData,
+        quantityPerPack: Number(quantityPerPack),
       },
       {
         onError: (error: any) => {

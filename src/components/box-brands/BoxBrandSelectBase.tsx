@@ -70,7 +70,12 @@ const BoxBrandSelectBase: React.FC<BoxBrandSelectBaseProps> = ({
   name,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch, error } = useBoxBrands(paginationParams);
+  const {
+    data = [],
+    isLoading,
+    refetch,
+    error,
+  } = useBoxBrands(paginationParams);
   const router = useRouter();
 
   useEffect(() => {

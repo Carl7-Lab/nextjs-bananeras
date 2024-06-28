@@ -61,9 +61,12 @@ const AddStrippingForm = ({ onClose }: AddStrippingFormProps) => {
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
+    const { weightPerPack, ...strippingData } = values;
+
     createStripping(
       {
-        ...values,
+        ...strippingData,
+        weightPerPack: Number(weightPerPack),
       },
       {
         onError: (error: any) => {

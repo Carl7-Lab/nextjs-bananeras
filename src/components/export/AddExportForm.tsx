@@ -97,11 +97,12 @@ const AddExportForm = () => {
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
-    console.log('addExport values: ', values);
+    const { boxQuantity, ...exportData } = values;
 
     createExport(
       {
-        ...values,
+        ...exportData,
+        boxQuantity: Number(boxQuantity),
       },
       {
         onError: (error: any) => {
@@ -130,6 +131,7 @@ const AddExportForm = () => {
           });
 
           queryClient.invalidateQueries('exports');
+          queryClient.invalidateQueries('exportsPending');
           actions.resetForm();
         },
       }

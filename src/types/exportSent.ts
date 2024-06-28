@@ -3,6 +3,7 @@ import { ExportType } from './export';
 export type ExportSentType = {
   id: number | '';
   export: Partial<ExportType>;
+  exportId: number | '';
   // materials
   bottomTypeQuantity: number | '';
   lidTypeQuantity: number | '';
@@ -34,8 +35,8 @@ export type ExportSentType = {
   packingTapeTypeQuantity: number | '';
   // select
   latexRemoverQuantity: number | '';
-  cochibiolQuantity: number | '';
+  insecticideQuantity: number | '';
   blockingSheetQuantity: number | '';
 
-  done: boolean;
+  pendingProducerPayment: boolean;
 };

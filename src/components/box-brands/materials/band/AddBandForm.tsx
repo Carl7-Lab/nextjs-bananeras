@@ -62,9 +62,12 @@ const AddBandForm = ({ onClose }: AddBandFormProps) => {
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
+    const { quantityPerPack, ...bandData } = values;
+
     createBand(
       {
-        ...values,
+        ...bandData,
+        quantityPerPack: Number(quantityPerPack),
       },
       {
         onError: (error) => {

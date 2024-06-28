@@ -10,16 +10,18 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import InputFieldSentQuantity from './ui/InputFieldSentQuantity';
 import { useCreateExportSent } from '../../hooks/export/export-sent/createExportSent';
+import { InsecticideType } from '../../types/box-brand/additions/insecticide';
+import { PesticideType } from '../../types/box-brand/post-harvest/pesticide';
 import { ExportType } from '../../types/export';
 
 interface ValuesProps {
-  export: number | '';
+  exportId: number | '';
   // materials
   bottomTypeQuantity: number | '';
   lidTypeQuantity: number | '';
@@ -51,12 +53,12 @@ interface ValuesProps {
   packingTapeTypeQuantity: number | '';
   // select
   latexRemoverQuantity: number | '';
-  cochibiolQuantity: number | '';
+  insecticideQuantity: number | '';
   blockingSheetQuantity: number | '';
 }
 
 const initialValues: ValuesProps = {
-  export: '',
+  exportId: '',
 
   bottomTypeQuantity: '',
   lidTypeQuantity: '',
@@ -88,57 +90,140 @@ const initialValues: ValuesProps = {
   packingTapeTypeQuantity: '',
 
   latexRemoverQuantity: '',
-  cochibiolQuantity: '',
+  insecticideQuantity: '',
   blockingSheetQuantity: '',
 };
 
 const validationSchema = Yup.object({
-  export: Yup.number().required('Required'),
-  bottomTypeQuantity: Yup.number().required('Required'),
-  lidTypeQuantity: Yup.number().required('Required'),
-  coverTypeQuantity: Yup.number().required('Required'),
-  cardboardTypeQuantity: Yup.number().required('Required'),
-  padTypeQuantity: Yup.number().required('Required'),
-  spongeTypeQuantity: Yup.number().required('Required'),
-  labelQuantity: Yup.number().required('Required'),
-  bandQuantity: Yup.number().required('Required'),
-  sachetQuantity: Yup.number().required('Required'),
-  rubberQuantity: Yup.number().required('Required'),
-  protectorQuantity: Yup.number().required('Required'),
-  clusterBagQuantity: Yup.number().required('Required'),
-  pesticideQuantity: Yup.number().required('Required'),
-  palletsTypeQuantity: Yup.number().required('Required'),
-  miniPalletsTypeQuantity: Yup.number().required('Required'),
-  cornerTypeQuantity: Yup.number().required('Required'),
-  reinforcementTypeQuantity: Yup.number().required('Required'),
-  stapleQuantity: Yup.number().required('Required'),
-  strippingQuantity: Yup.number().required('Required'),
-  thermographQuantity: Yup.number().required('Required'),
-  sealQuantity: Yup.number().required('Required'),
-  mettoLabelQuantity: Yup.number().required('Required'),
-  packingTapeTypeQuantity: Yup.number().required('Required'),
-  latexRemoverQuantity: Yup.number().required('Required'),
-  cochibiolQuantity: Yup.number().required('Required'),
-  blockingSheetQuantity: Yup.number().required('Required'),
+  // exportId: Yup.number()
+  //   .integer('Debe ser un número entero')
+  //   .moreThan(0, 'Debe ser mayor que 0')
+  //   .required('Requerido'),
+  bottomTypeQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  lidTypeQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  coverTypeQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  cardboardTypeQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  padTypeQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  spongeTypeQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  labelQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  bandQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  sachetQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  rubberQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  protectorQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  clusterBagQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  pesticideQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  palletsTypeQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  miniPalletsTypeQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  cornerTypeQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  reinforcementTypeQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  stapleQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  strippingQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  thermographQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  sealQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  mettoLabelQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  packingTapeTypeQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  latexRemoverQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  insecticideQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  blockingSheetQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
 });
 
 const SentMaterialsExportForm = ({
   exportSelected,
+  pathname,
 }: {
   exportSelected: Partial<ExportType>;
+  pathname: string;
 }) => {
   const [initialValuesExport, setInitialValuesExport] =
     useState<ValuesProps>(initialValues);
   const { createExportSent } = useCreateExportSent();
   const toast = useToast();
-  const queryClient = useQueryClient();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (exportSelected) {
       setInitialValuesExport((prevValues) => ({
         ...prevValues,
-        export: exportSelected.id!,
+        exportId: exportSelected.id!,
         bottomTypeQuantity: exportSelected.boxQuantity!,
         lidTypeQuantity: exportSelected.boxQuantity!,
         coverTypeQuantity: exportSelected.boxQuantity!,
@@ -151,7 +236,7 @@ const SentMaterialsExportForm = ({
         rubberQuantity: exportSelected.boxBrand?.rubberQuantity!,
         protectorQuantity: exportSelected.boxBrand?.protectorQuantity!,
         clusterBagQuantity: exportSelected.boxBrand?.clusterBagQuantity!,
-        pesticideQuantity: exportSelected.boxBrand?.pesticideQuantity!,
+        pesticideQuantity: exportSelected.boxBrand?.pesticidesQuantity!,
         palletsTypeQuantity: exportSelected.boxBrand?.palletsTypeQuantity!,
         miniPalletsTypeQuantity:
           exportSelected.boxBrand?.miniPalletsTypeQuantity!,
@@ -166,47 +251,50 @@ const SentMaterialsExportForm = ({
         packingTapeTypeQuantity:
           exportSelected.boxBrand?.packingTapeTypeQuantity!,
         latexRemoverQuantity: exportSelected.boxBrand?.latexRemoverQuantity!,
-        cochibiolQuantity: exportSelected.boxBrand?.cochibiolQuantity!,
+        insecticideQuantity: exportSelected.boxBrand?.insecticidesQuantity!,
         blockingSheetQuantity: exportSelected.boxBrand?.blockingSheetQuantity!,
       }));
     }
-    console.log('SentMaterialsExportForm exportSelected: ', exportSelected);
   }, [exportSelected]);
 
   const sentMaterialsExport = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
-    console.log('sentMaterialsExport values: ', values);
-
     createExportSent(
       {
         ...values,
-        export: {
-          id: Number(values.export),
-        },
       },
       {
-        onError: (error) => {
+        onError: (error: any) => {
+          const { response } = error;
+          const { data } = response;
+          const { statusCode, message, error: errorTitle, model, prop } = data;
+
           toast({
-            title: 'Error.',
-            description: `${error.message}`,
+            title: `Error ${statusCode}: ${errorTitle} `,
+            description: `${message}`,
             status: 'error',
             duration: 5000,
             isClosable: true,
           });
+
+          if (statusCode === 401) {
+            router.push('/api/auth/signout');
+          }
         },
         onSuccess: () => {
           toast({
-            title: 'Registro de materiales enviados',
+            title: 'Registro de insumos enviados',
             status: 'success',
             duration: 5000,
             isClosable: true,
           });
 
           queryClient.invalidateQueries('exportsSent');
+          queryClient.invalidateQueries('exportsSentPending');
           actions.resetForm();
-          router.push('/dashboard/settings/pending-exports');
+          router.push(pathname.replace(/\/\d+$/, ''));
         },
       }
     );
@@ -352,11 +440,16 @@ const SentMaterialsExportForm = ({
                   name={'pesticideQuantity'}
                   material={'Pesticidas'}
                   materialSelected={
-                    exportSelected.boxBrand?.pesticide
+                    (
+                      exportSelected.boxBrand
+                        ?.pesticides as Partial<PesticideType>[]
+                    )
                       ?.map((p) => p.name)
                       .join(', ') || ''
                   }
-                  quantity={Number(exportSelected.boxBrand?.pesticideQuantity!)}
+                  quantity={Number(
+                    exportSelected.boxBrand?.pesticidesQuantity!
+                  )}
                 />
                 <Heading fontSize={'2xl'} p={'12px'}>
                   Materiales para contenedor
@@ -463,10 +556,19 @@ const SentMaterialsExportForm = ({
                 />
 
                 <InputFieldSentQuantity
-                  name={'cochibiolQuantity'}
+                  name={'insecticideQuantity'}
                   material={'Insecticida'}
-                  materialSelected={exportSelected.boxBrand?.cochibiol?.name!}
-                  quantity={Number(exportSelected.boxBrand?.cochibiolQuantity!)}
+                  materialSelected={
+                    (
+                      exportSelected.boxBrand
+                        ?.insecticides as Partial<InsecticideType>[]
+                    )
+                      ?.map((p) => p.name)
+                      .join(', ') || ''
+                  }
+                  quantity={Number(
+                    exportSelected.boxBrand?.insecticidesQuantity!
+                  )}
                 />
 
                 <InputFieldSentQuantity

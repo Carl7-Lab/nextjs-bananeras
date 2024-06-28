@@ -643,9 +643,14 @@ export default function AddBoxBrandsForm() {
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
   ) => {
+    const { netWeightBox, grossWeightBox, boxQuantity, ...boxBrandData } =
+      values;
     createBoxBrand(
       {
-        ...values,
+        ...boxBrandData,
+        boxQuantity: Number(boxQuantity),
+        netWeightBox: Number(netWeightBox),
+        grossWeightBox: Number(grossWeightBox),
       },
       {
         onError: (error: any) => {
@@ -727,6 +732,7 @@ export default function AddBoxBrandsForm() {
                     name={field.name}
                     label={field.label}
                     placeholder={field.placeholder}
+                    // isDecimal={field.name !== 'boxQuantity'}
                   />
                 ))}
                 <InputFieldRequiredCertificateMultiSelect

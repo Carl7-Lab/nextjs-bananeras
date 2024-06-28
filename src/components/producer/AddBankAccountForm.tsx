@@ -11,9 +11,9 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
-import { PartialProducerType } from './ProducerSelectBase';
 import SelectProducer from './SelectProducer';
 import { useCreateBankAccount } from '../../hooks/bank-account/createBankAccount';
+import { MerchantType } from '../../types/merchant/merchant';
 import InputFieldSelector from '../ui/form/InputFieldSelector';
 import InputFieldText from '../ui/form/InputFieldText';
 
@@ -92,7 +92,7 @@ const typesOpt = [
 const AddBankAccountForm = () => {
   const [initialValuesBankAccount, setInitialValuesBankAccount] =
     useState<ValuesProps>(initialValues);
-  const [producer, setProducer] = useState<PartialProducerType | null>(null);
+  const [producer, setProducer] = useState<Partial<MerchantType> | null>(null);
   const { createBankAccount } = useCreateBankAccount();
   const toast = useToast();
   const router = useRouter();
@@ -103,8 +103,8 @@ const AddBankAccountForm = () => {
       setInitialValuesBankAccount((prevValues) => ({
         ...prevValues,
         merchantId: Number(producer.id!),
-        owner: producer.businessName,
-        ownerID: producer.businessId,
+        owner: producer.businessName!,
+        ownerID: producer.businessId!,
       }));
     }
   }, [producer]);
@@ -151,6 +151,7 @@ const AddBankAccountForm = () => {
 
           queryClient.invalidateQueries('bankAccountsByMerchantId');
           formikHelpers.resetForm();
+          setProducer(null);
         },
       }
     );

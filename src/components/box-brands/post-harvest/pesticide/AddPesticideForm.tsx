@@ -90,10 +90,12 @@ const AddPesticideForm = ({ onClose }: AddPesticideFormProps) => {
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
+    const { dose, ...pesticideData } = values;
+
     createPesticide(
       {
-        ...values,
-        // dose: Number(values.dose),
+        ...pesticideData,
+        dose: Number(values.dose),
       },
       {
         onError: (error: any) => {

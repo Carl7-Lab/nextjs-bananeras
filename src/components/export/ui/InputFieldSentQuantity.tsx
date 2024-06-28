@@ -5,6 +5,8 @@ import {
   Grid,
   GridItem,
   Input,
+  NumberInput,
+  NumberInputField,
 } from '@chakra-ui/react';
 import { useField } from 'formik';
 import React from 'react';
@@ -13,7 +15,7 @@ interface InputFieldSentQuantityProps {
   name: string;
   material: string;
   materialSelected: string;
-  quantity: number;
+  quantity: number | '';
   placeholder?: string;
 }
 
@@ -24,7 +26,20 @@ const InputFieldSentQuantity: React.FC<InputFieldSentQuantityProps> = ({
   quantity,
   placeholder,
 }) => {
-  const [field, meta] = useField(name);
+  const [field, meta, helpers] = useField(name);
+
+  const handleBlur = (event: React.FocusEvent) => {
+    field.onBlur(event);
+
+    helpers.setValue(Number(meta.value));
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      helpers.setValue(Number(field.value));
+    }
+  };
+
   return (
     material !== 'N/A' && (
       <FormControl id={name} isInvalid={!!meta.error && meta.touched}>
@@ -58,17 +73,28 @@ const InputFieldSentQuantity: React.FC<InputFieldSentQuantityProps> = ({
             textAlign='right'
             opacity={0.8}
           />
-          <Input
+
+          {/* <Input
             {...field}
             placeholder={placeholder || material}
             textAlign='right'
-          />
-          {meta.error && meta.touched && (
-            <FormErrorMessage mt='8px' mb='16px'>
-              {meta.error}
-            </FormErrorMessage>
-          )}
+          /> */}
+
+          <NumberInput {...field}>
+            <NumberInputField
+              {...field}
+              onBlur={handleBlur}
+              onKeyDown={handleKeyDown}
+              placeholder={placeholder || material}
+              textAlign='right'
+            />
+          </NumberInput>
         </Grid>
+        {meta.error && meta.touched && (
+          <FormErrorMessage mt='8px' mb='16px'>
+            {meta.error}
+          </FormErrorMessage>
+        )}
       </FormControl>
     )
   );

@@ -66,9 +66,12 @@ const AddInsecticideForm = ({ onClose }: AddInsecticideFormProps) => {
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
+    const { dose, ...insecticideData } = values;
+
     createInsecticide(
       {
-        ...values,
+        ...insecticideData,
+        dose: Number(dose),
       },
       {
         onError: (error: any) => {

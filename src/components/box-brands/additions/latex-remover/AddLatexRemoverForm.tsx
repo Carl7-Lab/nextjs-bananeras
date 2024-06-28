@@ -66,9 +66,12 @@ const AddLatexRemoverForm = ({ onClose }: AddLatexRemoverFormProps) => {
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
+    const { dose, ...latexRemoverData } = values;
+
     createLatexRemover(
       {
-        ...values,
+        ...latexRemoverData,
+        dose: Number(dose),
       },
       {
         onError: (error: any) => {

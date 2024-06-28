@@ -62,9 +62,11 @@ const AddRubberForm = ({ onClose }: AddRubberFormProps) => {
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
+    const { quantityPerPack, ...rubberData } = values;
     createRubber(
       {
-        ...values,
+        ...rubberData,
+        quantityPerPack: Number(quantityPerPack),
       },
       {
         onError: (error: any) => {

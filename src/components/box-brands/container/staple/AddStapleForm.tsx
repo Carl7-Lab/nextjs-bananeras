@@ -50,9 +50,11 @@ const AddStapleForm = ({ onClose }: AddStapleFormProps) => {
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
+    const { quantityPerPack, ...stapleData } = values;
     createStaple(
       {
-        ...values,
+        ...stapleData,
+        quantityPerPack: Number(quantityPerPack),
       },
       {
         onError: (error: any) => {

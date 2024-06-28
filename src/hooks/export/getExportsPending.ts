@@ -5,18 +5,18 @@ import { serializeQueryResult } from '../../utils/serializeQueryResult';
 
 type Params = PaginationParams;
 
-function listExportsNotSent(params: Params) {
-  return axios.get('/export/not-sent', { params });
+function listExportsPending(params: Params) {
+  return axios.get('/export/pending', { params });
 }
 
-export function useExportsNotSent({
+export function useExportsPending({
   search = '',
   page = 1,
   limit = 10,
 }: Params) {
   const result = useQuery(
-    ['exportsNotSent', search, page, limit],
-    () => listExportsNotSent({ search, page, limit }),
+    ['exportsPending', search, page, limit],
+    () => listExportsPending({ search, page, limit }),
     {
       keepPreviousData: true,
     }

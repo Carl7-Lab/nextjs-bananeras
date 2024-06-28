@@ -70,7 +70,12 @@ const ProducerSelectBase: React.FC<ProducerSelectBaseProps> = ({
   setProducer,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch, error } = useMerchants(paginationParams);
+  const {
+    data = [],
+    isLoading,
+    refetch,
+    error,
+  } = useMerchants(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
