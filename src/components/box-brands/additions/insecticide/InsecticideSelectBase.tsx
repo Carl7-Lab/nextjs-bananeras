@@ -70,7 +70,12 @@ const InsecticideSelectBase: React.FC<InsecticideSelectBaseProps> = ({
   onChange,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch, error } = useInsecticides(paginationParams);
+  const {
+    data = [],
+    isLoading,
+    refetch,
+    error,
+  } = useInsecticides(paginationParams);
   const router = useRouter();
 
   useEffect(() => {

@@ -23,21 +23,6 @@ interface PesticideSelectBaseProps {
   onChange?: (newValue: Partial<PesticideType>) => void;
 }
 
-// const data: Partial<PesticideType>[] = [
-//   {
-//     id: 1,
-//     name: 'Pesticida1',
-//   },
-//   {
-//     id: 2,
-//     name: 'Pesticida2',
-//   },
-//   {
-//     id: 3,
-//     name: 'Pesticida3',
-//   },
-// ];
-
 const chakraStyles: ChakraStylesConfig<
   Partial<PesticideType>,
   false,
@@ -84,7 +69,7 @@ const PesticideSelectBase: React.FC<PesticideSelectBaseProps> = ({
   onChange,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = usePesticides(paginationParams);
+  const { data = [], isLoading, refetch } = usePesticides(paginationParams);
 
   const handleChange = (newValue: SingleValue<Partial<PesticideType>>) => {
     if (setPesticide) setPesticide(newValue as Partial<PesticideType>);

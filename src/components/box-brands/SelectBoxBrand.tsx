@@ -2,9 +2,7 @@ import { Box, FormLabel, Input, SimpleGrid } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import InputFieldBoxBrandSelect from './InputFieldBoxBrandSelect';
 import { BoxBrandType } from '../../types/box-brand/boxBrand';
-import { MerchantType } from '../../types/merchant/merchant';
 import InputFieldNumber from '../ui/form/InputFieldNumber';
-import InputFieldQuantity from '../ui/form/InputFieldQuantity';
 
 interface SelectBoxBrandProps {
   name: string;
@@ -42,9 +40,6 @@ const SelectBoxBrand: React.FC<SelectBoxBrandProps> = ({
       setBoxBrandSelect(boxBrand);
     }
   }, [boxBrand, setBoxBrandSelect]);
-
-  // console.log('SelectBoxBrand boxBrand', boxBrand);
-  // console.log('SelectBoxBrand contractType', contractType);
 
   return (
     <>

@@ -41,7 +41,7 @@ const InputFieldSentQuantity: React.FC<InputFieldSentQuantityProps> = ({
   };
 
   return (
-    material !== 'N/A' && (
+    materialSelected !== 'N/A' && (
       <FormControl id={name} isInvalid={!!meta.error && meta.touched}>
         <Grid templateColumns='repeat(5, 1fr)' gap={1} alignItems='center'>
           <GridItem colSpan={1}>
@@ -87,6 +87,7 @@ const InputFieldSentQuantity: React.FC<InputFieldSentQuantityProps> = ({
               onKeyDown={handleKeyDown}
               placeholder={placeholder || material}
               textAlign='right'
+              px={'16px'}
             />
           </NumberInput>
         </Grid>

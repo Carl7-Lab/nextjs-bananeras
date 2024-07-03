@@ -38,7 +38,6 @@ const SelectProducer: React.FC<SelectProducerProps> = ({
           setProducer={setProducer}
         />
 
-        {/* No se agregado información */}
         <Box>
           <FormLabel>RUC</FormLabel>
           <Input isReadOnly={true} value={producer?.businessId || ''} />

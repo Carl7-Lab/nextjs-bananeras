@@ -10,15 +10,25 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
+import InputFieldSentInsecticides from './ui/InputFieldSentInsecticides';
+import InputFieldSentPesticides from './ui/InputFieldSentPesticides';
 import InputFieldSentQuantity from './ui/InputFieldSentQuantity';
 import { useCreateExportSent } from '../../hooks/export/export-sent/createExportSent';
-import { InsecticideType } from '../../types/box-brand/additions/insecticide';
-import { PesticideType } from '../../types/box-brand/post-harvest/pesticide';
 import { ExportType } from '../../types/export';
+
+interface PesticideProps {
+  pesticideId: number | '';
+  quantity: number | '';
+}
+
+interface InsecticideProps {
+  insecticideId: number | '';
+  quantity: number | '';
+}
 
 interface ValuesProps {
   exportId: number | '';
@@ -37,7 +47,7 @@ interface ValuesProps {
   protectorQuantity: number | '';
   clusterBagQuantity: number | '';
   // post harvest
-  pesticideQuantity: number | '';
+  pesticideSent: PesticideProps[];
   // container
   palletsTypeQuantity: number | '';
   miniPalletsTypeQuantity: number | '';
@@ -53,8 +63,8 @@ interface ValuesProps {
   packingTapeTypeQuantity: number | '';
   // select
   latexRemoverQuantity: number | '';
-  insecticideQuantity: number | '';
   blockingSheetQuantity: number | '';
+  insecticideSent: InsecticideProps[];
 }
 
 const initialValues: ValuesProps = {
@@ -74,7 +84,7 @@ const initialValues: ValuesProps = {
   protectorQuantity: '',
   clusterBagQuantity: '',
 
-  pesticideQuantity: '',
+  pesticideSent: [{ pesticideId: '', quantity: '' }],
 
   palletsTypeQuantity: '',
   miniPalletsTypeQuantity: '',
@@ -90,15 +100,27 @@ const initialValues: ValuesProps = {
   packingTapeTypeQuantity: '',
 
   latexRemoverQuantity: '',
-  insecticideQuantity: '',
   blockingSheetQuantity: '',
+  insecticideSent: [{ insecticideId: '', quantity: '' }],
 };
 
+const pesticideSchema = Yup.object().shape({
+  quantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .lessThan(10000, 'Debe ser menor que 10000 cajas')
+    .required('Requerido'),
+});
+
+const insecticideSchema = Yup.object().shape({
+  quantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .lessThan(10000, 'Debe ser menor que 10000 cajas')
+    .required('Requerido'),
+});
+
 const validationSchema = Yup.object({
-  // exportId: Yup.number()
-  //   .integer('Debe ser un número entero')
-  //   .moreThan(0, 'Debe ser mayor que 0')
-  //   .required('Requerido'),
   bottomTypeQuantity: Yup.number()
     .integer('Debe ser un número entero')
     .min(0, 'Debe ser mayor que 0')
@@ -147,10 +169,11 @@ const validationSchema = Yup.object({
     .integer('Debe ser un número entero')
     .min(0, 'Debe ser mayor que 0')
     .required('Requerido'),
-  pesticideQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
+
+  pesticideSent: Yup.array()
+    .of(pesticideSchema)
+    .min(1, 'Debe de tener al menos un pesticida'),
+
   palletsTypeQuantity: Yup.number()
     .integer('Debe ser un número entero')
     .min(0, 'Debe ser mayor que 0')
@@ -195,14 +218,14 @@ const validationSchema = Yup.object({
     .integer('Debe ser un número entero')
     .min(0, 'Debe ser mayor que 0')
     .required('Requerido'),
-  insecticideQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
   blockingSheetQuantity: Yup.number()
     .integer('Debe ser un número entero')
     .min(0, 'Debe ser mayor que 0')
     .required('Requerido'),
+
+  insecticideSent: Yup.array()
+    .of(insecticideSchema)
+    .min(1, 'Debe de tener al menos un pesticida'),
 });
 
 const SentMaterialsExportForm = ({
@@ -221,39 +244,57 @@ const SentMaterialsExportForm = ({
 
   useEffect(() => {
     if (exportSelected) {
-      setInitialValuesExport((prevValues) => ({
-        ...prevValues,
-        exportId: exportSelected.id!,
-        bottomTypeQuantity: exportSelected.boxQuantity!,
-        lidTypeQuantity: exportSelected.boxQuantity!,
-        coverTypeQuantity: exportSelected.boxQuantity!,
-        cardboardTypeQuantity: exportSelected.boxQuantity!,
-        padTypeQuantity: exportSelected.boxQuantity!,
-        spongeTypeQuantity: exportSelected.boxQuantity!,
-        labelQuantity: exportSelected.boxBrand?.labelQuantity!,
-        bandQuantity: exportSelected.boxBrand?.bandQuantity!,
-        sachetQuantity: exportSelected.boxBrand?.sachetQuantity!,
-        rubberQuantity: exportSelected.boxBrand?.rubberQuantity!,
-        protectorQuantity: exportSelected.boxBrand?.protectorQuantity!,
-        clusterBagQuantity: exportSelected.boxBrand?.clusterBagQuantity!,
-        pesticideQuantity: exportSelected.boxBrand?.pesticidesQuantity!,
-        palletsTypeQuantity: exportSelected.boxBrand?.palletsTypeQuantity!,
-        miniPalletsTypeQuantity:
-          exportSelected.boxBrand?.miniPalletsTypeQuantity!,
-        cornerTypeQuantity: exportSelected.boxBrand?.cornerTypeQuantity!,
-        reinforcementTypeQuantity:
-          exportSelected.boxBrand?.reinforcementTypeQuantity!,
-        stapleQuantity: exportSelected.boxBrand?.stapleQuantity!,
-        strippingQuantity: exportSelected.boxBrand?.strippingQuantity!,
-        thermographQuantity: exportSelected.boxBrand?.thermographQuantity!,
-        sealQuantity: exportSelected.boxBrand?.sealQuantity!,
-        mettoLabelQuantity: exportSelected.boxBrand?.mettoLabelQuantity!,
-        packingTapeTypeQuantity:
-          exportSelected.boxBrand?.packingTapeTypeQuantity!,
-        latexRemoverQuantity: exportSelected.boxBrand?.latexRemoverQuantity!,
-        insecticideQuantity: exportSelected.boxBrand?.insecticidesQuantity!,
-        blockingSheetQuantity: exportSelected.boxBrand?.blockingSheetQuantity!,
-      }));
+      setInitialValuesExport((prevValues) => {
+        const pesticidesSelected: PesticideProps[] =
+          exportSelected.boxBrand?.pesticideCocktail?.map((pesticide) => ({
+            pesticideId: pesticide.pesticide?.id!,
+            quantity: pesticide.quantity!,
+          })) || [];
+
+        const insecticidesSelected: InsecticideProps[] =
+          exportSelected.boxBrand?.insecticideCocktail?.map((insecticide) => ({
+            insecticideId: insecticide.insecticide?.id!,
+            quantity: insecticide.quantity!,
+          })) || [];
+
+        return {
+          ...prevValues,
+          exportId: exportSelected.id!,
+          bottomTypeQuantity: exportSelected.boxQuantity!,
+          lidTypeQuantity: exportSelected.boxQuantity!,
+          coverTypeQuantity: exportSelected.boxQuantity!,
+          cardboardTypeQuantity: exportSelected.boxQuantity!,
+          padTypeQuantity: exportSelected.boxQuantity!,
+          spongeTypeQuantity: exportSelected.boxQuantity!,
+          labelQuantity: exportSelected.boxBrand?.labelQuantity!,
+          bandQuantity: exportSelected.boxBrand?.bandQuantity!,
+          sachetQuantity: exportSelected.boxBrand?.sachetQuantity!,
+          rubberQuantity: exportSelected.boxBrand?.rubberQuantity!,
+          protectorQuantity: exportSelected.boxBrand?.protectorQuantity!,
+          clusterBagQuantity: exportSelected.boxBrand?.clusterBagQuantity!,
+
+          pesticideSent: pesticidesSelected,
+
+          palletsTypeQuantity: exportSelected.boxBrand?.palletsTypeQuantity!,
+          miniPalletsTypeQuantity:
+            exportSelected.boxBrand?.miniPalletsTypeQuantity!,
+          cornerTypeQuantity: exportSelected.boxBrand?.cornerTypeQuantity!,
+          reinforcementTypeQuantity:
+            exportSelected.boxBrand?.reinforcementTypeQuantity!,
+          stapleQuantity: exportSelected.boxBrand?.stapleQuantity!,
+          strippingQuantity: exportSelected.boxBrand?.strippingQuantity!,
+          thermographQuantity: exportSelected.boxBrand?.thermographQuantity!,
+          sealQuantity: exportSelected.boxBrand?.sealQuantity!,
+          mettoLabelQuantity: exportSelected.boxBrand?.mettoLabelQuantity!,
+          packingTapeTypeQuantity:
+            exportSelected.boxBrand?.packingTapeTypeQuantity!,
+          latexRemoverQuantity: exportSelected.boxBrand?.latexRemoverQuantity!,
+          blockingSheetQuantity:
+            exportSelected.boxBrand?.blockingSheetQuantity!,
+
+          insecticideSent: insecticidesSelected,
+        };
+      });
     }
   }, [exportSelected]);
 
@@ -261,6 +302,8 @@ const SentMaterialsExportForm = ({
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
+    console.log('values: ', values);
+
     createExportSent(
       {
         ...values,
@@ -309,7 +352,7 @@ const SentMaterialsExportForm = ({
       onSubmit={sentMaterialsExport}
       validationSchema={validationSchema}
     >
-      {({ isSubmitting }) => (
+      {({ isSubmitting, values, errors }) => (
         <Form>
           <Flex flexDirection='column' gap={3}>
             <Heading fontSize={'2xl'} p={'12px'}>
@@ -318,13 +361,6 @@ const SentMaterialsExportForm = ({
             <Divider mb={'16px'} />
 
             <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
-              {/* <InputFieldExportSelect
-                name={'export'}
-                label={'Exportación'}
-                placeholder={'Seleccione la exportación'}
-                setExport={setExportSelected}
-              /> */}
-
               <Box>
                 <FormLabel>Cantidad de cajas</FormLabel>
                 <Input
@@ -431,26 +467,24 @@ const SentMaterialsExportForm = ({
                     exportSelected.boxBrand?.clusterBagQuantity!
                   )}
                 />
+
                 <Heading fontSize={'2xl'} p={'12px'}>
                   Materiales para post cosecha
                 </Heading>
                 <Divider mb={'16px'} />
-                {/* post harvest */}
-                <InputFieldSentQuantity
-                  name={'pesticideQuantity'}
-                  material={'Pesticidas'}
-                  materialSelected={
-                    (
-                      exportSelected.boxBrand
-                        ?.pesticides as Partial<PesticideType>[]
-                    )
-                      ?.map((p) => p.name)
-                      .join(', ') || ''
+
+                <Heading fontSize={'xl'} p={'10px'}>
+                  Pesticidas
+                </Heading>
+                <Divider mb={'16px'} />
+
+                <InputFieldSentPesticides
+                  name={'pesticideSent'}
+                  pesticideCocktailSelected={
+                    exportSelected.boxBrand?.pesticideCocktail!
                   }
-                  quantity={Number(
-                    exportSelected.boxBrand?.pesticidesQuantity!
-                  )}
                 />
+
                 <Heading fontSize={'2xl'} p={'12px'}>
                   Materiales para contenedor
                 </Heading>
@@ -556,22 +590,6 @@ const SentMaterialsExportForm = ({
                 />
 
                 <InputFieldSentQuantity
-                  name={'insecticideQuantity'}
-                  material={'Insecticida'}
-                  materialSelected={
-                    (
-                      exportSelected.boxBrand
-                        ?.insecticides as Partial<InsecticideType>[]
-                    )
-                      ?.map((p) => p.name)
-                      .join(', ') || ''
-                  }
-                  quantity={Number(
-                    exportSelected.boxBrand?.insecticidesQuantity!
-                  )}
-                />
-
-                <InputFieldSentQuantity
                   name={'blockingSheetQuantity'}
                   material={'Lamina de bloque'}
                   materialSelected={
@@ -580,6 +598,18 @@ const SentMaterialsExportForm = ({
                   quantity={Number(
                     exportSelected.boxBrand?.blockingSheetQuantity!
                   )}
+                />
+
+                <Heading fontSize={'xl'} p={'10px'}>
+                  Insecticidas
+                </Heading>
+                <Divider mb={'16px'} />
+
+                <InputFieldSentInsecticides
+                  name={'insecticideSent'}
+                  insecticideCocktailSelected={
+                    exportSelected.boxBrand?.insecticideCocktail!
+                  }
                 />
 
                 <Button

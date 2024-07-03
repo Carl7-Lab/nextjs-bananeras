@@ -3,17 +3,20 @@ import { useField } from 'formik';
 import React from 'react';
 import AddPesticideModal from './AddPesticideModal';
 import PesticideSelectBase from './PesticideSelectBase';
+import { PesticideType } from '../../../../types/box-brand/post-harvest/pesticide';
 
 interface InputFieldPesticideSelectProps {
   name: string;
   label: string;
   placeholder: string;
+  setPesticide?: (pesticide: Partial<PesticideType>) => void;
 }
 
 const InputFieldPesticideSelect: React.FC<InputFieldPesticideSelectProps> = ({
   name,
   label,
   placeholder,
+  setPesticide,
 }) => {
   const [field, meta, helpers] = useField(name);
 
@@ -28,6 +31,7 @@ const InputFieldPesticideSelect: React.FC<InputFieldPesticideSelectProps> = ({
         placeholder={placeholder}
         onChange={(newValue) => helpers.setValue(newValue?.id)}
         field={field}
+        setPesticide={setPesticide}
       />
 
       {meta.error && meta.touched && (

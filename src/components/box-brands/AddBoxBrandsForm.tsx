@@ -1,5 +1,6 @@
 'use client';
 import {
+  Box,
   Button,
   Divider,
   Flex,
@@ -7,14 +8,14 @@ import {
   SimpleGrid,
   useToast,
 } from '@chakra-ui/react';
-import { Form, Formik, FormikHelpers } from 'formik';
+import { FieldArray, Form, Formik, FormikHelpers } from 'formik';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import { useCreateBoxBrand } from '@/hooks/box-brand/createBoxBrand';
 import InputFieldBlockingSheetSelect from './additions/blocking-sheet/InputFieldBlockingSheetSelect';
-import InputFieldInsecticideMultiSelect from './additions/insecticide/InputFieldInsecticideMultiSelect';
+import SelectInsecticide from './additions/insecticide/SelectInsecticide';
 import InputFieldLatexRemoverSelect from './additions/latex-remover/InputFieldLatexRemoverSelect';
 import InputFieldMettoLabelSelect from './container/metto-label/InputFieldMettoLabelSelect';
 import InputFieldSealSelect from './container/seal/InputFieldSealSelect';
@@ -28,12 +29,22 @@ import InputFieldLabelSelect from './materials/label/InputFieldLabelSelect';
 import InputFieldProtectorSelect from './materials/protector/InputFieldProtectorSelect';
 import InputFieldRubberSelect from './materials/rubber/InputFieldRubberSelect';
 import InputFieldSachetSelect from './materials/sachet/InputFieldSachetSelect';
-import InputFieldPesticideMultiSelect from './post-harvest/pesticide/InputFieldPesticideMultiSelect';
+import SelectPesticide from './post-harvest/pesticide/SelectPesticide';
 import InputFieldBrandSelect from './specifications/brand/InputFieldBrandSelect';
 import InputFieldRequiredCertificateMultiSelect from './specifications/requiredCertificate/InputFieldRequiredCertificateMultiSelect';
 import InputFieldNumber from '../ui/form/InputFieldNumber';
 import InputFieldQuantity from '../ui/form/InputFieldQuantity';
 import InputFieldText from '../ui/form/InputFieldText';
+
+interface PesticideProps {
+  pesticideId: number | '';
+  quantity: number | '';
+}
+
+interface InsecticideProps {
+  insecticideId: number | '';
+  quantity: number | '';
+}
 
 interface ValuesProps {
   // specifications
@@ -73,8 +84,8 @@ interface ValuesProps {
   clusterBagQuantity: number | '';
 
   // post harvest
-  pesticides: number[] | null;
-  pesticidesQuantity: number | '';
+  pesticides: PesticideProps[];
+  // pesticidesQuantity: number | '';
 
   // container
   palletsType: string;
@@ -103,8 +114,9 @@ interface ValuesProps {
   // select
   latexRemoverId: number | '';
   latexRemoverQuantity: number | '';
-  insecticides: number[] | null;
-  insecticidesQuantity: number | '';
+  insecticides: InsecticideProps[];
+  // insecticides: number[] | null;
+  // insecticidesQuantity: number | '';
   blockingSheetId: number | '';
   blockingSheetQuantity: number | '';
 }
@@ -144,8 +156,8 @@ const initialValues: ValuesProps = {
   clusterBagId: '',
   clusterBagQuantity: '',
 
-  pesticides: null,
-  pesticidesQuantity: '',
+  pesticides: [{ pesticideId: '', quantity: '' }],
+  // pesticidesQuantity: '',
 
   palletsType: '',
   palletsTypeQuantity: '',
@@ -172,11 +184,35 @@ const initialValues: ValuesProps = {
 
   latexRemoverId: '',
   latexRemoverQuantity: '',
-  insecticides: null,
-  insecticidesQuantity: '',
+  insecticides: [{ insecticideId: '', quantity: '' }],
+  // insecticidesQuantity: '',
   blockingSheetId: '',
   blockingSheetQuantity: '',
 };
+
+const pesticideSchema = Yup.object().shape({
+  pesticideId: Yup.number()
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  quantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .lessThan(10000, 'Debe ser menor que 10000 cajas')
+    .required('Requerido'),
+});
+
+const insecticideSchema = Yup.object().shape({
+  insecticideId: Yup.number()
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  quantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .lessThan(10000, 'Debe ser menor que 10000 cajas')
+    .required('Requerido'),
+});
 
 const validationSchema = Yup.object({
   brandId: Yup.number()
@@ -381,14 +417,8 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 
   pesticides: Yup.array()
-    .min(1, 'Debe seleccionar al menos un pesticida')
-    .of(Yup.number().required())
-    .nullable()
-    .required('Requerido'),
-  pesticidesQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
+    .of(pesticideSchema)
+    .min(1, 'Debe de tener al menos un pesticida'),
 
   palletsType: Yup.string()
     .max(20, 'Debe tener 20 caracteres o menos')
@@ -525,14 +555,11 @@ const validationSchema = Yup.object({
     .integer('Debe ser un número entero')
     .moreThan(0, 'Debe ser mayor que 0')
     .required('Requerido'),
-  insecticides: Yup.number()
-    .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  insecticidesQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
+
+  insecticides: Yup.array()
+    .of(insecticideSchema)
+    .min(1, 'Debe de tener al menos un pesticida'),
+
   blockingSheetId: Yup.number()
     .integer('Debe ser un número entero')
     .moreThan(0, 'Debe ser mayor que 0')
@@ -645,6 +672,9 @@ export default function AddBoxBrandsForm() {
   ) => {
     const { netWeightBox, grossWeightBox, boxQuantity, ...boxBrandData } =
       values;
+
+    // console.log(values);
+
     createBoxBrand(
       {
         ...boxBrandData,
@@ -833,19 +863,43 @@ export default function AddBoxBrandsForm() {
                 Materiales post cosecha
               </Heading>
               <Divider mb={'16px'} />
-              <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
-                <Flex gap={2}>
-                  <InputFieldPesticideMultiSelect
-                    name={'pesticides'}
-                    label={'Pesticida'}
-                    placeholder={'Seleccione el pesticida'}
-                  />
-                  <InputFieldQuantity
-                    name={'pesticidesQuantity'}
-                    label={'Cantidad'}
-                  />
-                </Flex>
-              </SimpleGrid>
+              <Heading fontSize={'xl'} p={'12px'}>
+                Pesticidas
+              </Heading>
+              <Divider mb={'16px'} />
+              <FieldArray name='pesticides'>
+                {({ push, remove }) => (
+                  <>
+                    {values.pesticides.map((_pesticide, index) => (
+                      <div key={index}>
+                        <SelectPesticide
+                          key={index}
+                          name1={`pesticides[${index}].pesticideId`}
+                          name2={`pesticides[${index}].quantity`}
+                          isDisabledRemove={values.pesticides.length === 1}
+                          onClickRemove={() => {
+                            remove(index);
+                          }}
+                        />
+                        <Divider
+                          mt={'16px'}
+                          mb={'8px'}
+                          borderWidth={'2px'}
+                          variant={'dashed'}
+                        />
+                      </div>
+                    ))}
+                    <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+                      <Box></Box>
+                      <Button
+                        onClick={() => push({ pesticideId: '', quantity: '' })}
+                      >
+                        Agregar Pesticida
+                      </Button>
+                    </SimpleGrid>
+                  </>
+                )}
+              </FieldArray>
 
               <Heading fontSize={'2xl'} p={'12px'}>
                 Materiales por contenedor
@@ -944,17 +998,7 @@ export default function AddBoxBrandsForm() {
                     label={'Cantidad'}
                   />
                 </Flex>
-                <Flex gap={2}>
-                  <InputFieldInsecticideMultiSelect
-                    name={'insecticides'}
-                    label={'Insecticida'}
-                    placeholder={'Seleccione el Insecticida'}
-                  />
-                  <InputFieldQuantity
-                    name={'insecticidesQuantity'}
-                    label={'Cantidad'}
-                  />
-                </Flex>
+
                 <Flex gap={2}>
                   <InputFieldBlockingSheetSelect
                     name={'blockingSheetId'}
@@ -967,6 +1011,46 @@ export default function AddBoxBrandsForm() {
                   />
                 </Flex>
               </SimpleGrid>
+
+              <Heading fontSize={'xl'} p={'12px'}>
+                Insecticidas
+              </Heading>
+              <Divider mb={'16px'} />
+              <FieldArray name='insecticides'>
+                {({ push, remove }) => (
+                  <>
+                    {values.insecticides.map((_insecticide, index) => (
+                      <div key={index}>
+                        <SelectInsecticide
+                          key={index}
+                          name1={`insecticides[${index}].insecticideId`}
+                          name2={`insecticides[${index}].quantity`}
+                          isDisabledRemove={values.insecticides.length === 1}
+                          onClickRemove={() => {
+                            remove(index);
+                          }}
+                        />
+                        <Divider
+                          mt={'16px'}
+                          mb={'8px'}
+                          borderWidth={'2px'}
+                          variant={'dashed'}
+                        />
+                      </div>
+                    ))}
+                    <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+                      <Box></Box>
+                      <Button
+                        onClick={() =>
+                          push({ insecticideId: '', quantity: '' })
+                        }
+                      >
+                        Agregar Pesticida
+                      </Button>
+                    </SimpleGrid>
+                  </>
+                )}
+              </FieldArray>
 
               <Button
                 mt='32px'

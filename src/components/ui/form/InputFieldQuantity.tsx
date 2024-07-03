@@ -67,7 +67,7 @@ const InputFieldQuantity: React.FC<InputFieldProps> = ({
     <FormControl
       id={name}
       isInvalid={!!meta.error && meta.touched}
-      width={'70%'}
+      width={'100%'}
     >
       <FormLabel fontSize='sm' mb='8px'>
         {label}
@@ -76,8 +76,13 @@ const InputFieldQuantity: React.FC<InputFieldProps> = ({
         {...field}
         onChange={handleChange}
         isReadOnly={isReadOnly || isBan?.state}
+        width={'100%'}
       >
-        <NumberInputField {...field} placeholder={placeholder || label} />
+        <NumberInputField
+          {...field}
+          placeholder={placeholder || label}
+          width={'100%'}
+        />
       </NumberInput>
       {meta.error && meta.touched && (
         <FormErrorMessage mt='8px' mb='16px'>

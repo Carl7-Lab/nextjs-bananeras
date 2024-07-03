@@ -1,5 +1,15 @@
 import { ExportType } from './export';
 
+type PesticideSentPartType = {
+  pesticideId: number | '';
+  quantity: number | '';
+};
+
+type InsecticideSentPartType = {
+  insecticideId: number | '';
+  quantity: number | '';
+};
+
 export type ExportSentType = {
   id: number | '';
   export: Partial<ExportType>;
@@ -19,7 +29,7 @@ export type ExportSentType = {
   protectorQuantity: number | '';
   clusterBagQuantity: number | '';
   // post harvest
-  pesticideQuantity: number | '';
+  pesticideSent: PesticideSentPartType[];
   // container
   palletsTypeQuantity: number | '';
   miniPalletsTypeQuantity: number | '';
@@ -35,8 +45,8 @@ export type ExportSentType = {
   packingTapeTypeQuantity: number | '';
   // select
   latexRemoverQuantity: number | '';
-  insecticideQuantity: number | '';
   blockingSheetQuantity: number | '';
+  insecticideSent: InsecticideSentPartType[];
 
   pendingProducerPayment: boolean;
 };
