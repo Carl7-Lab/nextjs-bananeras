@@ -1,8 +1,8 @@
 import { UseQueryResult, useQuery } from 'react-query';
 import axios from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
-import { BusinessType } from '@/types/business';
 import { serializeQueryResult } from '@/utils/serializeQueryResult';
+import { BusinessType } from '../../types/merchant/business';
 
 export const getBusiness = ({ businessId }: { businessId: string }) => {
   return axios.get(`/merchant/business/${businessId}`);

@@ -47,13 +47,16 @@ export const authOptions: NextAuthOptions = {
             'Content-Type': 'application/json',
           },
         });
-        if (res.status == 401) {
-          return null;
+        console.log('res.status: ', res.status);
+        // console.log('res: ', res);
+
+        if (res.status == 201) {
+          const user = await res.json();
+          console.log('user login: ', user);
+          return user;
         }
 
-        const user = await res.json();
-        console.log('user login: ', user);
-        return user;
+        return null;
       },
     }),
   ],

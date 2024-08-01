@@ -30,16 +30,17 @@ const validationSchema = Yup.object({
 });
 
 export default function SignInForm(props: Props) {
-  const signin = async (values: any) => {
+  const signin = async (values: ValuesProps) => {
     const res = await signIn('credentials', {
       username: values.email,
       password: values.password,
       redirect: true,
       callbackUrl:
-        props.callbackUrl ?? 'http://localhost:3000/dashboard/producer/fincas',
+        props.callbackUrl ?? 'http://localhost:3000/dashboard/export/search',
     });
 
-    return;
+    console.log('res: ', res);
+    // return;
   };
 
   return (

@@ -20,6 +20,7 @@ interface ClusterBagSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
+  isReadOnly?: boolean;
   setClusterBag?: (clusterBag: Partial<ClusterBagType>) => void;
   onChange?: (newValue: Partial<ClusterBagType>) => void;
 }
@@ -36,6 +37,7 @@ const chakraStyles: ChakraStylesConfig<
   placeholder: (provided) => ({
     ...provided,
     color: 'gray.600',
+    h: '36px',
   }),
   input: (provided) => ({
     ...provided,
@@ -66,6 +68,7 @@ const ClusterBagSelectBase: React.FC<ClusterBagSelectBaseProps> = ({
   name,
   field,
   placeholder,
+  isReadOnly = false,
   setClusterBag,
   onChange,
 }) => {
@@ -77,7 +80,7 @@ const ClusterBagSelectBase: React.FC<ClusterBagSelectBaseProps> = ({
     if (!!error) {
       const { response } = error as any;
       const { data } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = data;
+      const { statusCode } = data;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');
@@ -108,6 +111,7 @@ const ClusterBagSelectBase: React.FC<ClusterBagSelectBaseProps> = ({
           : 'Ya no hay cluster bag/s disponible/s'
       }
       isLoading={isLoading}
+      isReadOnly={isReadOnly}
       options={data}
       getOptionLabel={(opt: Partial<ClusterBagType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<ClusterBagType>) =>
@@ -117,7 +121,7 @@ const ClusterBagSelectBase: React.FC<ClusterBagSelectBaseProps> = ({
       value={
         field?.value
           ? data.find((opt: Partial<ClusterBagType>) => opt.id === field?.value)
-          : undefined
+          : null
       }
       placeholder={placeholder}
       //   onInputChange={(newValue) => {

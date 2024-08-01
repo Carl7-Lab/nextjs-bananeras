@@ -39,8 +39,12 @@ const PendingPaymentCard: React.FC<PendingPaymentCardProps> = ({
       value: exportSentItem.export?.business?.name,
     },
     {
+      label: 'Puerto Salida',
+      value: exportSentItem.export?.harborDeparture?.name,
+    },
+    {
       label: 'Puerto Destino',
-      value: exportSentItem.export?.harbor?.name,
+      value: exportSentItem.export?.harborDestination?.name,
     },
     {
       label: 'Cliente',

@@ -20,6 +20,7 @@ interface BandSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
+  isReadOnly?: boolean;
   setBand?: (band: Partial<BandType>) => void;
   onChange?: (newValue: Partial<BandType>) => void;
 }
@@ -36,6 +37,7 @@ const chakraStyles: ChakraStylesConfig<
   placeholder: (provided) => ({
     ...provided,
     color: 'gray.600',
+    h: '36px',
   }),
   input: (provided) => ({
     ...provided,
@@ -66,6 +68,7 @@ const BandSelectBase: React.FC<BandSelectBaseProps> = ({
   name,
   field,
   placeholder,
+  isReadOnly = false,
   setBand,
   onChange,
 }) => {
@@ -108,6 +111,7 @@ const BandSelectBase: React.FC<BandSelectBaseProps> = ({
           : 'Ya no hay banda/s disponible/s'
       }
       isLoading={isLoading}
+      isReadOnly={isReadOnly}
       options={data}
       getOptionLabel={(opt: Partial<BandType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<BandType>) =>
@@ -117,7 +121,7 @@ const BandSelectBase: React.FC<BandSelectBaseProps> = ({
       value={
         field?.value
           ? data.find((opt: Partial<BandType>) => opt.id === field?.value)
-          : undefined
+          : null
       }
       placeholder={placeholder}
       //   onInputChange={(newValue) => {

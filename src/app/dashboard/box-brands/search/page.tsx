@@ -1,47 +1,49 @@
 'use client';
-import { Box, Center } from '@chakra-ui/react';
-import {
-  MaterialReactTable,
-  useMaterialReactTable,
-  type MRT_ColumnDef,
-} from 'material-react-table';
-import React from 'react';
-import { useMemo } from 'react';
+import { Box, Center, Text, useBreakpointValue } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import TableBoxBrand from '../../../../components/box-brands/table-box-brand/TableBoxBrand';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
-import { useBrands } from '../../../../hooks/box-brand/specifications/brand/getBrands';
-import { usePagination } from '../../../../hooks/usePagination';
-import { BrandType } from '../../../../types/box-brand/specifications/brand';
+
+interface WindowSizeProps {
+  width: number | null;
+  height: number | null;
+}
 
 function SearchBoxBrandPage() {
-  const { paginationParams, filterProps } = usePagination();
-  const { data = [], isLoading, refetch } = useBrands(paginationParams);
-
-  console.log(data);
-
-  const columns = useMemo<MRT_ColumnDef<Partial<BrandType>>[]>(
-    () => [
-      {
-        accessorKey: 'name',
-        header: 'Nombre',
-        muiTableHeadCellProps: { style: { color: 'green' } },
-        enableHiding: false,
-      },
-    ],
-    []
-  );
-
-  const table = useMaterialReactTable({
-    columns,
-    data,
-    enableRowSelection: true,
-    enableColumnOrdering: true,
-    enableGlobalFilter: false,
+  const [windowSize, setWindowSize] = useState<WindowSizeProps>({
+    width: null,
+    height: null,
   });
 
+  useEffect(() => {
+    function handleResize() {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
-    <Box my={'auto'} mx={'auto'}>
-      <Center>
-        <MaterialReactTable table={table} />
+    <Box
+      my={'auto'}
+      mx={'auto'}
+      width={{
+        sm: `${Number(windowSize.width) - 20}px`,
+        md: `${Number(windowSize.width) - 300}px`,
+      }}
+    >
+      <Center mt={'30px'}>
+        <TableBoxBrand
+          windowSize={windowSize}
+          width={{
+            sm: Number(windowSize.width) - 20,
+            md: Number(windowSize.width) - 300,
+          }}
+        />
       </Center>
     </Box>
   );

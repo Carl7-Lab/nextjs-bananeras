@@ -28,11 +28,11 @@ const initialValues: ValuesProps = {
 
 const validationSchema = Yup.object({
   exportName: Yup.string()
-    .max(15, 'Must be 15 characters or less')
+    .max(50, 'Must be 50 characters or less')
     .required('Required'),
   exportId: Yup.string().required('Required'),
   name: Yup.string()
-    .max(15, 'Must be 15 characters or less')
+    .max(50, 'Must be 50 characters or less')
     .required('Required'),
   password: Yup.string()
     .min(4, 'Must be 4 or more character')

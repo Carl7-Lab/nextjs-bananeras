@@ -37,6 +37,7 @@ interface ValuesProps {
   lidTypeQuantity: number | '';
   coverTypeQuantity: number | '';
   cardboardTypeQuantity: number | '';
+  parasealTypeQuantity: number | '';
   padTypeQuantity: number | '';
   spongeTypeQuantity: number | '';
   // select
@@ -74,6 +75,7 @@ const initialValues: ValuesProps = {
   lidTypeQuantity: '',
   coverTypeQuantity: '',
   cardboardTypeQuantity: '',
+  parasealTypeQuantity: '',
   padTypeQuantity: '',
   spongeTypeQuantity: '',
 
@@ -134,6 +136,10 @@ const validationSchema = Yup.object({
     .min(0, 'Debe ser mayor que 0')
     .required('Requerido'),
   cardboardTypeQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .min(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  parasealTypeQuantity: Yup.number()
     .integer('Debe ser un número entero')
     .min(0, 'Debe ser mayor que 0')
     .required('Requerido'),
@@ -225,7 +231,7 @@ const validationSchema = Yup.object({
 
   insecticideSent: Yup.array()
     .of(insecticideSchema)
-    .min(1, 'Debe de tener al menos un pesticida'),
+    .min(0, 'No puede ser un número negativo pesticida'),
 });
 
 const SentMaterialsExportForm = ({
@@ -264,8 +270,9 @@ const SentMaterialsExportForm = ({
           lidTypeQuantity: exportSelected.boxQuantity!,
           coverTypeQuantity: exportSelected.boxQuantity!,
           cardboardTypeQuantity: exportSelected.boxQuantity!,
-          padTypeQuantity: exportSelected.boxQuantity!,
-          spongeTypeQuantity: exportSelected.boxQuantity!,
+          parasealTypeQuantity: exportSelected.boxBrand?.parasealTypeQuantity!,
+          padTypeQuantity: exportSelected.boxBrand?.padTypeQuantity!,
+          spongeTypeQuantity: exportSelected.boxBrand?.spongeTypeQuantity!,
           labelQuantity: exportSelected.boxBrand?.labelQuantity!,
           bandQuantity: exportSelected.boxBrand?.bandQuantity!,
           sachetQuantity: exportSelected.boxBrand?.sachetQuantity!,
@@ -352,7 +359,7 @@ const SentMaterialsExportForm = ({
       onSubmit={sentMaterialsExport}
       validationSchema={validationSchema}
     >
-      {({ isSubmitting, values, errors }) => (
+      {({ isSubmitting }) => (
         <Form>
           <Flex flexDirection='column' gap={3}>
             <Heading fontSize={'2xl'} p={'12px'}>
@@ -411,17 +418,24 @@ const SentMaterialsExportForm = ({
                 />
 
                 <InputFieldSentQuantity
+                  name={'parasealTypeQuantity'}
+                  material={'ParaSeal'}
+                  materialSelected={exportSelected.boxBrand?.parasealType!}
+                  quantity={exportSelected.boxBrand?.parasealTypeQuantity!}
+                />
+
+                <InputFieldSentQuantity
                   name={'padTypeQuantity'}
                   material={'Pad'}
                   materialSelected={exportSelected.boxBrand?.padType!}
-                  quantity={exportSelected.boxQuantity!}
+                  quantity={exportSelected.boxBrand?.padTypeQuantity!}
                 />
 
                 <InputFieldSentQuantity
                   name={'spongeTypeQuantity'}
                   material={'Esponja'}
                   materialSelected={exportSelected.boxBrand?.spongeType!}
-                  quantity={exportSelected.boxQuantity!}
+                  quantity={exportSelected.boxBrand?.spongeTypeQuantity!}
                 />
 
                 <InputFieldSentQuantity
@@ -519,7 +533,7 @@ const SentMaterialsExportForm = ({
 
                 <InputFieldSentQuantity
                   name={'reinforcementTypeQuantity'}
-                  material={'Refuerzo'}
+                  material={'Refuerzo/Mini esquinero'}
                   materialSelected={exportSelected.boxBrand?.reinforcementType!}
                   quantity={Number(
                     exportSelected.boxBrand?.reinforcementTypeQuantity!

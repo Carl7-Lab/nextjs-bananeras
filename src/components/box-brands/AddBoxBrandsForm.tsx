@@ -14,24 +14,38 @@ import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import { useCreateBoxBrand } from '@/hooks/box-brand/createBoxBrand';
+import BlockingSheetSelectBanContainer from './additions/blocking-sheet/BlockingSheetSelectBanContainer';
 import InputFieldBlockingSheetSelect from './additions/blocking-sheet/InputFieldBlockingSheetSelect';
 import SelectInsecticide from './additions/insecticide/SelectInsecticide';
+import SelectInsecticideBanContainer from './additions/insecticide/SelectInsecticideBanContainer';
 import InputFieldLatexRemoverSelect from './additions/latex-remover/InputFieldLatexRemoverSelect';
+import LatexRemoverSelectBanContainer from './additions/latex-remover/LatexRemoverSelectBanContainer';
 import InputFieldMettoLabelSelect from './container/metto-label/InputFieldMettoLabelSelect';
+import MettoLabelSelectBanContainer from './container/metto-label/MettoLabelSelectBanContainer';
 import InputFieldSealSelect from './container/seal/InputFieldSealSelect';
+import SealSelectBanContainer from './container/seal/SealSelectBanContainer';
 import InputFieldStapleSelect from './container/staple/InputFieldStapleSelect';
+import StapleSelectBanContainer from './container/staple/StapleSelectBanContainer';
 import InputFieldStrippingSelect from './container/stripping/InputFieldStrippingSelect';
+import StrippingSelectBanContainer from './container/stripping/StrippingSelectBanContainer';
 import InputFieldThermographSelect from './container/thermograph/InputFieldThermographSelect';
+import ThermographSelectBanContainer from './container/thermograph/ThermographSelectBanContainer';
 import InputFieldsBanContainer from './InputFieldsBanContainer';
+import BandSelectBanContanier from './materials/band/BandSelectBanContanier';
 import InputFieldBandSelect from './materials/band/InputFieldBandSelect';
+import ClusterBagSelectBanContainer from './materials/cluster-bag/ClusterBagSelectBanContainer';
 import InputFieldClusterBagSelect from './materials/cluster-bag/InputFieldClusterBagSelect';
-import InputFieldLabelSelect from './materials/label/InputFieldLabelSelect';
+import LabelSelectBanContainer from './materials/label/LabelSelectBanContainer';
 import InputFieldProtectorSelect from './materials/protector/InputFieldProtectorSelect';
+import ProtectorSelectBanContainer from './materials/protector/ProtectorSelectBanContainer';
 import InputFieldRubberSelect from './materials/rubber/InputFieldRubberSelect';
+import RubberSelectBanContainer from './materials/rubber/RubberSelectBanContainer';
 import InputFieldSachetSelect from './materials/sachet/InputFieldSachetSelect';
+import SachetSelectBanContainer from './materials/sachet/SachetSelectBanContainer';
 import SelectPesticide from './post-harvest/pesticide/SelectPesticide';
 import InputFieldBrandSelect from './specifications/brand/InputFieldBrandSelect';
 import InputFieldRequiredCertificateMultiSelect from './specifications/requiredCertificate/InputFieldRequiredCertificateMultiSelect';
+import { PesticideType } from '../../types/box-brand/post-harvest/pesticide';
 import InputFieldNumber from '../ui/form/InputFieldNumber';
 import InputFieldQuantity from '../ui/form/InputFieldQuantity';
 import InputFieldText from '../ui/form/InputFieldText';
@@ -41,7 +55,7 @@ interface PesticideProps {
   quantity: number | '';
 }
 
-interface InsecticideProps {
+export interface InsecticideProps {
   insecticideId: number | '';
   quantity: number | '';
 }
@@ -65,6 +79,8 @@ interface ValuesProps {
   coverTypeQuantity: number | '';
   cardboardType: string;
   cardboardTypeQuantity: number | '';
+  parasealType: string;
+  parasealTypeQuantity: number | '';
   padType: string;
   padTypeQuantity: number | '';
   spongeType: string;
@@ -85,7 +101,6 @@ interface ValuesProps {
 
   // post harvest
   pesticides: PesticideProps[];
-  // pesticidesQuantity: number | '';
 
   // container
   palletsType: string;
@@ -115,8 +130,6 @@ interface ValuesProps {
   latexRemoverId: number | '';
   latexRemoverQuantity: number | '';
   insecticides: InsecticideProps[];
-  // insecticides: number[] | null;
-  // insecticidesQuantity: number | '';
   blockingSheetId: number | '';
   blockingSheetQuantity: number | '';
 }
@@ -138,6 +151,8 @@ const initialValues: ValuesProps = {
   coverTypeQuantity: '',
   cardboardType: '',
   cardboardTypeQuantity: '',
+  parasealType: '',
+  parasealTypeQuantity: '',
   padType: '',
   padTypeQuantity: '',
   spongeType: '',
@@ -157,7 +172,6 @@ const initialValues: ValuesProps = {
   clusterBagQuantity: '',
 
   pesticides: [{ pesticideId: '', quantity: '' }],
-  // pesticidesQuantity: '',
 
   palletsType: '',
   palletsTypeQuantity: '',
@@ -184,8 +198,9 @@ const initialValues: ValuesProps = {
 
   latexRemoverId: '',
   latexRemoverQuantity: '',
-  insecticides: [{ insecticideId: '', quantity: '' }],
-  // insecticidesQuantity: '',
+  insecticides: [
+    // { insecticideId: '', quantity: '' }
+  ],
   blockingSheetId: '',
   blockingSheetQuantity: '',
 };
@@ -220,7 +235,7 @@ const validationSchema = Yup.object({
     .moreThan(0, 'Debe ser mayor que 0')
     .required('Requerido'),
   name: Yup.string()
-    .max(15, 'Debe tener 15 caracteres o menos')
+    .max(100, 'Debe tener 100 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -230,7 +245,7 @@ const validationSchema = Yup.object({
     .transform((value) => value.trim())
     .required('Requerido'),
   brandCode: Yup.string()
-    .max(20, 'Debe tener 10 caracteres o menos')
+    .max(50, 'Debe tener 50 caracteres o menos')
     .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
     .transform((value) => value.trim())
     .required('Requerido'),
@@ -265,7 +280,7 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 
   bottomType: Yup.string()
-    .max(20, 'Debe tener 20 caracteres o menos')
+    .max(100, 'Debe tener 100 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -282,7 +297,7 @@ const validationSchema = Yup.object({
       otherwise: (schema) => schema.moreThan(0, 'Debe ser mayor que 0'),
     }),
   lidType: Yup.string()
-    .max(20, 'Debe tener 20 caracteres o menos')
+    .max(100, 'Debe tener 100 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -299,7 +314,7 @@ const validationSchema = Yup.object({
       otherwise: (schema) => schema.moreThan(0, 'Debe ser mayor que 0'),
     }),
   coverType: Yup.string()
-    .max(20, 'Debe tener 20 caracteres o menos')
+    .max(100, 'Debe tener 100 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -316,7 +331,7 @@ const validationSchema = Yup.object({
       otherwise: (schema) => schema.moreThan(0, 'Debe ser mayor que 0'),
     }),
   cardboardType: Yup.string()
-    .max(20, 'Debe tener 20 caracteres o menos')
+    .max(100, 'Debe tener 100 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -332,8 +347,25 @@ const validationSchema = Yup.object({
       then: (schema) => schema.oneOf([0], 'Debe ser 0 si fondo es N/A'),
       otherwise: (schema) => schema.moreThan(0, 'Debe ser mayor que 0'),
     }),
+  parasealType: Yup.string()
+    .max(100, 'Debe tener 100 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  parasealTypeQuantity: Yup.number()
+    .required('Requerido')
+    .when('padType', {
+      is: 'N/A',
+      then: (schema) => schema.oneOf([0], 'Debe ser 0 si fondo es N/A'),
+      otherwise: (schema) => schema.moreThan(0, 'Debe ser mayor que 0'),
+    }),
   padType: Yup.string()
-    .max(20, 'Debe tener 20 caracteres o menos')
+    .max(100, 'Debe tener 100 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -350,7 +382,7 @@ const validationSchema = Yup.object({
       otherwise: (schema) => schema.moreThan(0, 'Debe ser mayor que 0'),
     }),
   spongeType: Yup.string()
-    .max(20, 'Debe tener 20 caracteres o menos')
+    .max(100, 'Debe tener 100 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -367,61 +399,135 @@ const validationSchema = Yup.object({
       otherwise: (schema) => schema.moreThan(0, 'Debe ser mayor que 0'),
     }),
 
-  labelId: Yup.number()
-    .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
+  labelId: Yup.mixed().when('labelQuantity', {
+    is: (value: number) => value > 0,
+    then: (schema) => schema.required('Requerido'),
+    otherwise: (schema) => schema.nullable(),
+  }),
   labelQuantity: Yup.number()
     .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  bandId: Yup.number()
-    .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
+    .required('Requerido')
+    .test(
+      'is-zero-when-no-option',
+      'Debe ser 0 si no selecciono una opción',
+      function (value) {
+        const { labelId } = this.parent;
+        if (labelId === undefined || labelId === null || labelId === '') {
+          return value === 0;
+        }
+        return value > 0;
+      }
+    ),
+  bandId: Yup.mixed().when('bandQuantity', {
+    is: (value: number) => value > 0,
+    then: (schema) => schema.required('Requerido'),
+    otherwise: (schema) => schema.nullable(),
+  }),
   bandQuantity: Yup.number()
     .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  sachetId: Yup.number()
-    .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
+    .required('Requerido')
+    .test(
+      'is-zero-when-no-option',
+      'Debe ser 0 si no selecciono una opción',
+      function (value) {
+        const { bandId } = this.parent;
+        if (bandId === undefined || bandId === null || bandId === '') {
+          return value === 0;
+        }
+        return value > 0;
+      }
+    ),
+  sachetId: Yup.mixed().when('sachetQuantity', {
+    is: (value: number) => value > 0,
+    then: (schema) => schema.required('Requerido'),
+    otherwise: (schema) => schema.nullable(),
+  }),
   sachetQuantity: Yup.number()
     .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  rubberId: Yup.number()
-    .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
+    .required('Requerido')
+    .test(
+      'is-zero-when-no-option',
+      'Debe ser 0 si no selecciono una opción',
+      function (value) {
+        const { sachetId } = this.parent;
+        if (sachetId === undefined || sachetId === null || sachetId === '') {
+          return value === 0;
+        }
+        return value > 0;
+      }
+    ),
+  rubberId: Yup.mixed().when('rubberQuantity', {
+    is: (value: number) => value > 0,
+    then: (schema) => schema.required('Requerido'),
+    otherwise: (schema) => schema.nullable(),
+  }),
   rubberQuantity: Yup.number()
     .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  protectorId: Yup.number()
-    .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
+    .required('Requerido')
+    .test(
+      'is-zero-when-no-option',
+      'Debe ser 0 si no selecciono una opción',
+      function (value) {
+        const { rubberId } = this.parent;
+        if (rubberId === undefined || rubberId === null || rubberId === '') {
+          return value === 0;
+        }
+        return value > 0;
+      }
+    ),
+  protectorId: Yup.mixed().when('protectorQuantity', {
+    is: (value: number) => value > 0,
+    then: (schema) => schema.required('Requerido'),
+    otherwise: (schema) => schema.nullable(),
+  }),
   protectorQuantity: Yup.number()
     .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  clusterBagId: Yup.number()
-    .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
+    .required('Requerido')
+    .test(
+      'is-zero-when-no-option',
+      'Debe ser 0 si no selecciono una opción',
+      function (value) {
+        const { protectorId } = this.parent;
+        if (
+          protectorId === undefined ||
+          protectorId === null ||
+          protectorId === ''
+        ) {
+          return value === 0;
+        }
+        return value > 0;
+      }
+    ),
+  clusterBagId: Yup.mixed().when('clusterBagQuantity', {
+    is: (value: number) => value > 0,
+    then: (schema) => schema.required('Requerido'),
+    otherwise: (schema) => schema.nullable(),
+  }),
   clusterBagQuantity: Yup.number()
     .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
+    .required('Requerido')
+    .test(
+      'is-zero-when-no-option',
+      'Debe ser 0 si no selecciono una opción',
+      function (value) {
+        const { clusterBagId } = this.parent;
+        if (
+          clusterBagId === undefined ||
+          clusterBagId === null ||
+          clusterBagId === ''
+        ) {
+          return value === 0;
+        }
+        return value > 0;
+      }
+    ),
 
   pesticides: Yup.array()
     .of(pesticideSchema)
     .min(1, 'Debe de tener al menos un pesticida'),
 
   palletsType: Yup.string()
-    .max(20, 'Debe tener 20 caracteres o menos')
+    .max(100, 'Debe tener 100 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -439,7 +545,7 @@ const validationSchema = Yup.object({
       otherwise: (schema) => schema.moreThan(0, 'Debe ser mayor que 0'),
     }),
   miniPalletsType: Yup.string()
-    .max(20, 'Debe tener 20 caracteres o menos')
+    .max(100, 'Debe tener 100 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -457,7 +563,7 @@ const validationSchema = Yup.object({
       otherwise: (schema) => schema.moreThan(0, 'Debe ser mayor que 0'),
     }),
   cornerType: Yup.string()
-    .max(20, 'Debe tener 20 caracteres o menos')
+    .max(100, 'Debe tener 100 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -475,7 +581,7 @@ const validationSchema = Yup.object({
       otherwise: (schema) => schema.moreThan(0, 'Debe ser mayor que 0'),
     }),
   reinforcementType: Yup.string()
-    .max(20, 'Debe tener 20 caracteres o menos')
+    .max(100, 'Debe tener 100 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -493,81 +599,183 @@ const validationSchema = Yup.object({
       otherwise: (schema) => schema.moreThan(0, 'Debe ser mayor que 0'),
     }),
 
-  stapleId: Yup.number()
-    .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
+  stapleId: Yup.mixed().when('stapleQuantity', {
+    is: (value: number) => value > 0,
+    then: (schema) => schema.required('Requerido'),
+    otherwise: (schema) => schema.nullable(),
+  }),
   stapleQuantity: Yup.number()
     .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  strippingId: Yup.number()
-    .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
+    .required('Requerido')
+    .test(
+      'is-zero-when-no-option',
+      'Debe ser 0 si no selecciono una opción',
+      function (value) {
+        const { stapleId } = this.parent;
+        if (stapleId === undefined || stapleId === null || stapleId === '') {
+          return value === 0;
+        }
+        return value > 0;
+      }
+    ),
+  strippingId: Yup.mixed().when('strippingQuantity', {
+    is: (value: number) => value > 0,
+    then: (schema) => schema.required('Requerido'),
+    otherwise: (schema) => schema.nullable(),
+  }),
   strippingQuantity: Yup.number()
     .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  thermographId: Yup.number()
-    .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
+    .required('Requerido')
+    .test(
+      'is-zero-when-no-option',
+      'Debe ser 0 si no selecciono una opción',
+      function (value) {
+        const { strippingId } = this.parent;
+        if (
+          strippingId === undefined ||
+          strippingId === null ||
+          strippingId === ''
+        ) {
+          return value === 0;
+        }
+        return value > 0;
+      }
+    ),
+  thermographId: Yup.mixed().when('thermographQuantity', {
+    is: (value: number) => value > 0,
+    then: (schema) => schema.required('Requerido'),
+    otherwise: (schema) => schema.nullable(),
+  }),
   thermographQuantity: Yup.number()
     .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  sealId: Yup.number()
-    .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
+    .required('Requerido')
+    .test(
+      'is-zero-when-no-option',
+      'Debe ser 0 si no selecciono una opción',
+      function (value) {
+        const { thermographId } = this.parent;
+        if (
+          thermographId === undefined ||
+          thermographId === null ||
+          thermographId === ''
+        ) {
+          return value === 0;
+        }
+        return value > 0;
+      }
+    ),
+  sealId: Yup.mixed().when('sealQuantity', {
+    is: (value: number) => value > 0,
+    then: (schema) => schema.required('Requerido'),
+    otherwise: (schema) => schema.nullable(),
+  }),
   sealQuantity: Yup.number()
     .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  mettoLabelId: Yup.number()
-    .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
+    .required('Requerido')
+    .test(
+      'is-zero-when-no-option',
+      'Debe ser 0 si no selecciono una opción',
+      function (value) {
+        const { sealId } = this.parent;
+        if (sealId === undefined || sealId === null || sealId === '') {
+          return value === 0;
+        }
+        return value > 0;
+      }
+    ),
+  mettoLabelId: Yup.mixed().when('mettoLabelQuantity', {
+    is: (value: number) => value > 0,
+    then: (schema) => schema.required('Requerido'),
+    otherwise: (schema) => schema.nullable(),
+  }),
   mettoLabelQuantity: Yup.number()
     .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
+    .required('Requerido')
+    .test(
+      'is-zero-when-no-option',
+      'Debe ser 0 si no selecciono una opción',
+      function (value) {
+        const { mettoLabelId } = this.parent;
+        if (
+          mettoLabelId === undefined ||
+          mettoLabelId === null ||
+          mettoLabelId === ''
+        ) {
+          return value === 0;
+        }
+        return value > 0;
+      }
+    ),
 
   packingTapeType: Yup.string()
-    .max(15, 'Debe tener 15 caracteres o menos')
-    .transform((value) => value.trim())
+    .max(100, 'Debe tener 100 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
       /^(?!.*\s{2,}).*$/,
       'No debe tener múltiples espacios consecutivos'
     )
+    .transform((value) => value.trim())
     .required('Requerido'),
   packingTapeTypeQuantity: Yup.number()
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-
-  latexRemoverId: Yup.number()
+    .required('Requerido')
     .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
+    .when('packingTapeType', {
+      is: 'N/A',
+      then: (schema) => schema.oneOf([0], 'Debe ser 0 si fondo es N/A'),
+      otherwise: (schema) => schema.moreThan(0, 'Debe ser mayor que 0'),
+    }),
+
+  latexRemoverId: Yup.mixed().when('latexRemoverQuantity', {
+    is: (value: number) => value > 0,
+    then: (schema) => schema.required('Requerido'),
+    otherwise: (schema) => schema.nullable(),
+  }),
   latexRemoverQuantity: Yup.number()
     .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
+    .required('Requerido')
+    .test(
+      'is-zero-when-no-option',
+      'Debe ser 0 si no selecciono una opción',
+      function (value) {
+        const { latexRemoverId } = this.parent;
+        if (
+          latexRemoverId === undefined ||
+          latexRemoverId === null ||
+          latexRemoverId === ''
+        ) {
+          return value === 0;
+        }
+        return value > 0;
+      }
+    ),
+  blockingSheetId: Yup.mixed().when('blockingSheetQuantity', {
+    is: (value: number) => value > 0,
+    then: (schema) => schema.required('Requerido'),
+    otherwise: (schema) => schema.nullable(),
+  }),
+  blockingSheetQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .required('Requerido')
+    .test(
+      'is-zero-when-no-option',
+      'Debe ser 0 si no selecciono una opción',
+      function (value) {
+        const { blockingSheetId } = this.parent;
+        if (
+          blockingSheetId === undefined ||
+          blockingSheetId === null ||
+          blockingSheetId === ''
+        ) {
+          return value === 0;
+        }
+        return value > 0;
+      }
+    ),
 
   insecticides: Yup.array()
     .of(insecticideSchema)
-    .min(1, 'Debe de tener al menos un pesticida'),
-
-  blockingSheetId: Yup.number()
-    .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  blockingSheetQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
+    .min(0, 'Debe de tener 0 o más pesticidas'),
 });
 
 interface InputFieldProps {
@@ -577,7 +785,7 @@ interface InputFieldProps {
 }
 
 const specificationsInputFieldsText: InputFieldProps[] = [
-  { name: 'name', label: 'Tipo' },
+  { name: 'name', label: 'Nickname' },
   { name: 'brandCode', label: 'Código' },
 ];
 
@@ -590,8 +798,10 @@ const specificationsInputFieldsNumber: InputFieldProps[] = [
 interface MaterialsInputFieldsProps {
   name1: string;
   label1: string;
+  placeholder1?: string;
   name2: string;
   label2: string;
+  placeholder2?: string;
 }
 
 const materialsInputFields: MaterialsInputFieldsProps[] = [
@@ -599,37 +809,29 @@ const materialsInputFields: MaterialsInputFieldsProps[] = [
     name1: 'bottomType',
     label1: 'Fondo',
     name2: 'bottomTypeQuantity',
-    label2: 'Cantidad',
+    label2: '',
+    placeholder2: 'Cantidad',
   },
   {
     name1: 'lidType',
     label1: 'Tapa',
     name2: 'lidTypeQuantity',
-    label2: 'Cantidad',
+    label2: '',
+    placeholder2: 'Cantidad',
   },
   {
     name1: 'coverType',
     label1: 'Funda',
     name2: 'coverTypeQuantity',
-    label2: 'Cantidad',
+    label2: '',
+    placeholder2: 'Cantidad',
   },
   {
     name1: 'cardboardType',
     label1: 'Cartulina',
     name2: 'cardboardTypeQuantity',
-    label2: 'Cantidad',
-  },
-  {
-    name1: 'padType',
-    label1: 'Pad',
-    name2: 'padTypeQuantity',
-    label2: 'Cantidad',
-  },
-  {
-    name1: 'spongeType',
-    label1: 'Esponja',
-    name2: 'spongeTypeQuantity',
-    label2: 'Cantidad',
+    label2: '',
+    placeholder2: 'Cantidad',
   },
 ];
 
@@ -638,25 +840,29 @@ const containersInputFields: MaterialsInputFieldsProps[] = [
     name1: 'palletsType',
     label1: 'Pallet',
     name2: 'palletsTypeQuantity',
-    label2: 'Cantidad',
+    label2: '',
+    placeholder2: 'Cantidad',
   },
   {
     name1: 'miniPalletsType',
     label1: 'Mini pallet',
     name2: 'miniPalletsTypeQuantity',
-    label2: 'Cantidad',
+    label2: '',
+    placeholder2: 'Cantidad',
   },
   {
     name1: 'cornerType',
     label1: 'Esquinero',
     name2: 'cornerTypeQuantity',
-    label2: 'Cantidad',
+    label2: '',
+    placeholder2: 'Cantidad',
   },
   {
     name1: 'reinforcementType',
-    label1: 'Refuerzo',
+    label1: 'Refuerzo/Mini esquinero',
     name2: 'reinforcementTypeQuantity',
-    label2: 'Cantidad',
+    label2: '',
+    placeholder2: 'Cantidad',
   },
 ];
 
@@ -681,6 +887,22 @@ export default function AddBoxBrandsForm() {
         boxQuantity: Number(boxQuantity),
         netWeightBox: Number(netWeightBox),
         grossWeightBox: Number(grossWeightBox),
+        // Materiales por caja
+        labelId: !!values.labelId ? values.labelId : 0,
+        bandId: !!values.bandId ? values.bandId : 0,
+        sachetId: !!values.sachetId ? values.sachetId : 0,
+        rubberId: !!values.rubberId ? values.rubberId : 0,
+        protectorId: !!values.protectorId ? values.protectorId : 0,
+        clusterBagId: !!values.clusterBagId ? values.clusterBagId : 0,
+        // Materiales por contenedor
+        stapleId: !!values.stapleId ? values.stapleId : 0,
+        strippingId: !!values.strippingId ? values.strippingId : 0,
+        thermographId: !!values.thermographId ? values.thermographId : 0,
+        sealId: !!values.sealId ? values.sealId : 0,
+        mettoLabelId: !!values.mettoLabelId ? values.mettoLabelId : 0,
+        // Adicionales
+        latexRemoverId: !!values.latexRemoverId ? values.latexRemoverId : 0,
+        blockingSheetId: !!values.blockingSheetId ? values.blockingSheetId : 0,
       },
       {
         onError: (error: any) => {
@@ -696,7 +918,7 @@ export default function AddBoxBrandsForm() {
             isClosable: true,
           });
 
-          if (statusCode === 401) {
+          if (statusCode === 1001) {
             router.push('/api/auth/signout');
           }
 
@@ -756,6 +978,7 @@ export default function AddBoxBrandsForm() {
                     placeholder={field.placeholder}
                   />
                 ))}
+
                 {specificationsInputFieldsNumber.map((field, index) => (
                   <InputFieldNumber
                     key={index}
@@ -767,7 +990,7 @@ export default function AddBoxBrandsForm() {
                 ))}
                 <InputFieldRequiredCertificateMultiSelect
                   name={'requiredCertificates'}
-                  label={'Cerificado/s Requerido/s'}
+                  label={'Certificado/s Requerido/s'}
                   placeholder={'Seleccione el/los certificado/s'}
                 />
               </SimpleGrid>
@@ -778,93 +1001,101 @@ export default function AddBoxBrandsForm() {
               <Divider mb={'16px'} />
               <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
                 {materialsInputFields.map(
-                  ({ name1, label1, name2, label2 }, index) => (
-                    <Flex key={index} gap={2}>
+                  ({ name1, label1, name2, label2, placeholder2 }, index) => (
+                    <Flex key={index} gap={2} alignItems={'flex-end'}>
                       <InputFieldText name={name1} label={label1} />
                       <InputFieldQuantity
                         isReadOnly={true}
                         name={name2}
                         label={label2}
                         quantity={values.boxQuantity}
+                        placeholder={placeholder2}
                       />
                     </Flex>
                   )
                 )}
 
-                <Flex gap={2}>
-                  <InputFieldLabelSelect
-                    name={'labelId'}
-                    label={'Etiqueta'}
-                    placeholder={'Seleccione la etiqueta'}
-                  />
-                  <InputFieldQuantity
-                    name={'labelQuantity'}
-                    label={'Cantidad'}
-                  />
-                </Flex>
-                <Flex gap={2}>
-                  <InputFieldBandSelect
-                    name={'bandId'}
-                    label={'Banda'}
-                    placeholder={'Seleccione la banda'}
-                  />
-                  <InputFieldQuantity
-                    name={'bandQuantity'}
-                    label={'Cantidad'}
-                  />
-                </Flex>
-                <Flex gap={2}>
-                  <InputFieldSachetSelect
-                    name={'sachetId'}
-                    label={'Sachet'}
-                    placeholder={'Seleccione el sachet'}
-                  />
-                  <InputFieldQuantity
-                    name={'sachetQuantity'}
-                    label={'Cantidad'}
-                  />
-                </Flex>
-                <Flex gap={2}>
-                  <InputFieldRubberSelect
-                    name={'rubberId'}
-                    label={'Liga'}
-                    placeholder={'Seleccione la liga'}
-                  />
-                  <InputFieldQuantity
-                    name={'rubberQuantity'}
-                    label={'Cantidad'}
-                  />
-                </Flex>
-                <Flex gap={2}>
-                  <InputFieldProtectorSelect
-                    name={'protectorId'}
-                    label={'Protector'}
-                    placeholder={'Seleccione el protector'}
-                  />
-                  <InputFieldQuantity
-                    name={'protectorQuantity'}
-                    label={'Cantidad'}
-                  />
-                </Flex>
-                <Flex gap={2}>
-                  <InputFieldClusterBagSelect
-                    name={'clusterBagId'}
-                    label={'Cluster Bag'}
-                    placeholder={'Seleccione el cluster bag'}
-                  />
-                  <InputFieldQuantity
-                    name={'clusterBagQuantity'}
-                    label={'Cantidad'}
-                  />
-                </Flex>
+                <InputFieldsBanContainer
+                  name1={'parasealType'}
+                  label1={'ParaSeal'}
+                  name2={'parasealTypeQuantity'}
+                  label2={''}
+                  placeholder2={'Cantidad'}
+                />
+
+                <InputFieldsBanContainer
+                  name1={'padType'}
+                  label1={'Pad'}
+                  name2={'padTypeQuantity'}
+                  label2={''}
+                  placeholder2={'Cantidad'}
+                />
+
+                <InputFieldsBanContainer
+                  name1={'spongeType'}
+                  label1={'Esponja'}
+                  name2={'spongeTypeQuantity'}
+                  label2={''}
+                  placeholder2={'Cantidad'}
+                />
+
+                <LabelSelectBanContainer
+                  name1={'labelId'}
+                  label1={'Etiqueta'}
+                  placeholder1={'Seleccione la etiqueta'}
+                  name2={'labelQuantity'}
+                  label2={''}
+                  placeholder2={'Cantidad'}
+                />
+                <BandSelectBanContanier
+                  name1={'bandId'}
+                  label1={'Banda'}
+                  placeholder1={'Seleccione la banda'}
+                  name2={'bandQuantity'}
+                  label2={''}
+                  placeholder2={'Cantidad'}
+                />
+                <SachetSelectBanContainer
+                  name1={'sachetId'}
+                  label1={'Sachet'}
+                  placeholder1={'Seleccione el sachet'}
+                  name2={'sachetQuantity'}
+                  label2={''}
+                  placeholder2={'Cantidad'}
+                />
+                <RubberSelectBanContainer
+                  name1={'rubberId'}
+                  label1={'Liga'}
+                  placeholder1={'Seleccione la liga'}
+                  name2={'rubberQuantity'}
+                  label2={''}
+                  placeholder2={'Cantidad'}
+                />
+                <ProtectorSelectBanContainer
+                  name1={'protectorId'}
+                  label1={'Protector'}
+                  placeholder1={'Seleccione el protector'}
+                  name2={'protectorQuantity'}
+                  label2={''}
+                  placeholder2={'Cantidad'}
+                />
+                <ClusterBagSelectBanContainer
+                  name1={'clusterBagId'}
+                  label1={'Cluster Bag'}
+                  placeholder1={'Seleccione el cluster bag'}
+                  name2={'clusterBagQuantity'}
+                  label2={''}
+                  placeholder2={'Cantidad'}
+                />
               </SimpleGrid>
 
               <Heading fontSize={'2xl'} p={'12px'}>
-                Materiales post cosecha
+                Insumos post cosecha
               </Heading>
               <Divider mb={'16px'} />
+
               <Heading fontSize={'xl'} p={'12px'}>
-                Pesticidas
+                Fumigación post cosecha
               </Heading>
               <Divider mb={'16px'} />
               <FieldArray name='pesticides'>
@@ -907,72 +1138,58 @@ export default function AddBoxBrandsForm() {
               <Divider mb={'16px'} />
               <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
                 {containersInputFields.map(
-                  ({ name1, label1, name2, label2 }, index) => (
+                  ({ name1, label1, name2, label2, placeholder2 }, index) => (
                     <InputFieldsBanContainer
                       key={index}
                       name1={name1}
                       label1={label1}
                       name2={name2}
                       label2={label2}
+                      placeholder2={placeholder2}
                     />
                   )
                 )}
 
-                <Flex gap={2}>
-                  <InputFieldStapleSelect
-                    name={'stapleId'}
-                    label={'Grapa'}
-                    placeholder={'Seleccione la grapa'}
-                  />
-                  <InputFieldQuantity
-                    name={'stapleQuantity'}
-                    label={'Cantidad'}
-                  />
-                </Flex>
-                <Flex gap={2}>
-                  <InputFieldStrippingSelect
-                    name={'strippingId'}
-                    label={'Zuncho'}
-                    placeholder={'Seleccione el zuncho'}
-                  />
-                  <InputFieldQuantity
-                    name={'strippingQuantity'}
-                    label={'Cantidad'}
-                  />
-                </Flex>
-                <Flex gap={2}>
-                  <InputFieldThermographSelect
-                    name={'thermographId'}
-                    label={'Termografo'}
-                    placeholder={'Seleccione el termografo'}
-                  />
-                  <InputFieldQuantity
-                    name={'thermographQuantity'}
-                    label={'Cantidad'}
-                  />
-                </Flex>
-                <Flex gap={2}>
-                  <InputFieldSealSelect
-                    name={'sealId'}
-                    label={'Sello'}
-                    placeholder={'Seleccione el sello'}
-                  />
-                  <InputFieldQuantity
-                    name={'sealQuantity'}
-                    label={'Cantidad'}
-                  />
-                </Flex>
-                <Flex gap={2}>
-                  <InputFieldMettoLabelSelect
-                    name={'mettoLabelId'}
-                    label={'Etiqueta Metto'}
-                    placeholder={'Seleccione la etiqueta Metto'}
-                  />
-                  <InputFieldQuantity
-                    name={'mettoLabelQuantity'}
-                    label={'Cantidad'}
-                  />
-                </Flex>
+                <StapleSelectBanContainer
+                  name1={'stapleId'}
+                  label1={'Grapa'}
+                  placeholder1={'Seleccione la grapa'}
+                  name2={'stapleQuantity'}
+                  label2={''}
+                  placeholder2={'Cantidad'}
+                />
+                <StrippingSelectBanContainer
+                  name1={'strippingId'}
+                  label1={'Zuncho'}
+                  placeholder1={'Seleccione el zuncho'}
+                  name2={'strippingQuantity'}
+                  label2={''}
+                  placeholder2={'Cantidad'}
+                />
+                <ThermographSelectBanContainer
+                  name1={'thermographId'}
+                  label1={'Termografo'}
+                  placeholder1={'Seleccione el termografo'}
+                  name2={'thermographQuantity'}
+                  label2={''}
+                  placeholder2={'Cantidad'}
+                />
+                <SealSelectBanContainer
+                  name1={'sealId'}
+                  label1={'Sello'}
+                  placeholder1={'Seleccione el sello'}
+                  name2={'sealQuantity'}
+                  label2={''}
+                  placeholder2={'Cantidad'}
+                />
+                <MettoLabelSelectBanContainer
+                  name1={'mettoLabelId'}
+                  label1={'Etiqueta Metto'}
+                  placeholder1={'Seleccione la etiqueta Metto'}
+                  name2={'mettoLabelQuantity'}
+                  label2={''}
+                  placeholder2={'Cantidad'}
+                />
               </SimpleGrid>
 
               <Heading fontSize={'2xl'} p={'12px'}>
@@ -984,73 +1201,32 @@ export default function AddBoxBrandsForm() {
                   name1={'packingTapeType'}
                   label1={'Cinta de embalaje'}
                   name2={'packingTapeTypeQuantity'}
-                  label2={'Cantidad'}
+                  label2={''}
+                  placeholder2={'Cantidad'}
                 />
 
-                <Flex gap={2}>
-                  <InputFieldLatexRemoverSelect
-                    name={'latexRemoverId'}
-                    label={'Removedor de latex'}
-                    placeholder={'Seleccione la removedor de latex'}
-                  />
-                  <InputFieldQuantity
-                    name={'latexRemoverQuantity'}
-                    label={'Cantidad'}
-                  />
-                </Flex>
-
-                <Flex gap={2}>
-                  <InputFieldBlockingSheetSelect
-                    name={'blockingSheetId'}
-                    label={'Lamina de bloque'}
-                    placeholder={'Seleccione la lamina de bloque'}
-                  />
-                  <InputFieldQuantity
-                    name={'blockingSheetQuantity'}
-                    label={'Cantidad'}
-                  />
-                </Flex>
+                <LatexRemoverSelectBanContainer
+                  name1={'latexRemoverId'}
+                  label1={'Removedor de latex'}
+                  placeholder1={'Seleccione la removedor de latex'}
+                  name2={'latexRemoverQuantity'}
+                  label2={''}
+                  placeholder2={'Cantidad'}
+                />
+                <BlockingSheetSelectBanContainer
+                  name1={'blockingSheetId'}
+                  label1={'Lamina de bloque'}
+                  placeholder1={'Seleccione la lamina de bloque'}
+                  name2={'blockingSheetQuantity'}
+                  label2={''}
+                  placeholder2={'Cantidad'}
+                />
               </SimpleGrid>
 
-              <Heading fontSize={'xl'} p={'12px'}>
-                Insecticidas
-              </Heading>
-              <Divider mb={'16px'} />
-              <FieldArray name='insecticides'>
-                {({ push, remove }) => (
-                  <>
-                    {values.insecticides.map((_insecticide, index) => (
-                      <div key={index}>
-                        <SelectInsecticide
-                          key={index}
-                          name1={`insecticides[${index}].insecticideId`}
-                          name2={`insecticides[${index}].quantity`}
-                          isDisabledRemove={values.insecticides.length === 1}
-                          onClickRemove={() => {
-                            remove(index);
-                          }}
-                        />
-                        <Divider
-                          mt={'16px'}
-                          mb={'8px'}
-                          borderWidth={'2px'}
-                          variant={'dashed'}
-                        />
-                      </div>
-                    ))}
-                    <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
-                      <Box></Box>
-                      <Button
-                        onClick={() =>
-                          push({ insecticideId: '', quantity: '' })
-                        }
-                      >
-                        Agregar Pesticida
-                      </Button>
-                    </SimpleGrid>
-                  </>
-                )}
-              </FieldArray>
+              <SelectInsecticideBanContainer
+                name={'insecticides'}
+                insecticides={values.insecticides}
+              />
 
               <Button
                 mt='32px'
@@ -1059,6 +1235,7 @@ export default function AddBoxBrandsForm() {
                 type='submit'
                 colorScheme='teal'
                 isLoading={isSubmitting}
+                onClick={() => console.log('values: ', values)}
               >
                 Enviar
               </Button>

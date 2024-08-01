@@ -20,7 +20,8 @@ interface LabelSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
-  setLabel?: (label: Partial<LabelType>) => void;
+  isReadOnly?: boolean;
+  setLabel?: (label: Partial<LabelType> | null) => void;
   onChange?: (newValue: Partial<LabelType>) => void;
 }
 
@@ -36,6 +37,7 @@ const chakraStyles: ChakraStylesConfig<
   placeholder: (provided) => ({
     ...provided,
     color: 'gray.600',
+    h: '36px',
   }),
   input: (provided) => ({
     ...provided,
@@ -66,6 +68,7 @@ const LabelSelectBase: React.FC<LabelSelectBaseProps> = ({
   name,
   field,
   placeholder,
+  isReadOnly = false,
   setLabel,
   onChange,
 }) => {
@@ -77,7 +80,7 @@ const LabelSelectBase: React.FC<LabelSelectBaseProps> = ({
     if (!!error) {
       const { response } = error as any;
       const { data } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = data;
+      const { statusCode } = data;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');
@@ -108,6 +111,7 @@ const LabelSelectBase: React.FC<LabelSelectBaseProps> = ({
           : 'Ya no hay etiqueta/s disponible/s'
       }
       isLoading={isLoading}
+      isReadOnly={isReadOnly}
       options={data}
       getOptionLabel={(opt: Partial<LabelType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<LabelType>) =>
@@ -117,7 +121,7 @@ const LabelSelectBase: React.FC<LabelSelectBaseProps> = ({
       value={
         field?.value
           ? data.find((opt: Partial<LabelType>) => opt.id === field?.value)
-          : undefined
+          : null
       }
       placeholder={placeholder}
       //   onInputChange={(newValue) => {

@@ -20,6 +20,7 @@ interface RubberSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
+  isReadOnly?: boolean;
   setRubber?: (rubber: Partial<RubberType>) => void;
   onChange?: (newValue: Partial<RubberType>) => void;
 }
@@ -36,6 +37,7 @@ const chakraStyles: ChakraStylesConfig<
   placeholder: (provided) => ({
     ...provided,
     color: 'gray.600',
+    h: '36px',
   }),
   input: (provided) => ({
     ...provided,
@@ -66,6 +68,7 @@ const RubberSelectBase: React.FC<RubberSelectBaseProps> = ({
   name,
   field,
   placeholder,
+  isReadOnly = false,
   setRubber,
   onChange,
 }) => {
@@ -76,8 +79,8 @@ const RubberSelectBase: React.FC<RubberSelectBaseProps> = ({
   useEffect(() => {
     if (!!error) {
       const { response } = error as any;
-      const { data } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = data;
+      const { data = [] } = response;
+      const { statusCode } = data;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');
@@ -108,6 +111,7 @@ const RubberSelectBase: React.FC<RubberSelectBaseProps> = ({
           : 'Ya no hay liga/s disponible/s'
       }
       isLoading={isLoading}
+      isReadOnly={isReadOnly}
       options={data}
       getOptionLabel={(opt: Partial<RubberType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<RubberType>) =>
@@ -117,7 +121,7 @@ const RubberSelectBase: React.FC<RubberSelectBaseProps> = ({
       value={
         field?.value
           ? data.find((opt: Partial<RubberType>) => opt.id === field?.value)
-          : undefined
+          : null
       }
       placeholder={placeholder}
       //   onInputChange={(newValue) => {

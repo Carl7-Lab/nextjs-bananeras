@@ -7,48 +7,66 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { Form, Formik, FormikHelpers } from 'formik';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import SelectProducer from './SelectProducer';
 import { useCreateBankAccount } from '../../hooks/bank-account/createBankAccount';
+import { ClientType } from '../../types/client';
 import { MerchantType } from '../../types/merchant/merchant';
+import SelectClient from '../client/SelectClient';
 import InputFieldSelector from '../ui/form/InputFieldSelector';
 import InputFieldText from '../ui/form/InputFieldText';
 
 interface ValuesProps {
   merchantId: number | '';
+  clientId: number | '';
   bank: string;
   owner: string;
   ownerID: string;
   accountNumber: string;
   type: 'Cta Ahorro' | 'Cta Corriente' | '';
   email: string;
+  isProducer: boolean;
+  isClient: boolean;
 }
 
 const initialValues: ValuesProps = {
   merchantId: '',
+  clientId: '',
   bank: '',
   owner: '',
   ownerID: '',
   accountNumber: '',
   type: '',
   email: '',
+  isProducer: false,
+  isClient: false,
 };
 
 const validationSchema = Yup.object({
+  isProducer: Yup.boolean().required(),
   merchantId: Yup.number()
     .integer('Debe ser un número entero')
-    .required('Requerido')
-    .typeError('Debe ser un número'),
+    .typeError('Debe ser un número')
+    .when('isProducer', (isProducer, schema) =>
+      isProducer ? schema.required('Requerido') : schema
+    ),
+  isClient: Yup.boolean().required(),
+  clientId: Yup.number()
+    .integer('Debe ser un número entero')
+    .typeError('Debe ser un número')
+    .when('isClient', (isClient, schema) =>
+      isClient ? schema.required('Requerido') : schema
+    ),
   bank: Yup.string()
-    .max(20, 'Debe tener 20 caracteres o menos')
+    .max(50, 'Debe tener 50 caracteres o menos')
     .transform((value) => value.trim())
     .required('Requerido')
     .matches(/^[a-zA-Z\s]+$/, 'Debe contener solo letras y espacios'),
   owner: Yup.string()
-    .max(30, 'Debe tener 30 caracteres o menos')
+    .max(50, 'Debe tener 50 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(
       /^[a-zA-Z0-9\s]+$/,
@@ -90,38 +108,77 @@ const typesOpt = [
 ];
 
 const AddBankAccountForm = () => {
+  const pathname = usePathname();
+  const [producer, setProducer] = useState<Partial<MerchantType> | null>(null);
+  const isProducerPath = pathname === '/dashboard/producer/add-bank-account';
+  const [client, setClient] = useState<Partial<ClientType> | null>(null);
+  const isClientPath = pathname === '/dashboard/client/add-bank-account';
+
   const [initialValuesBankAccount, setInitialValuesBankAccount] =
     useState<ValuesProps>(initialValues);
-  const [producer, setProducer] = useState<Partial<MerchantType> | null>(null);
+
   const { createBankAccount } = useCreateBankAccount();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (!!producer) {
+    if (!!producer && isProducerPath) {
       setInitialValuesBankAccount((prevValues) => ({
         ...prevValues,
         merchantId: Number(producer.id!),
+        clientId: 0,
         owner: producer.businessName!,
         ownerID: producer.businessId!,
+        isProducer: isProducerPath,
+        isClient: isClientPath,
       }));
     }
-  }, [producer]);
+
+    if (!!client && isClientPath) {
+      setInitialValuesBankAccount((prevValues) => ({
+        ...prevValues,
+        merchantId: 0,
+        clientId: Number(client.id!),
+        owner: client.businessName!,
+        ownerID: client.businessId!,
+        isProducer: isProducerPath,
+        isClient: isClientPath,
+      }));
+    }
+
+    if (!producer && !client) {
+      setInitialValuesBankAccount((prevValues) => ({
+        ...prevValues,
+        merchantId: 0,
+        clientId: 0,
+        owner: '',
+        ownerID: '',
+        isProducer: false,
+        isClient: false,
+      }));
+    }
+  }, [producer, isProducerPath, client, isClientPath]);
 
   const addBankAccount = async (
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
   ) => {
+    const { isClient, isProducer, merchantId, clientId, ...accountValues } =
+      values;
+
     createBankAccount(
       {
-        ...values,
+        ...accountValues,
+        merchantId: !!isProducer ? merchantId : undefined,
+        clientId: !!isClient ? clientId : undefined,
       },
       {
         onError: (error: any) => {
           const { response } = error;
           const { data } = response;
           const { statusCode, message, error: errorTitle, model, prop } = data;
+
           toast({
             title: `Error ${statusCode}: ${errorTitle} `,
             description: `${message}`,
@@ -152,6 +209,7 @@ const AddBankAccountForm = () => {
           queryClient.invalidateQueries('bankAccountsByMerchantId');
           formikHelpers.resetForm();
           setProducer(null);
+          setClient(null);
         },
       }
     );
@@ -164,17 +222,31 @@ const AddBankAccountForm = () => {
       onSubmit={addBankAccount}
       validationSchema={validationSchema}
     >
-      {({ isSubmitting }) => (
+      {({ isSubmitting, errors, values }) => (
         <Form>
           <Flex flexDirection='column' gap={3}>
-            <Heading fontSize={'2xl'} p={'12px'}>
-              Productor
-            </Heading>
-            <Divider mb={'16px'} />
-            <SelectProducer
-              name={'merchantId'}
-              setProducerSelect={setProducer}
-            />
+            {isProducerPath && (
+              <>
+                <Heading fontSize={'2xl'} p={'12px'}>
+                  Productor
+                </Heading>
+                <Divider mb={'16px'} />
+                <SelectProducer
+                  name={'merchantId'}
+                  setProducerSelect={setProducer}
+                />
+              </>
+            )}
+
+            {isClientPath && (
+              <>
+                <Heading fontSize={'2xl'} p={'12px'}>
+                  Client
+                </Heading>
+                <Divider mb={'16px'} />
+                <SelectClient name={'clientId'} setClientSelect={setClient} />
+              </>
+            )}
 
             <Heading fontSize={'2xl'} p={'12px'}>
               Datos de cuenta bancaria
@@ -183,18 +255,9 @@ const AddBankAccountForm = () => {
 
             <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
               <InputFieldText name={'bank'} label={'Banco'} />
-              <InputFieldText
-                name={'owner'}
-                label={'Propietario'}
-                // defaultValue={producer?.businessName!}
-              />
-              <InputFieldText
-                name={'ownerID'}
-                label={'Identificación'}
-                // defaultValue={producer?.businessId!}
-              />
+              <InputFieldText name={'owner'} label={'Propietario'} />
+              <InputFieldText name={'ownerID'} label={'Identificación'} />
               <InputFieldText name={'accountNumber'} label={'N° de Cuenta'} />
-              {/* <InputFieldText name={'type'} label={'Tipo de Cuenta'} /> */}
               <InputFieldSelector
                 name={'type'}
                 label={'Tipo de Cuenta'}
@@ -210,6 +273,10 @@ const AddBankAccountForm = () => {
               type='submit'
               colorScheme='teal'
               isLoading={isSubmitting}
+              onClick={() => {
+                console.log('errors: ', errors);
+                console.log('values: ', values);
+              }}
             >
               Enviar
             </Button>

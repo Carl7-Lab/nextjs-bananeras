@@ -16,12 +16,14 @@ import { TiDelete } from 'react-icons/ti';
 interface InputFieldProps {
   name: string;
   label?: string;
+  defaultValue?: string;
   placeholder?: string;
   isDisabledRemove?: boolean;
+  isReadOnly?: boolean;
   isBan?: {
     state: boolean;
     setBanState?: () => void;
-    firstChange: boolean;
+    firstChange?: boolean;
   };
   onClickRemove?: () => void;
 }
@@ -29,8 +31,10 @@ interface InputFieldProps {
 const InputFieldText: React.FC<InputFieldProps> = ({
   name,
   label,
+  defaultValue,
   placeholder,
   isDisabledRemove,
+  isReadOnly,
   isBan,
   onClickRemove,
 }) => {
@@ -64,6 +68,17 @@ const InputFieldText: React.FC<InputFieldProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isBan?.state]);
 
+  useEffect(() => {
+    if (!!defaultValue) {
+      helpers.setValue(defaultValue);
+      field.value = defaultValue;
+    } else {
+      helpers.setValue('');
+      field.value = '';
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaultValue]);
+
   const banClick = () => {
     if (isBan?.setBanState) {
       isBan.setBanState();
@@ -95,7 +110,7 @@ const InputFieldText: React.FC<InputFieldProps> = ({
         <Input
           {...field}
           ref={inputRef}
-          isReadOnly={isBan?.state}
+          isReadOnly={isBan?.state || isReadOnly}
           placeholder={placeholder || label}
         />
         {onClickRemove && (

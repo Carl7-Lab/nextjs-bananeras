@@ -21,13 +21,13 @@ function AddExportPage() {
               base: '95%',
               sm: '95%',
               md: '90%',
-              lg: '600px',
-              xl: '600px',
+              lg: '100%',
+              xl: '100%',
               '2xl': '700px',
             }}
             mb={'20px'}
           >
-            <CardHeader>
+            <CardHeader w={'100%'}>
               <Heading>Agregar Exportación</Heading>
             </CardHeader>
             <CardBody w='100%'>

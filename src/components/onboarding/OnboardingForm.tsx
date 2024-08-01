@@ -45,6 +45,7 @@ interface BusinessesProps {
   latitude: number | '';
   longitude: number | '';
   codeMAGAP: string;
+  codeAGROCALIDAD: string;
   certificates: CertificatesProps[];
   businessCodes: BusinessCodesProps[];
   contacts: ContactsProps[];
@@ -77,6 +78,7 @@ const initialValues: ValuesProps = {
       latitude: '',
       longitude: '',
       codeMAGAP: '',
+      codeAGROCALIDAD: '',
       certificates: [
         { name: '', certificateCode: '', issueDate: '', expirationDate: '' },
       ],
@@ -88,13 +90,13 @@ const initialValues: ValuesProps = {
 
 const contactSchema = Yup.object().shape({
   name: Yup.string()
-    .max(30, 'Debe tener 30 caracteres o menos')
+    .max(100, 'Debe tener 100 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^[a-zA-Z\s]+$/, 'Solo debe contener letras y espacios')
     .transform((value) => value.trim())
     .required('Requerido'),
   role: Yup.string()
-    .max(20, 'Debe tener 20 caracteres o menos')
+    .max(100, 'Debe tener 100 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .transform((value) => value.trim())
     .required('Requerido'),
@@ -110,7 +112,7 @@ const contactSchema = Yup.object().shape({
 
 const businessCodeSchema = Yup.object().shape({
   code: Yup.string()
-    .max(20, 'Debe tener 10 caracteres o menos')
+    .max(50, 'Debe tener 50 caracteres o menos')
     .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
     .transform((value) => value.trim())
     .required('Requerido'),
@@ -118,12 +120,12 @@ const businessCodeSchema = Yup.object().shape({
 
 const certificateSchema = Yup.object().shape({
   name: Yup.string()
-    .max(30, 'Debe tener 30 caracteres o menos')
+    .max(100, 'Debe tener 100 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .transform((value) => value.trim())
     .required('Requerido'),
   certificateCode: Yup.string()
-    .max(20, 'Debe tener 20 caracteres o menos')
+    .max(50, 'Debe tener 50 caracteres o menos')
     .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
     .transform((value) => value.trim())
     .required('Requerido'),
@@ -139,7 +141,7 @@ const certificateSchema = Yup.object().shape({
 
 const businessSchema = Yup.object().shape({
   name: Yup.string()
-    .max(15, 'Debe tener 15 caracteres o menos')
+    .max(100, 'Debe tener 100 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(
       /^[a-zA-Z0-9\s]+$/,
@@ -148,12 +150,12 @@ const businessSchema = Yup.object().shape({
     .transform((value) => value.trim())
     .required('Requerido'),
   city: Yup.string()
-    .max(20, 'Debe tener 20 caracteres o menos')
+    .max(50, 'Debe tener 50 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^[a-zA-Z\s]+$/, 'Solo debe contener letras y espacios')
     .transform((value) => value.trim()),
   address: Yup.string()
-    .max(50, 'Debe tener 50 caracteres o menos')
+    .max(100, 'Debe tener 100 caracteres o menos')
     .matches(/^[a-zA-Z0-9\s.,'-]+$/, 'Dirección no válida')
     .transform((value) => value.trim()),
   fruitType: Yup.string()
@@ -167,7 +169,12 @@ const businessSchema = Yup.object().shape({
     .min(-180, 'Debe ser al menos -180')
     .max(180, 'Debe ser como máximo 180'),
   codeMAGAP: Yup.string()
-    .max(20, 'Debe tener 20 caracteres o menos')
+    .max(50, 'Debe tener 50 caracteres o menos')
+    .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  codeAGROCALIDAD: Yup.string()
+    .max(50, 'Debe tener 50 caracteres o menos')
     .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
     .transform((value) => value.trim())
     .required('Requerido'),
@@ -184,7 +191,7 @@ const businessSchema = Yup.object().shape({
 
 const validationSchema = Yup.object({
   businessName: Yup.string()
-    .max(15, 'Debe tener 15 caracteres o menos')
+    .max(100, 'Debe tener 100 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(
       /^[a-zA-Z0-9\s]+$/,
@@ -202,18 +209,21 @@ const validationSchema = Yup.object({
     .required('Requerido'),
   address: Yup.string()
     .transform((value) => value.trim())
-    .max(50, 'Debe tener 50 caracteres o menos')
+    .max(100, 'Debe tener 100 caracteres o menos')
     .matches(/^[a-zA-Z0-9\s.,'-]+$/, 'Dirección no válida'),
   city: Yup.string()
     .transform((value) => value.trim())
-    .max(15, 'Debe tener 15 caracteres o menos')
+    .max(50, 'Debe tener 50 caracteres o menos')
     .matches(/^[a-zA-Z\s]+$/, 'Solo debe contener letras y espacios'),
   email: Yup.string()
     .transform((value) => value.trim())
     .email('Correo electrónico inválido')
     .max(50, 'Debe tener 50 caracteres o menos'),
   contractType: Yup.string()
-    .oneOf(['Contrato', 'Spot'], 'Tipo de contrato invalido')
+    .oneOf(
+      ['Contrato FOB', 'Contrato FAS', 'Spot'],
+      'Tipo de contrato invalido'
+    )
     .required('Requerido'),
   businesses: Yup.array()
     .of(businessSchema)
@@ -231,9 +241,13 @@ export default function OnboardingForm() {
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
   ) => {
+    const { businesses, ...producerData } = values;
+    const { area, ...businessData } = businesses[0];
+
     createOnboarding(
       {
-        ...values,
+        ...producerData,
+        businesses: [{ area: Number(area), ...businessData }],
       },
       {
         onError: (error: any) => {
@@ -281,7 +295,7 @@ export default function OnboardingForm() {
           formikHelpers.resetForm();
 
           await update({ onboardingStatus: 'done' });
-          router.push('/dashboard/productor/fincas');
+          router.push('/dashboard/export/search');
         },
       }
     );
@@ -289,8 +303,12 @@ export default function OnboardingForm() {
 
   const ContractOpt = [
     {
-      name: 'Contrato',
-      id: 'Contrato',
+      name: 'Contrato FOB',
+      id: 'Contrato FOB',
+    },
+    {
+      name: 'Contrato FAS',
+      id: 'Contrato FAS',
     },
     {
       name: 'Spot',
@@ -325,7 +343,7 @@ export default function OnboardingForm() {
               <Divider mb={'16px'} />
 
               <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
-                <InputFieldText name={'businessName'} label={'Razon Social'} />
+                <InputFieldText name={'businessName'} label={'Razón Social'} />
                 <InputFieldText name={'businessId'} label={'RUC'} />
                 <InputFieldText name={'city'} label={'Ciudad'} />
                 <InputFieldText name={'address'} label={'Dirección'} />
@@ -348,6 +366,10 @@ export default function OnboardingForm() {
                 <InputFieldText
                   name={'businesses[0].codeMAGAP'}
                   label={'Código MAGAP'}
+                />
+                <InputFieldText
+                  name={'businesses[0].codeAGROCALIDAD'}
+                  label={'Código AGROCALIDAD'}
                 />
                 <InputFieldSelector
                   name={'businesses[0].fruitType'}

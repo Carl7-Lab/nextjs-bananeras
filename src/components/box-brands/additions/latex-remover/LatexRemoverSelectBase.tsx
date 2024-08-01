@@ -20,6 +20,7 @@ interface LatexRemoverSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
+  isReadOnly?: boolean;
   setLatexRemover?: (latexRemover: Partial<LatexRemoverType>) => void;
   onChange?: (newValue: Partial<LatexRemoverType>) => void;
 }
@@ -36,6 +37,7 @@ const chakraStyles: ChakraStylesConfig<
   placeholder: (provided) => ({
     ...provided,
     color: 'gray.600',
+    h: '36px',
   }),
   input: (provided) => ({
     ...provided,
@@ -66,6 +68,7 @@ const LatexRemoverSelectBase: React.FC<LatexRemoverSelectBaseProps> = ({
   name,
   field,
   placeholder,
+  isReadOnly = false,
   setLatexRemover,
   onChange,
 }) => {
@@ -78,7 +81,7 @@ const LatexRemoverSelectBase: React.FC<LatexRemoverSelectBaseProps> = ({
     if (!!error) {
       const { response } = error as any;
       const { data } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = data;
+      const { statusCode } = data;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');
@@ -109,6 +112,7 @@ const LatexRemoverSelectBase: React.FC<LatexRemoverSelectBaseProps> = ({
           : 'Ya no hay etiqueta/s disponible/s'
       }
       isLoading={isLoading}
+      isReadOnly={isReadOnly}
       options={data}
       getOptionLabel={(opt: Partial<LatexRemoverType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<LatexRemoverType>) =>
@@ -120,7 +124,7 @@ const LatexRemoverSelectBase: React.FC<LatexRemoverSelectBaseProps> = ({
           ? data.find(
               (opt: Partial<LatexRemoverType>) => opt.id === field?.value
             )
-          : undefined
+          : null
       }
       placeholder={placeholder}
       //   onInputChange={(newValue) => {

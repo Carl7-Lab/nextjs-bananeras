@@ -6,15 +6,19 @@ import InputFieldText from '../ui/form/InputFieldText';
 interface props {
   name1: string;
   label1: string;
+  placeholder1?: string;
   name2: string;
   label2: string;
+  placeholder2?: string;
 }
 
 const InputFieldsBanContainer: React.FC<props> = ({
   name1,
   label1,
+  placeholder1,
   name2,
   label2,
+  placeholder2,
 }) => {
   const [isBan, setIsBan] = useState(false);
   const [firstChange, setFirstChange] = useState(false);
@@ -31,7 +35,7 @@ const InputFieldsBanContainer: React.FC<props> = ({
   };
 
   return (
-    <Flex gap={2}>
+    <Flex gap={2} alignItems={'flex-end'}>
       <InputFieldText
         name={name1}
         label={label1}
@@ -45,6 +49,7 @@ const InputFieldsBanContainer: React.FC<props> = ({
         name={name2}
         label={label2}
         isBan={{ state: isBan, firstChange: firstChange }}
+        placeholder={placeholder2}
       />
     </Flex>
   );

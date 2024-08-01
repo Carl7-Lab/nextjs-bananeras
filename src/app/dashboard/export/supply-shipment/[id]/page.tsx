@@ -56,9 +56,9 @@ const PendingExportPage = () => {
             base: '95%',
             sm: '95%',
             md: '90%',
-            lg: '600px',
-            xl: '600px',
-            '2xl': '700px',
+            lg: '85%',
+            xl: '65%',
+            '2xl': '70%',
           }}
           mb={'20px'}
         >

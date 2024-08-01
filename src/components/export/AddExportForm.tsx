@@ -25,7 +25,9 @@ interface ValuesProps {
   boxQuantity: number | '';
   merchantId: number | '';
   businessId: number | '';
-  harborId: number | '';
+  // harborId: number | '';
+  departureHarborId: number | '';
+  destinationHarborId: number | '';
   clientId: number | '';
   shipSteam: string;
   shippingLineSeal: string;
@@ -37,7 +39,9 @@ const initialValues: ValuesProps = {
   boxQuantity: 0,
   merchantId: '',
   businessId: '',
-  harborId: '',
+  // harborId: '',
+  departureHarborId: '',
+  destinationHarborId: '',
   clientId: '',
   shipSteam: '',
   shippingLineSeal: '',
@@ -62,7 +66,11 @@ const validationSchema = Yup.object({
     .integer('Debe ser un número entero')
     .moreThan(0, 'Debe ser mayor que 0')
     .required('Requerido'),
-  harborId: Yup.number()
+  departureHarborId: Yup.number()
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  destinationHarborId: Yup.number()
     .integer('Debe ser un número entero')
     .moreThan(0, 'Debe ser mayor que 0')
     .required('Requerido'),
@@ -175,10 +183,19 @@ const AddExportForm = () => {
               />
 
               <Heading fontSize={'2xl'} p={'12px'}>
+                Puerto Salida
+              </Heading>
+              <Divider mb={'16px'} />
+              <SelectHarbor name={'departureHarborId'} type={'Nacional'} />
+
+              <Heading fontSize={'2xl'} p={'12px'}>
                 Puerto Destino
               </Heading>
               <Divider mb={'16px'} />
-              <SelectHarbor name={'harborId'} />
+              <SelectHarbor
+                name={'destinationHarborId'}
+                type={'Internacional'}
+              />
 
               <Heading fontSize={'2xl'} p={'12px'}>
                 Cliente
@@ -186,7 +203,12 @@ const AddExportForm = () => {
               <Divider mb={'16px'} />
               <SelectClient
                 name={'clientId'}
-                harbor={values?.harborId ? Number(values.harborId) : undefined}
+                harbor={
+                  values?.destinationHarborId
+                    ? Number(values.destinationHarborId)
+                    : undefined
+                }
+                isHarbor
               />
 
               <Heading fontSize={'2xl'} p={'12px'}>

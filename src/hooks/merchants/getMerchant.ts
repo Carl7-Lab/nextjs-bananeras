@@ -1,8 +1,8 @@
 import { UseQueryResult, useQuery } from 'react-query';
 import axios from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
-import { MerchantType } from '@/types/merchant';
 import { serializeQueryResult } from '@/utils/serializeQueryResult';
+import { MerchantType } from '../../types/merchant/merchant';
 
 export const getMerchant = ({ merchantId }: { merchantId: string }) => {
   return axios.get(`/merchant/${merchantId}`);

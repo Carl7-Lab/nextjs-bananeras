@@ -12,7 +12,7 @@ import { FieldInputProps } from 'formik';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
-import { useHarbors } from '../../hooks/export/harbor/getHarbors';
+import { useHarborsByType } from '../../hooks/export/harbor/getHarborsByType';
 import { usePagination } from '../../hooks/usePagination';
 import { HarborType } from '../../types/harbor';
 
@@ -20,6 +20,7 @@ interface HarborSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
+  type: 'Nacional' | 'Internacional';
   setHarbor?: (harbor: Partial<HarborType>) => void;
   onChange?: (newValue: Partial<HarborType>) => void;
 }
@@ -66,11 +67,20 @@ const HarborSelectBase: React.FC<HarborSelectBaseProps> = ({
   name,
   placeholder,
   field,
+  type,
   onChange,
   setHarbor,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data = [], isLoading, refetch, error } = useHarbors(paginationParams);
+  const {
+    data = [],
+    isLoading,
+    refetch,
+    error,
+  } = useHarborsByType({
+    type,
+    ...paginationParams,
+  });
   const router = useRouter();
 
   useEffect(() => {
@@ -122,7 +132,7 @@ const HarborSelectBase: React.FC<HarborSelectBaseProps> = ({
       value={
         field?.value
           ? data.find((opt: Partial<HarborType>) => opt.id === field?.value)
-          : undefined
+          : null
       }
       placeholder={placeholder}
       components={harborComponents}

@@ -20,6 +20,7 @@ interface MettoLabelSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
+  isReadOnly?: boolean;
   setMettoLabel?: (mettoLabel: Partial<MettoLabelType>) => void;
   onChange?: (newValue: Partial<MettoLabelType>) => void;
 }
@@ -36,6 +37,7 @@ const chakraStyles: ChakraStylesConfig<
   placeholder: (provided) => ({
     ...provided,
     color: 'gray.600',
+    h: '36px',
   }),
   input: (provided) => ({
     ...provided,
@@ -66,6 +68,7 @@ const MettoLabelSelectBase: React.FC<MettoLabelSelectBaseProps> = ({
   name,
   field,
   placeholder,
+  isReadOnly = false,
   setMettoLabel,
   onChange,
 }) => {
@@ -108,6 +111,7 @@ const MettoLabelSelectBase: React.FC<MettoLabelSelectBaseProps> = ({
           : 'Ya no hay etiqueta/s metto disponible/s'
       }
       isLoading={isLoading}
+      isReadOnly={isReadOnly}
       options={data}
       getOptionLabel={(opt: Partial<MettoLabelType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<MettoLabelType>) =>
@@ -117,7 +121,7 @@ const MettoLabelSelectBase: React.FC<MettoLabelSelectBaseProps> = ({
       value={
         field?.value
           ? data.find((opt: Partial<MettoLabelType>) => opt.id === field?.value)
-          : undefined
+          : null
       }
       placeholder={placeholder}
       //   onInputChange={(newValue) => {

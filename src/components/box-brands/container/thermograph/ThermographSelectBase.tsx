@@ -20,6 +20,7 @@ interface ThermographSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
+  isReadOnly?: boolean;
   setThermo?: (thermo: Partial<ThermographType>) => void;
   onChange?: (newValue: Partial<ThermographType>) => void;
 }
@@ -36,6 +37,7 @@ const chakraStyles: ChakraStylesConfig<
   placeholder: (provided) => ({
     ...provided,
     color: 'gray.600',
+    h: '36px',
   }),
   input: (provided) => ({
     ...provided,
@@ -66,6 +68,7 @@ const ThermographSelectBase: React.FC<ThermographSelectBaseProps> = ({
   name,
   field,
   placeholder,
+  isReadOnly = false,
   setThermo,
   onChange,
 }) => {
@@ -108,6 +111,7 @@ const ThermographSelectBase: React.FC<ThermographSelectBaseProps> = ({
           : 'Ya no hay termografo/s disponible/s'
       }
       isLoading={isLoading}
+      isReadOnly={isReadOnly}
       options={data}
       getOptionLabel={(opt: Partial<ThermographType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<ThermographType>) =>
@@ -119,7 +123,7 @@ const ThermographSelectBase: React.FC<ThermographSelectBaseProps> = ({
           ? data.find(
               (opt: Partial<ThermographType>) => opt.id === field?.value
             )
-          : undefined
+          : null
       }
       placeholder={placeholder}
       //   onInputChange={(newValue) => {

@@ -41,17 +41,25 @@ const SelectInsecticide: React.FC<SelectInsecticideProps> = ({
       <InputFieldInsecticideSelect
         name={name1}
         label={'Insecticida'}
-        placeholder={'Seleccione el pesticida'}
+        placeholder={'Seleccione el insecticida'}
         setInsecticide={setInsecticide}
       />
 
       <Box>
         <FormLabel>Ingrediente Activo</FormLabel>
-        <Input isReadOnly={true} value={insecticide?.activeIngredient || ''} />
+        <Input
+          isReadOnly={true}
+          value={insecticide?.activeIngredient || ''}
+          placeholder={'Ingrediente Activo'}
+        />
       </Box>
       <Box>
         <FormLabel>Dosis</FormLabel>
-        <Input isReadOnly={true} value={insecticide?.dose || ''} />
+        <Input
+          isReadOnly={true}
+          value={insecticide?.dose || ''}
+          placeholder={'Dosis'}
+        />
       </Box>
 
       <InputFieldQuantity name={name2} label={'Cantidad'} />

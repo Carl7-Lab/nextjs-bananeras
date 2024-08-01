@@ -39,7 +39,7 @@ const initialValues: ValuesProps = {
 
 const validationSchema = Yup.object({
   businessName: Yup.string()
-    .max(15, 'Debe tener 15 caracteres o menos')
+    .max(50, 'Debe tener 50 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -108,18 +108,22 @@ const AddClientForm = () => {
           const { response } = error;
           const { data } = response;
           const { statusCode, message, error: errorTitle, model, prop } = data;
-          {
-            toast({
-              title: `Error ${statusCode}: ${errorTitle} `,
-              description: `${message}`,
-              status: 'error',
-              duration: 5000,
-              isClosable: true,
-            });
 
-            if (statusCode === 401) {
-              router.push('/api/auth/signout');
-            }
+          toast({
+            title: `Error ${statusCode}: ${errorTitle} `,
+            description: `${message}`,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+
+          if (statusCode === 401) {
+            router.push('/api/auth/signout');
+          }
+
+          if (model === 'Client' && prop === 'businessId') {
+            formikHelpers.setFieldTouched(`${prop}`, true, false);
+            formikHelpers.setFieldError(`${prop}`, message);
           }
         },
         onSuccess: () => {
@@ -149,7 +153,7 @@ const AddClientForm = () => {
       >
         {({ isSubmitting }) => (
           <Form>
-            <Flex flexDirection='column' gap={3}>
+            <Flex flexDirection='column' gap={3} width={'100%'}>
               <Heading fontSize={'2xl'} p={'12px'}>
                 Agregando Cliente
               </Heading>
@@ -175,6 +179,7 @@ const AddClientForm = () => {
                   name={'harbors'}
                   label={'Puerto/s'}
                   placeholder={'Seleccione el/los puerto/s'}
+                  type={'Internacional'}
                 />
 
                 <InputFieldShippingCompanyMultiSelect

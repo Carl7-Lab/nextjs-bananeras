@@ -20,6 +20,7 @@ interface StrippingSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
+  isReadOnly?: boolean;
   setStripping?: (stripping: Partial<StrippingType>) => void;
   onChange?: (newValue: Partial<StrippingType>) => void;
 }
@@ -36,6 +37,7 @@ const chakraStyles: ChakraStylesConfig<
   placeholder: (provided) => ({
     ...provided,
     color: 'gray.600',
+    h: '36px',
   }),
   input: (provided) => ({
     ...provided,
@@ -66,6 +68,7 @@ const StrippingSelectBase: React.FC<StrippingSelectBaseProps> = ({
   name,
   field,
   placeholder,
+  isReadOnly = false,
   setStripping,
   onChange,
 }) => {
@@ -108,6 +111,7 @@ const StrippingSelectBase: React.FC<StrippingSelectBaseProps> = ({
           : 'Ya no hay zuncho/s disponible/s'
       }
       isLoading={isLoading}
+      isReadOnly={isReadOnly}
       options={data}
       getOptionLabel={(opt: Partial<StrippingType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<StrippingType>) =>
@@ -117,7 +121,7 @@ const StrippingSelectBase: React.FC<StrippingSelectBaseProps> = ({
       value={
         field?.value
           ? data.find((opt: Partial<StrippingType>) => opt.id === field?.value)
-          : undefined
+          : null
       }
       placeholder={placeholder}
       //   onInputChange={(newValue) => {

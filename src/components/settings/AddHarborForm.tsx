@@ -13,7 +13,6 @@ import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import { useCreateHarbor } from '@/hooks/export/harbor/createHarbor';
-import InputFieldRequirementMultiSelect from '../harbor/requirement/InputFieldRequirementMultiSelect';
 import InputFieldShippingCompanyMultiSelect from '../shipping-company/InputFieldShippingCompanyMultiSelect';
 import InputFieldDate from '../ui/form/InputFieldDate';
 import InputFieldNumber from '../ui/form/InputFieldNumber';
@@ -61,7 +60,7 @@ const initialValues: ValuesProps = {
 
 const requirementSchema = Yup.object({
   name: Yup.string()
-    .max(15, 'Debe tener 15 caracteres o menos')
+    .max(100, 'Debe tener 100 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -71,7 +70,7 @@ const requirementSchema = Yup.object({
     .transform((value) => value.trim())
     .required('Requerido'),
   code: Yup.string()
-    .max(20, 'Debe tener 10 caracteres o menos')
+    .max(50, 'Debe tener 50 caracteres o menos')
     .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
     .transform((value) => value.trim())
     .required('Requerido'),
@@ -90,7 +89,7 @@ const validationSchema = Yup.object({
     .required('Requerido')
     .oneOf(['Nacional', 'Internacional'], 'Debes seleccionar'),
   name: Yup.string()
-    .max(15, 'Debe tener 15 caracteres o menos')
+    .max(100, 'Debe tener 100 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -100,7 +99,7 @@ const validationSchema = Yup.object({
     .transform((value) => value.trim())
     .required('Requerido'),
   country: Yup.string()
-    .max(20, 'Debe tener 20 caracteres o menos')
+    .max(50, 'Debe tener 50 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -110,7 +109,7 @@ const validationSchema = Yup.object({
     .transform((value) => value.trim())
     .required('Requerido'),
   city: Yup.string()
-    .max(20, 'Debe tener 20 caracteres o menos')
+    .max(50, 'Debe tener 50 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -195,6 +194,7 @@ const AddHarborForm: React.FC<AddHarborFormProps> = ({ onClose }) => {
           });
 
           queryClient.invalidateQueries('harbors');
+          queryClient.invalidateQueries('harborsByType');
           actions.resetForm();
         },
       }
@@ -225,7 +225,12 @@ const AddHarborForm: React.FC<AddHarborFormProps> = ({ onClose }) => {
                   options={typesOpt}
                 />
                 <Box></Box>
-                <InputFieldText name={'country'} label={'País'} />
+                <InputFieldText
+                  name={'country'}
+                  label={'País'}
+                  isReadOnly={values.type === 'Nacional'}
+                  defaultValue={values.type === 'Nacional' ? 'Ecuador' : ''}
+                />
                 <InputFieldText name={'name'} label={'Nombre'} />
                 <InputFieldText name={'city'} label={'Ciudad'} />
                 <InputFieldNumber name={'latitude'} label={'Latitud'} />

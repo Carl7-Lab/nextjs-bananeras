@@ -1,7 +1,7 @@
 import { useMutation } from 'react-query';
 import axios from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
-import { BusinessType } from '@/types/business';
+import { BusinessType } from '../../types/merchant/business';
 
 type updateBusinessDTO = {
   data: Partial<BusinessType>;

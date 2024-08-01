@@ -6,12 +6,14 @@ import { HarborType } from '../../types/harbor';
 interface SelectHarborProps {
   name: string;
   harborSelect?: Partial<HarborType>;
+  type: 'Nacional' | 'Internacional';
   setHarborSelect?: (harbor: Partial<HarborType> | null) => void;
 }
 
 const SelectHarbor: React.FC<SelectHarborProps> = ({
   name,
   harborSelect,
+  type,
   setHarborSelect,
 }) => {
   const [harbor, setHarbor] = useState<Partial<HarborType> | null>(null);
@@ -36,6 +38,7 @@ const SelectHarbor: React.FC<SelectHarborProps> = ({
           label={'Puerto'}
           placeholder={'Seleccione el Puerto'}
           setHarbor={setHarbor}
+          type={type}
         />
         {/* <Box>
               <FormLabel>Tiempo de transporte</FormLabel>

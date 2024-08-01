@@ -3,7 +3,7 @@ import { Box, Card, CardBody, Center } from '@chakra-ui/react';
 import AddBoxBrandsForm from '@/components/box-brands/AddBoxBrandsForm';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
-function AgregarPage() {
+function AddBoxBrandPage() {
   return (
     <>
       <Box my={'20px'} mx={'auto'}>
@@ -13,9 +13,9 @@ function AgregarPage() {
               base: '95%',
               sm: '95%',
               md: '90%',
-              lg: '600px',
-              xl: '600px',
-              '2xl': '700px',
+              lg: '85%',
+              xl: '67%',
+              '2xl': '70%',
             }}
             mb={'20px'}
           >
@@ -29,4 +29,4 @@ function AgregarPage() {
   );
 }
 
-export default IsOnboarding(AgregarPage);
+export default IsOnboarding(AddBoxBrandPage);

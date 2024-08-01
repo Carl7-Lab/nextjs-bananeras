@@ -128,7 +128,7 @@ const BoxBrandSelectBase: React.FC<BoxBrandSelectBaseProps> = ({
       value={
         field?.value
           ? data.find((opt: Partial<BoxBrandType>) => opt.id === field?.value)
-          : undefined
+          : null
       }
       placeholder={placeholder}
       //   onInputChange={(newValue) => {

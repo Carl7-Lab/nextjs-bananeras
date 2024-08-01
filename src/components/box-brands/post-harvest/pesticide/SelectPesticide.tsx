@@ -41,22 +41,34 @@ const SelectPesticide: React.FC<SelectPesticideProps> = ({
     <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
       <InputFieldPesticideSelect
         name={name1}
-        label={'Pesticida'}
+        label={'Agroquímico'}
         placeholder={'Seleccione el pesticida'}
         setPesticide={setPesticide}
       />
 
       <Box>
         <FormLabel>Ingrediente Activo</FormLabel>
-        <Input isReadOnly={true} value={pesticide?.activeIngredient || ''} />
+        <Input
+          isReadOnly={true}
+          value={pesticide?.activeIngredient || ''}
+          placeholder={'Ingrediente Activo'}
+        />
       </Box>
       <Box>
-        <FormLabel>Presentacion</FormLabel>
-        <Input isReadOnly={true} value={pesticide?.presentation || ''} />
+        <FormLabel>Presentación</FormLabel>
+        <Input
+          isReadOnly={true}
+          value={pesticide?.presentation || ''}
+          placeholder='Presentación'
+        />
       </Box>
       <Box>
         <FormLabel>Dosis</FormLabel>
-        <Input isReadOnly={true} value={pesticide?.dose || ''} />
+        <Input
+          isReadOnly={true}
+          value={pesticide?.dose || ''}
+          placeholder={'Dosis'}
+        />
       </Box>
 
       <InputFieldQuantity name={name2} label={'Cantidad'} />

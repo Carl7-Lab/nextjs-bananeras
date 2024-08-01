@@ -20,6 +20,7 @@ interface BlockingSheetSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
+  isReadOnly?: boolean;
   setBlockingSheet?: (blockingSheet: Partial<BlockingSheetType>) => void;
   onChange?: (newValue: Partial<BlockingSheetType>) => void;
 }
@@ -36,6 +37,7 @@ const chakraStyles: ChakraStylesConfig<
   placeholder: (provided) => ({
     ...provided,
     color: 'gray.600',
+    h: '36px',
   }),
   input: (provided) => ({
     ...provided,
@@ -66,6 +68,7 @@ const BlockingSheetSelectBase: React.FC<BlockingSheetSelectBaseProps> = ({
   name,
   field,
   placeholder,
+  isReadOnly = false,
   setBlockingSheet,
   onChange,
 }) => {
@@ -110,6 +113,7 @@ const BlockingSheetSelectBase: React.FC<BlockingSheetSelectBaseProps> = ({
           : 'Ya no hay etiqueta/s disponible/s'
       }
       isLoading={isLoading}
+      isReadOnly={isReadOnly}
       options={data}
       getOptionLabel={(opt: Partial<BlockingSheetType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<BlockingSheetType>) =>
@@ -121,7 +125,7 @@ const BlockingSheetSelectBase: React.FC<BlockingSheetSelectBaseProps> = ({
           ? data.find(
               (opt: Partial<BlockingSheetType>) => opt.id === field?.value
             )
-          : undefined
+          : null
       }
       placeholder={placeholder}
       //   onInputChange={(newValue) => {

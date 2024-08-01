@@ -20,6 +20,7 @@ interface SealSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
+  isReadOnly?: boolean;
   setSeal?: (seal: Partial<SealType>) => void;
   onChange?: (newValue: Partial<SealType>) => void;
 }
@@ -36,6 +37,7 @@ const chakraStyles: ChakraStylesConfig<
   placeholder: (provided) => ({
     ...provided,
     color: 'gray.600',
+    h: '36px',
   }),
   input: (provided) => ({
     ...provided,
@@ -66,6 +68,7 @@ const SealSelectBase: React.FC<SealSelectBaseProps> = ({
   name,
   field,
   placeholder,
+  isReadOnly = false,
   setSeal,
   onChange,
 }) => {
@@ -108,6 +111,7 @@ const SealSelectBase: React.FC<SealSelectBaseProps> = ({
           : 'Ya no hay sello/s disponible/s'
       }
       isLoading={isLoading}
+      isReadOnly={isReadOnly}
       options={data}
       getOptionLabel={(opt: Partial<SealType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<SealType>) =>
@@ -117,7 +121,7 @@ const SealSelectBase: React.FC<SealSelectBaseProps> = ({
       value={
         field?.value
           ? data.find((opt: Partial<SealType>) => opt.id === field?.value)
-          : undefined
+          : null
       }
       placeholder={placeholder}
       //   onInputChange={(newValue) => {

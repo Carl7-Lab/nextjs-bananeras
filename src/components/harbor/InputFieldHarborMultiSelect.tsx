@@ -9,18 +9,20 @@ interface InputFieldHarborMultiSelectProps {
   name: string;
   label: string;
   placeholder: string;
+  type: 'Nacional' | 'Internacional';
   setHarbors?: (harbors: Partial<HarborType>[]) => void;
 }
 
 const InputFieldHarborMultiSelect: React.FC<
   InputFieldHarborMultiSelectProps
-> = ({ name, label, placeholder, setHarbors }) => {
+> = ({ name, label, placeholder, type, setHarbors }) => {
   const [field, meta, helpers] = useField(name);
 
   return (
     <FormControl id={name} isInvalid={!!meta.error && meta.touched}>
       <FormLabel fontSize='sm' mb='8px'>
-        {label} <AddHarborModal />
+        {label}
+        {/* <AddHarborModal /> */}
       </FormLabel>
 
       <HarborMultiSelectBase
@@ -33,6 +35,7 @@ const InputFieldHarborMultiSelect: React.FC<
         }
         field={field}
         setHarbors={setHarbors}
+        type={type}
       />
 
       {meta.error && meta.touched && (

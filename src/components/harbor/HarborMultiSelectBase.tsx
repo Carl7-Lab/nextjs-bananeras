@@ -12,7 +12,7 @@ import { FieldInputProps } from 'formik';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
-import { useHarbors } from '../../hooks/export/harbor/getHarbors';
+import { useHarborsByType } from '../../hooks/export/harbor/getHarborsByType';
 import { usePagination } from '../../hooks/usePagination';
 import { HarborType } from '../../types/harbor';
 
@@ -20,6 +20,7 @@ interface HarborMultiSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
+  type: 'Nacional' | 'Internacional';
   setHarbors?: (harbors: Partial<HarborType>[]) => void;
   onChange?: (newValues: Partial<HarborType>[]) => void;
 }
@@ -66,11 +67,15 @@ const HarborMultiSelectBase: React.FC<HarborMultiSelectBaseProps> = ({
   name,
   placeholder,
   field,
+  type,
   onChange,
   setHarbors,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch, error } = useHarbors(paginationParams);
+  const { data, isLoading, refetch, error } = useHarborsByType({
+    ...paginationParams,
+    type,
+  });
   const router = useRouter();
 
   useEffect(() => {
@@ -116,7 +121,7 @@ const HarborMultiSelectBase: React.FC<HarborMultiSelectBaseProps> = ({
       isLoading={isLoading}
       options={data}
       getOptionLabel={(harbor: Partial<HarborType>) =>
-        `${harbor.name} - ${harbor.type}`
+        `${harbor.name} - ${harbor.country}`
       }
       getOptionValue={(harbor: Partial<HarborType>) =>
         harbor.id ? harbor.id.toString() : ''

@@ -35,6 +35,8 @@ export type BoxBrandType = {
   coverTypeQuantity: number | '';
   cardboardType: string;
   cardboardTypeQuantity: number | '';
+  parasealType: string;
+  parasealTypeQuantity: number | '';
   padType: string;
   padTypeQuantity: number | '';
   spongeType: string;

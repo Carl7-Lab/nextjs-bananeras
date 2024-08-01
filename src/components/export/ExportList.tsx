@@ -28,7 +28,7 @@ const ExportList = () => {
     if (!!error) {
       const { response } = error as any;
       const { data: dataRes } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = dataRes;
+      const { statusCode } = dataRes;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');

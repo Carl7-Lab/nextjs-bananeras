@@ -127,7 +127,7 @@ const BusinessSelectBase: React.FC<BusinessSelectBaseProps> = ({
       value={
         field?.value
           ? data.find((opt: Partial<BusinessType>) => opt.id === field?.value)
-          : undefined
+          : null
       }
       placeholder={placeholder}
       components={businessComponents}

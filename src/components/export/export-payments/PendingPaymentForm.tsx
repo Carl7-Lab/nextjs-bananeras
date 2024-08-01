@@ -177,7 +177,13 @@ const PendingPaymentForm = ({
   const [producerSelect, setProducerSelect] =
     useState<Partial<MerchantType> | null>(paymentSelected?.export!.merchant!);
   const [departureHarbor, setDepartureHarbor] =
-    useState<Partial<HarborType> | null>(paymentSelected?.export!.harbor!);
+    useState<Partial<HarborType> | null>(
+      paymentSelected?.export!.harborDeparture!
+    );
+  const [destinationHarbor, setDestinationHarbor] =
+    useState<Partial<HarborType> | null>(
+      paymentSelected?.export!.harborDestination!
+    );
   const [boxBrand, setBoxBrand] = useState<Partial<BoxBrandType> | null>(
     paymentSelected?.export!.boxBrand!
   );
@@ -187,12 +193,16 @@ const PendingPaymentForm = ({
   const queryClient = useQueryClient();
 
   useEffect(() => {
+    console.log('paymentSelected: ', paymentSelected);
     if (paymentSelected) {
       setInitialValuesPayment((prevValues) => ({
         ...prevValues,
         exportSentId: Number(paymentSelected.id),
         merchantId: Number(paymentSelected.export?.merchant?.id),
-        departureHarborId: Number(paymentSelected.export?.harbor?.id),
+        departureHarborId: Number(paymentSelected.export?.harborDeparture?.id),
+        destinationHarborId: Number(
+          paymentSelected.export?.harborDestination?.id
+        ),
         boxQuantity: Number(paymentSelected.export?.boxQuantity),
         boxBrandId: Number(paymentSelected.export?.boxBrand?.id),
       }));
@@ -275,7 +285,7 @@ const PendingPaymentForm = ({
         <Form>
           <Flex flexDirection='column' gap={3}>
             <Heading fontSize={'2xl'} p={'12px'}>
-              Liquidacion a Productor
+              Liquidación a Productor
             </Heading>
             <Divider mb={'16px'} />
 
@@ -299,6 +309,7 @@ const PendingPaymentForm = ({
               name={'departureHarborId'}
               harborSelect={departureHarbor as Partial<HarborType>}
               setHarborSelect={setDepartureHarbor}
+              type={'Nacional'}
             />
 
             <Heading fontSize={'2xl'} p={'12px'}>
@@ -306,7 +317,12 @@ const PendingPaymentForm = ({
             </Heading>
             <Divider mb={'16px'} />
 
-            <SelectHarbor name={'destinationHarborId'} />
+            <SelectHarbor
+              name={'destinationHarborId'}
+              harborSelect={destinationHarbor as Partial<HarborType>}
+              setHarborSelect={setDestinationHarbor}
+              type={'Internacional'}
+            />
 
             <Heading fontSize={'2xl'} p={'12px'}>
               Compra
@@ -372,7 +388,7 @@ const PendingPaymentForm = ({
 
             <InputFieldTextArea
               name={'description'}
-              label={'Descripcion de los gastos'}
+              label={'Descripción de los gastos'}
             />
 
             <Heading fontSize={'2xl'} p={'12px'}>

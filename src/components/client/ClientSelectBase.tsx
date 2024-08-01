@@ -12,7 +12,7 @@ import { FieldInputProps } from 'formik';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
-import { useClientsByHarborId } from '../../hooks/export/client/getClientsByHarborId';
+import { useClients } from '../../hooks/export/client/getClients';
 import { usePagination } from '../../hooks/usePagination';
 import { ClientType } from '../../types/client';
 
@@ -20,7 +20,6 @@ interface ClientSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
-  harbor?: number;
   setClient?: (client: Partial<ClientType>) => void;
   onChange?: (newValue: Partial<ClientType>) => void;
 }
@@ -67,15 +66,13 @@ const ClientSelectBase: React.FC<ClientSelectBaseProps> = ({
   name,
   placeholder,
   field,
-  harbor,
   onChange,
   setClient,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch, error } = useClientsByHarborId(
-    { ...paginationParams },
-    { id: harbor ?? 0 }
-  );
+  const { data, isLoading, refetch, error } = useClients({
+    ...paginationParams,
+  });
 
   const router = useRouter();
 
@@ -83,7 +80,7 @@ const ClientSelectBase: React.FC<ClientSelectBaseProps> = ({
     if (!!error) {
       const { response } = error as any;
       const { data } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = data;
+      const { statusCode } = data;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');

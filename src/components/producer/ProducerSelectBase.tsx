@@ -127,7 +127,7 @@ const ProducerSelectBase: React.FC<ProducerSelectBaseProps> = ({
       value={
         field?.value
           ? data.find((opt: Partial<MerchantType>) => opt.id === field?.value)
-          : undefined
+          : null
       }
       placeholder={placeholder}
       components={producerComponents}

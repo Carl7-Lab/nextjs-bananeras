@@ -10,6 +10,40 @@ export function GetUser() {
 }
 
 export function getNavItems(): SidenavItem[] {
+  const exportMenu: SidenavMenuItem[] = [
+    {
+      label: 'Consultar',
+      to: '/dashboard/export/search',
+    },
+    {
+      label: 'Iniciar Exportación',
+      to: '/dashboard/export/add-export',
+    },
+    {
+      label: 'Envío de Insumos',
+      to: '/dashboard/export/supply-shipment',
+    },
+    {
+      label: 'Pagos Pendientes a Productores',
+      to: '/dashboard/export/producer-pending-payments',
+    },
+  ];
+
+  const clientMenu: SidenavMenuItem[] = [
+    {
+      label: 'Agregar Cliente',
+      to: '/dashboard/client/add-client',
+    },
+    {
+      label: 'Agregar Cuenta Bancaria',
+      to: '/dashboard/client/add-bank-account',
+    },
+    {
+      label: 'Agregar Puerto',
+      to: '/dashboard/client/add-harbor',
+    },
+  ];
+
   const productorMenu: SidenavMenuItem[] = [
     {
       label: 'Fincas',
@@ -20,39 +54,16 @@ export function getNavItems(): SidenavItem[] {
       to: '/dashboard/producer/add-producer',
     },
     {
-      label: 'Agregar Fincas ',
+      label: 'Agregar Fincas',
       to: '/dashboard/producer/add-fincas',
+    },
+    {
+      label: 'Agregar Logo',
+      to: '/dashboard/producer/upload-logo',
     },
     {
       label: 'Agregar Cuenta Bancaria',
       to: '/dashboard/producer/add-bank-account',
-    },
-  ];
-
-  const exportMenu: SidenavMenuItem[] = [
-    {
-      label: 'Consultar',
-      to: '/dashboard/export/search',
-    },
-    {
-      label: 'Iniciar Exportacion',
-      to: '/dashboard/export/add-export',
-    },
-    {
-      label: 'Envio de Insumos',
-      to: '/dashboard/export/supply-shipment',
-    },
-    {
-      label: 'Pagos Pendientes a Productores',
-      to: '/dashboard/export/producer-pending-payments',
-    },
-    {
-      label: 'Agregar Cliente',
-      to: '/dashboard/export/add-client',
-    },
-    {
-      label: 'Agregar Puerto',
-      to: '/dashboard/export/add-harbor',
     },
   ];
 
@@ -71,56 +82,9 @@ export function getNavItems(): SidenavItem[] {
     },
   ];
 
-  const produccionMenu: SidenavMenuItem[] = [
-    {
-      label: 'Enfunde',
-      to: '/dashboard/produccion/enfunde',
-    },
-    {
-      label: 'Estimaciones',
-      to: '/dashboard/produccion/estimaciones',
-    },
-    {
-      label: 'Merma',
-      to: '/dashboard/produccion/merma',
-    },
-  ];
-
-  const materialesMenu: SidenavMenuItem[] = [
-    {
-      label: 'Carton',
-      to: '/dashboard/materiales/carton',
-    },
-    {
-      label: 'Funda',
-      to: '/dashboard/materiales/funda',
-    },
-    {
-      label: 'Etiqueta',
-      to: '/dashboard/materiales/etiqueta',
-    },
-  ];
-
-  const penalidadesMenu: SidenavMenuItem[] = [
-    {
-      label: 'Cajas Maduras',
-      to: '/dashboard/penalidades/cajas-maduras',
-    },
-    {
-      label: 'Cajas Estropeadas',
-      to: '/dashboard/penalidades/cajas-estropeadas',
-    },
-  ];
   const settingsMenu: SidenavMenuItem[] = [];
 
   const navItems: SidenavItem[] = [
-    {
-      icon: BsBarChart,
-      label: 'Productor',
-      isMenu: true,
-      to: '/dashboard/producer',
-      menu: productorMenu,
-    },
     {
       icon: BsBarChart,
       label: 'Exportaciones',
@@ -130,31 +94,24 @@ export function getNavItems(): SidenavItem[] {
     },
     {
       icon: BsBarChart,
+      label: 'Cliente',
+      isMenu: true,
+      to: '/dashboard/client',
+      menu: clientMenu,
+    },
+    {
+      icon: BsBarChart,
+      label: 'Productor',
+      isMenu: true,
+      to: '/dashboard/producer',
+      menu: productorMenu,
+    },
+    {
+      icon: BsBarChart,
       label: 'Marcas de Caja',
       isMenu: true,
       to: '/dashboard/box-brands',
       menu: boxBrandsMenu,
-    },
-    {
-      icon: BsBarChart,
-      label: 'Produccion',
-      isMenu: true,
-      to: '/dashboard/produccion',
-      menu: produccionMenu,
-    },
-    {
-      icon: BsBarChart,
-      label: 'Materiales',
-      isMenu: true,
-      to: '/dashboard/materiales',
-      menu: materialesMenu,
-    },
-    {
-      icon: BsBarChart,
-      label: 'Penalidades',
-      isMenu: true,
-      to: '/dashboard/penalidades',
-      menu: penalidadesMenu,
     },
     {
       icon: FaCogs,

@@ -8,6 +8,7 @@ interface InputFieldHarborSelectProps {
   name: string;
   label: string;
   placeholder: string;
+  type: 'Nacional' | 'Internacional';
   setHarbor?: (harbor: Partial<HarborType>) => void;
 }
 
@@ -15,6 +16,7 @@ const InputFieldHarborSelect: React.FC<InputFieldHarborSelectProps> = ({
   name,
   label,
   placeholder,
+  type,
   setHarbor,
 }) => {
   const [field, meta, helpers] = useField(name);
@@ -31,6 +33,7 @@ const InputFieldHarborSelect: React.FC<InputFieldHarborSelectProps> = ({
         onChange={(newValue) => helpers.setValue(newValue?.id)}
         field={field}
         setHarbor={setHarbor}
+        type={type}
       />
 
       {meta.error && meta.touched && (

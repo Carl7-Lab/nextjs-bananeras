@@ -33,7 +33,8 @@ const ExportCard: React.FC<ExportCardProps> = ({ exportItem, pathname }) => {
     },
     { label: 'Productor', value: exportItem.merchant?.businessName },
     { label: 'Finca', value: exportItem.business?.name },
-    { label: 'Puerto Destino', value: exportItem.harbor?.name },
+    { label: 'Puerto Salida', value: exportItem.harborDeparture?.name },
+    { label: 'Puerto Destino', value: exportItem.harborDestination?.name },
     { label: 'Cliente', value: exportItem.client?.businessName },
   ];
 

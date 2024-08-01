@@ -20,6 +20,7 @@ interface StapleSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
+  isReadOnly?: boolean;
   setStaple?: (staple: Partial<StapleType>) => void;
   onChange?: (newValue: Partial<StapleType>) => void;
 }
@@ -36,6 +37,7 @@ const chakraStyles: ChakraStylesConfig<
   placeholder: (provided) => ({
     ...provided,
     color: 'gray.600',
+    h: '36px',
   }),
   input: (provided) => ({
     ...provided,
@@ -66,6 +68,7 @@ const StapleSelectBase: React.FC<StapleSelectBaseProps> = ({
   name,
   field,
   placeholder,
+  isReadOnly = false,
   setStaple,
   onChange,
 }) => {
@@ -108,6 +111,7 @@ const StapleSelectBase: React.FC<StapleSelectBaseProps> = ({
           : 'Ya no hay grapa/s disponible/s'
       }
       isLoading={isLoading}
+      isReadOnly={isReadOnly}
       options={data}
       getOptionLabel={(opt: Partial<StapleType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<StapleType>) =>
@@ -117,7 +121,7 @@ const StapleSelectBase: React.FC<StapleSelectBaseProps> = ({
       value={
         field?.value
           ? data.find((opt: Partial<StapleType>) => opt.id === field?.value)
-          : undefined
+          : null
       }
       placeholder={placeholder}
       //   onInputChange={(newValue) => {

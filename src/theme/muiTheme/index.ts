@@ -9,6 +9,15 @@ const muiTheme = createTheme({
       main: '#dc004e',
     },
   },
+  // components: {
+  //   MuiTableContainer: {
+  //     styleOverrides: {
+  //       root: {
+  //         overflowX: 'auto',
+  //       },
+  //     },
+  //   },
+  // },
 });
 
 export default muiTheme;

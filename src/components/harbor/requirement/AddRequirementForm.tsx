@@ -25,10 +25,10 @@ const initialValues: ValuesProps = {
 
 const validationSchema = Yup.object({
   name: Yup.string()
-    .max(15, 'Must be 15 characters or less')
+    .max(100, 'Must be 100 characters or less')
     .required('Required'),
   code: Yup.string()
-    .max(20, 'Debe tener 10 caracteres o menos')
+    .max(50, 'Debe tener 50 caracteres o menos')
     .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
     .transform((value) => value.trim())
     .required('Requerido'),

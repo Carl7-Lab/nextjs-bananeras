@@ -20,6 +20,7 @@ interface ProtectorSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
+  isReadOnly?: boolean;
   setProtector?: (protector: Partial<ProtectorType>) => void;
   onChange?: (newValue: Partial<ProtectorType>) => void;
 }
@@ -36,6 +37,7 @@ const chakraStyles: ChakraStylesConfig<
   placeholder: (provided) => ({
     ...provided,
     color: 'gray.600',
+    h: '36px',
   }),
   input: (provided) => ({
     ...provided,
@@ -66,6 +68,7 @@ const ProtectorSelectBase: React.FC<ProtectorSelectBaseProps> = ({
   name,
   field,
   placeholder,
+  isReadOnly = false,
   setProtector,
   onChange,
 }) => {
@@ -108,6 +111,7 @@ const ProtectorSelectBase: React.FC<ProtectorSelectBaseProps> = ({
           : 'Ya no hay protector/es disponible/s'
       }
       isLoading={isLoading}
+      isReadOnly={isReadOnly}
       options={data}
       getOptionLabel={(opt: Partial<ProtectorType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<ProtectorType>) =>
@@ -117,7 +121,7 @@ const ProtectorSelectBase: React.FC<ProtectorSelectBaseProps> = ({
       value={
         field?.value
           ? data.find((opt: Partial<ProtectorType>) => opt.id === field?.value)
-          : undefined
+          : null
       }
       placeholder={placeholder}
       //   onInputChange={(newValue) => {

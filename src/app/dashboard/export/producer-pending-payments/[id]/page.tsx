@@ -55,8 +55,8 @@ function ExportPaymentPage() {
             base: '95%',
             sm: '95%',
             md: '90%',
-            lg: '600px',
-            xl: '600px',
+            lg: '100%',
+            xl: '100%',
             '2xl': '700px',
           }}
           mb={'20px'}

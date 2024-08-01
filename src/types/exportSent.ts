@@ -1,13 +1,18 @@
+import { InsecticideType } from './box-brand/additions/insecticide';
+import { PesticideType } from './box-brand/post-harvest/pesticide';
 import { ExportType } from './export';
+import { ProducerPaymentType } from './producerPayment';
 
-type PesticideSentPartType = {
-  pesticideId: number | '';
+export type PesticideSentPartType = {
+  id: number | '';
   quantity: number | '';
+  pesticide: Partial<PesticideType>;
 };
 
-type InsecticideSentPartType = {
-  insecticideId: number | '';
+export type InsecticideSentPartType = {
+  id: number | '';
   quantity: number | '';
+  insecticide: Partial<InsecticideType>;
 };
 
 export type ExportSentType = {
@@ -19,6 +24,7 @@ export type ExportSentType = {
   lidTypeQuantity: number | '';
   coverTypeQuantity: number | '';
   cardboardTypeQuantity: number | '';
+  parasealTypeQuantity: number | '';
   padTypeQuantity: number | '';
   spongeTypeQuantity: number | '';
   // select
@@ -49,4 +55,5 @@ export type ExportSentType = {
   insecticideSent: InsecticideSentPartType[];
 
   pendingProducerPayment: boolean;
+  producerPayment: ProducerPaymentType;
 };

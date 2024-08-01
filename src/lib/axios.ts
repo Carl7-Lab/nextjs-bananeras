@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getSession, useSession } from 'next-auth/react';
+import { getSession } from 'next-auth/react';
 import { BACKEND_URL } from './constants';
 
 const axiosInstance = axios.create({

@@ -9,7 +9,8 @@ import {
   CSSObjectWithLabel,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
 import { usePesticides } from '../../../../hooks/box-brand/post-harvest/pesticide/getPesticides';
 import { usePagination } from '../../../../hooks/usePagination';
@@ -69,11 +70,44 @@ const PesticideSelectBase: React.FC<PesticideSelectBaseProps> = ({
   onChange,
 }) => {
   const { paginationParams, filterProps } = usePagination();
-  const { data = [], isLoading, refetch } = usePesticides(paginationParams);
+  const {
+    data = [],
+    isLoading,
+    refetch,
+    error,
+  } = usePesticides(paginationParams);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data } = response;
+      const { statusCode } = data;
+
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
+
+  useEffect(() => {
+    if (!!setPesticide)
+      setPesticide(
+        (data as Partial<PesticideType>[]).find(
+          (pesticide) => pesticide.id === field?.value
+        ) as Partial<PesticideType>
+      );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [field?.value]);
 
   const handleChange = (newValue: SingleValue<Partial<PesticideType>>) => {
-    if (setPesticide) setPesticide(newValue as Partial<PesticideType>);
-    if (onChange) onChange(newValue as Partial<PesticideType>);
+    if (setPesticide) {
+      setPesticide(newValue as Partial<PesticideType>);
+    }
+    if (onChange) {
+      onChange(newValue as Partial<PesticideType>);
+    }
   };
 
   return (
@@ -87,7 +121,11 @@ const PesticideSelectBase: React.FC<PesticideSelectBaseProps> = ({
       }}
       useBasicStyles
       chakraStyles={chakraStyles}
-      noOptionsMessage={() => 'staple not found'}
+      noOptionsMessage={() =>
+        !!error
+          ? (error as any).response.data.message
+          : 'Ya no hay pesticida/s disponible/s'
+      }
       isLoading={isLoading}
       options={data}
       getOptionLabel={(opt: Partial<PesticideType>) => `${opt.name}`}

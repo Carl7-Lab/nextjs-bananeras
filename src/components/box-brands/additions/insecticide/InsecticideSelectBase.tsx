@@ -82,7 +82,7 @@ const InsecticideSelectBase: React.FC<InsecticideSelectBaseProps> = ({
     if (!!error) {
       const { response } = error as any;
       const { data } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = data;
+      const { statusCode } = data;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');
@@ -90,6 +90,16 @@ const InsecticideSelectBase: React.FC<InsecticideSelectBaseProps> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
+
+  useEffect(() => {
+    if (!!setInsecticide)
+      setInsecticide(
+        (data as Partial<InsecticideType>[]).find(
+          (insecticide) => insecticide.id === field?.value
+        ) as Partial<InsecticideType>
+      );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [field?.value]);
 
   const handleChange = (newValue: SingleValue<Partial<InsecticideType>>) => {
     if (setInsecticide) setInsecticide(newValue as Partial<InsecticideType>);

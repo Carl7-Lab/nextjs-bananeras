@@ -20,6 +20,7 @@ interface SachetSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
+  isReadOnly?: boolean;
   setSachet?: (sachet: Partial<SachetType>) => void;
   onChange?: (newValue: Partial<SachetType>) => void;
 }
@@ -36,6 +37,7 @@ const chakraStyles: ChakraStylesConfig<
   placeholder: (provided) => ({
     ...provided,
     color: 'gray.600',
+    h: '36px',
   }),
   input: (provided) => ({
     ...provided,
@@ -66,6 +68,7 @@ const SachetSelectBase: React.FC<SachetSelectBaseProps> = ({
   name,
   field,
   placeholder,
+  isReadOnly = false,
   setSachet,
   onChange,
 }) => {
@@ -108,6 +111,7 @@ const SachetSelectBase: React.FC<SachetSelectBaseProps> = ({
           : 'Ya no hay sachet/s disponible/s'
       }
       isLoading={isLoading}
+      isReadOnly={isReadOnly}
       options={data}
       getOptionLabel={(opt: Partial<SachetType>) => `${opt.name}`}
       getOptionValue={(opt: Partial<SachetType>) =>
@@ -117,7 +121,7 @@ const SachetSelectBase: React.FC<SachetSelectBaseProps> = ({
       value={
         field?.value
           ? data.find((opt: Partial<SachetType>) => opt.id === field?.value)
-          : undefined
+          : null
       }
       placeholder={placeholder}
       //   onInputChange={(newValue) => {

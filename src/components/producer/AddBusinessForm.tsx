@@ -46,6 +46,7 @@ interface ValuesProps {
   latitude: number | '';
   longitude: number | '';
   codeMAGAP: string;
+  codeAGROCALIDAD: string;
   certificates: CertificatesProps[];
   businessCodes: BusinessCodesProps[];
   contacts: ContactsProps[];
@@ -61,6 +62,7 @@ const initialValues: ValuesProps = {
   latitude: '',
   longitude: '',
   codeMAGAP: '',
+  codeAGROCALIDAD: '',
   certificates: [
     { name: '', certificateCode: '', issueDate: '', expirationDate: '' },
   ],
@@ -70,13 +72,13 @@ const initialValues: ValuesProps = {
 
 const contactSchema = Yup.object().shape({
   name: Yup.string()
-    .max(30, 'Debe tener 30 caracteres o menos')
+    .max(50, 'Debe tener 50 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^[a-zA-Z\s]+$/, 'Solo debe contener letras y espacios')
     .transform((value) => value.trim())
     .required('Requerido'),
   role: Yup.string()
-    .max(20, 'Debe tener 20 caracteres o menos')
+    .max(50, 'Debe tener 50 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .transform((value) => value.trim())
     .required('Requerido'),
@@ -92,7 +94,7 @@ const contactSchema = Yup.object().shape({
 
 const businessCodeSchema = Yup.object().shape({
   code: Yup.string()
-    .max(20, 'Debe tener 20 caracteres o menos')
+    .max(50, 'Debe tener 50 caracteres o menos')
     .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
     .transform((value) => value.trim())
     .required('Requerido'),
@@ -100,12 +102,12 @@ const businessCodeSchema = Yup.object().shape({
 
 const certificateSchema = Yup.object().shape({
   name: Yup.string()
-    .max(30, 'Debe tener 30 caracteres o menos')
+    .max(100, 'Debe tener 100 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .transform((value) => value.trim())
     .required('Requerido'),
   certificateCode: Yup.string()
-    .max(20, 'Debe tener 20 caracteres o menos')
+    .max(50, 'Debe tener 50 caracteres o menos')
     .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
     .transform((value) => value.trim())
     .required('Requerido'),
@@ -120,9 +122,9 @@ const certificateSchema = Yup.object().shape({
 });
 
 const validationSchema = Yup.object({
-  merchant: Yup.number().required('Required'),
+  merchant: Yup.number().required('Requerido'),
   name: Yup.string()
-    .max(15, 'Debe tener 15 caracteres o menos')
+    .max(100, 'Debe tener 100 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(
       /^[a-zA-Z0-9\s]+$/,
@@ -131,7 +133,7 @@ const validationSchema = Yup.object({
     .transform((value) => value.trim())
     .required('Requerido'),
   city: Yup.string()
-    .max(20, 'Debe tener 20 caracteres o menos')
+    .max(50, 'Debe tener 50 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^[a-zA-Z\s]+$/, 'Solo debe contener letras y espacios')
     .transform((value) => value.trim()),
@@ -157,7 +159,12 @@ const validationSchema = Yup.object({
     .min(-180, 'Debe ser al menos -180')
     .max(180, 'Debe ser como máximo 180'),
   codeMAGAP: Yup.string()
-    .max(20, 'Debe tener 20 caracteres o menos')
+    .max(50, 'Debe tener 50 caracteres o menos')
+    .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  codeAGROCALIDAD: Yup.string()
+    .max(50, 'Debe tener 50 caracteres o menos')
     .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
     .transform((value) => value.trim())
     .required('Requerido'),
@@ -208,6 +215,10 @@ const AddBusinessForm = () => {
 
           if (!!model && !!prop) {
             if (model === 'Business' && prop === 'codeMAGAP') {
+              formikHelpers.setFieldTouched(`${prop}`, true, false);
+              formikHelpers.setFieldError(`${prop}`, message);
+            }
+            if (model === 'Business' && prop === 'codeAGROCALIDAD') {
               formikHelpers.setFieldTouched(`${prop}`, true, false);
               formikHelpers.setFieldError(`${prop}`, message);
             }
@@ -266,6 +277,10 @@ const AddBusinessForm = () => {
                 <InputFieldText name={'name'} label={'Nombre'} />
                 <InputFieldNumber name={'area'} label={'Área'} />
                 <InputFieldText name={'codeMAGAP'} label={'Código MAGAP'} />
+                <InputFieldText
+                  name={'codeAGROCALIDAD'}
+                  label={'Código AGROCALIDAD'}
+                />
                 <InputFieldSelector
                   name={'fruitType'}
                   label={'Tipo de Fruta'}

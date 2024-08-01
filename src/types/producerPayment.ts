@@ -6,9 +6,12 @@ export type ProducerPaymentType = {
   id: number | '';
   exportSentId: number | '';
   // selling
-  merchantId: number | '' | Partial<MerchantType>;
-  departureHarborId: number | '' | Partial<HarborType>;
-  destinationHarborId: number | '' | Partial<HarborType>;
+  merchantId: number | '';
+  merchant: Partial<MerchantType>;
+  departureHarborId: number | '';
+  harborDeparture: Partial<HarborType>;
+  destinationHarborId: number | '';
+  harborDestination: Partial<HarborType>;
   boxQuantity: number | '';
   boxBrandId: number | '';
   subtotal1: number | '';
@@ -21,7 +24,9 @@ export type ProducerPaymentType = {
   subtotal2: number | '';
   total: number | '';
 
-  sourceBankAccountId: number | '' | Partial<BankAccountType>;
-  destinationBankAccountId: number | '' | Partial<BankAccountType>;
+  sourceBankAccount: Partial<BankAccountType>;
+  sourceBankAccountId: number | '';
+  destinationBankAccount: Partial<BankAccountType>;
+  destinationBankAccountId: number | '';
   amount: number | '';
 };
