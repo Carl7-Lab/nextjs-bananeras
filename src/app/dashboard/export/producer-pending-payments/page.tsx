@@ -4,7 +4,7 @@ import React from 'react';
 import PendingPaymentList from '../../../../components/export/export-payments/PendingPaymentList';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
-function ExportPaymentspage() {
+function ExportPaymentsPage() {
   return (
     <Box my={'20px'} mx={'auto'}>
       <Center>
@@ -14,4 +14,4 @@ function ExportPaymentspage() {
   );
 }
 
-export default IsOnboarding(ExportPaymentspage);
+export default IsOnboarding(ExportPaymentsPage);

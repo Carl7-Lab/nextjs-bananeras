@@ -20,6 +20,10 @@ export function getNavItems(): SidenavItem[] {
       to: '/dashboard/export/add-export',
     },
     {
+      label: 'Hoja de Corte',
+      to: '/dashboard/export/cutting-sheet',
+    },
+    {
       label: 'Envío de Insumos',
       to: '/dashboard/export/supply-shipment',
     },

@@ -128,9 +128,8 @@ const certificateSchema = Yup.object().shape({
     .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
     .transform((value) => value.trim())
     .required('Requerido'),
-  issueDate: Yup.date().nullable().required('Requerido'),
+  issueDate: Yup.date().required('Requerido'),
   expirationDate: Yup.date()
-    .nullable()
     .required('Requerido')
     .min(
       Yup.ref('issueDate'),

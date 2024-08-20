@@ -1,38 +1,70 @@
 import {
+  Flex,
   FormControl,
   FormErrorMessage,
   FormLabel,
   Input,
 } from '@chakra-ui/react';
 import { useField } from 'formik';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface InputFieldDateProps {
   name: string;
   label?: string;
   placeholder?: string;
+  flexDirection?: 'column' | 'row';
 }
 
 const InputFieldDate: React.FC<InputFieldDateProps> = ({
   name,
   label,
   placeholder,
+  flexDirection = 'column',
 }) => {
-  const [field, meta] = useField(name);
+  const [field, meta, helpers] = useField(name);
+  const [dateValue, setDateValue] = useState<string>(field.value || '');
+
+  useEffect(() => {
+    if (field.value) {
+      const adjustedDate = new Date(field.value);
+      // Ajustar la fecha a la zona horaria local
+      adjustedDate.setMinutes(
+        adjustedDate.getMinutes() - adjustedDate.getTimezoneOffset()
+      );
+      setDateValue(adjustedDate.toISOString().split('T')[0]);
+    }
+  }, [field.value]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDate = new Date(e.target.value);
+    newDate.setMinutes(newDate.getMinutes() + newDate.getTimezoneOffset());
+    helpers.setValue(newDate.toISOString());
+    setDateValue(e.target.value);
+  };
+
   return (
     <FormControl id={name} isInvalid={!!meta.error && meta.touched}>
-      {label && (
-        <FormLabel fontSize='sm' mb='8px'>
-          {label}
-        </FormLabel>
-      )}
-      <Input {...field} placeholder={placeholder || label} type={'date'} />
+      <Flex flexDirection={flexDirection}>
+        {label && (
+          <FormLabel fontSize='sm' mb='8px'>
+            {label}
+          </FormLabel>
+        )}
+        <Input
+          {...field}
+          value={dateValue}
+          onChange={handleChange}
+          placeholder={placeholder || label}
+          // type={'datetime-local'}
+          type={'date'}
+        />
 
-      {meta.error && meta.touched && (
-        <FormErrorMessage mt='8px' mb='16px'>
-          {meta.error}
-        </FormErrorMessage>
-      )}
+        {meta.error && meta.touched && (
+          <FormErrorMessage mt='8px' mb='16px'>
+            {meta.error}
+          </FormErrorMessage>
+        )}
+      </Flex>
     </FormControl>
   );
 };

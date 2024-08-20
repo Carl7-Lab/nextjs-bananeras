@@ -1,32 +1,32 @@
 {
-    "editor.formatOnSave": true,
-    "[typescriptreact]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[typescript]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "editor.codeActionsOnSave": {
-      "source.fixAll": "explicit"
-    },
-    "typescript.preferences.importModuleSpecifier": "relative",
-    "typescript.suggest.completeJSDocs": true,
-    "typescript.validate.enable": true,
-    "eslint.validate": [
-      "javascript",
-      "javascriptreact",
-      "typescript",
-      "typescriptreact"
-    ],
-    "eslint.enable": true,
-    "eslint.format.enable": true,
-    "jest.autoRun": {},
-    "jest.jestCommandLine": "yarn run test  --",
-    "jest.shell": "/bin/zsh",
-    "[python]": {
-      "editor.defaultFormatter": "ms-python.black-formatter"
-    },
-    "typescript.tsdk": "node_modules/typescript/lib",
-    "files.eol": "\n"
-  }
-  
+  "editor.formatOnSave": true,
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  },
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "typescript.suggest.completeJSDocs": true,
+  "typescript.validate.enable": true,
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "eslint.enable": true,
+  "eslint.format.enable": true,
+  "jest.autoRun": {},
+  "jest.jestCommandLine": "yarn run test  --",
+  "jest.shell": "/bin/zsh",
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "files.eol": "\n",
+  "cSpell.words": ["chakra", "formik", "Formik"]
+}
