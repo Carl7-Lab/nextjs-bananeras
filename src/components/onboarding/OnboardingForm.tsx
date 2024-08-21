@@ -159,7 +159,7 @@ const businessSchema = Yup.object().shape({
     .matches(/^[a-zA-Z0-9\s.,'-]+$/, 'Dirección no válida')
     .transform((value) => value.trim()),
   fruitType: Yup.string()
-    .oneOf(['Organica', 'Convencional'], 'Tipo de fruta no válido')
+    .oneOf(['Orgánica', 'Convencional'], 'Tipo de fruta no válido')
     .required('Requerido'),
   area: Yup.number().moreThan(0, 'Debe ser mayor que 0').required('Requerido'),
   latitude: Yup.number()
@@ -322,8 +322,8 @@ export default function OnboardingForm() {
       id: 'Convencional',
     },
     {
-      name: 'Organica',
-      id: 'Organica',
+      name: 'Orgánica',
+      id: 'Orgánica',
     },
   ];
 

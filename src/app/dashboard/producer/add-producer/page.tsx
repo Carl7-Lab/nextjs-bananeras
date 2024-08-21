@@ -1,7 +1,7 @@
 'use client';
 import { Box, Card, CardBody, Center } from '@chakra-ui/react';
-import React from 'react';
-import AddProducerForm from '../../../../components/producer/AddProducerForm';
+// import AddProducerForm from '../../../../components/producer/AddProducerForm';
+import AddProducerForm from '../../../../components/producer/addProducerForm';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
 function AddProductorPage() {
