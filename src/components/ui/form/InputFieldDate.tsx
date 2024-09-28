@@ -22,16 +22,20 @@ const InputFieldDate: React.FC<InputFieldDateProps> = ({
   flexDirection = 'column',
 }) => {
   const [field, meta, helpers] = useField(name);
-  const [dateValue, setDateValue] = useState<string>(field.value || '');
+
+  const formatDate = (date: Date) => date.toISOString().split('T')[0];
+
+  const [dateValue, setDateValue] = useState<string>(
+    field.value ? formatDate(new Date(field.value)) : formatDate(new Date())
+  );
 
   useEffect(() => {
     if (field.value) {
       const adjustedDate = new Date(field.value);
-      // Ajustar la fecha a la zona horaria local
       adjustedDate.setMinutes(
         adjustedDate.getMinutes() - adjustedDate.getTimezoneOffset()
       );
-      setDateValue(adjustedDate.toISOString().split('T')[0]);
+      setDateValue(formatDate(adjustedDate));
     }
   }, [field.value]);
 
@@ -55,7 +59,6 @@ const InputFieldDate: React.FC<InputFieldDateProps> = ({
           value={dateValue}
           onChange={handleChange}
           placeholder={placeholder || label}
-          // type={'datetime-local'}
           type={'date'}
         />
 
