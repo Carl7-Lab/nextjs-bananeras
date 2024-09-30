@@ -6,7 +6,15 @@ import { serializeQueryResult } from '../../utils/serializeQueryResult';
 type Params = PaginationParams;
 
 function listExportsPending(params: Params) {
-  return axios.get('/export/pending', { params });
+  return axios
+    .get('/export/pending', { params })
+    .then((response) => response.data)
+    .catch((error) => {
+      if (error.response?.status === 404) {
+        return [];
+      }
+      throw error;
+    });
 }
 
 export function useExportsPending({

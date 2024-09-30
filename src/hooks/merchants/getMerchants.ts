@@ -6,7 +6,15 @@ import { serializeQueryResult } from '@/utils/serializeQueryResult';
 type Params = PaginationParams;
 
 function listMerchants(params: Params) {
-  return axios.get('/merchant', { params });
+  return axios
+    .get('/merchant', { params })
+    .then((response) => response.data)
+    .catch((error) => {
+      if (error.response?.status === 404) {
+        return [];
+      }
+      throw error;
+    });
 }
 
 export function useMerchants({ search = '', page = 1, limit = 10 }: Params) {

@@ -11,7 +11,15 @@ interface listHarborsProps {
 }
 
 function listHarborsByType({ params, type }: listHarborsProps) {
-  return axios.get(`/harbor/type/${type}`, { params });
+  return axios
+    .get(`/harbor/type/${type}`, { params })
+    .then((response) => response.data)
+    .catch((error) => {
+      if (error.response?.status === 404) {
+        return [];
+      }
+      throw error;
+    });
 }
 
 interface useHarborsProps extends Params {

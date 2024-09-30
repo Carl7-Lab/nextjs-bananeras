@@ -6,7 +6,15 @@ import { serializeQueryResult } from '@/utils/serializeQueryResult';
 type Params = PaginationParams;
 
 function listThermographs(params: Params) {
-  return axios.get('/box-brand/thermograph', { params });
+  return axios
+    .get('/box-brand/thermograph', { params })
+    .then((response) => response.data)
+    .catch((error) => {
+      if (error.response?.status === 404) {
+        return [];
+      }
+      throw error;
+    });
 }
 
 export function useThermographs({ search = '', page = 1, limit = 10 }: Params) {

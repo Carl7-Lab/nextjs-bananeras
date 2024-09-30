@@ -10,7 +10,15 @@ interface Body {
 }
 
 function listBankAccountByMerchantId(params: Params, body: Body) {
-  return axios.get(`/bank-account/merchant/${body.id}`, { params });
+  return axios
+    .get(`/bank-account/merchant/${body.id}`, { params })
+    .then((response) => response.data)
+    .catch((error) => {
+      if (error.response?.status === 404) {
+        return [];
+      }
+      throw error;
+    });
 }
 
 export function useBankAccountByMerchantId(

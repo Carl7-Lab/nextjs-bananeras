@@ -6,7 +6,15 @@ import { serializeQueryResult } from '@/utils/serializeQueryResult';
 type Params = PaginationParams;
 
 function listBlockingSheets(params: Params) {
-  return axios.get('/box-brand/blocking-sheet', { params });
+  return axios
+    .get('/box-brand/blocking-sheet', { params })
+    .then((response) => response.data)
+    .catch((error) => {
+      if (error.response?.status === 404) {
+        return [];
+      }
+      throw error;
+    });
 }
 
 export function useBlockingSheets({

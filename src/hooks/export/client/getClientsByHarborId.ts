@@ -10,7 +10,15 @@ interface Body {
 }
 
 function listClientsByHarborId(params: Params, body: Body) {
-  return axios.get(`/client/harbor/${body.id}`, { params });
+  return axios
+    .get(`/client/harbor/${body.id}`, { params })
+    .then((response) => response.data)
+    .catch((error) => {
+      if (error.response?.status === 404) {
+        return [];
+      }
+      throw error;
+    });
 }
 
 export function useClientsByHarborId(

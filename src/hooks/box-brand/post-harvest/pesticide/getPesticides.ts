@@ -6,7 +6,15 @@ import { serializeQueryResult } from '@/utils/serializeQueryResult';
 type Params = PaginationParams;
 
 function listPesticides(params: Params) {
-  return axios.get('/box-brand/pesticide', { params });
+  return axios
+    .get('/box-brand/pesticide', { params })
+    .then((response) => response.data)
+    .catch((error) => {
+      if (error.response?.status === 404) {
+        return [];
+      }
+      throw error;
+    });
 }
 
 export function usePesticides({ search = '', page = 1, limit = 10 }: Params) {

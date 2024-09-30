@@ -6,7 +6,15 @@ import { serializeQueryResult } from '@/utils/serializeQueryResult';
 type Params = PaginationParams;
 
 function listExportsSent(params: Params) {
-  return axios.get('/export/export-sent', { params });
+  return axios
+    .get('/export/export-sent', { params })
+    .then((response) => response.data)
+    .catch((error) => {
+      if (error.response?.status === 404) {
+        return [];
+      }
+      throw error;
+    });
 }
 
 export function useExportsSent({ search = '', page = 1, limit = 10 }: Params) {

@@ -10,7 +10,15 @@ interface Body {
 }
 
 function listBusinesses(params: Params, body: Body) {
-  return axios.get(`/merchant/${body.id}/business`, { params });
+  return axios
+    .get(`/merchant/${body.id}/business`, { params })
+    .then((response) => response.data)
+    .catch((error) => {
+      if (error.response?.status === 404) {
+        return [];
+      }
+      throw error;
+    });
 }
 
 export function useBusinessesByMerchantId(

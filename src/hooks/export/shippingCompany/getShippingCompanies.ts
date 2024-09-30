@@ -6,7 +6,15 @@ import { serializeQueryResult } from '@/utils/serializeQueryResult';
 type Params = PaginationParams;
 
 function listShippingCompany(params: Params) {
-  return axios.get('/harbor/shipping-company', { params });
+  return axios
+    .get('/harbor/shipping-company', { params })
+    .then((response) => response.data)
+    .catch((error) => {
+      if (error.response?.status === 404) {
+        return [];
+      }
+      throw error;
+    });
 }
 
 export function useShippingCompanies({

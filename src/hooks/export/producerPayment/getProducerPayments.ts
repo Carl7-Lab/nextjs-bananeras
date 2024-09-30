@@ -6,7 +6,15 @@ import { serializeQueryResult } from '@/utils/serializeQueryResult';
 type Params = PaginationParams;
 
 function listProducerPayment(params: Params) {
-  return axios.get('/export/producer-payment', { params });
+  return axios
+    .get('/export/producer-payment', { params })
+    .then((response) => response.data)
+    .catch((error) => {
+      if (error.response?.status === 404) {
+        return [];
+      }
+      throw error;
+    });
 }
 
 export function useShippingCompanies({

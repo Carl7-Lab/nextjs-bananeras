@@ -11,7 +11,7 @@ export default function OnBoardingPage() {
 
   useLayoutEffect(() => {
     if (isOnboarded === 'done') {
-      return redirect('/dashboard/producer/fincas');
+      return redirect('/dashboard');
     }
   }, [isOnboarded]);
 
