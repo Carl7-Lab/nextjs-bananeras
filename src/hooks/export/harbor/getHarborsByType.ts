@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import { useQuery } from 'react-query';
 import axios from '@/lib/axios';
 import { PaginationParams } from '@/types/paginationParams';
@@ -13,10 +14,18 @@ interface listHarborsProps {
 function listHarborsByType({ params, type }: listHarborsProps) {
   return axios
     .get(`/harbor/type/${type}`, { params })
-    .then((response) => response.data)
+    .then((response) => {
+      return response;
+    })
     .catch((error) => {
       if (error.response?.status === 404) {
-        return [];
+        return {
+          data: [],
+          status: 404,
+          statusText: 'Not Found',
+          headers: {},
+          config: error.config,
+        } as AxiosResponse;
       }
       throw error;
     });

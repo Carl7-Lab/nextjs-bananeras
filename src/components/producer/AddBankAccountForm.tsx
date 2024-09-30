@@ -241,7 +241,7 @@ const AddBankAccountForm = () => {
             {isClientPath && (
               <>
                 <Heading fontSize={'2xl'} p={'12px'}>
-                  Client
+                  Cliente
                 </Heading>
                 <Divider mb={'16px'} />
                 <SelectClient name={'clientId'} setClientSelect={setClient} />

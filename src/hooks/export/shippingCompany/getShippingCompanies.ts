@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import { useQuery } from 'react-query';
 import axios from '@/lib/axios';
 import { PaginationParams } from '@/types/paginationParams';
@@ -5,13 +6,21 @@ import { serializeQueryResult } from '@/utils/serializeQueryResult';
 
 type Params = PaginationParams;
 
-function listShippingCompany(params: Params) {
+function listShippingCompany(params: Params): Promise<AxiosResponse> {
   return axios
     .get('/harbor/shipping-company', { params })
-    .then((response) => response.data)
+    .then((response) => {
+      return response;
+    })
     .catch((error) => {
       if (error.response?.status === 404) {
-        return [];
+        return {
+          data: [],
+          status: 404,
+          statusText: 'Not Found',
+          headers: {},
+          config: error.config,
+        } as AxiosResponse;
       }
       throw error;
     });

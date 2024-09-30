@@ -41,8 +41,8 @@ interface BusinessesProps {
   address: string;
   fruitType: string;
   area: number;
-  latitude: number | '';
-  longitude: number | '';
+  latitude: number | 0;
+  longitude: number | 0;
   codeMAGAP: string;
   codeAGROCALIDAD: string;
   certificates: CertificatesProps[];
@@ -74,8 +74,8 @@ const initialValues: ValuesProps = {
       address: '',
       fruitType: '',
       area: 0,
-      latitude: '',
-      longitude: '',
+      latitude: 0,
+      longitude: 0,
       codeMAGAP: '',
       codeAGROCALIDAD: '',
       certificates: [
