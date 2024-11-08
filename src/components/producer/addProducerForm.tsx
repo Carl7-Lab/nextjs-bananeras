@@ -344,13 +344,13 @@ const AddProducerForm = () => {
       >
         {({ isSubmitting, values }) => (
           <Form>
-            <Flex flexDirection='column' gap={3}>
+            <Flex flexDirection='column' gap={2}>
               <Heading fontSize={'2xl'} p={'12px'}>
                 Productor
               </Heading>
               <Divider mb={'16px'} />
 
-              <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+              <SimpleGrid columns={{ base: 1, sm: 4 }} spacing={4}>
                 <InputFieldText name={'businessName'} label={'Razon Social'} />
                 <InputFieldText name={'businessId'} label={'RUC'} />
                 <InputFieldText name={'city'} label={'Ciudad'} />
@@ -368,7 +368,7 @@ const AddProducerForm = () => {
               </Heading>
               <Divider mb={'16px'} />
 
-              <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+              <SimpleGrid columns={{ base: 1, sm: 4 }} spacing={4}>
                 <InputFieldText name={'businesses[0].name'} label={'Nombre'} />
                 <InputFieldNumber name={'businesses[0].area'} label={'Área'} />
                 <InputFieldText
@@ -404,7 +404,7 @@ const AddProducerForm = () => {
               </Heading>
               <Divider mb={'16px'} />
 
-              <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+              <SimpleGrid columns={{ base: 1, sm: 4 }} spacing={4}>
                 <InputFieldText
                   name={'businesses[0].certificates[0].name'}
                   label={'Nombre'}
@@ -431,7 +431,7 @@ const AddProducerForm = () => {
               <FieldArray name='businesses[0].businessCodes'>
                 {({ push, remove }) => (
                   <>
-                    <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+                    <SimpleGrid columns={{ base: 1, sm: 4 }} spacing={4}>
                       {values.businesses[0].businessCodes.map(
                         (_businessCode, index) => (
                           <InputFieldText
@@ -469,7 +469,7 @@ const AddProducerForm = () => {
                   <>
                     {values.businesses[0].contacts.map((_contact, index) => (
                       <div key={index}>
-                        <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+                        <SimpleGrid columns={{ base: 1, sm: 4 }} spacing={4}>
                           <InputFieldText
                             name={`businesses[0].contacts[${index}].name`}
                             label={'Nombre'}
@@ -506,7 +506,7 @@ const AddProducerForm = () => {
                         />
                       </div>
                     ))}
-                    <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+                    <SimpleGrid columns={{ base: 1, sm: 4 }} spacing={4}>
                       <Box></Box>
                       <Button
                         onClick={() =>
