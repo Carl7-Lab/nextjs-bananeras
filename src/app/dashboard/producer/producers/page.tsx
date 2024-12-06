@@ -1,7 +1,7 @@
 'use client';
 import { Box, Center } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import TableBusiness from '../../../../components/business/table-business/TableBusiness';
+import TableProducers from '../../../../components/producer/table-producer/TableProducers';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
 interface WindowSizeProps {
@@ -9,7 +9,7 @@ interface WindowSizeProps {
   height: number | null;
 }
 
-function FincasPage() {
+function ProducersPage() {
   const [windowSize, setWindowSize] = useState<WindowSizeProps>({
     width: null,
     height: null,
@@ -37,7 +37,7 @@ function FincasPage() {
       }}
     >
       <Center mt={'30px'}>
-        <TableBusiness
+        <TableProducers
           windowSize={windowSize}
           width={{
             sm: Number(windowSize.width) - 20,
@@ -49,4 +49,4 @@ function FincasPage() {
   );
 }
 
-export default IsOnboarding(FincasPage);
+export default IsOnboarding(ProducersPage);

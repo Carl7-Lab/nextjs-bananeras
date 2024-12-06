@@ -54,6 +54,10 @@ export function getNavItems(): SidenavItem[] {
       to: '/dashboard/producer/fincas',
     },
     {
+      label: 'Productores',
+      to: '/dashboard/producer/producers',
+    },
+    {
       label: 'Agregar Productor',
       to: '/dashboard/producer/add-producer',
     },
