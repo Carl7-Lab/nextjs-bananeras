@@ -11,6 +11,7 @@ import { FieldArray, Form, Formik, FormikHelpers } from 'formik';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
+import ImportProducerDrawer from './ImportProducerDrawer';
 import { useCreateMerchant } from '../../hooks/merchants/createMerchant';
 import InputFieldDate from '../ui/form/InputFieldDate';
 import InputFieldNumber from '../ui/form/InputFieldNumber';
@@ -338,11 +339,13 @@ const AddProducerForm = () => {
       >
         {({ isSubmitting, values }) => (
           <Form>
-            <Flex flexDirection='column' gap={3}>
-              <Heading fontSize={'2xl'} p={'12px'}>
-                Productor
-              </Heading>
-              <Divider mb={'16px'} />
+            <Flex flexDirection='column' gap={2}>
+              <Flex justify='space-between'>
+                <Heading fontSize={'2xl'} p={'12px'}>
+                  Productor
+                </Heading>
+                <ImportProducerDrawer></ImportProducerDrawer>
+              </Flex>
 
               <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
                 <InputFieldText name={'businessName'} label={'Razon Social'} />
