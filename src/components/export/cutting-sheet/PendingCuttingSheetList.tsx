@@ -71,15 +71,24 @@ const PendingCuttingSheetList = () => {
       <Heading width='100%' textAlign='center'>
         Lista de pagos pendientes
       </Heading>
-      <SimpleGrid columns={{ base: 1, sm: 1, md: 1, lg: 2, xl: 3 }} spacing={4}>
-        {(data as Partial<ExportType>[]).map((item) => (
-          <PendingCuttingSheetCard
-            key={item.id}
-            exportItem={item}
-            pathname={pathname}
-          />
-        ))}
-      </SimpleGrid>
+      {data.length === 0 ? (
+        <Center p={6}>
+          <Text>No existen hojas de corte pendientes</Text>
+        </Center>
+      ) : (
+        <SimpleGrid
+          columns={{ base: 1, sm: 1, md: 1, lg: 2, xl: 3 }}
+          spacing={4}
+        >
+          {(data as Partial<ExportType>[]).map((item) => (
+            <PendingCuttingSheetCard
+              key={item.id}
+              exportItem={item}
+              pathname={pathname}
+            />
+          ))}
+        </SimpleGrid>
+      )}
     </VStack>
   );
 };

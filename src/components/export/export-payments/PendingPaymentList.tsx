@@ -72,18 +72,24 @@ const PendingPaymentList = () => {
         <Heading width='100%' textAlign='center'>
           Lista de pagos pendientes
         </Heading>
-        <SimpleGrid
-          columns={{ base: 1, sm: 1, md: 1, lg: 2, xl: 3 }}
-          spacing={4}
-        >
-          {(data as Partial<ExportSentType>[]).map((item) => (
-            <PendingPaymentCard
-              key={item.id}
-              exportSentItem={item}
-              pathname={pathname}
-            />
-          ))}
-        </SimpleGrid>
+        {data.length === 0 ? (
+          <Center p={6}>
+            <Text>No existen pagos pendientes</Text>
+          </Center>
+        ) : (
+          <SimpleGrid
+            columns={{ base: 1, sm: 1, md: 1, lg: 2, xl: 3 }}
+            spacing={4}
+          >
+            {(data as Partial<ExportSentType>[]).map((item) => (
+              <PendingPaymentCard
+                key={item.id}
+                exportSentItem={item}
+                pathname={pathname}
+              />
+            ))}
+          </SimpleGrid>
+        )}
       </VStack>
     </>
   );

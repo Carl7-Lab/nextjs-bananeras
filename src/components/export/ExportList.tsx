@@ -71,11 +71,20 @@ const ExportList = () => {
       <Heading width='100%' textAlign='center'>
         Lista de exportaciones pendientes
       </Heading>
-      <SimpleGrid columns={{ base: 1, sm: 1, md: 1, lg: 2, xl: 3 }} spacing={4}>
-        {(data as Partial<ExportType>[]).map((item) => (
-          <ExportCard key={item.id} exportItem={item} pathname={pathname} />
-        ))}
-      </SimpleGrid>
+      {data.length === 0 ? (
+        <Center p={6}>
+          <Text>No existen exportaciones pendientes</Text>
+        </Center>
+      ) : (
+        <SimpleGrid
+          columns={{ base: 1, sm: 1, md: 1, lg: 2, xl: 3 }}
+          spacing={4}
+        >
+          {(data as Partial<ExportType>[]).map((item) => (
+            <ExportCard key={item.id} exportItem={item} pathname={pathname} />
+          ))}
+        </SimpleGrid>
+      )}
     </VStack>
   );
 };
