@@ -1,3 +1,4 @@
+// import { CheckCircleIcon, CloseIcon, InfoOutlineIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -16,7 +17,9 @@ import {
   Spinner,
   Image,
   Flex,
-  FormErrorMessage,
+  Icon,
+  VStack,
+  HStack,
 } from '@chakra-ui/react';
 import { useField } from 'formik';
 import React, { useEffect, useRef, useState } from 'react';
@@ -25,10 +28,9 @@ const ImportProducerDrawer: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [fileName, setFileName] = useState<string>('');
   const [fileSize, setFileSize] = useState<number>(0);
-
-  const [field, meta, helpers] = useField('import-producer');
   const [dragging, setDragging] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [field, meta, helpers] = useField('import-producer');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -72,12 +74,8 @@ const ImportProducerDrawer: React.FC = () => {
       setLoading(true);
       helpers.setValue(file);
       setFileName(file.name);
-      setFileSize(file.size);
-      console.log('file.size', file.size);
-
-      const reader = new FileReader();
-      reader.onloadend = () => {};
-      reader.readAsDataURL(file);
+      setFileSize(file.size); // Set file size in bytes
+      setLoading(false);
 
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
@@ -87,16 +85,15 @@ const ImportProducerDrawer: React.FC = () => {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
-      console.log(event.target.files[0].name);
-      setLoading(true);
-      helpers.setValue(event.target.files[0]);
-      setFileName(event.target.files[0].name);
-      setFileSize(event.target.files[0].size);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
-      setLoading(false);
+      const file = event.target.files[0];
+      handleFileChange(file);
     }
+  };
+
+  const resetFile = () => {
+    setFileName('');
+    setFileSize(0);
+    helpers.setValue(null);
   };
 
   return (
@@ -112,65 +109,86 @@ const ImportProducerDrawer: React.FC = () => {
           <DrawerHeader>Importar Productor</DrawerHeader>
 
           <DrawerBody>
-            <Text mb={4}>Selecciona un archivo:</Text>
-            <FormControl id={'import-producer'} width={'100%'}>
+            {fileName ? (
               <Box
-                onDragEnter={handleDragEnter}
-                onDragLeave={handleDragLeave}
-                onDragOver={handleDragOver}
-                onDrop={handleDrop}
-                border='2px dashed'
-                borderColor={dragging ? 'teal.500' : 'gray.300'}
+                border='1px solid'
+                borderColor='gray.200'
                 borderRadius='md'
-                p={0}
-                m={0}
-                textAlign='center'
-                bg={dragging ? 'teal.50' : 'white'}
+                p={4}
+                bg='teal.50'
+                shadow='md'
               >
-                <Input
-                  ref={fileInputRef}
-                  id={field.name}
-                  type='file'
-                  accept='.csv'
-                  display={'none'}
-                  onChange={handleChange}
-                />
-                <FormLabel m={0} id={field.name}>
-                  {loading ? (
-                    <Spinner />
-                  ) : fileName ? (
-                    <>
-                      {fileSize > 0 && (
-                        <Flex mt={2} textAlign='left' gap={2} ml={'15px'}>
-                          <Text>
-                            archivo: {fileName} - {(fileSize / 1024).toFixed(2)}{' '}
-                            KB
-                          </Text>
-                        </Flex>
-                      )}
-                    </>
-                  ) : (
-                    <Image
-                      src={'/uploaded.png'}
-                      alt='imagen de subida'
-                      maxH='200px'
-                      my={2}
-                      mx={'auto'}
-                    />
-                  )}
-                  <Text p={4} color={dragging ? 'teal.500' : 'gray.300'}>
-                    {dragging
-                      ? 'Suelta aquí...'
-                      : 'Arrastra y suelta un archivo aquí, o haz clic para seleccionar uno'}
-                  </Text>
-                </FormLabel>
+                <HStack justify='space-between'>
+                  <VStack align='start' spacing={1}>
+                    <HStack>
+                      {/* <CheckCircleIcon color='green.500' /> */}
+                      <Text fontWeight='bold' fontSize='lg'>
+                        Archivo subido con éxito
+                      </Text>
+                    </HStack>
+                    <Text fontSize='sm' color='gray.600'>
+                      Nombre: <b>{fileName}</b>
+                    </Text>
+                    <Text fontSize='sm' color='gray.600'>
+                      Tamaño: <b>{(fileSize / 1024).toFixed(2)} KB</b>
+                    </Text>
+                  </VStack>
+                  <Button
+                    size='sm'
+                    colorScheme='red'
+                    variant='outline'
+                    /* leftIcon={<CloseIcon />} */
+                    onClick={resetFile}
+                  >
+                    Quitar
+                  </Button>
+                </HStack>
               </Box>
-              {meta.error && meta.touched && (
-                <FormErrorMessage mt='8px' mb='16px'>
-                  {meta.error}
-                </FormErrorMessage>
-              )}
-            </FormControl>
+            ) : (
+              <FormControl id={'import-producer'} width={'100%'}>
+                <Box
+                  onDragEnter={handleDragEnter}
+                  onDragLeave={handleDragLeave}
+                  onDragOver={handleDragOver}
+                  onDrop={handleDrop}
+                  border='2px dashed'
+                  borderColor={dragging ? 'teal.500' : 'gray.300'}
+                  borderRadius='md'
+                  p={0}
+                  m={0}
+                  textAlign='center'
+                  bg={dragging ? 'teal.50' : 'white'}
+                  cursor='pointer'
+                >
+                  <Input
+                    ref={fileInputRef}
+                    id={field.name}
+                    type='file'
+                    accept='.csv'
+                    display='none'
+                    onChange={handleChange}
+                  />
+                  <FormLabel m={0} id={field.name}>
+                    {loading ? (
+                      <Spinner />
+                    ) : (
+                      <Image
+                        src={'/uploaded.png'}
+                        alt='imagen de subida'
+                        maxH='200px'
+                        my={2}
+                        mx={'auto'}
+                      />
+                    )}
+                    <Text p={4} color={dragging ? 'teal.500' : 'gray.300'}>
+                      {dragging
+                        ? 'Suelta aquí...'
+                        : 'Arrastra y suelta un archivo aquí, o haz clic para seleccionar uno'}
+                    </Text>
+                  </FormLabel>
+                </Box>
+              </FormControl>
+            )}
           </DrawerBody>
 
           <DrawerFooter>
@@ -181,7 +199,8 @@ const ImportProducerDrawer: React.FC = () => {
               py='8px'
               px='16px'
               colorScheme='teal'
-              onClick={() => alert('File uploaded!')}
+              onClick={() => alert('Archivo procesado exitosamente.')}
+              isDisabled={!fileName}
             >
               Subir
             </Button>
