@@ -35,6 +35,10 @@ export function getNavItems(): SidenavItem[] {
 
   const clientMenu: SidenavMenuItem[] = [
     {
+      label: 'Clientes',
+      to: '/dashboard/client/clients',
+    },
+    {
       label: 'Agregar Cliente',
       to: '/dashboard/client/add-client',
     },
