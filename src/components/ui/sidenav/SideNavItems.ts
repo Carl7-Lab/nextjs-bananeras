@@ -39,6 +39,10 @@ export function getNavItems(): SidenavItem[] {
       to: '/dashboard/client/clients',
     },
     {
+      label: 'Cuentas Bancarias',
+      to: '/dashboard/client/bank-accounts',
+    },
+    {
       label: 'Agregar Cliente',
       to: '/dashboard/client/add-client',
     },
