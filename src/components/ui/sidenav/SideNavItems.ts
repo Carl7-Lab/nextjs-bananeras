@@ -43,6 +43,10 @@ export function getNavItems(): SidenavItem[] {
       to: '/dashboard/client/bank-accounts',
     },
     {
+      label: 'Puertos',
+      to: '/dashboard/client/harbors',
+    },
+    {
       label: 'Agregar Cliente',
       to: '/dashboard/client/add-client',
     },
