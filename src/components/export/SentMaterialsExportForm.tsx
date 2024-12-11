@@ -19,6 +19,7 @@ import InputFieldSentPesticides from './ui/InputFieldSentPesticides';
 import InputFieldSentQuantity from './ui/InputFieldSentQuantity';
 import { useCreateExportSent } from '../../hooks/export/export-sent/createExportSent';
 import { ExportType } from '../../types/export';
+import CheckboxForm from '../ui/form/CheckboxForm';
 
 interface PesticideProps {
   pesticideId: number | '';
@@ -66,6 +67,7 @@ interface ValuesProps {
   latexRemoverQuantity: number | '';
   blockingSheetQuantity: number | '';
   insecticideSent: InsecticideProps[];
+  dataReviewed: boolean;
 }
 
 const initialValues: ValuesProps = {
@@ -104,6 +106,7 @@ const initialValues: ValuesProps = {
   latexRemoverQuantity: '',
   blockingSheetQuantity: '',
   insecticideSent: [{ insecticideId: '', quantity: '' }],
+  dataReviewed: false,
 };
 
 const pesticideSchema = Yup.object().shape({
@@ -232,6 +235,9 @@ const validationSchema = Yup.object({
   insecticideSent: Yup.array()
     .of(insecticideSchema)
     .min(0, 'No puede ser un número negativo pesticida'),
+  dataReviewed: Yup.boolean()
+    .oneOf([true], 'Debes revisar los datos antes de enviar')
+    .required('Requerido'),
 });
 
 const SentMaterialsExportForm = ({
@@ -309,11 +315,11 @@ const SentMaterialsExportForm = ({
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
-    console.log('values: ', values);
+    const { dataReviewed, ...sentMaterialsExportData } = values;
 
     createExportSent(
       {
-        ...values,
+        ...sentMaterialsExportData,
       },
       {
         onError: (error: any) => {
@@ -626,16 +632,22 @@ const SentMaterialsExportForm = ({
                   }
                 />
 
-                <Button
-                  mt='32px'
-                  py='8px'
-                  px='16px'
-                  type='submit'
-                  colorScheme='teal'
-                  isLoading={isSubmitting}
-                >
-                  Enviar
-                </Button>
+                <SimpleGrid columns={{ base: 1, sm: 1 }}>
+                  <CheckboxForm
+                    name='dataReviewed'
+                    label='He revisado los datos agregados'
+                  />
+                  <Button
+                    mt='12px'
+                    py='8px'
+                    px='16px'
+                    type='submit'
+                    colorScheme='teal'
+                    isLoading={isSubmitting}
+                  >
+                    Enviar
+                  </Button>
+                </SimpleGrid>
               </>
             )}
           </Flex>

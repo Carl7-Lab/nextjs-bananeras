@@ -18,6 +18,7 @@ import SelectBusiness from '../business/SelectBusiness';
 import SelectClient from '../client/SelectClient';
 import SelectHarbor from '../harbor/SelectHarbor';
 import SelectProducer from '../producer/SelectProducer';
+import CheckboxForm from '../ui/form/CheckboxForm';
 import InputFieldText from '../ui/form/InputFieldText';
 
 interface ValuesProps {
@@ -32,6 +33,7 @@ interface ValuesProps {
   shipSteam: string;
   shippingLineSeal: string;
   extraSeal: string;
+  dataReviewed: boolean;
 }
 
 const initialValues: ValuesProps = {
@@ -46,6 +48,7 @@ const initialValues: ValuesProps = {
   shipSteam: '',
   shippingLineSeal: '',
   extraSeal: '',
+  dataReviewed: false,
 };
 
 const validationSchema = Yup.object({
@@ -93,6 +96,9 @@ const validationSchema = Yup.object({
     .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
     .transform((value) => value.trim())
     .required('Requerido'),
+  dataReviewed: Yup.boolean()
+    .oneOf([true], 'Debes revisar los datos antes de enviar')
+    .required('Requerido'),
 });
 
 const AddExportForm = () => {
@@ -105,7 +111,7 @@ const AddExportForm = () => {
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
-    const { boxQuantity, ...exportData } = values;
+    const { boxQuantity, dataReviewed, ...exportData } = values;
 
     createExport(
       {
@@ -224,16 +230,22 @@ const AddExportForm = () => {
                 <InputFieldText name={'extraSeal'} label={'Sellos extra'} />
               </SimpleGrid>
 
-              <Button
-                mt='32px'
-                py='8px'
-                px='16px'
-                type='submit'
-                colorScheme='teal'
-                isLoading={isSubmitting}
-              >
-                Enviar
-              </Button>
+              <SimpleGrid columns={{ base: 1, sm: 1 }}>
+                <CheckboxForm
+                  name='dataReviewed'
+                  label='He revisado los datos agregados'
+                />
+                <Button
+                  mt='12px'
+                  py='8px'
+                  px='16px'
+                  type='submit'
+                  colorScheme='teal'
+                  isLoading={isSubmitting}
+                >
+                  Enviar
+                </Button>
+              </SimpleGrid>
             </Flex>
           </Form>
         )}

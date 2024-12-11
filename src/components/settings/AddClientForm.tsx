@@ -14,6 +14,7 @@ import * as Yup from 'yup';
 import { useCreateClient } from '../../hooks/export/client/createClient';
 import InputFieldHarborMultiSelect from '../harbor/InputFieldHarborMultiSelect';
 import InputFieldShippingCompanyMultiSelect from '../shipping-company/InputFieldShippingCompanyMultiSelect';
+import CheckboxForm from '../ui/form/CheckboxForm';
 import InputFieldSelector from '../ui/form/InputFieldSelector';
 import InputFieldText from '../ui/form/InputFieldText';
 
@@ -25,6 +26,7 @@ interface ValuesProps {
   phone: string;
   harbors: number[] | null;
   shippingCompanies: number[] | null;
+  dataReviewed: boolean;
 }
 
 const initialValues: ValuesProps = {
@@ -35,6 +37,7 @@ const initialValues: ValuesProps = {
   phone: '',
   harbors: null,
   shippingCompanies: null,
+  dataReviewed: false,
 };
 
 const validationSchema = Yup.object({
@@ -77,6 +80,9 @@ const validationSchema = Yup.object({
     .of(Yup.number().required())
     .nullable()
     .required('Requerido'),
+  dataReviewed: Yup.boolean()
+    .oneOf([true], 'Debes revisar los datos antes de enviar')
+    .required('Requerido'),
 });
 
 const AddClientForm = () => {
@@ -99,9 +105,10 @@ const AddClientForm = () => {
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
   ) => {
+    const { dataReviewed, ...clientData } = values;
     createClient(
       {
-        ...values,
+        ...clientData,
       },
       {
         onError: (error: any) => {
@@ -189,16 +196,22 @@ const AddClientForm = () => {
                 />
               </SimpleGrid>
 
-              <Button
-                mt='32px'
-                py='8px'
-                px='16px'
-                type='submit'
-                colorScheme='teal'
-                isLoading={isSubmitting}
-              >
-                Enviar
-              </Button>
+              <SimpleGrid columns={{ base: 1, sm: 1 }}>
+                <CheckboxForm
+                  name='dataReviewed'
+                  label='He revisado los datos agregados'
+                />
+                <Button
+                  mt='12px'
+                  py='8px'
+                  px='16px'
+                  type='submit'
+                  colorScheme='teal'
+                  isLoading={isSubmitting}
+                >
+                  Enviar
+                </Button>
+              </SimpleGrid>
             </Flex>
           </Form>
         )}

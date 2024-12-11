@@ -13,6 +13,7 @@ import * as Yup from 'yup';
 import DateGrid from './DateGrid';
 import { ExportType } from '../../../types/export';
 import { getWeekInfo } from '../../../utils/getWeekInfo';
+import CheckboxForm from '../../ui/form/CheckboxForm';
 import InputFieldDate from '../../ui/form/InputFieldDate';
 import InputFieldQuantity from '../../ui/form/InputFieldQuantity';
 import InputFieldSelector from '../../ui/form/InputFieldSelector';
@@ -65,6 +66,7 @@ interface ValuesProps {
   producer: ProducerProps;
   container: ContainerProps;
   cutSpecifications: cutSpecificationsProps;
+  dataReviewed: boolean;
 }
 
 const initialValues: ValuesProps = {
@@ -104,6 +106,7 @@ const initialValues: ValuesProps = {
     fingerLength: '',
     saneos: '',
   },
+  dataReviewed: false,
 };
 
 const businessSchema = Yup.object().shape({
@@ -202,6 +205,9 @@ const validationSchema = Yup.object({
   cutSpecifications: cutSpecificationsSchema.required(
     'La información de la especificaciones de corte es requerida'
   ),
+  dataReviewed: Yup.boolean()
+    .oneOf([true], 'Debes revisar los datos antes de enviar')
+    .required('Requerido'),
 });
 
 const CuttingSheetForm = ({
@@ -257,7 +263,8 @@ const CuttingSheetForm = ({
   }, [initialValuesCuttingSheet]);
 
   const handleSubmit = async (values: ValuesProps) => {
-    console.log('Cutting Form Values:', values);
+    const { dataReviewed, ...cuttingSheetData } = values;
+    console.log('Cutting Form Values:', cuttingSheetData);
     return;
   };
 
@@ -479,20 +486,26 @@ const CuttingSheetForm = ({
                 />
               </SimpleGrid>
 
-              <Button
-                mt='32px'
-                py='8px'
-                px='16px'
-                type='submit'
-                colorScheme='teal'
-                isLoading={isSubmitting}
-                onClick={() => {
-                  console.log('values: ', values);
-                  console.log('errors: ', errors);
-                }}
-              >
-                Enviar
-              </Button>
+              <SimpleGrid columns={{ base: 1, sm: 1 }}>
+                <CheckboxForm
+                  name='dataReviewed'
+                  label='He revisado los datos agregados'
+                />
+                <Button
+                  mt='12px'
+                  py='8px'
+                  px='16px'
+                  type='submit'
+                  colorScheme='teal'
+                  isLoading={isSubmitting}
+                  onClick={() => {
+                    console.log('values: ', values);
+                    console.log('errors: ', errors);
+                  }}
+                >
+                  Enviar
+                </Button>
+              </SimpleGrid>
             </Flex>
           </Form>
         );

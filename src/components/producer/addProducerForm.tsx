@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import { useCreateMerchant } from '../../hooks/merchants/createMerchant';
+import CheckboxForm from '../ui/form/CheckboxForm';
 import InputFieldDate from '../ui/form/InputFieldDate';
 import InputFieldNumber from '../ui/form/InputFieldNumber';
 import InputFieldSelector from '../ui/form/InputFieldSelector';
@@ -58,6 +59,7 @@ interface ValuesProps {
   email: string;
   contractType: '' | 'Contrato' | 'Spot';
   businesses: BusinessesProps[];
+  dataReviewed: boolean;
 }
 
 const initialValues: ValuesProps = {
@@ -85,6 +87,7 @@ const initialValues: ValuesProps = {
       contacts: [{ name: '', role: '', email: '', phone: '' }],
     },
   ],
+  dataReviewed: false,
 };
 
 const contactSchema = Yup.object().shape({
@@ -233,6 +236,9 @@ const validationSchema = Yup.object({
   businesses: Yup.array()
     .of(businessSchema)
     .min(1, 'Debe tener al menos una finca'),
+  dataReviewed: Yup.boolean()
+    .oneOf([true], 'Debes revisar los datos antes de enviar')
+    .required('Requerido'),
 });
 
 const AddProducerForm = () => {
@@ -245,7 +251,7 @@ const AddProducerForm = () => {
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
   ) => {
-    const { businesses, ...producerData } = values;
+    const { businesses, dataReviewed, ...producerData } = values;
     const { area, latitude, longitude, ...businessData } = businesses[0];
 
     createMerchant(
@@ -520,16 +526,22 @@ const AddProducerForm = () => {
                 )}
               </FieldArray>
 
-              <Button
-                mt='32px'
-                py='8px'
-                px='16px'
-                type='submit'
-                colorScheme='teal'
-                isLoading={isSubmitting}
-              >
-                Enviar
-              </Button>
+              <SimpleGrid columns={{ base: 1, sm: 1 }}>
+                <CheckboxForm
+                  name='dataReviewed'
+                  label='He revisado los datos agregados'
+                />
+                <Button
+                  mt='12px'
+                  py='8px'
+                  px='16px'
+                  type='submit'
+                  colorScheme='teal'
+                  isLoading={isSubmitting}
+                >
+                  Enviar
+                </Button>
+              </SimpleGrid>
             </Flex>
           </Form>
         )}

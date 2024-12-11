@@ -7,11 +7,13 @@ import {
   CardHeader,
   Heading,
   Text,
+  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { ExportType } from '../../types/export';
+import ConfirmationModal from '../ui/ConfirmationModal';
 
 interface ExportCardProps {
   exportItem: Partial<ExportType>;
@@ -20,6 +22,7 @@ interface ExportCardProps {
 
 const ExportCard: React.FC<ExportCardProps> = ({ exportItem, pathname }) => {
   const router = useRouter();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleClick = () => {
     // console.log(`export ${exportItem.id}: `, exportItem);
@@ -39,61 +42,70 @@ const ExportCard: React.FC<ExportCardProps> = ({ exportItem, pathname }) => {
   ];
 
   return (
-    <Card boxShadow='md' borderRadius='md' width={'350px'}>
-      <CardHeader>
-        <Heading fontSize={'xl'} fontWeight={'extrabold'} color={'teal.500'}>
-          Envío pendiente
-        </Heading>
-      </CardHeader>
-      <CardBody>
-        <VStack spacing={4} align='stretch'>
-          {details.map((detail, index) => (
-            <VStack key={index} spacing={4} align={'stretch'}>
-              <Box>
-                <Heading fontSize='lg' display='inline-block'>
-                  {detail.label}:{' '}
-                  <Text
-                    as='span'
-                    fontSize='md'
-                    fontWeight={'normal'}
-                    color='gray.600'
-                  >
-                    {detail.value}
-                  </Text>
-                </Heading>
-              </Box>
-              {detail.label === 'Finca' && (
-                <VStack align={'stretch'}>
-                  <Heading fontSize='lg'>Contactos: </Heading>
-                  {exportItem.business?.contacts?.map((contact) => (
-                    <VStack key={contact.id} align={'stretch'}>
-                      <Text
-                        as='span'
-                        fontSize='md'
-                        fontWeight={'normal'}
-                        color='gray.600'
-                      >
-                        {contact.name} - {contact.phone}
-                      </Text>
-                    </VStack>
-                  ))}
-                </VStack>
-              )}
-            </VStack>
-          ))}
-        </VStack>
-      </CardBody>
-      <CardFooter>
-        <Button
-          w={'100%'}
-          colorScheme='teal'
-          variant={'outline'}
-          onClick={handleClick}
-        >
-          Realizar envio
-        </Button>
-      </CardFooter>
-    </Card>
+    <>
+      <Card boxShadow='md' borderRadius='md' width={'350px'}>
+        <CardHeader>
+          <Heading fontSize={'xl'} fontWeight={'extrabold'} color={'teal.500'}>
+            Envío pendiente
+          </Heading>
+        </CardHeader>
+        <CardBody>
+          <VStack spacing={4} align='stretch'>
+            {details.map((detail, index) => (
+              <VStack key={index} spacing={4} align={'stretch'}>
+                <Box>
+                  <Heading fontSize='lg' display='inline-block'>
+                    {detail.label}:{' '}
+                    <Text
+                      as='span'
+                      fontSize='md'
+                      fontWeight={'normal'}
+                      color='gray.600'
+                    >
+                      {detail.value}
+                    </Text>
+                  </Heading>
+                </Box>
+                {detail.label === 'Finca' && (
+                  <VStack align={'stretch'}>
+                    <Heading fontSize='lg'>Contactos: </Heading>
+                    {exportItem.business?.contacts?.map((contact) => (
+                      <VStack key={contact.id} align={'stretch'}>
+                        <Text
+                          as='span'
+                          fontSize='md'
+                          fontWeight={'normal'}
+                          color='gray.600'
+                        >
+                          {contact.name} - {contact.phone}
+                        </Text>
+                      </VStack>
+                    ))}
+                  </VStack>
+                )}
+              </VStack>
+            ))}
+          </VStack>
+        </CardBody>
+        <CardFooter>
+          <Button
+            w={'100%'}
+            colorScheme='teal'
+            variant={'outline'}
+            onClick={onOpen}
+          >
+            Realizar envio
+          </Button>
+        </CardFooter>
+      </Card>
+      <ConfirmationModal
+        isOpen={isOpen}
+        onClose={onClose}
+        onConfirm={handleClick}
+        title={`Abrir Envío: ${exportItem.client?.businessName || 'Sin título'}`}
+        description='¿Estás seguro de que deseas empezar este Envío?'
+      />
+    </>
   );
 };
 
