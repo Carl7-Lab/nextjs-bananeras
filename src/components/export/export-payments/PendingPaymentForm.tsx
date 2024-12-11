@@ -15,6 +15,7 @@ import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import SelectBankAccount from './bank-account/SelectBankAccount';
 import { useCreateProducerPayment } from '../../../hooks/export/producerPayment/createProducerPayment';
+import { useUploadTransferImage } from '../../../hooks/export/producerPayment/uploadTransferImage';
 import { BoxBrandType } from '../../../types/box-brand/boxBrand';
 import { ExportSentType } from '../../../types/exportSent';
 import { HarborType } from '../../../types/harbor';
@@ -22,9 +23,19 @@ import { MerchantType } from '../../../types/merchant/merchant';
 import SelectBoxBrand from '../../box-brands/SelectBoxBrand';
 import SelectHarbor from '../../harbor/SelectHarbor';
 import SelectProducer from '../../producer/SelectProducer';
+import UploadLogoFile from '../../producer/UploadLogoFile';
 import CheckboxForm from '../../ui/form/CheckboxForm';
 import InputFieldNumber from '../../ui/form/InputFieldNumber';
 import InputFieldTextArea from '../../ui/form/InputFieldTextArea';
+
+const SUPPORTED_FORMATS = [
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/bmp',
+  'image/webp',
+  'image/jpg',
+];
 
 interface ValuesProps {
   exportSentId: number | '';
@@ -48,6 +59,7 @@ interface ValuesProps {
   destinationBankAccountId: number | '';
   amount: number | '';
   dataReviewed: boolean;
+  transferFile: File | null;
 }
 
 const initialValues: ValuesProps = {
@@ -72,6 +84,7 @@ const initialValues: ValuesProps = {
   destinationBankAccountId: '',
   amount: '',
   dataReviewed: false,
+  transferFile: null,
 };
 
 const validationSchema = Yup.object({
@@ -170,6 +183,11 @@ const validationSchema = Yup.object({
   dataReviewed: Yup.boolean()
     .oneOf([true], 'Debes revisar los datos antes de enviar')
     .required('Requerido'),
+  transferFile: Yup.mixed()
+    .required('Se requiere una imagen')
+    .test('fileFormat', 'Formato no soportado', (value) => {
+      return value && SUPPORTED_FORMATS.includes((value as File).type);
+    }),
 });
 
 const PendingPaymentForm = ({
@@ -195,6 +213,7 @@ const PendingPaymentForm = ({
     paymentSelected?.export!.boxBrand!
   );
   const { createProducerPayment } = useCreateProducerPayment();
+  const { uploadTransferImage, isLoading } = useUploadTransferImage();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -220,23 +239,24 @@ const PendingPaymentForm = ({
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
-    const {
-      amount,
-      boxQuantity,
-      materials,
-      others,
-      price,
-      subtotal1,
-      subtotal2,
-      total,
-      transport,
-      dataReviewed,
-      ...sentPaymentData
-    } = values;
+    try {
+      const {
+        transferFile,
+        amount,
+        boxQuantity,
+        materials,
+        others,
+        price,
+        subtotal1,
+        subtotal2,
+        total,
+        transport,
+        dataReviewed,
+        ...paymentData
+      } = values;
 
-    createProducerPayment(
-      {
-        ...sentPaymentData,
+      const { producerPaymentId } = await createProducerPayment({
+        ...paymentData,
         amount: Number(amount),
         boxQuantity: Number(boxQuantity),
         materials: Number(materials),
@@ -246,40 +266,35 @@ const PendingPaymentForm = ({
         subtotal2: Number(subtotal2),
         total: Number(total),
         transport: Number(transport),
-      },
-      {
-        onError: (error: any) => {
-          const { response } = error;
-          const { data } = response;
-          const { statusCode, message, error: errorTitle, model, prop } = data;
-          {
-            toast({
-              title: `Error ${statusCode}: ${errorTitle} `,
-              description: `${message}`,
-              status: 'error',
-              duration: 5000,
-              isClosable: true,
-            });
+      });
 
-            if (statusCode === 401) {
-              router.push('/api/auth/signout');
-            }
-          }
-        },
-        onSuccess: async () => {
-          toast({
-            title: 'Productor creado',
-            status: 'success',
-            duration: 5000,
-            isClosable: true,
-          });
-
-          queryClient.invalidateQueries('producerPayments');
-          actions.resetForm();
-          router.push(pathname.replace(/\/\d+$/, ''));
-        },
+      if (transferFile) {
+        await uploadTransferImage({
+          file: transferFile,
+          producerPaymentId,
+          merchantId: Number(values.merchantId),
+        });
       }
-    );
+
+      toast({
+        title: 'Liquidación y archivo subidos con éxito',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+
+      queryClient.invalidateQueries('producerPayments');
+      actions.resetForm();
+      router.push(pathname.replace(/\/\d+$/, ''));
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error?.response?.data?.message || 'Ocurrió un error',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   return (
@@ -423,6 +438,11 @@ const PendingPaymentForm = ({
                 value={values.total}
               />
             </SimpleGrid>
+            <Heading fontSize={'2xl'} p={'12px'}>
+              Subir Transferencia
+            </Heading>
+            <Divider mb={'16px'} />
+            <UploadLogoFile name={'transferFile'} />
             <SimpleGrid columns={{ base: 1, sm: 1 }}>
               <CheckboxForm
                 name='dataReviewed'
