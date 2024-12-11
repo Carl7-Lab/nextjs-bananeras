@@ -42,8 +42,8 @@ interface BusinessesProps {
   address: string;
   fruitType: string;
   area: number;
-  latitude: number | '';
-  longitude: number | '';
+  latitude: number | 0;
+  longitude: number | 0;
   codeMAGAP: string;
   codeAGROCALIDAD: string;
   certificates: CertificatesProps[];
@@ -75,8 +75,8 @@ const initialValues: ValuesProps = {
       address: '',
       fruitType: '',
       area: 0,
-      latitude: '',
-      longitude: '',
+      latitude: 0,
+      longitude: 0,
       codeMAGAP: '',
       codeAGROCALIDAD: '',
       certificates: [
@@ -112,6 +112,7 @@ const contactSchema = Yup.object().shape({
 
 const businessCodeSchema = Yup.object().shape({
   code: Yup.string()
+    .min(5, 'Debe tener al menos 5 caracteres')
     .max(50, 'Debe tener 50 caracteres o menos')
     .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
     .transform((value) => value.trim())
@@ -125,11 +126,12 @@ const certificateSchema = Yup.object().shape({
     .transform((value) => value.trim())
     .required('Requerido'),
   certificateCode: Yup.string()
-    .max(50, 'Debe tener 50 caracteres o menos')
+    .min(5, 'Debe tener 5 caracteres o más')
+    .max(20, 'Debe tener 20 caracteres o menos')
     .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
     .transform((value) => value.trim())
     .required('Requerido'),
-  issueDate: Yup.date().nullable().required('Requerido'),
+  issueDate: Yup.date().required('Requerido'),
   expirationDate: Yup.date()
     .nullable()
     .required('Requerido')
@@ -159,7 +161,7 @@ const businessSchema = Yup.object().shape({
     .matches(/^[a-zA-Z0-9\s.,'-]+$/, 'Dirección no válida')
     .transform((value) => value.trim()),
   fruitType: Yup.string()
-    .oneOf(['Organica', 'Convencional'], 'Tipo de fruta no válido')
+    .oneOf(['Orgánica', 'Convencional'], 'Tipo de fruta no válido')
     .required('Requerido'),
   area: Yup.number().moreThan(0, 'Debe ser mayor que 0').required('Requerido'),
   latitude: Yup.number()
@@ -169,11 +171,13 @@ const businessSchema = Yup.object().shape({
     .min(-180, 'Debe ser al menos -180')
     .max(180, 'Debe ser como máximo 180'),
   codeMAGAP: Yup.string()
+    .min(5, 'Debe tener al menos 5 caracteres')
     .max(50, 'Debe tener 50 caracteres o menos')
     .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
     .transform((value) => value.trim())
     .required('Requerido'),
   codeAGROCALIDAD: Yup.string()
+    .min(5, 'Debe tener al menos 5 caracteres')
     .max(50, 'Debe tener 50 caracteres o menos')
     .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
     .transform((value) => value.trim())
@@ -183,7 +187,7 @@ const businessSchema = Yup.object().shape({
     .min(1, 'Debe tener al menos un certificado'),
   businessCodes: Yup.array()
     .of(businessCodeSchema)
-    .min(1, 'Debe tener al menos un código'),
+    .min(1, 'Debe tener al menos 1'),
   contacts: Yup.array()
     .of(contactSchema)
     .min(1, 'Debe tener al menos un contacto'),
@@ -202,7 +206,7 @@ const validationSchema = Yup.object({
   businessId: Yup.string()
     .length(13, 'Debe tener exactamente 13 caracteres')
     .matches(
-      /^\d{10}001$/,
+      /^\d{10}\d{3}$/,
       'El RUC del negocio debe estar en el formato xxxxxxxxxx001'
     )
     .transform((value) => value.trim())
@@ -241,8 +245,10 @@ export default function OnboardingForm() {
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
   ) => {
+    console.log('here!!!');
     const { businesses, ...producerData } = values;
     const { area, ...businessData } = businesses[0];
+    console.log(businesses[0]);
 
     createOnboarding(
       {
@@ -322,8 +328,8 @@ export default function OnboardingForm() {
       id: 'Convencional',
     },
     {
-      name: 'Organica',
-      id: 'Organica',
+      name: 'Orgánica',
+      id: 'Orgánica',
     },
   ];
 

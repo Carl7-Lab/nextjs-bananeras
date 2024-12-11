@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import { useQuery } from 'react-query';
 import axios from '@/lib/axios';
 import { PaginationParams } from '@/types/paginationParams';
@@ -10,7 +11,23 @@ interface Body {
 }
 
 function listBusinesses(params: Params, body: Body) {
-  return axios.get(`/merchant/${body.id}/business`, { params });
+  return axios
+    .get(`/merchant/${body.id}/business`, { params })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      if (error.response?.status === 404) {
+        return {
+          data: [],
+          status: 404,
+          statusText: 'Not Found',
+          headers: {},
+          config: error.config,
+        } as AxiosResponse;
+      }
+      throw error;
+    });
 }
 
 export function useBusinessesByMerchantId(

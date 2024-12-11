@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Checkbox,
   Divider,
   Flex,
   Heading,
@@ -21,6 +22,7 @@ import { MerchantType } from '../../../types/merchant/merchant';
 import SelectBoxBrand from '../../box-brands/SelectBoxBrand';
 import SelectHarbor from '../../harbor/SelectHarbor';
 import SelectProducer from '../../producer/SelectProducer';
+import CheckboxForm from '../../ui/form/CheckboxForm';
 import InputFieldNumber from '../../ui/form/InputFieldNumber';
 import InputFieldTextArea from '../../ui/form/InputFieldTextArea';
 
@@ -45,6 +47,7 @@ interface ValuesProps {
   sourceBankAccountId: number | '';
   destinationBankAccountId: number | '';
   amount: number | '';
+  dataReviewed: boolean;
 }
 
 const initialValues: ValuesProps = {
@@ -68,6 +71,7 @@ const initialValues: ValuesProps = {
   sourceBankAccountId: '',
   destinationBankAccountId: '',
   amount: '',
+  dataReviewed: false,
 };
 
 const validationSchema = Yup.object({
@@ -163,6 +167,9 @@ const validationSchema = Yup.object({
       (value) => (value + '').match(/^\d+(\.\d{1,2})?$/) !== null
     )
     .required('Requerido'),
+  dataReviewed: Yup.boolean()
+    .oneOf([true], 'Debes revisar los datos antes de enviar')
+    .required('Requerido'),
 });
 
 const PendingPaymentForm = ({
@@ -223,6 +230,7 @@ const PendingPaymentForm = ({
       subtotal2,
       total,
       transport,
+      dataReviewed,
       ...sentPaymentData
     } = values;
 
@@ -281,7 +289,7 @@ const PendingPaymentForm = ({
       onSubmit={sentPayment}
       validationSchema={validationSchema}
     >
-      {({ isSubmitting, values }) => (
+      {({ isSubmitting, values, handleChange }) => (
         <Form>
           <Flex flexDirection='column' gap={3}>
             <Heading fontSize={'2xl'} p={'12px'}>
@@ -415,17 +423,22 @@ const PendingPaymentForm = ({
                 value={values.total}
               />
             </SimpleGrid>
-
-            <Button
-              mt='32px'
-              py='8px'
-              px='16px'
-              type='submit'
-              colorScheme='teal'
-              isLoading={isSubmitting}
-            >
-              Enviar
-            </Button>
+            <SimpleGrid columns={{ base: 1, sm: 1 }}>
+              <CheckboxForm
+                name='dataReviewed'
+                label='He revisado los datos agregados'
+              />
+              <Button
+                mt='12px'
+                py='8px'
+                px='16px'
+                type='submit'
+                colorScheme='teal'
+                isLoading={isSubmitting}
+              >
+                Enviar
+              </Button>
+            </SimpleGrid>
           </Flex>
         </Form>
       )}

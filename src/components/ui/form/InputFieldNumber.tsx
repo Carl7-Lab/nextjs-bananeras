@@ -18,6 +18,7 @@ interface InputFieldProps {
   isReadOnly?: boolean;
   isDecimal?: boolean;
   isDolar?: boolean;
+  size?: string;
 }
 
 const InputFieldNumber: React.FC<InputFieldProps> = ({
@@ -28,6 +29,7 @@ const InputFieldNumber: React.FC<InputFieldProps> = ({
   isReadOnly = false,
   isDecimal = false,
   isDolar = false,
+  size = 'md',
 }) => {
   const [field, meta, helpers] = useField(name);
 
@@ -74,6 +76,7 @@ const InputFieldNumber: React.FC<InputFieldProps> = ({
           </InputLeftElement>
         )}
         <NumberInput
+          size={size}
           width={'100%'}
           {...field}
           isReadOnly={isReadOnly}
