@@ -14,9 +14,9 @@ function AddProductorPage() {
               base: '95%',
               sm: '95%',
               md: '90%',
-              lg: '600px',
-              xl: '600px',
-              '2xl': '700px',
+              lg: '90%',
+              xl: '90%',
+              '2xl': '90%',
             }}
             mb={'20px'}
           >

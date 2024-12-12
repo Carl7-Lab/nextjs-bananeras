@@ -7,6 +7,7 @@ import {
   InputRightElement,
   IconButton,
   Text,
+  Flex,
 } from '@chakra-ui/react';
 import { useField } from 'formik';
 import { useEffect, useRef } from 'react';
@@ -20,6 +21,8 @@ interface InputFieldProps {
   placeholder?: string;
   isDisabledRemove?: boolean;
   isReadOnly?: boolean;
+  flexDirection?: 'column' | 'row';
+  alignItems?: 'flex-start' | 'flex-end';
   isBan?: {
     state: boolean;
     setBanState?: () => void;
@@ -35,6 +38,8 @@ const InputFieldText: React.FC<InputFieldProps> = ({
   placeholder,
   isDisabledRemove,
   isReadOnly,
+  flexDirection = 'column',
+  alignItems = 'flex-start',
   isBan,
   onClickRemove,
 }) => {
@@ -87,46 +92,48 @@ const InputFieldText: React.FC<InputFieldProps> = ({
 
   return (
     <FormControl id={name} isInvalid={!!meta.error && meta.touched}>
-      {label && (
-        <FormLabel fontSize='sm' mb='8px'>
-          <Text display='flex' alignItems='center'>
-            {label}{' '}
-            {!!isBan && (
-              <IconButton
-                isRound={true}
-                ml={'5px'}
-                colorScheme={!!isBan.state ? 'orange' : 'gray'}
-                aria-label='Ban'
-                size={'base'}
-                variant={'outline'}
-                icon={<FaBan size={'20px'} />}
-                onClick={banClick}
-              />
-            )}
-          </Text>
-        </FormLabel>
-      )}
-      <InputGroup>
-        <Input
-          {...field}
-          ref={inputRef}
-          isReadOnly={isBan?.state || isReadOnly}
-          placeholder={placeholder || label}
-        />
-        {onClickRemove && (
-          <InputRightElement>
-            <IconButton
-              variant='solid'
-              colorScheme='red'
-              aria-label='Eliminar'
-              fontSize='20px'
-              icon={<TiDelete />}
-              isDisabled={isDisabledRemove}
-              onClick={onClickRemove}
-            />
-          </InputRightElement>
+      <Flex flexDirection={flexDirection} alignItems={alignItems}>
+        {label && (
+          <FormLabel fontSize='sm' mb='8px'>
+            <Text display='flex' alignItems='center'>
+              {label}{' '}
+              {!!isBan && (
+                <IconButton
+                  isRound={true}
+                  ml={'5px'}
+                  colorScheme={!!isBan.state ? 'orange' : 'gray'}
+                  aria-label='Ban'
+                  size={'base'}
+                  variant={'outline'}
+                  icon={<FaBan size={'20px'} />}
+                  onClick={banClick}
+                />
+              )}
+            </Text>
+          </FormLabel>
         )}
-      </InputGroup>
+        <InputGroup>
+          <Input
+            {...field}
+            ref={inputRef}
+            isReadOnly={isBan?.state || isReadOnly}
+            placeholder={placeholder || label}
+          />
+          {onClickRemove && (
+            <InputRightElement>
+              <IconButton
+                variant='solid'
+                colorScheme='red'
+                aria-label='Eliminar'
+                fontSize='20px'
+                icon={<TiDelete />}
+                isDisabled={isDisabledRemove}
+                onClick={onClickRemove}
+              />
+            </InputRightElement>
+          )}
+        </InputGroup>
+      </Flex>
       {meta.error && meta.touched && (
         <FormErrorMessage mt='8px' mb='16px'>
           {meta.error}

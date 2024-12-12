@@ -11,7 +11,9 @@ import { FieldArray, Form, Formik, FormikHelpers } from 'formik';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
+import ImportProducerDrawer from './ImportProducerDrawer';
 import { useCreateMerchant } from '../../hooks/merchants/createMerchant';
+import CheckboxForm from '../ui/form/CheckboxForm';
 import InputFieldDate from '../ui/form/InputFieldDate';
 import InputFieldNumber from '../ui/form/InputFieldNumber';
 import InputFieldSelector from '../ui/form/InputFieldSelector';
@@ -41,8 +43,8 @@ interface BusinessesProps {
   address: string;
   fruitType: string;
   area: number;
-  latitude: number | '';
-  longitude: number | '';
+  latitude: number | 0;
+  longitude: number | 0;
   codeMAGAP: string;
   codeAGROCALIDAD: string;
   certificates: CertificatesProps[];
@@ -58,6 +60,7 @@ interface ValuesProps {
   email: string;
   contractType: '' | 'Contrato' | 'Spot';
   businesses: BusinessesProps[];
+  dataReviewed: boolean;
 }
 
 const initialValues: ValuesProps = {
@@ -74,8 +77,8 @@ const initialValues: ValuesProps = {
       address: '',
       fruitType: '',
       area: 0,
-      latitude: '',
-      longitude: '',
+      latitude: 0,
+      longitude: 0,
       codeMAGAP: '',
       codeAGROCALIDAD: '',
       certificates: [
@@ -85,6 +88,7 @@ const initialValues: ValuesProps = {
       contacts: [{ name: '', role: '', email: '', phone: '' }],
     },
   ],
+  dataReviewed: false,
 };
 
 const contactSchema = Yup.object().shape({
@@ -128,9 +132,8 @@ const certificateSchema = Yup.object().shape({
     .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
     .transform((value) => value.trim())
     .required('Requerido'),
-  issueDate: Yup.date().nullable().required('Requerido'),
+  issueDate: Yup.date().required('Requerido'),
   expirationDate: Yup.date()
-    .nullable()
     .required('Requerido')
     .min(
       Yup.ref('issueDate'),
@@ -158,7 +161,7 @@ const businessSchema = Yup.object().shape({
     .matches(/^[a-zA-Z0-9\s.,'-]+$/, 'Dirección no válida')
     .transform((value) => value.trim()),
   fruitType: Yup.string()
-    .oneOf(['Organica', 'Convencional'], 'Tipo de fruta no válido')
+    .oneOf(['Orgánica', 'Convencional'], 'Tipo de fruta no válido')
     .required('Requerido'),
   area: Yup.number()
     .moreThan(0, 'Debe ser mayor que 0')
@@ -234,6 +237,9 @@ const validationSchema = Yup.object({
   businesses: Yup.array()
     .of(businessSchema)
     .min(1, 'Debe tener al menos una finca'),
+  dataReviewed: Yup.boolean()
+    .oneOf([true], 'Debes revisar los datos antes de enviar')
+    .required('Requerido'),
 });
 
 const AddProducerForm = () => {
@@ -246,13 +252,20 @@ const AddProducerForm = () => {
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
   ) => {
-    const { businesses, ...producerData } = values;
-    const { area, ...businessData } = businesses[0];
+    const { businesses, dataReviewed, ...producerData } = values;
+    const { area, latitude, longitude, ...businessData } = businesses[0];
 
     createMerchant(
       {
         ...producerData,
-        businesses: [{ area: Number(area), ...businessData }],
+        businesses: [
+          {
+            area: Number(area),
+            latitude: Number(latitude),
+            longitude: Number(longitude),
+            ...businessData,
+          },
+        ],
       },
       {
         onError: (error: any) => {
@@ -324,8 +337,8 @@ const AddProducerForm = () => {
       id: 'Convencional',
     },
     {
-      name: 'Organica',
-      id: 'Organica',
+      name: 'Orgánica',
+      id: 'Orgánica',
     },
   ];
 
@@ -338,13 +351,15 @@ const AddProducerForm = () => {
       >
         {({ isSubmitting, values }) => (
           <Form>
-            <Flex flexDirection='column' gap={3}>
-              <Heading fontSize={'2xl'} p={'12px'}>
-                Productor
-              </Heading>
-              <Divider mb={'16px'} />
+            <Flex flexDirection='column' gap={2}>
+              <Flex justify='space-between'>
+                <Heading fontSize={'2xl'} p={'12px'}>
+                  Productor
+                </Heading>
+                <ImportProducerDrawer></ImportProducerDrawer>
+              </Flex>
 
-              <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+              <SimpleGrid columns={{ base: 1, sm: 4 }} spacing={4}>
                 <InputFieldText name={'businessName'} label={'Razon Social'} />
                 <InputFieldText name={'businessId'} label={'RUC'} />
                 <InputFieldText name={'city'} label={'Ciudad'} />
@@ -362,7 +377,7 @@ const AddProducerForm = () => {
               </Heading>
               <Divider mb={'16px'} />
 
-              <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+              <SimpleGrid columns={{ base: 1, sm: 4 }} spacing={4}>
                 <InputFieldText name={'businesses[0].name'} label={'Nombre'} />
                 <InputFieldNumber name={'businesses[0].area'} label={'Área'} />
                 <InputFieldText
@@ -398,7 +413,7 @@ const AddProducerForm = () => {
               </Heading>
               <Divider mb={'16px'} />
 
-              <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+              <SimpleGrid columns={{ base: 1, sm: 4 }} spacing={4}>
                 <InputFieldText
                   name={'businesses[0].certificates[0].name'}
                   label={'Nombre'}
@@ -425,7 +440,7 @@ const AddProducerForm = () => {
               <FieldArray name='businesses[0].businessCodes'>
                 {({ push, remove }) => (
                   <>
-                    <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+                    <SimpleGrid columns={{ base: 1, sm: 4 }} spacing={4}>
                       {values.businesses[0].businessCodes.map(
                         (_businessCode, index) => (
                           <InputFieldText
@@ -463,7 +478,7 @@ const AddProducerForm = () => {
                   <>
                     {values.businesses[0].contacts.map((_contact, index) => (
                       <div key={index}>
-                        <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+                        <SimpleGrid columns={{ base: 1, sm: 4 }} spacing={4}>
                           <InputFieldText
                             name={`businesses[0].contacts[${index}].name`}
                             label={'Nombre'}
@@ -500,7 +515,7 @@ const AddProducerForm = () => {
                         />
                       </div>
                     ))}
-                    <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+                    <SimpleGrid columns={{ base: 1, sm: 4 }} spacing={4}>
                       <Box></Box>
                       <Button
                         onClick={() =>
@@ -514,16 +529,22 @@ const AddProducerForm = () => {
                 )}
               </FieldArray>
 
-              <Button
-                mt='32px'
-                py='8px'
-                px='16px'
-                type='submit'
-                colorScheme='teal'
-                isLoading={isSubmitting}
-              >
-                Enviar
-              </Button>
+              <SimpleGrid columns={{ base: 1, sm: 1 }}>
+                <CheckboxForm
+                  name='dataReviewed'
+                  label='He revisado los datos agregados'
+                />
+                <Button
+                  mt='12px'
+                  py='8px'
+                  px='16px'
+                  type='submit'
+                  colorScheme='teal'
+                  isLoading={isSubmitting}
+                >
+                  Enviar
+                </Button>
+              </SimpleGrid>
             </Flex>
           </Form>
         )}

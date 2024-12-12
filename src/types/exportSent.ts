@@ -35,7 +35,7 @@ export type ExportSentType = {
   protectorQuantity: number | '';
   clusterBagQuantity: number | '';
   // post harvest
-  pesticideSent: PesticideSentPartType[];
+  pesticideSent: Partial<PesticideSentPartType>[];
   // container
   palletsTypeQuantity: number | '';
   miniPalletsTypeQuantity: number | '';
@@ -52,7 +52,7 @@ export type ExportSentType = {
   // select
   latexRemoverQuantity: number | '';
   blockingSheetQuantity: number | '';
-  insecticideSent: InsecticideSentPartType[];
+  insecticideSent: Partial<InsecticideSentPartType>[];
 
   pendingProducerPayment: boolean;
   producerPayment: ProducerPaymentType;

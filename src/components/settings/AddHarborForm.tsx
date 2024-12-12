@@ -36,8 +36,8 @@ interface ValuesProps {
   city: string;
   location: string;
   name: string;
-  latitude: number | '';
-  longitude: number | '';
+  latitude: number | 0;
+  longitude: number | 0;
   requirementsSC: RequirementProps[];
   openTime: string;
   closeTime: string;
@@ -50,8 +50,8 @@ const initialValues: ValuesProps = {
   country: '',
   city: '',
   location: '',
-  latitude: '',
-  longitude: '',
+  latitude: 0,
+  longitude: 0,
   requirementsSC: [{ name: '', code: '', issueDate: '', expirationDate: '' }],
   openTime: '',
   closeTime: '',
@@ -74,9 +74,8 @@ const requirementSchema = Yup.object({
     .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
     .transform((value) => value.trim())
     .required('Requerido'),
-  issueDate: Yup.date().nullable().required('Requerido'),
+  issueDate: Yup.date().required('Requerido'),
   expirationDate: Yup.date()
-    .nullable()
     .required('Requerido')
     .min(
       Yup.ref('issueDate'),

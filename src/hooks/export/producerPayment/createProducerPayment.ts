@@ -4,13 +4,18 @@ import { MutationConfig } from '@/lib/react-query';
 import { ProducerPaymentType } from '@/types/producerPayment';
 
 interface CreateProducerPaymentResponse {
-  producerPaymentId: string;
+  producerPaymentId: number;
 }
 
-export const createProducerPayment = (
+export const createProducerPayment = async (
   data: Partial<ProducerPaymentType>
 ): Promise<CreateProducerPaymentResponse> => {
-  return axios.post('export/producer-payment', data);
+  const response = await axios.post('export/producer-payment', data);
+  const firstRecord = response.data[0];
+  if (!firstRecord || !firstRecord.id) {
+    throw new Error('No se encontró un producerPayment válido en la respuesta');
+  }
+  return { producerPaymentId: firstRecord.id };
 };
 
 type UseCreateProducerPaymentOptions = {
@@ -25,5 +30,5 @@ export const useCreateProducerPayment = ({
     mutationFn: createProducerPayment,
   });
 
-  return { ...mutation, createProducerPayment: mutation.mutate };
+  return { ...mutation, createProducerPayment: mutation.mutateAsync };
 };

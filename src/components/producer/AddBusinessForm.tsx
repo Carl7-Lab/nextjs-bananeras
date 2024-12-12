@@ -13,6 +13,7 @@ import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import SelectProducer from './SelectProducer';
 import { useCreateBusiness } from '../../hooks/business/createBusiness';
+import CheckboxForm from '../ui/form/CheckboxForm';
 import InputFieldDate from '../ui/form/InputFieldDate';
 import InputFieldNumber from '../ui/form/InputFieldNumber';
 import InputFieldSelector from '../ui/form/InputFieldSelector';
@@ -43,13 +44,14 @@ interface ValuesProps {
   address: string;
   fruitType: string;
   area: number;
-  latitude: number | '';
-  longitude: number | '';
+  latitude: number | 0;
+  longitude: number | 0;
   codeMAGAP: string;
   codeAGROCALIDAD: string;
   certificates: CertificatesProps[];
   businessCodes: BusinessCodesProps[];
   contacts: ContactsProps[];
+  dataReviewed: boolean;
 }
 
 const initialValues: ValuesProps = {
@@ -59,8 +61,8 @@ const initialValues: ValuesProps = {
   address: '',
   fruitType: '',
   area: 0,
-  latitude: '',
-  longitude: '',
+  latitude: 0,
+  longitude: 0,
   codeMAGAP: '',
   codeAGROCALIDAD: '',
   certificates: [
@@ -68,6 +70,7 @@ const initialValues: ValuesProps = {
   ],
   businessCodes: [{ code: '' }],
   contacts: [{ name: '', role: '', email: '', phone: '' }],
+  dataReviewed: false,
 };
 
 const contactSchema = Yup.object().shape({
@@ -177,6 +180,9 @@ const validationSchema = Yup.object({
   contacts: Yup.array()
     .of(contactSchema)
     .min(1, 'Debe tener al menos un contacto'),
+  dataReviewed: Yup.boolean()
+    .oneOf([true], 'Debes revisar los datos antes de enviar')
+    .required('Requerido'),
 });
 
 const AddBusinessForm = () => {
@@ -189,7 +195,7 @@ const AddBusinessForm = () => {
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
   ) => {
-    const { area, ...businessData } = values;
+    const { area, dataReviewed, ...businessData } = values;
 
     createBusiness(
       {
@@ -405,16 +411,22 @@ const AddBusinessForm = () => {
                 )}
               </FieldArray>
 
-              <Button
-                mt='32px'
-                py='8px'
-                px='16px'
-                type='submit'
-                colorScheme='teal'
-                isLoading={isSubmitting}
-              >
-                Enviar
-              </Button>
+              <SimpleGrid columns={{ base: 1, sm: 1 }}>
+                <CheckboxForm
+                  name='dataReviewed'
+                  label='He revisado los datos agregados'
+                />
+                <Button
+                  mt='12px'
+                  py='8px'
+                  px='16px'
+                  type='submit'
+                  colorScheme='teal'
+                  isLoading={isSubmitting}
+                >
+                  Enviar
+                </Button>
+              </SimpleGrid>
             </Flex>
           </Form>
         )}

@@ -46,6 +46,7 @@ import SelectPesticide from './post-harvest/pesticide/SelectPesticide';
 import InputFieldBrandSelect from './specifications/brand/InputFieldBrandSelect';
 import InputFieldRequiredCertificateMultiSelect from './specifications/requiredCertificate/InputFieldRequiredCertificateMultiSelect';
 import { PesticideType } from '../../types/box-brand/post-harvest/pesticide';
+import CheckboxForm from '../ui/form/CheckboxForm';
 import InputFieldNumber from '../ui/form/InputFieldNumber';
 import InputFieldQuantity from '../ui/form/InputFieldQuantity';
 import InputFieldText from '../ui/form/InputFieldText';
@@ -132,6 +133,7 @@ interface ValuesProps {
   insecticides: InsecticideProps[];
   blockingSheetId: number | '';
   blockingSheetQuantity: number | '';
+  dataReviewed: boolean;
 }
 
 const initialValues: ValuesProps = {
@@ -203,6 +205,7 @@ const initialValues: ValuesProps = {
   ],
   blockingSheetId: '',
   blockingSheetQuantity: '',
+  dataReviewed: false,
 };
 
 const pesticideSchema = Yup.object().shape({
@@ -772,10 +775,12 @@ const validationSchema = Yup.object({
         return value > 0;
       }
     ),
-
   insecticides: Yup.array()
     .of(insecticideSchema)
     .min(0, 'Debe de tener 0 o más pesticidas'),
+  dataReviewed: Yup.boolean()
+    .oneOf([true], 'Debes revisar los datos antes de enviar')
+    .required('Requerido'),
 });
 
 interface InputFieldProps {
@@ -876,8 +881,13 @@ export default function AddBoxBrandsForm() {
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
   ) => {
-    const { netWeightBox, grossWeightBox, boxQuantity, ...boxBrandData } =
-      values;
+    const {
+      netWeightBox,
+      grossWeightBox,
+      boxQuantity,
+      dataReviewed,
+      ...boxBrandData
+    } = values;
 
     // console.log(values);
 
@@ -1228,17 +1238,23 @@ export default function AddBoxBrandsForm() {
                 insecticides={values.insecticides}
               />
 
-              <Button
-                mt='32px'
-                py='8px'
-                px='16px'
-                type='submit'
-                colorScheme='teal'
-                isLoading={isSubmitting}
-                onClick={() => console.log('values: ', values)}
-              >
-                Enviar
-              </Button>
+              <SimpleGrid columns={{ base: 1, sm: 1 }}>
+                <CheckboxForm
+                  name='dataReviewed'
+                  label='He revisado los datos agregados'
+                />
+                <Button
+                  mt='12px'
+                  py='8px'
+                  px='16px'
+                  type='submit'
+                  colorScheme='teal'
+                  isLoading={isSubmitting}
+                  onClick={() => console.log('values: ', values)}
+                >
+                  Enviar
+                </Button>
+              </SimpleGrid>
             </Flex>
           </Form>
         )}

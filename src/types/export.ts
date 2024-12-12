@@ -24,5 +24,6 @@ export type ExportType = {
   shippingLineSeal: string;
   extraSeal: string;
   pendingExportSent: boolean;
+  pendingCuttingSheet: boolean;
   exportSent: Partial<ExportSentType>;
 };

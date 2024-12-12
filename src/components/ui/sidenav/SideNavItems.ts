@@ -20,6 +20,10 @@ export function getNavItems(): SidenavItem[] {
       to: '/dashboard/export/add-export',
     },
     {
+      label: 'Hoja de Corte',
+      to: '/dashboard/export/cutting-sheet',
+    },
+    {
       label: 'Envío de Insumos',
       to: '/dashboard/export/supply-shipment',
     },
@@ -30,6 +34,18 @@ export function getNavItems(): SidenavItem[] {
   ];
 
   const clientMenu: SidenavMenuItem[] = [
+    {
+      label: 'Clientes',
+      to: '/dashboard/client/clients',
+    },
+    {
+      label: 'Cuentas Bancarias',
+      to: '/dashboard/client/bank-accounts',
+    },
+    {
+      label: 'Puertos',
+      to: '/dashboard/client/harbors',
+    },
     {
       label: 'Agregar Cliente',
       to: '/dashboard/client/add-client',
@@ -48,6 +64,10 @@ export function getNavItems(): SidenavItem[] {
     {
       label: 'Fincas',
       to: '/dashboard/producer/fincas',
+    },
+    {
+      label: 'Productores',
+      to: '/dashboard/producer/producers',
     },
     {
       label: 'Agregar Productor',

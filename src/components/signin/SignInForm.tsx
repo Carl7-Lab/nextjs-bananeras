@@ -38,9 +38,6 @@ export default function SignInForm(props: Props) {
       callbackUrl:
         props.callbackUrl ?? 'http://localhost:3000/dashboard/export/search',
     });
-
-    console.log('res: ', res);
-    // return;
   };
 
   return (

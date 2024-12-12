@@ -16,7 +16,9 @@ const CheckboxForm: React.FC<CheckboxProps> = ({ name, label }) => {
   const [field, meta] = useField(name);
   return (
     <FormControl id={name} isInvalid={!!meta.error && meta.touched} mt='10px'>
-      <Checkbox {...field}>{label}</Checkbox>
+      <Checkbox {...field} colorScheme='teal'>
+        {label}{' '}
+      </Checkbox>
       {meta.error && meta.touched && (
         <FormErrorMessage mt='8px' mb='16px'>
           {meta.error}
