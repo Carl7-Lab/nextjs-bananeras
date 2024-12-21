@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
+import ImportClientDrawer from './ImportClientDrawer';
 import { useCreateClient } from '../../hooks/export/client/createClient';
 import InputFieldHarborMultiSelect from '../harbor/InputFieldHarborMultiSelect';
 import InputFieldShippingCompanyMultiSelect from '../shipping-company/InputFieldShippingCompanyMultiSelect';
@@ -161,9 +162,13 @@ const AddClientForm = () => {
         {({ isSubmitting }) => (
           <Form>
             <Flex flexDirection='column' gap={3} width={'100%'}>
-              <Heading fontSize={'2xl'} p={'12px'}>
-                Agregando Cliente
-              </Heading>
+              <Flex justify='space-between'>
+                <Heading fontSize={'2xl'} p={'12px'}>
+                  Agregando Cliente
+                </Heading>
+                <ImportClientDrawer />
+              </Flex>
+
               <Divider mb={'16px'} />
 
               <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>

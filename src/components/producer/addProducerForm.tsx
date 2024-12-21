@@ -356,7 +356,7 @@ const AddProducerForm = () => {
                 <Heading fontSize={'2xl'} p={'12px'}>
                   Productor
                 </Heading>
-                <ImportProducerDrawer></ImportProducerDrawer>
+                <ImportProducerDrawer />
               </Flex>
 
               <SimpleGrid columns={{ base: 1, sm: 4 }} spacing={4}>
