@@ -1,0 +1,25 @@
+export type CuttingType = {
+  id: number | '';
+  createdAt: Date | '';
+  updatedAt: Date | '';
+  quality: string;
+  shipmentType: string;
+  containerPositioning: string;
+  belowDeck: string;
+  leavesAtHarvest: number | '';
+  maxAgeAtCut: number | '';
+  minCaliber: number | '';
+  maxCaliber: number | '';
+  fingerLength: string;
+  saneos: string;
+  cunas: string;
+  clusterDetail: string;
+  firstLine: string;
+  secondLine: string;
+  thirdLine: string;
+  fourthLine: string;
+  packagingPattern: string;
+  authorizedTransport: string;
+  aliquot: string;
+  generalObservations?: string | null;
+};

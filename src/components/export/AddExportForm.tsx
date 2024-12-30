@@ -1,27 +1,41 @@
 'use client';
 import {
+  Box,
   Button,
   Divider,
   Flex,
   Heading,
   SimpleGrid,
   useToast,
+  Text,
 } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
+import DateGrid from './cutting-sheet/DateGrid';
 import { useCreateExport } from '../../hooks/export/createExport';
+import { getWeekInfo } from '../../utils/getWeekInfo';
 import SelectBoxBrand from '../box-brands/SelectBoxBrand';
 import SelectBusiness from '../business/SelectBusiness';
 import SelectClient from '../client/SelectClient';
 import SelectHarbor from '../harbor/SelectHarbor';
 import SelectProducer from '../producer/SelectProducer';
 import CheckboxForm from '../ui/form/CheckboxForm';
+import InputFieldDate from '../ui/form/InputFieldDate';
 import InputFieldText from '../ui/form/InputFieldText';
 
+interface WeekCuttingProps {
+  description: string;
+  daysOfWeek: string[];
+  boxesOfDay: number[];
+  total: number;
+}
+
 interface ValuesProps {
+  cuttingDate: Date | '';
+  weekCutting: WeekCuttingProps;
   boxBrandId: number | '';
   boxQuantity: number | '';
   merchantId: number | '';
@@ -41,6 +55,13 @@ const initialValues: ValuesProps = {
   boxQuantity: 0,
   merchantId: '',
   businessId: '',
+  cuttingDate: '',
+  weekCutting: {
+    description: '',
+    daysOfWeek: ['', '', '', '', '', '', ''],
+    boxesOfDay: [0, 0, 0, 0, 0, 0, 0],
+    total: 0,
+  },
   // harborId: '',
   departureHarborId: '',
   destinationHarborId: '',
@@ -50,6 +71,18 @@ const initialValues: ValuesProps = {
   extraSeal: '',
   dataReviewed: false,
 };
+
+const weekCuttingSchema = Yup.object().shape({
+  description: Yup.string().required('La descripción es requerida'),
+  daysOfWeek: Yup.array()
+    .of(Yup.string().required('La fecha es requerida'))
+    .length(7, 'Debe contener exactamente 7 elementos')
+    .required('Los días de la semana son requeridos'),
+  boxesOfDay: Yup.array()
+    .of(Yup.number().required('La cantidad de cajas es requerida'))
+    .length(7, 'Debe contener exactamente 7 elementos')
+    .required('La cantidad de cajas por día es requerida'),
+});
 
 const validationSchema = Yup.object({
   boxBrandId: Yup.number()
@@ -61,6 +94,23 @@ const validationSchema = Yup.object({
     .moreThan(0, 'Debe ser mayor que 0')
     .lessThan(10000, 'Debe ser menor que 10000 cajas')
     .required('Requerido'),
+  cuttingDate: Yup.date().required('Requerido'),
+  weekCutting: weekCuttingSchema
+    .required('La información de la semana de corte es requerida')
+    .test(
+      'boxesOfDay-sum',
+      'La sumatoria de cajas por día debe ser igual a la cantidad de cajas',
+      function (value) {
+        const { boxesOfDay, daysOfWeek, description } = value;
+        const { container } = this.parent;
+        if (!!container && !!daysOfWeek && !!description) {
+          const { boxQuantity } = container;
+          const sumBoxes = boxesOfDay.reduce((sum, value) => sum + value, 0);
+          return sumBoxes === boxQuantity;
+        }
+        return true;
+      }
+    ),
   merchantId: Yup.number()
     .integer('Debe ser un número entero')
     .moreThan(0, 'Debe ser mayor que 0')
@@ -161,16 +211,9 @@ const AddExportForm = () => {
         onSubmit={addExport}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting, values }) => (
+        {({ isSubmitting, values, errors }) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
-              <Heading fontSize={'2xl'} p={'12px'}>
-                Marca de Caja
-              </Heading>
-              <Divider mb={'16px'} />
-
-              <SelectBoxBrand name={'boxBrandId'} name2={'boxQuantity'} />
-
               <Heading fontSize={'2xl'} p={'12px'}>
                 Productor
               </Heading>
@@ -187,6 +230,54 @@ const AddExportForm = () => {
                   values?.merchantId ? Number(values.merchantId) : undefined
                 }
               />
+
+              <Heading fontSize={'2xl'} p={'12px'}>
+                Marca de Caja
+              </Heading>
+              <Divider mb={'16px'} />
+
+              <SelectBoxBrand name={'boxBrandId'} name2={'boxQuantity'} />
+              <Heading fontSize={'2xl'} p={'12px'}>
+                Fecha de Corte
+              </Heading>
+              <Divider mb={'16px'} />
+              <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+                <InputFieldDate
+                  name={'cuttingDate'}
+                  label={'Fecha de Corte'}
+                  flexDirection='row'
+                />
+                {values.cuttingDate && (
+                  <Box w={{ base: '98%' }}>
+                    <InputFieldText
+                      name={'weekCutting.description'}
+                      isReadOnly
+                      defaultValue={
+                        getWeekInfo({ date: values.cuttingDate }).week
+                      }
+                    />
+                  </Box>
+                )}
+              </SimpleGrid>
+              {values.cuttingDate && values.weekCutting && (
+                <DateGrid
+                  nameWeek={'weekCutting.daysOfWeek'}
+                  nameBoxes={'weekCutting.boxesOfDay'}
+                  boxQuantity={Number(values.boxQuantity)}
+                  dateSelected={values.cuttingDate}
+                  startDate={
+                    getWeekInfo({ date: values.cuttingDate }).startDate
+                  }
+                />
+              )}
+              {!errors.weekCutting?.description &&
+                !!values.cuttingDate &&
+                !!values.weekCutting &&
+                !!errors.weekCutting && (
+                  <Text color={'#E53E3E'} fontSize={'14px'}>
+                    {errors.weekCutting ? (errors.weekCutting as string) : ''}
+                  </Text>
+                )}
 
               <Heading fontSize={'2xl'} p={'12px'}>
                 Puerto Salida
