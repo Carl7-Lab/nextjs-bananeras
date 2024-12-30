@@ -17,6 +17,7 @@ interface InputFieldSentPesticideProps {
   pesticideSelected: Partial<PesticideCocktailPart>;
   quantity: number | '';
   placeholder?: string;
+  showNumberInput?: boolean;
 }
 
 const InputFieldSentPesticide: React.FC<InputFieldSentPesticideProps> = ({
@@ -24,6 +25,7 @@ const InputFieldSentPesticide: React.FC<InputFieldSentPesticideProps> = ({
   pesticideSelected,
   quantity,
   placeholder,
+  showNumberInput = true,
 }) => {
   const [field, meta, helpers] = useField(name);
 
@@ -101,18 +103,20 @@ const InputFieldSentPesticide: React.FC<InputFieldSentPesticideProps> = ({
             opacity={0.8}
           />
         </GridItem>
-        <GridItem colSpan={1}>
-          <NumberInput {...field}>
-            <NumberInputField
-              {...field}
-              onBlur={handleBlur}
-              onKeyDown={handleKeyDown}
-              placeholder={placeholder || pesticideSelected.pesticide?.name}
-              textAlign='right'
-              px={'16px'}
-            />
-          </NumberInput>
-        </GridItem>
+        {showNumberInput && (
+          <GridItem colSpan={1}>
+            <NumberInput {...field}>
+              <NumberInputField
+                {...field}
+                onBlur={handleBlur}
+                onKeyDown={handleKeyDown}
+                placeholder={placeholder || pesticideSelected.pesticide?.name}
+                textAlign='right'
+                px={'16px'}
+              />
+            </NumberInput>
+          </GridItem>
+        )}
       </Grid>
       {meta.error && meta.touched && (
         <FormErrorMessage mt='8px' mb='16px'>
