@@ -15,6 +15,7 @@ import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import DateGrid from './cutting-sheet/DateGrid';
+import SelectCuttingType from './cutting-type/SelectCuttingType';
 import { useCreateExport } from '../../hooks/export/createExport';
 import { getWeekInfo } from '../../utils/getWeekInfo';
 import SelectBoxBrand from '../box-brands/SelectBoxBrand';
@@ -41,6 +42,7 @@ interface ValuesProps {
   merchantId: number | '';
   businessId: number | '';
   // harborId: number | '';
+  cuttingTypeId: number | '';
   departureHarborId: number | '';
   destinationHarborId: number | '';
   clientId: number | '';
@@ -63,6 +65,7 @@ const initialValues: ValuesProps = {
     total: 0,
   },
   // harborId: '',
+  cuttingTypeId: '',
   departureHarborId: '',
   destinationHarborId: '',
   clientId: '',
@@ -95,22 +98,21 @@ const validationSchema = Yup.object({
     .lessThan(10000, 'Debe ser menor que 10000 cajas')
     .required('Requerido'),
   cuttingDate: Yup.date().required('Requerido'),
-  weekCutting: weekCuttingSchema
-    .required('La información de la semana de corte es requerida')
-    .test(
-      'boxesOfDay-sum',
-      'La sumatoria de cajas por día debe ser igual a la cantidad de cajas',
-      function (value) {
-        const { boxesOfDay, daysOfWeek, description } = value;
-        const { container } = this.parent;
-        if (!!container && !!daysOfWeek && !!description) {
-          const { boxQuantity } = container;
-          const sumBoxes = boxesOfDay.reduce((sum, value) => sum + value, 0);
-          return sumBoxes === boxQuantity;
-        }
-        return true;
-      }
-    ),
+  weekCutting: weekCuttingSchema.test(
+    'boxesOfDay-sum',
+    'La sumatoria de cajas por día debe ser igual al total de cajas',
+    function (value) {
+      if (!value) return false;
+      const { boxesOfDay } = value;
+      const boxQuantity = this.parent.boxQuantity;
+      const totalBoxes = boxesOfDay.reduce((acc, curr) => acc + curr, 0);
+      return totalBoxes === boxQuantity;
+    }
+  ),
+  cuttingTypeId: Yup.number()
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
   merchantId: Yup.number()
     .integer('Debe ser un número entero')
     .moreThan(0, 'Debe ser mayor que 0')
@@ -161,45 +163,55 @@ const AddExportForm = () => {
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
-    const { boxQuantity, dataReviewed, ...exportData } = values;
+    const {
+      weekCutting,
+      cuttingDate,
+      boxQuantity,
+      dataReviewed,
+      ...restExportData
+    } = values;
 
-    createExport(
-      {
-        ...exportData,
-        boxQuantity: Number(boxQuantity),
+    const exportData = {
+      ...restExportData,
+      cuttingDate,
+      weekDescription: weekCutting.description,
+      weekDaysOfWeek: weekCutting.daysOfWeek,
+      weekBoxesOfDay: weekCutting.boxesOfDay,
+      weekTotal: Number(boxQuantity),
+      boxQuantity: Number(boxQuantity),
+    };
+
+    createExport(exportData, {
+      onError: (error: any) => {
+        const { response } = error;
+        const { data } = response;
+        const { statusCode, message, error: errorTitle, model, prop } = data;
+
+        toast({
+          title: `Error ${statusCode}: ${errorTitle} `,
+          description: `${message}`,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+
+        if (statusCode === 401) {
+          router.push('/api/auth/signout');
+        }
       },
-      {
-        onError: (error: any) => {
-          const { response } = error;
-          const { data } = response;
-          const { statusCode, message, error: errorTitle, model, prop } = data;
+      onSuccess: () => {
+        toast({
+          title: 'Exportacion creada',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
 
-          toast({
-            title: `Error ${statusCode}: ${errorTitle} `,
-            description: `${message}`,
-            status: 'error',
-            duration: 5000,
-            isClosable: true,
-          });
-
-          if (statusCode === 401) {
-            router.push('/api/auth/signout');
-          }
-        },
-        onSuccess: () => {
-          toast({
-            title: 'Exportacion creada',
-            status: 'success',
-            duration: 5000,
-            isClosable: true,
-          });
-
-          queryClient.invalidateQueries('exports');
-          queryClient.invalidateQueries('exportsPending');
-          actions.resetForm();
-        },
-      }
-    );
+        queryClient.invalidateQueries('exports');
+        queryClient.invalidateQueries('exportsPending');
+        actions.resetForm();
+      },
+    });
 
     return;
   };
@@ -278,6 +290,12 @@ const AddExportForm = () => {
                     {errors.weekCutting ? (errors.weekCutting as string) : ''}
                   </Text>
                 )}
+
+              <Heading fontSize={'2xl'} p={'12px'}>
+                Tipo de Corte
+              </Heading>
+              <Divider mb={'16px'} />
+              <SelectCuttingType name={'cuttingTypeId'} />
 
               <Heading fontSize={'2xl'} p={'12px'}>
                 Puerto Salida
