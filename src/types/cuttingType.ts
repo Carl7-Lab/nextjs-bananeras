@@ -4,8 +4,6 @@ export type CuttingType = {
   updatedAt: Date | '';
   quality: string;
   shipmentType: string;
-  containerPositioning: string;
-  belowDeck: string;
   leavesAtHarvest: number | '';
   maxAgeAtCut: number | '';
   minCaliber: number | '';
@@ -14,6 +12,7 @@ export type CuttingType = {
   saneos: string;
   cunas: string;
   clusterDetail: string;
+  labelDetail: string;
   firstLine: string;
   secondLine: string;
   thirdLine: string;
@@ -21,5 +20,12 @@ export type CuttingType = {
   packagingPattern: string;
   authorizedTransport: string;
   aliquot: string;
+  palletDetail: string;
+  cornerProtectorsDetail: string;
+  reinforcementsDetail: string;
+  plasticStrapsDetail: string;
+  staplesDetail: string;
+  blockingSheetsDetail: string;
+  transportDetail: string;
   generalObservations?: string | null;
 };
