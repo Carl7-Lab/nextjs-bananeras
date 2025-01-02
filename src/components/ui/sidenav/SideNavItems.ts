@@ -93,6 +93,10 @@ export function getNavItems(): SidenavItem[] {
       to: '/dashboard/box-brands/search',
     },
     {
+      label: 'Tipos de Corte',
+      to: '/dashboard/box-brands/cutting-types',
+    },
+    {
       label: 'Agregar Tipo de Caja',
       to: '/dashboard/box-brands/add-box-brand',
     },
