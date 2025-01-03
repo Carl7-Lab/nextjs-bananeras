@@ -78,7 +78,7 @@ const TableCuttingTypes = ({
     enableColumnDragging: false,
     enableHiding: false,
     initialState: {
-      pagination: { pageSize: 5, pageIndex: 0 },
+      pagination: { pageSize: 10, pageIndex: 0 },
       columnPinning: {
         left: ['mrt-row-expand'],
         right: ['fingerLength'],
