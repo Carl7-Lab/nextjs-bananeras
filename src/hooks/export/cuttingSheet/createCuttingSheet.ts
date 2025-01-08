@@ -5,12 +5,15 @@ import { CuttingSheetType } from '../../../types/cuttingSheet';
 
 interface CreateCuttingSheetResponse {
   cuttingSheetId: string;
+  pdfUrl: string;
 }
 
 export const createCuttingSheet = (
   data: Partial<CuttingSheetType>
 ): Promise<CreateCuttingSheetResponse> => {
-  return axios.post('/export/cutting-sheet', data);
+  return axios
+    .post('/export/cutting-sheet', data)
+    .then((response) => response.data);
 };
 
 type UseCreateCuttingSheetOptions = {

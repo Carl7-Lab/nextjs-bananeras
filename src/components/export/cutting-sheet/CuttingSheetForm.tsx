@@ -9,12 +9,13 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { Form, Formik, FormikHelpers } from 'formik';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import DateGrid from './DateGrid';
 import { useCreateCuttingSheet } from '../../../hooks/export/cuttingSheet/createCuttingSheet';
+import { CuttingSheetType } from '../../../types/cuttingSheet';
 import { ExportType } from '../../../types/export';
 import { getWeekInfo } from '../../../utils/getWeekInfo';
 import CheckboxForm from '../../ui/form/CheckboxForm';
@@ -73,16 +74,6 @@ interface InsecticideProps {
   quantity: number | '';
 }
 
-interface FumigationProps {
-  cosmoAgua: string;
-  sb100: string;
-  satisfar: string;
-  mertec: string;
-  eclipse: string;
-  select101: string;
-  citricAcid: string;
-}
-
 interface BusinessProps {
   name: string;
   quality: string;
@@ -99,7 +90,6 @@ interface WeekCuttingProps {
   description: string;
   daysOfWeek: string[];
   boxesOfDay: number[];
-  total: number;
 }
 
 interface CutSpecificationsProps {
@@ -123,7 +113,6 @@ interface ValuesProps {
   cutSpecifications: CutSpecificationsProps;
   packaging: PackagingProps;
   materials: MaterialsProps;
-  fumigation: FumigationProps;
   dataReviewed: boolean;
 }
 
@@ -133,7 +122,6 @@ const initialValues: ValuesProps = {
     description: '',
     daysOfWeek: ['', '', '', '', '', '', ''],
     boxesOfDay: [0, 0, 0, 0, 0, 0, 0],
-    total: 0,
   },
   producer: {
     businessName: '',
@@ -190,42 +178,10 @@ const initialValues: ValuesProps = {
     thermometer: '',
     generalObservations: '',
   },
-  fumigation: {
-    cosmoAgua: '',
-    sb100: '',
-    satisfar: '',
-    mertec: '',
-    eclipse: '',
-    select101: '',
-    citricAcid: '',
-  },
   dataReviewed: false,
 };
 
-const businessSchema = Yup.object().shape({
-  name: Yup.string().required('El nombre del negocio es requerido'),
-  quality: Yup.string().required('La calidad es requerida'),
-  city: Yup.string().required('La ciudad es requerida'),
-  codeMAGAP: Yup.string().required('El código MAGAP es requerido'),
-});
-
-const producerSchema = Yup.object().shape({
-  businessName: Yup.string().required('El nombre del productor es requerido'),
-  business: businessSchema.required('La información del negocio es requerida'),
-});
-
 const containerSchema = Yup.object().shape({
-  boxBrand: Yup.string().required('La marca de la caja es requerida'),
-  shipmentType: Yup.string()
-    .required('El tipo de envío es requerido')
-    .oneOf(['PALETIZADO', 'GRANEL'], 'Valor no válido'),
-  boxType: Yup.string().required('El tipo de caja es requerido'),
-  steam: Yup.string().required('El vapor es requerido'),
-  harborDeparture: Yup.string().required('El puerto de salida es requerido'),
-  boxQuantity: Yup.number()
-    .required('La cantidad de cajas es requerida')
-    .positive('La cantidad de cajas debe ser un número positivo')
-    .integer('La cantidad de cajas debe ser un número entero'),
   containerPositioning: Yup.string()
     .required('La posición del contenedor es requerida')
     .oneOf(['CAMPO', 'ACOPIO', 'N/A'], 'Valor no válido'),
@@ -234,69 +190,15 @@ const containerSchema = Yup.object().shape({
     .oneOf(['NO', 'SI'], 'Valor no válido'),
   highPallets: Yup.string()
     .required('Palets altos es requerido')
-    .oneOf(['PALETS 9 DE ALTO', 'PALETS 8 DE ALTO', 'N/A'], 'Valor no válido'),
-});
-
-const weekCuttingSchema = Yup.object().shape({
-  description: Yup.string().required('La descripción es requerida'),
-  daysOfWeek: Yup.array()
-    .of(Yup.string().required('La fecha es requerida'))
-    .length(7, 'Debe contener exactamente 7 elementos')
-    .required('Los días de la semana son requeridos'),
-  boxesOfDay: Yup.array()
-    .of(Yup.number().required('La cantidad de cajas es requerida'))
-    .length(7, 'Debe contener exactamente 7 elementos')
-    .required('La cantidad de cajas por día es requerida'),
-});
-
-const cutSpecificationsSchema = Yup.object().shape({
-  leaves: Yup.number()
-    .required('Requerido')
-    .positive('Debe ser un número positivo')
-    .integer('Debe ser un número entero')
-    .min(4, 'La cantida mínima debe ser 4')
-    .max(8, 'La cantida máxima debe ser 8'),
-  ageCutting: Yup.number()
-    .required('Requerido')
-    .positive('Debe ser un número positivo')
-    .integer('Debe ser un número entero')
-    .min(10, 'La cantida mínima debe ser 10')
-    .max(14, 'La cantida máxima debe ser 14'),
-  netWeight: Yup.number().positive('Debe ser un número positivo'),
-  // netWeight: number | '';
-  // grossWeight: number | '';
-  // caliberMin: number | '';
-  // caliberMax: number | '';
-  // fingerLength: number | '';
-  // saneos: number | '';
+    .oneOf(
+      ['PALETS 8 DE ALTO', 'PALETS 9 DE ALTO', 'PALETS 10 DE ALTO', 'N/A'],
+      'Valor no válido'
+    ),
 });
 
 const validationSchema = Yup.object({
-  cuttingDate: Yup.date().required('Requerido'),
-  weekCutting: weekCuttingSchema
-    .required('La información de la semana de corte es requerida')
-    .test(
-      'boxesOfDay-sum',
-      'La sumatoria de cajas por día debe ser igual a la cantidad de cajas',
-      function (value) {
-        const { boxesOfDay, daysOfWeek, description } = value;
-        const { container } = this.parent;
-        if (!!container && !!daysOfWeek && !!description) {
-          const { boxQuantity } = container;
-          const sumBoxes = boxesOfDay.reduce((sum, value) => sum + value, 0);
-          return sumBoxes === boxQuantity;
-        }
-        return true;
-      }
-    ),
-  producer: producerSchema.required(
-    'La información del productor es requerida'
-  ),
   container: containerSchema.required(
     'La información del contenedor es requerida'
-  ),
-  cutSpecifications: cutSpecificationsSchema.required(
-    'La información de la especificaciones de corte es requerida'
   ),
   dataReviewed: Yup.boolean()
     .oneOf([true], 'Debes revisar los datos antes de enviar')
@@ -314,180 +216,166 @@ const CuttingSheetForm = ({
     useState<ValuesProps>(initialValues);
 
   const { createCuttingSheet } = useCreateCuttingSheet();
+  const router = useRouter();
   const toast = useToast();
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    console.log('cuttingSheetSelected: ', cuttingSheetSelected);
-    if (cuttingSheetSelected) {
-      setInitialValuesCuttingSheet((prevValues) => {
-        const pesticidesSelected: PesticideProps[] =
+    if (!cuttingSheetSelected) return;
+
+    setInitialValuesCuttingSheet((prevValues) => {
+      return {
+        ...prevValues,
+        exportId: cuttingSheetSelected.id,
+        cuttingDate: cuttingSheetSelected.cuttingDate || '',
+        weekCutting: {
+          description: cuttingSheetSelected.weekDescription || '',
+          daysOfWeek: cuttingSheetSelected.weekDaysOfWeek || [
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+          ],
+          boxesOfDay: cuttingSheetSelected.weekBoxesOfDay || [
+            0, 0, 0, 0, 0, 0, 0,
+          ],
+        },
+        producer: {
+          businessName: cuttingSheetSelected.merchant?.businessName || '',
+          business: {
+            ...prevValues.producer.business,
+            name: cuttingSheetSelected.business?.name || '',
+            city: cuttingSheetSelected.business?.city || '',
+            codeMAGAP: cuttingSheetSelected.business?.codeMAGAP || '',
+            quality: cuttingSheetSelected.cuttingType?.quality || '',
+          },
+        },
+        container: {
+          ...prevValues.container,
+          boxQuantity: cuttingSheetSelected.boxQuantity || 0,
+          boxBrand: cuttingSheetSelected.boxBrand?.name || '',
+          shipmentType:
+            cuttingSheetSelected.boxBrand?.palletsType ||
+            cuttingSheetSelected.boxBrand?.miniPalletsType
+              ? 'PALETIZADO'
+              : 'GRANEL',
+          boxType: cuttingSheetSelected.boxBrand?.brand?.name || '',
+          steam: cuttingSheetSelected.shipSteam || '',
+          harborDeparture: cuttingSheetSelected.harborDeparture?.name || '',
+          highPallets:
+            prevValues.container.shipmentType === 'GRANEL' ? 'N/A' : '',
+          cluster: cuttingSheetSelected.boxBrand?.clusterBag?.name || '',
+          fileCode: cuttingSheetSelected.shippingLineSeal || '',
+          clusterQuantity:
+            cuttingSheetSelected.boxBrand?.clusterBagQuantity || '',
+          containerPositioning: prevValues.container.containerPositioning,
+          belowDeck: prevValues.container.belowDeck,
+        },
+        cutSpecifications: {
+          ...prevValues.cutSpecifications,
+          netWeight: cuttingSheetSelected.boxBrand?.netWeightBox || '',
+          grossWeight: cuttingSheetSelected.boxBrand?.grossWeightBox || '',
+          labels: cuttingSheetSelected.boxBrand?.label?.name || '',
+          leaves: cuttingSheetSelected.cuttingType?.leavesAtHarvest || '',
+          ageCutting: cuttingSheetSelected.cuttingType?.maxAgeAtCut || '',
+          caliberMin: cuttingSheetSelected.cuttingType?.minCaliber || '',
+          caliberMax: cuttingSheetSelected.cuttingType?.maxCaliber || '',
+          fingerLength: cuttingSheetSelected.cuttingType?.fingerLength || '',
+          saneos: cuttingSheetSelected.cuttingType?.saneos || '',
+          cunas: cuttingSheetSelected.cuttingType?.cunas || '',
+          labelsQuantity: cuttingSheetSelected.boxBrand?.labelQuantity || '',
+          clusterDetail: cuttingSheetSelected.cuttingType?.clusterDetail || '',
+          labelDetail: cuttingSheetSelected.cuttingType?.labelDetail || '',
+        },
+        packaging: {
+          ...prevValues.packaging,
+          bag: cuttingSheetSelected.boxBrand?.clusterBag?.name || '',
+          sachet: cuttingSheetSelected.boxBrand?.sachet?.name || '',
+          sachetQuantity: cuttingSheetSelected.boxBrand?.sachetQuantity || 0,
+          pad: cuttingSheetSelected.boxBrand?.padType || '',
+          padQuantity: cuttingSheetSelected.boxBrand?.padTypeQuantity || 0,
+          firstLine: cuttingSheetSelected.cuttingType?.firstLine || '',
+          secondLine: cuttingSheetSelected.cuttingType?.secondLine || '',
+          thirdLine: cuttingSheetSelected.cuttingType?.thirdLine || '',
+          fourthLine: cuttingSheetSelected.cuttingType?.fourthLine || '',
+        },
+        materials: {
+          ...prevValues.materials,
+          packagingPattern:
+            cuttingSheetSelected.cuttingType?.packagingPattern || '',
+          pallets: cuttingSheetSelected.boxBrand?.palletsType || '',
+          palletsQuantity:
+            cuttingSheetSelected.boxBrand?.palletsTypeQuantity || 0,
+          palletsDetail: cuttingSheetSelected.cuttingType?.palletDetail || '',
+          plasticCorners: cuttingSheetSelected.boxBrand?.cornerType || '',
+          plasticCornersQuantity:
+            cuttingSheetSelected.boxBrand?.cornerTypeQuantity || 0,
+          plasticCornersDetail:
+            cuttingSheetSelected.cuttingType?.cornerProtectorsDetail || '',
+          reinforcements:
+            cuttingSheetSelected.boxBrand?.reinforcementType || '',
+          reinforcementsQuantity:
+            cuttingSheetSelected.boxBrand?.reinforcementTypeQuantity || 0,
+          reinforcementsDetail:
+            cuttingSheetSelected.cuttingType?.reinforcementsDetail || '',
+          plasticStraps: cuttingSheetSelected.boxBrand?.stripping?.name || '',
+          plasticStrapsQuantity:
+            cuttingSheetSelected.boxBrand?.strippingQuantity || 0,
+          plasticStrapsDetail:
+            cuttingSheetSelected.cuttingType?.plasticStrapsDetail || '',
+          staples: cuttingSheetSelected.boxBrand?.staple?.name || '',
+          staplesQuantity: cuttingSheetSelected.boxBrand?.stapleQuantity || 0,
+          staplesDetail: cuttingSheetSelected.cuttingType?.staplesDetail || '',
+          cardboardSheets: cuttingSheetSelected.boxBrand?.cardboardType || '',
+          cardboardSheetsQuantity:
+            cuttingSheetSelected.boxBrand?.cardboardTypeQuantity || 0,
+          cardboardSheetsDetail:
+            cuttingSheetSelected.cuttingType?.blockingSheetsDetail || '',
+          thermometer: cuttingSheetSelected.boxBrand?.thermograph?.name || '',
+          thermometerQuantity:
+            cuttingSheetSelected.boxBrand?.thermographQuantity || 0,
+          thermometerDetail:
+            cuttingSheetSelected.cuttingType?.transportDetail || '',
+          authorizedTransport:
+            cuttingSheetSelected.cuttingType?.authorizedTransport || '',
+          aliquot: cuttingSheetSelected.cuttingType?.aliquot || '',
+          generalObservations:
+            cuttingSheetSelected.cuttingType?.generalObservations || '',
+        },
+        pesticideSent:
           cuttingSheetSelected.boxBrand?.pesticideCocktail?.map(
             (pesticide) => ({
-              pesticideId: pesticide.pesticide?.id!,
-              quantity: pesticide.quantity!,
+              pesticideId: pesticide.pesticide?.id || '',
+              quantity: pesticide.quantity || 0,
             })
-          ) || [];
-
-        const insecticidesSelected: InsecticideProps[] =
+          ) || [],
+        insecticideSent:
           cuttingSheetSelected.boxBrand?.insecticideCocktail?.map(
             (insecticide) => ({
-              insecticideId: insecticide.insecticide?.id!,
-              quantity: insecticide.quantity!,
+              insecticideId: insecticide.insecticide?.id || '',
+              quantity: insecticide.quantity || 0,
             })
-          ) || [];
-        return {
-          ...prevValues,
-          cuttingDate: cuttingSheetSelected.cuttingDate || '',
-          weekCutting: {
-            description: cuttingSheetSelected.weekDescription || '',
-            daysOfWeek: cuttingSheetSelected.weekDaysOfWeek || [
-              '',
-              '',
-              '',
-              '',
-              '',
-              '',
-              '',
-            ],
-            boxesOfDay: cuttingSheetSelected.weekBoxesOfDay || [
-              0, 0, 0, 0, 0, 0, 0,
-            ],
-            total: cuttingSheetSelected.weekTotal || 0,
-          },
-          producer: {
-            businessName: cuttingSheetSelected.merchant?.businessName!,
-            business: {
-              ...prevValues.producer.business,
-              name: cuttingSheetSelected.business?.name!,
-              city: cuttingSheetSelected.business?.city!,
-              codeMAGAP: cuttingSheetSelected.business?.codeMAGAP!,
-              quality: cuttingSheetSelected.cuttingType?.quality!,
-            },
-          },
-          container: {
-            ...prevValues.container,
-            boxBrand: cuttingSheetSelected.boxBrand?.name!,
-            shipmentType:
-              cuttingSheetSelected.boxBrand?.palletsType ||
-              cuttingSheetSelected.boxBrand?.miniPalletsType
-                ? 'PALETIZADO'
-                : 'GRANEL',
-            boxType: cuttingSheetSelected.boxBrand?.brand?.name!,
-            steam: cuttingSheetSelected.shipSteam!,
-            harborDeparture: cuttingSheetSelected.harborDeparture?.name!,
-            boxQuantity: cuttingSheetSelected.boxQuantity!,
-            containerPositioning:
-              cuttingSheetSelected.cuttingType?.containerPositioning!,
-            belowDeck: cuttingSheetSelected.cuttingType?.belowDeck!,
-            highPallets:
-              prevValues.container.shipmentType === 'GRANEL' ? 'N/A' : '',
-            cluster:
-              cuttingSheetSelected.boxBrand?.clusterBag?.name ||
-              prevValues.container.cluster,
-            fileCode: cuttingSheetSelected.shippingLineSeal || '',
-            clusterQuantity: cuttingSheetSelected.cuttingType?.clusterDetail,
-          },
-          cutSpecifications: {
-            ...prevValues.cutSpecifications,
-            netWeight:
-              cuttingSheetSelected.boxBrand?.netWeightBox ||
-              prevValues.cutSpecifications.netWeight,
-            grossWeight:
-              cuttingSheetSelected.boxBrand?.grossWeightBox ||
-              prevValues.cutSpecifications.grossWeight,
-            labels:
-              cuttingSheetSelected.boxBrand?.label?.name ||
-              prevValues.cutSpecifications.labels,
-
-            leaves: cuttingSheetSelected.cuttingType?.leavesAtHarvest || '',
-            ageCutting: cuttingSheetSelected.cuttingType?.maxAgeAtCut || '',
-            caliberMin: cuttingSheetSelected.cuttingType?.minCaliber || '',
-            caliberMax: cuttingSheetSelected.cuttingType?.maxCaliber || '',
-            fingerLength: cuttingSheetSelected.cuttingType?.fingerLength || '',
-            saneos: cuttingSheetSelected.cuttingType?.saneos || '',
-            cunas: cuttingSheetSelected.cuttingType?.cunas || '',
-            labelsQuantity: cuttingSheetSelected.boxBrand?.labelQuantity || '',
-          },
-          packaging: {
-            ...prevValues.packaging,
-            bag: cuttingSheetSelected.boxBrand?.clusterBag?.name || '',
-            sachet:
-              cuttingSheetSelected.boxBrand?.sachet?.name ||
-              prevValues.packaging.sachet,
-            sachetQuantity: cuttingSheetSelected.boxBrand?.sachetQuantity,
-            pad:
-              cuttingSheetSelected.boxBrand?.padType ||
-              prevValues.packaging.pad,
-            padQuantity: cuttingSheetSelected.boxBrand?.padTypeQuantity,
-            firstLine: cuttingSheetSelected.cuttingType?.firstLine || '',
-            secondLine: cuttingSheetSelected.cuttingType?.secondLine || '',
-            thirdLine: cuttingSheetSelected.cuttingType?.thirdLine || '',
-            fourthLine: cuttingSheetSelected.cuttingType?.fourthLine || '',
-          },
-          materials: {
-            ...prevValues.materials,
-            packagingPattern:
-              cuttingSheetSelected.cuttingType?.packagingPattern || '',
-            pallets:
-              cuttingSheetSelected.boxBrand?.palletsType ||
-              prevValues.materials.pallets,
-            palletsQuantity: cuttingSheetSelected.boxBrand?.palletsTypeQuantity,
-            plasticCorners:
-              cuttingSheetSelected.boxBrand?.cornerType ||
-              prevValues.materials.plasticCorners,
-            plasticCornersQuantity:
-              cuttingSheetSelected.boxBrand?.cornerTypeQuantity,
-            reinforcements:
-              cuttingSheetSelected.boxBrand?.reinforcementType ||
-              prevValues.materials.reinforcements,
-            reinforcementsQuantity:
-              cuttingSheetSelected.boxBrand?.reinforcementTypeQuantity,
-            plasticStraps:
-              cuttingSheetSelected.boxBrand?.stripping?.name ||
-              prevValues.materials.plasticStraps,
-            plasticStrapsQuantity:
-              cuttingSheetSelected.boxBrand?.strippingQuantity,
-            staples:
-              cuttingSheetSelected.boxBrand?.staple?.name ||
-              prevValues.materials.staples,
-            staplesQuantity: cuttingSheetSelected.boxBrand?.stapleQuantity,
-            cardboardSheets:
-              cuttingSheetSelected.boxBrand?.cardboardType ||
-              prevValues.materials.cardboardSheets,
-            cardboardSheetsQuantity:
-              cuttingSheetSelected.boxBrand?.cardboardTypeQuantity,
-            thermometer:
-              cuttingSheetSelected.boxBrand?.thermograph?.name ||
-              prevValues.materials.thermometer,
-            thermometerQuantity:
-              cuttingSheetSelected.boxBrand?.thermographQuantity,
-            authorizedTransport:
-              cuttingSheetSelected.cuttingType?.authorizedTransport ||
-              prevValues.materials.authorizedTransport,
-            generalObservations:
-              cuttingSheetSelected.cuttingType?.generalObservations ||
-              prevValues.materials.generalObservations,
-          },
-          pesticideSent: pesticidesSelected,
-          insecticideSent: insecticidesSelected,
-          exportId: cuttingSheetSelected.id,
-        };
-      });
-    }
+          ) || [],
+      };
+    });
   }, [cuttingSheetSelected]);
-
-  // useEffect(() => {
-  //   console.log('initialValuesCuttingSheet: ', initialValuesCuttingSheet);
-  // }, [initialValuesCuttingSheet]);
 
   const handleSubmit = async (
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
   ) => {
-    const { dataReviewed, ...cuttingSheetData } = values;
-    console.log('values: ', values);
-    console.log('cuttingSheetData: ', cuttingSheetData);
+    const { dataReviewed, container, ...rest } = values;
+
+    const cuttingSheetData: CuttingSheetType = {
+      exportId: cuttingSheetSelected.id || 0,
+      palletsHeight: container.highPallets,
+      containerPositioning: container.containerPositioning,
+      belowDeck: container.belowDeck,
+    };
+
     createCuttingSheet(cuttingSheetData, {
       onError: (error: any) => {
         const { response } = error;
@@ -507,16 +395,19 @@ const CuttingSheetForm = ({
           formikHelpers.setFieldError(`${prop}`, message);
         }
       },
-      onSuccess: () => {
+      onSuccess: (response) => {
         toast({
-          title: 'Registro creado exitosamente',
+          title: 'Registro y PDF creados exitosamente',
+          description: 'Cierre esta ventana para abrir el PDF.',
           status: 'success',
           duration: 5000,
           isClosable: true,
+          onCloseComplete: () => window.open(response.pdfUrl, '_blank'),
         });
 
         queryClient.invalidateQueries('cuttingSheets');
         formikHelpers.resetForm();
+        router.push('/dashboard/export/cutting-sheet');
       },
     });
   };
@@ -536,6 +427,7 @@ const CuttingSheetForm = ({
                 <InputFieldDate
                   name={'cuttingDate'}
                   label={'Fecha de Corte'}
+                  isReadOnly
                   flexDirection='row'
                 />
               </Box>
@@ -575,7 +467,7 @@ const CuttingSheetForm = ({
                 <InputFieldText
                   name={'producer.business.quality'}
                   label={'Calidad: '}
-                  placeholder='Calidad'
+                  isReadOnly
                   flexDirection='row'
                   alignItems='flex-end'
                 />
@@ -653,18 +545,9 @@ const CuttingSheetForm = ({
                   alignItems='flex-end'
                 />
 
-                <InputFieldText
+                <InputFieldSelector
                   name={'container.containerPositioning'}
-                  label={'Posición del Contenedor: '}
-                  isReadOnly
-                  flexDirection='row'
-                  alignItems='flex-end'
-                />
-
-                {/* <InputFieldSelector
-                  name={'container.containerPositioning'}
-                  label={'Posición del Contenedor: '}
-                  placeholder='Seleccione la posición del contenedor'
+                  label={'Posicion del Contenedor: '}
                   flexDirection='row'
                   alignItems='flex-end'
                   options={[
@@ -672,19 +555,20 @@ const CuttingSheetForm = ({
                     { id: 'CAMPO', name: 'CAMPO' },
                     { id: 'ACOPIO', name: 'ACOPIO' },
                   ]}
-                /> */}
+                />
 
                 <InputFieldText
                   name={'container.belowDeck'}
                   label={'Bajo Cubierta: '}
-                  placeholder='Bajo cubierta'
                   isReadOnly
                   defaultValue={
-                    values.container.containerPositioning === 'N/A' ||
-                    values.container.containerPositioning === ''
-                      ? 'SI'
-                      : 'NO'
+                    values.container.containerPositioning === 'CAMPO'
+                      ? 'NO'
+                      : values.container.containerPositioning === 'ACOPIO'
+                        ? 'SI'
+                        : 'N/A'
                   }
+                  placeholder='Bajo cubierta'
                   flexDirection='row'
                   alignItems='flex-end'
                 />
@@ -692,13 +576,13 @@ const CuttingSheetForm = ({
                 <InputFieldSelector
                   name={'container.highPallets'}
                   label={'Altura de Palets: '}
-                  placeholder='Seleccione la altura de los palets'
                   flexDirection='row'
                   alignItems='flex-end'
                   isDisabled={values.container.shipmentType === 'GRANEL'}
                   options={[
                     { id: 'PALETS 8 DE ALTO', name: 'PALETS 8 DE ALTO' },
                     { id: 'PALETS 9 DE ALTO', name: 'PALETS 9 DE ALTO' },
+                    { id: 'PALETS 10 DE ALTO', name: 'PALETS 10 DE ALTO' },
                   ]}
                 />
               </SimpleGrid>
@@ -715,15 +599,6 @@ const CuttingSheetForm = ({
                 />
               )}
 
-              {!errors.weekCutting?.description &&
-                !!values.cuttingDate &&
-                !!values.weekCutting &&
-                !!errors.weekCutting && (
-                  <Text color={'#E53E3E'} fontSize={'14px'}>
-                    {errors.weekCutting ? (errors.weekCutting as string) : ''}
-                  </Text>
-                )}
-
               <Heading fontSize={'2xl'} p={'12px'}>
                 ESPECIFICACIONES DEL CORTE
               </Heading>
@@ -733,7 +608,7 @@ const CuttingSheetForm = ({
                 <InputFieldQuantity
                   name={'cutSpecifications.leaves'}
                   label={'Hojas a la cosecha: '}
-                  placeholder='Numero minimo permitido al corte'
+                  isReadOnly
                   flexDirection={'row'}
                   min={4}
                   max={8}
@@ -741,7 +616,7 @@ const CuttingSheetForm = ({
                 <InputFieldQuantity
                   name={'cutSpecifications.ageCutting'}
                   label={'Edad al corte: '}
-                  placeholder='Edad maxima permitida al corte'
+                  isReadOnly
                   flexDirection={'row'}
                   min={10}
                   max={14}
@@ -749,51 +624,49 @@ const CuttingSheetForm = ({
                 <InputFieldQuantity
                   name={'cutSpecifications.netWeight'}
                   label={'Peso neto: '}
-                  placeholder='Solo el peso de la fruta'
                   isReadOnly
                   flexDirection={'row'}
                 />
                 <InputFieldQuantity
                   name={'cutSpecifications.grossWeight'}
                   label={'Peso Bruto: '}
-                  placeholder='Peso de la fruta y empaque'
                   isReadOnly
                   flexDirection={'row'}
                 />
                 <InputFieldQuantity
                   name={'cutSpecifications.caliberMin'}
                   label={'Calibre Mínimo: '}
-                  placeholder='Calibre minimo permitido'
+                  isReadOnly
                   flexDirection={'row'}
                 />
                 <InputFieldQuantity
                   name={'cutSpecifications.caliberMax'}
                   label={'Calibre Máximo: '}
-                  placeholder='Calibre maximo permitido'
+                  isReadOnly
                   flexDirection={'row'}
                 />
                 <InputFieldQuantity
                   name={'cutSpecifications.fingerLength'}
                   label={'Largo dedo: '}
-                  placeholder='Longitud de pulpa a pulpa'
+                  isReadOnly
                   flexDirection={'row'}
                 />
                 <InputFieldQuantity
                   name={'cutSpecifications.saneos'}
                   label={'Saneos: '}
-                  placeholder='Numero de saneos permitidos'
+                  isReadOnly
                   flexDirection={'row'}
                 />
                 <InputFieldText
                   name={'cutSpecifications.cunas'}
                   label={'Cuñas: '}
-                  placeholder='Cuñas permitidas'
+                  isReadOnly
                   flexDirection={'row'}
                 />
                 <InputFieldText
                   name={'container.fileCode'}
                   label={'Código Fichero: '}
-                  placeholder='Código de fichero'
+                  isReadOnly
                   flexDirection={'row'}
                 />
                 <InputFieldText
@@ -804,10 +677,18 @@ const CuttingSheetForm = ({
                 />
                 <InputFieldText
                   name={'cutSpecifications.labelsQuantity'}
-                  label={'Detalle de Etiquetas: '}
-                  placeholder='Especificaciones de la Etiqueta'
+                  label={'Cantidad de Etiquetas: '}
+                  isReadOnly
                   flexDirection={'row'}
                 />
+                <Flex gridColumn={{ base: 'span 1', lg: 'span 2' }}>
+                  <InputFieldText
+                    name={'cutSpecifications.labelDetail'}
+                    label={'Detalle de Etiquetas: '}
+                    isReadOnly
+                    flexDirection={'column'}
+                  />
+                </Flex>
                 <InputFieldText
                   name={'container.cluster'}
                   label={'Cluster: '}
@@ -816,10 +697,18 @@ const CuttingSheetForm = ({
                 />
                 <InputFieldText
                   name={'container.clusterQuantity'}
-                  label={'Detalle de Cluster: '}
-                  placeholder='Especificaciones del Cluster'
+                  label={'Cantidad de Cluster: '}
+                  isReadOnly
                   flexDirection={'row'}
                 />
+                <Flex gridColumn={{ base: 'span 1', lg: 'span 2' }}>
+                  <InputFieldText
+                    name={'cutSpecifications.clusterDetail'}
+                    label={'Detalle de Cluster: '}
+                    isReadOnly
+                    flexDirection={'column'}
+                  />
+                </Flex>
               </SimpleGrid>
 
               <Heading fontSize={'2xl'} p={'12px'}>
@@ -835,7 +724,7 @@ const CuttingSheetForm = ({
                 <InputFieldText
                   name={'packaging.bag'}
                   label={'Funda: '}
-                  placeholder='Descripción y nombre de la funda'
+                  isReadOnly
                   flexDirection={'row'}
                 />
                 <Box />
@@ -847,8 +736,8 @@ const CuttingSheetForm = ({
                 />
                 <InputFieldText
                   name={'packaging.sachetQuantity'}
-                  label={'Detalle del Sachet: '}
-                  placeholder='Especificaciones del Sachet'
+                  label={'Cantidad de Sachet: '}
+                  isReadOnly
                   flexDirection={'row'}
                 />
                 <InputFieldText
@@ -859,8 +748,8 @@ const CuttingSheetForm = ({
                 />
                 <InputFieldText
                   name={'packaging.padQuantity'}
-                  label={'Detalle del Pad: '}
-                  placeholder='Especificaciones del Pad'
+                  label={'Cantidad de Pad: '}
+                  isReadOnly
                   flexDirection={'row'}
                 />
               </SimpleGrid>
@@ -896,25 +785,25 @@ const CuttingSheetForm = ({
                 <InputFieldText
                   name={'packaging.firstLine'}
                   label={'Primera línea: '}
-                  placeholder='Primera línea'
+                  isReadOnly
                   flexDirection={'row'}
                 />
                 <InputFieldText
                   name={'packaging.secondLine'}
                   label={'Segunda línea: '}
-                  placeholder='Segunda línea'
+                  isReadOnly
                   flexDirection={'row'}
                 />
                 <InputFieldText
                   name={'packaging.thirdLine'}
                   label={'Tercera línea: '}
-                  placeholder='Tercera línea'
+                  isReadOnly
                   flexDirection={'row'}
                 />
                 <InputFieldText
                   name={'packaging.fourthLine'}
                   label={'Cuarta línea: '}
-                  placeholder='Cuarta línea'
+                  isReadOnly
                   flexDirection={'row'}
                 />
               </SimpleGrid>
@@ -928,123 +817,167 @@ const CuttingSheetForm = ({
                 <InputFieldText
                   name={'materials.packagingPattern'}
                   label={'Patrón de empaque: '}
+                  isReadOnly
                   flexDirection={'row'}
                 />
-                {/* <InputFieldSelector
-                  name={'materials.packagingPattern'}
-                  label={'Patrón de empaque: '}
-                  placeholder='Seleccione el patrón de empaque'
-                  flexDirection='row'
-                  alignItems='flex-end'
-                  options={[
-                    { id: '3_lineas', name: '3 Líneas, 15/20 Clusters ' },
-                    { id: '4_lineas', name: '4 Líneas, 12/14 Clusters' },
-                    { id: 'ambos', name: 'Ambos' },
-                    { id: 'jumbo', name: 'Jumbo' },
-                    // {
-                    //   id: 'tres_lineas_opcional',
-                    //   name: 'Tres líneas opcional',
-                    // },
-                  ]}
-                /> */}
                 <Box />
                 <InputFieldText
                   name={'materials.pallets'}
                   label={'Pallets: '}
+                  isReadOnly
                   flexDirection={'row'}
                 />
                 <InputFieldText
                   name={'materials.palletsQuantity'}
-                  label={'Detalle de los Pallets: '}
-                  placeholder='Especificaciones de los Pallets'
+                  label={'Cantidad de Pallets: '}
+                  isReadOnly
                   flexDirection={'row'}
                 />
-
+                <Flex gridColumn={{ base: 'span 1', lg: 'span 2' }}>
+                  <InputFieldText
+                    name={'materials.palletsDetail'}
+                    label={'Detalle de los Pallets: '}
+                    isReadOnly
+                    flexDirection={'column'}
+                  />
+                </Flex>
                 <InputFieldText
                   name={'materials.plasticCorners'}
                   label={'Esquineros Plásticos: '}
+                  isReadOnly
                   flexDirection={'row'}
                 />
                 <InputFieldText
                   name={'materials.plasticCornersQuantity'}
-                  label={'Detalle de los Esquineros Plásticos: '}
-                  placeholder='Especificaciones de los Esquineros Plásticos'
+                  label={'Cantidad de Esquineros Plásticos: '}
+                  isReadOnly
                   flexDirection={'row'}
                 />
-
+                <Flex gridColumn={{ base: 'span 1', lg: 'span 2' }}>
+                  <InputFieldText
+                    name={'materials.plasticCornersDetail'}
+                    label={'Detalle de los Esquineros Plásticos: '}
+                    isReadOnly
+                    flexDirection={'column'}
+                  />
+                </Flex>
                 <InputFieldText
                   name={'materials.reinforcements'}
                   label={'Refuerzos: '}
+                  isReadOnly
                   flexDirection={'row'}
                 />
                 <InputFieldText
                   name={'materials.reinforcementsQuantity'}
-                  label={'Detalle de los Refuerzos: '}
-                  placeholder='Especificaciones de los Refuerzos'
+                  label={'Cantidad de Refuerzos: '}
+                  isReadOnly
                   flexDirection={'row'}
                 />
-
+                <Flex gridColumn={{ base: 'span 1', lg: 'span 2' }}>
+                  <InputFieldText
+                    name={'materials.reinforcementsDetail'}
+                    label={'Detalle de los Refuerzos: '}
+                    isReadOnly
+                    flexDirection={'column'}
+                  />
+                </Flex>
                 <InputFieldText
                   name={'materials.plasticStraps'}
                   label={'Zuncho Plásticos: '}
+                  isReadOnly
                   flexDirection={'row'}
                 />
                 <InputFieldText
                   name={'materials.plasticStrapsQuantity'}
-                  label={'Detalle del Zuncho Plásticos: '}
-                  placeholder='Especificaciones del Zuncho Plásticos'
+                  label={'Cantidad de Zuncho Plásticos: '}
+                  isReadOnly
                   flexDirection={'row'}
                 />
-
+                <Flex gridColumn={{ base: 'span 1', lg: 'span 2' }}>
+                  <InputFieldText
+                    name={'materials.plasticStrapsDetail'}
+                    label={'Detalle del Zuncho Plásticos: '}
+                    isReadOnly
+                    flexDirection={'column'}
+                  />
+                </Flex>
                 <InputFieldText
                   name={'materials.staples'}
                   label={'Grapas: '}
+                  isReadOnly
                   flexDirection={'row'}
                 />
                 <InputFieldText
                   name={'materials.staplesQuantity'}
-                  label={'Detalle de las Grapas: '}
-                  placeholder='Especificaciones de las Grapas'
+                  label={'Cantidad de Grapas: '}
+                  isReadOnly
                   flexDirection={'row'}
                 />
-
+                <Flex gridColumn={{ base: 'span 1', lg: 'span 2' }}>
+                  <InputFieldText
+                    name={'materials.staplesDetail'}
+                    label={'Detalle de las Grapas: '}
+                    isReadOnly
+                    flexDirection={'column'}
+                  />
+                </Flex>
                 <InputFieldText
                   name={'materials.cardboardSheets'}
                   label={'Láminas de cartón: '}
+                  isReadOnly
                   flexDirection={'row'}
                 />
                 <InputFieldText
                   name={'materials.cardboardSheetsQuantity'}
-                  label={'Detalle de las Láminas de cartón: '}
-                  placeholder='Especificaciones de las Láminas de cartón'
+                  label={'Cantidad de Láminas de cartón: '}
+                  isReadOnly
                   flexDirection={'row'}
                 />
-
+                <Flex gridColumn={{ base: 'span 1', lg: 'span 2' }}>
+                  <InputFieldText
+                    name={'materials.cardboardSheetsDetail'}
+                    label={'Detalle de las Láminas de cartón: '}
+                    isReadOnly
+                    flexDirection={'column'}
+                  />
+                </Flex>
                 <InputFieldText
                   name={'materials.thermometer'}
                   label={'Termógrafo: '}
+                  isReadOnly
                   flexDirection={'row'}
                 />
                 <InputFieldText
                   name={'materials.thermometerQuantity'}
-                  label={'Detalle del Termógrafo: '}
-                  placeholder='Especificaciones del Termógrafo'
+                  label={'Cantidad de Termógrafos: '}
+                  isReadOnly
                   flexDirection={'row'}
                 />
+                <Flex gridColumn={{ base: 'span 1', lg: 'span 2' }}>
+                  <InputFieldText
+                    name={'materials.thermometerDetail'}
+                    label={'Detalle del Termógrafo: '}
+                    isReadOnly
+                    flexDirection={'column'}
+                  />
+                </Flex>
                 <InputFieldText
                   name={'materials.authorizedTransport'}
                   label={'Transportes Autorizados: '}
-                  placeholder='Transportes Autorizados'
+                  isReadOnly
                   flexDirection={'row'}
                 />
-                <Box />
-                <InputFieldTextArea
-                  name={'materials.generalObservations'}
-                  label={'Observaciones Generales: '}
-                  placeholder='Agrega el detalle de la hoja de corte'
+                <InputFieldText
+                  name={'materials.aliquot'}
+                  label={'Alicuota: '}
+                  isReadOnly
+                  flexDirection={'row'}
                 />
               </SimpleGrid>
-
+              <InputFieldTextArea
+                name={'materials.generalObservations'}
+                label={'Observaciones Generales: '}
+              />
               <SimpleGrid columns={{ base: 1, sm: 1 }}>
                 <CheckboxForm
                   name='dataReviewed'

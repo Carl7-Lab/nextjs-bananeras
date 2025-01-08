@@ -13,6 +13,7 @@ interface InputFieldDateProps {
   label?: string;
   placeholder?: string;
   flexDirection?: 'column' | 'row';
+  isReadOnly?: boolean;
 }
 
 const InputFieldDate: React.FC<InputFieldDateProps> = ({
@@ -20,6 +21,7 @@ const InputFieldDate: React.FC<InputFieldDateProps> = ({
   label,
   placeholder,
   flexDirection = 'column',
+  isReadOnly = false,
 }) => {
   const [field, meta, helpers] = useField(name);
 
@@ -67,6 +69,7 @@ const InputFieldDate: React.FC<InputFieldDateProps> = ({
           onChange={handleChange}
           placeholder={placeholder || label}
           type={'date'}
+          isReadOnly={isReadOnly}
         />
 
         {meta.error && meta.touched && (
