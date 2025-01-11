@@ -13,6 +13,7 @@ interface InputFieldDateProps {
   label?: string;
   placeholder?: string;
   flexDirection?: 'column' | 'row';
+  isReadOnly?: boolean;
 }
 
 const InputFieldDate: React.FC<InputFieldDateProps> = ({
@@ -20,13 +21,14 @@ const InputFieldDate: React.FC<InputFieldDateProps> = ({
   label,
   placeholder,
   flexDirection = 'column',
+  isReadOnly = false,
 }) => {
   const [field, meta, helpers] = useField(name);
 
   const formatDate = (date: Date) => date.toISOString().split('T')[0];
 
   const [dateValue, setDateValue] = useState<string>(
-    field.value ? formatDate(new Date(field.value)) : formatDate(new Date())
+    field.value ? formatDate(new Date(field.value)) : ''
   );
 
   useEffect(() => {
@@ -36,14 +38,21 @@ const InputFieldDate: React.FC<InputFieldDateProps> = ({
         adjustedDate.getMinutes() - adjustedDate.getTimezoneOffset()
       );
       setDateValue(formatDate(adjustedDate));
+    } else {
+      setDateValue('');
     }
   }, [field.value]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newDate = new Date(e.target.value);
-    newDate.setMinutes(newDate.getMinutes() + newDate.getTimezoneOffset());
-    helpers.setValue(newDate.toISOString());
-    setDateValue(e.target.value);
+    if (e.target.value) {
+      const newDate = new Date(e.target.value);
+      newDate.setMinutes(newDate.getMinutes() + newDate.getTimezoneOffset());
+      helpers.setValue(newDate.toISOString());
+      setDateValue(e.target.value);
+    } else {
+      helpers.setValue('');
+      setDateValue('');
+    }
   };
 
   return (
@@ -60,6 +69,7 @@ const InputFieldDate: React.FC<InputFieldDateProps> = ({
           onChange={handleChange}
           placeholder={placeholder || label}
           type={'date'}
+          isReadOnly={isReadOnly}
         />
 
         {meta.error && meta.touched && (

@@ -6,7 +6,7 @@ import InputFieldNumber from '../ui/form/InputFieldNumber';
 
 interface SelectBoxBrandProps {
   name: string;
-  name2: string;
+  name2?: string;
   namePrice?: string;
   boxQuantity?: number;
   price?: number;
@@ -56,7 +56,7 @@ const SelectBoxBrand: React.FC<SelectBoxBrandProps> = ({
           <Input isReadOnly={true} value={boxBrand?.brandCode || ''} />
         </Box>
 
-        <InputFieldNumber name={name2} label={'Numero de Cajas'} />
+        {!!name2 && <InputFieldNumber name={name2} label={'Número de Cajas'} />}
 
         {!!namePrice && !!nameSubtotal1 && (
           <>

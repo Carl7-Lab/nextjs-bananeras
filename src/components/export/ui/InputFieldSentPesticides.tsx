@@ -7,11 +7,13 @@ import { PesticideCocktailPart } from '../../../types/box-brand/post-harvest/pes
 interface InputFieldSentPesticidesProps {
   name: string;
   pesticideCocktailSelected: Partial<PesticideCocktailPart>[];
+  showNumberInput?: boolean;
 }
 
 const InputFieldSentPesticides: React.FC<InputFieldSentPesticidesProps> = ({
   name,
   pesticideCocktailSelected = [],
+  showNumberInput,
 }) => {
   return (
     <FieldArray name={name}>
@@ -23,6 +25,7 @@ const InputFieldSentPesticides: React.FC<InputFieldSentPesticidesProps> = ({
               name={`${name}[${index}].quantity`}
               pesticideSelected={pesticideCocktailPart}
               quantity={Number(pesticideCocktailPart.quantity)}
+              showNumberInput={showNumberInput}
             />
           ))}
         </Flex>

@@ -21,24 +21,24 @@ import {
 } from '@chakra-ui/react';
 import { useField } from 'formik';
 import React, { useEffect, useRef, useState } from 'react';
-import { useImportMerchants } from '../../hooks/merchants/uploadMerchants';
+import { useImportClients } from '../../hooks/export/client/uploadClients';
 
-const ImportProducerDrawer: React.FC = () => {
+const ImportClientDrawer: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [fileName, setFileName] = useState<string>('');
   const [fileSize, setFileSize] = useState<number>(0);
   const [dragging, setDragging] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [field, meta, helpers] = useField('import-merchant');
+  const [field, meta, helpers] = useField('import-client');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const toast = useToast();
 
-  const { importMerchants, isLoading } = useImportMerchants({
+  const { importClients, isLoading } = useImportClients({
     config: {
       onSuccess: (data) => {
         toast({
           title: 'Importación exitosa',
-          description: `Se importaron productores correctamente.`,
+          description: data.message,
           status: 'success',
           duration: 5000,
           isClosable: true,
@@ -109,20 +109,20 @@ const ImportProducerDrawer: React.FC = () => {
   };
 
   const handleUpload = () => {
-    if (selectedFile) importMerchants(selectedFile);
+    if (selectedFile) importClients(selectedFile);
   };
 
   return (
     <Box>
       <Button py='8px' px='16px' colorScheme='teal' onClick={onOpen}>
-        Importar Productores
+        Importar Clientes
       </Button>
 
       <Drawer isOpen={isOpen} placement='right' onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Importar Productores</DrawerHeader>
+          <DrawerHeader>Importar Clientes</DrawerHeader>
 
           <DrawerBody>
             {fileName ? (
@@ -157,7 +157,7 @@ const ImportProducerDrawer: React.FC = () => {
                 </HStack>
               </Box>
             ) : (
-              <FormControl id='import-merchant' width='100%'>
+              <FormControl id='import-client' width='100%'>
                 <Box
                   onDragEnter={handleDragEnter}
                   onDragLeave={handleDragLeave}
@@ -222,4 +222,4 @@ const ImportProducerDrawer: React.FC = () => {
   );
 };
 
-export default ImportProducerDrawer;
+export default ImportClientDrawer;

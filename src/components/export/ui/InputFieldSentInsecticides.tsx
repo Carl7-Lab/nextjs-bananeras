@@ -7,11 +7,13 @@ import { InsecticideCocktailPart } from '../../../types/box-brand/additions/inse
 interface InputFieldSentInsecticidesProps {
   name: string;
   insecticideCocktailSelected: Partial<InsecticideCocktailPart>[];
+  showNumberInput?: boolean;
 }
 
 const InputFieldSentInsecticides: React.FC<InputFieldSentInsecticidesProps> = ({
   name,
   insecticideCocktailSelected,
+  showNumberInput,
 }) => {
   return (
     <FieldArray name={name}>
@@ -23,6 +25,7 @@ const InputFieldSentInsecticides: React.FC<InputFieldSentInsecticidesProps> = ({
               name={`${name}[${index}].quantity`}
               insecticideSelected={insecticideCocktailPart}
               quantity={Number(insecticideCocktailPart.quantity)}
+              showNumberInput={showNumberInput}
             />
           ))}
         </Flex>

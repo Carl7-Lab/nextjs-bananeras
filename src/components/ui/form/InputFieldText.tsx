@@ -39,7 +39,6 @@ const InputFieldText: React.FC<InputFieldProps> = ({
   isDisabledRemove,
   isReadOnly,
   flexDirection = 'column',
-  alignItems = 'flex-start',
   isBan,
   onClickRemove,
 }) => {
@@ -91,48 +90,76 @@ const InputFieldText: React.FC<InputFieldProps> = ({
   };
 
   return (
-    <FormControl id={name} isInvalid={!!meta.error && meta.touched}>
-      <Flex flexDirection={flexDirection} alignItems={alignItems}>
+    <FormControl
+      id={name}
+      isInvalid={!!meta.error && meta.touched}
+      width={'100%'}
+    >
+      <Flex
+        flexDirection={flexDirection}
+        alignItems={flexDirection === 'row' ? 'center' : 'flex-start'}
+      >
         {label && (
-          <FormLabel fontSize='sm' mb='8px'>
-            <Text display='flex' alignItems='center'>
-              {label}{' '}
-              {!!isBan && (
-                <IconButton
-                  isRound={true}
-                  ml={'5px'}
-                  colorScheme={!!isBan.state ? 'orange' : 'gray'}
-                  aria-label='Ban'
-                  size={'base'}
-                  variant={'outline'}
-                  icon={<FaBan size={'20px'} />}
-                  onClick={banClick}
-                />
-              )}
-            </Text>
-          </FormLabel>
+          <Flex
+            flex={flexDirection === 'row' ? '1' : 'none'}
+            minWidth={flexDirection === 'row' ? '15%' : '100%'}
+            maxWidth={flexDirection === 'row' ? '25%' : '100%'}
+            alignItems='center'
+            marginRight={flexDirection === 'row' ? '2%' : '0'}
+          >
+            <FormLabel
+              fontSize='sm'
+              m={0}
+              mb={flexDirection === 'column' ? '8px' : '0'}
+              textAlign={flexDirection === 'row' ? 'left' : 'center'}
+              overflow='hidden'
+            >
+              <Text display='flex' alignItems='center'>
+                {label}{' '}
+                {!!isBan && (
+                  <IconButton
+                    isRound={true}
+                    ml={'5px'}
+                    colorScheme={!!isBan.state ? 'orange' : 'gray'}
+                    aria-label='Ban'
+                    size='sm'
+                    variant='outline'
+                    icon={<FaBan size='16px' />}
+                    onClick={banClick}
+                  />
+                )}
+              </Text>
+            </FormLabel>
+          </Flex>
         )}
-        <InputGroup>
-          <Input
-            {...field}
-            ref={inputRef}
-            isReadOnly={isBan?.state || isReadOnly}
-            placeholder={placeholder || label}
-          />
-          {onClickRemove && (
-            <InputRightElement>
-              <IconButton
-                variant='solid'
-                colorScheme='red'
-                aria-label='Eliminar'
-                fontSize='20px'
-                icon={<TiDelete />}
-                isDisabled={isDisabledRemove}
-                onClick={onClickRemove}
-              />
-            </InputRightElement>
-          )}
-        </InputGroup>
+        <Flex
+          flex={label ? '2' : '1'}
+          width='100%'
+          marginLeft={label ? '0' : '0'}
+        >
+          {' '}
+          <InputGroup>
+            <Input
+              {...field}
+              ref={inputRef}
+              isReadOnly={isBan?.state || isReadOnly}
+              placeholder={placeholder || label}
+            />
+            {onClickRemove && (
+              <InputRightElement>
+                <IconButton
+                  variant='solid'
+                  colorScheme='red'
+                  aria-label='Eliminar'
+                  fontSize='20px'
+                  icon={<TiDelete />}
+                  isDisabled={isDisabledRemove}
+                  onClick={onClickRemove}
+                />
+              </InputRightElement>
+            )}
+          </InputGroup>
+        </Flex>
       </Flex>
       {meta.error && meta.touched && (
         <FormErrorMessage mt='8px' mb='16px'>

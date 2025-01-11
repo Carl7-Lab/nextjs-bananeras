@@ -34,15 +34,10 @@ const SignInPage = (props: Props) => {
         }}
       >
         <Logo />
-        <Heading
-          color='blackAlpha.900'
-          fontWeight='bold'
-          fontSize='3xl'
-          mt='24px'
-        >
+        <Heading fontWeight='bold' fontSize='3xl' mt='24px'>
           Hey, Hola 👋
         </Heading>
-        <Text color='blackAlpha.700' fontSize='md' mt='8px'>
+        <Text fontSize='md' mt='8px'>
           Introduce la información que proporcionaste al registrarte.
         </Text>
 

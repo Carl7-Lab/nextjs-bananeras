@@ -82,28 +82,51 @@ const InputFieldQuantity: React.FC<InputFieldProps> = ({
       isInvalid={!!meta.error && meta.touched}
       width={'100%'}
     >
-      <Flex flexDirection={flexDirection}>
+      <Flex
+        flexDirection={flexDirection}
+        alignItems={flexDirection === 'row' ? 'center' : 'flex-start'}
+      >
+        {' '}
         {label && (
-          <FormLabel fontSize='sm' mb='8px'>
-            {label}
-          </FormLabel>
+          <Flex
+            flex={flexDirection === 'row' ? '1' : 'none'}
+            minWidth={flexDirection === 'row' ? '15%' : '100%'}
+            maxWidth={flexDirection === 'row' ? '25%' : '100%'}
+            alignItems='center'
+            marginRight={flexDirection === 'row' ? '2%' : '0'}
+          >
+            <FormLabel
+              fontSize='sm'
+              mb={flexDirection === 'column' ? '8px' : '0'}
+              textAlign={flexDirection === 'row' ? 'left' : 'center'}
+              overflow='hidden'
+            >
+              {label}
+            </FormLabel>
+          </Flex>
         )}
-        <NumberInput
-          {...field}
-          onChange={handleChange}
-          isReadOnly={isReadOnly || isBan?.state}
-          size={size}
-          width={'100%'}
-          min={min}
-          max={max}
-          step={step}
+        <Flex
+          flex={label ? '2' : '1'}
+          width='100%'
+          marginLeft={label ? '0' : '0'}
         >
-          <NumberInputField
+          <NumberInput
             {...field}
-            placeholder={placeholder || label}
+            onChange={handleChange}
+            isReadOnly={isReadOnly || isBan?.state}
+            size={size}
             width={'100%'}
-          />
-        </NumberInput>
+            min={min}
+            max={max}
+            step={step}
+          >
+            <NumberInputField
+              {...field}
+              placeholder={placeholder || label}
+              width={'100%'}
+            />
+          </NumberInput>
+        </Flex>
       </Flex>
       {meta.error && meta.touched && (
         <FormErrorMessage mt='8px' mb='16px'>

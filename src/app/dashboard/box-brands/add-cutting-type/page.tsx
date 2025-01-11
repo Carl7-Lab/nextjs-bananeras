@@ -7,14 +7,13 @@ import {
   Center,
   Heading,
 } from '@chakra-ui/react';
-import React from 'react';
-import AddExportForm from '../../../../components/export/AddExportForm';
+import AddCuttingTypeForm from '../../../../components/export/cutting-type/AddCuttingTypeForm';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
-function AddExportPage() {
+function AddCuttingTypePage() {
   return (
     <>
-      <Box my={'20px'} mx='auto' w={'80%'}>
+      <Box my={'20px'} mx={'auto'} w={'80%'}>
         <Center>
           <Card
             w={{
@@ -27,10 +26,10 @@ function AddExportPage() {
             mb={'20px'}
           >
             <CardHeader w={'100%'}>
-              <Heading>Agregar Exportación</Heading>
+              <Heading>Agregar Tipo de Corte</Heading>
             </CardHeader>
             <CardBody w='100%'>
-              <AddExportForm />
+              <AddCuttingTypeForm />
             </CardBody>
           </Card>
         </Center>
@@ -39,4 +38,4 @@ function AddExportPage() {
   );
 }
 
-export default IsOnboarding(AddExportPage);
+export default IsOnboarding(AddCuttingTypePage);
