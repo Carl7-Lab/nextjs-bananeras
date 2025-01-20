@@ -1,7 +1,7 @@
 'use client';
 import { Box, Center } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import TableExport from '../../../../components/export/table-export/TableExport';
+import TableCuttingSheets from '../../../../components/export/cutting-sheet/table-cutting-sheets/TableCuttingSheets';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
 interface WindowSizeProps {
@@ -9,7 +9,7 @@ interface WindowSizeProps {
   height: number | null;
 }
 
-function SearchExportPage() {
+function SearchCuttingSheetsPage() {
   const [windowSize, setWindowSize] = useState<WindowSizeProps>({
     width: null,
     height: null,
@@ -38,7 +38,7 @@ function SearchExportPage() {
       height={`${windowSize.height ? windowSize.height * 0.8 + 'px' : 'auto'}`}
     >
       <Center>
-        <TableExport
+        <TableCuttingSheets
           windowSize={windowSize}
           width={{
             sm: Number(windowSize.width) - 20,
@@ -50,4 +50,4 @@ function SearchExportPage() {
   );
 }
 
-export default IsOnboarding(SearchExportPage);
+export default IsOnboarding(SearchCuttingSheetsPage);

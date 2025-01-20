@@ -24,6 +24,10 @@ export function getNavItems(): SidenavItem[] {
       to: '/dashboard/export/cutting-sheet',
     },
     {
+      label: 'Buscar Hoja de Corte',
+      to: '/dashboard/export/cutting-sheets',
+    },
+    {
       label: 'Envío de Insumos',
       to: '/dashboard/export/supply-shipment',
     },

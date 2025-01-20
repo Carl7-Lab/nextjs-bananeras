@@ -190,14 +190,14 @@ const TableExport = ({
     enableColumnDragging: false,
     enableHiding: false,
     initialState: {
-      pagination: { pageSize: 5, pageIndex: 0 },
+      pagination: { pageSize: 10, pageIndex: 0 },
       columnPinning: {
         left: ['mrt-row-expand', 'boxQuantity'],
         right: ['pendingExportSent'],
       },
       density: 'compact',
     },
-    muiTableContainerProps: { sx: { maxHeight: '575px' } },
+    muiTableContainerProps: { sx: { maxHeight: '100%' } },
     muiDetailPanelProps: () => ({
       sx: (theme) => ({
         padding: '0px',
