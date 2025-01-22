@@ -35,8 +35,7 @@ export default function SignInForm(props: Props) {
       username: values.email,
       password: values.password,
       redirect: true,
-      callbackUrl:
-        props.callbackUrl ?? 'http://localhost:3000/dashboard/export/search',
+      callbackUrl: props.callbackUrl ?? 'http://localhost:3000/dashboard',
     });
   };
 
