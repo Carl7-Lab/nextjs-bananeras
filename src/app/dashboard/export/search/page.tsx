@@ -1,5 +1,6 @@
 'use client';
-import { Box, Center } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, Link } from '@chakra-ui/react';
+import Link_Next from 'next/link';
 import React, { useEffect, useState } from 'react';
 import TableExport from '../../../../components/export/table-export/TableExport';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
@@ -29,15 +30,27 @@ function SearchExportPage() {
 
   return (
     <Box
-      my={'auto'}
+      my={'27px'}
       mx={'auto'}
       width={{
         sm: `${Number(windowSize.width) - 20}px`,
         md: `${Number(windowSize.width) - 300}px`,
       }}
-      height={`${windowSize.height ? windowSize.height * 0.8 + 'px' : 'auto'}`}
     >
-      <Center>
+      <Link
+        as={Link_Next}
+        href={'/dashboard/export/add-export'}
+        _hover={{
+          bg: 'green.600',
+          color: 'white',
+        }}
+      >
+        <Flex justify='flex-end' width='100%'>
+          <Button colorScheme='teal'>Agregar Exportación</Button>
+        </Flex>
+      </Link>
+      <Center mt={'24px'}>
+        {' '}
         <TableExport
           windowSize={windowSize}
           width={{

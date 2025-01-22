@@ -8,6 +8,7 @@ import {
   Input,
   SimpleGrid,
   useToast,
+  Text,
 } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
@@ -249,7 +250,7 @@ const SentMaterialsExportForm = ({
 }) => {
   const [initialValuesExport, setInitialValuesExport] =
     useState<ValuesProps>(initialValues);
-  const { createExportSent } = useCreateExportSent();
+  const { createExportSent, isLoading } = useCreateExportSent();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -341,7 +342,7 @@ const SentMaterialsExportForm = ({
         },
         onSuccess: () => {
           toast({
-            title: 'Registro de insumos enviados',
+            title: 'Registro de Insumos Enviado con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -373,8 +374,35 @@ const SentMaterialsExportForm = ({
             </Heading>
             <Divider mb={'16px'} />
 
+            {exportSelected?.boxBrand ? (
+              <Box p='4' border='1px' borderRadius='md' borderColor='gray.200'>
+                <Text fontSize='sm'>
+                  <strong>Marca de Caja:</strong>{' '}
+                  {exportSelected.boxBrand.name || 'N/A'}
+                </Text>
+                <Text fontSize='sm'>
+                  <strong>Código de Marca:</strong>{' '}
+                  {exportSelected.boxBrand.brandCode || 'N/A'}
+                </Text>
+                <Text fontSize='sm'>
+                  <strong>Peso Neto (Caja):</strong>{' '}
+                  {exportSelected.boxBrand.netWeightBox} LBS
+                </Text>
+                <Text fontSize='sm'>
+                  <strong>Peso Bruto (Caja):</strong>{' '}
+                  {exportSelected.boxBrand.grossWeightBox} LBS
+                </Text>
+                <Text fontSize='sm'>
+                  <strong>Marca Principal:</strong>{' '}
+                  {exportSelected.boxBrand.brand?.name || 'N/A'}
+                </Text>
+              </Box>
+            ) : (
+              <Text>No se ha seleccionado una marca de caja.</Text>
+            )}
+
             <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
-              <Box>
+              <Box mt={'16px'}>
                 <FormLabel>Cantidad de cajas</FormLabel>
                 <Input
                   value={exportSelected?.boxQuantity || ''}
@@ -643,7 +671,7 @@ const SentMaterialsExportForm = ({
                     px='16px'
                     type='submit'
                     colorScheme='teal'
-                    isLoading={isSubmitting}
+                    isLoading={isLoading}
                   >
                     Enviar
                   </Button>

@@ -1,5 +1,12 @@
 'use client';
-import { Box, Card, CardBody, Center, Heading } from '@chakra-ui/react';
+import {
+  Box,
+  Card,
+  CardBody,
+  CardHeader,
+  Center,
+  Heading,
+} from '@chakra-ui/react';
 import { redirect, useParams, usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useLayoutEffect } from 'react';
 import SentMaterialsExportForm from '../../../../../components/export/SentMaterialsExportForm';
@@ -49,20 +56,22 @@ const PendingExportPage = () => {
   }
 
   return (
-    <Box my={'20px'} mx={'auto'}>
+    <Box my={'20px'} mx='auto' w={'95%'}>
       <Center>
         <Card
           w={{
             base: '95%',
             sm: '95%',
             md: '90%',
-            lg: '85%',
-            xl: '65%',
-            '2xl': '70%',
+            lg: '100%',
+            xl: '100%',
           }}
           mb={'20px'}
         >
-          <CardBody w='100%'>
+          <CardHeader w={'100%'}>
+            <Heading>Envío de Insumos</Heading>
+          </CardHeader>
+          <CardBody w={'100%'}>
             <SentMaterialsExportForm
               exportSelected={pendingExport}
               pathname={pathname}

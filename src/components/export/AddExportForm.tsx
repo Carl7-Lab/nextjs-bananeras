@@ -9,7 +9,7 @@ import {
   useToast,
   Text,
 } from '@chakra-ui/react';
-import { Form, Formik } from 'formik';
+import { Form, Formik, FormikHelpers } from 'formik';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
@@ -154,14 +154,14 @@ const validationSchema = Yup.object({
 });
 
 const AddExportForm = () => {
-  const { createExport } = useCreateExport();
+  const { createExport, isLoading } = useCreateExport();
   const router = useRouter();
   const toast = useToast();
   const queryClient = useQueryClient();
 
-  const addExport = async (
+  const handleSubmit = async (
     values: ValuesProps,
-    actions: { resetForm: () => void }
+    formikHelpers: FormikHelpers<ValuesProps>
   ) => {
     const {
       weekCutting,
@@ -198,10 +198,15 @@ const AddExportForm = () => {
         if (statusCode === 401) {
           router.push('/api/auth/signout');
         }
+
+        if (model && prop) {
+          formikHelpers.setFieldError(`${prop}`, message);
+        }
       },
       onSuccess: () => {
         toast({
-          title: 'Exportacion creada',
+          title: 'Exportación creada con éxito',
+          description: 'La exportación ha sido registrada correctamente.',
           status: 'success',
           duration: 5000,
           isClosable: true,
@@ -209,18 +214,17 @@ const AddExportForm = () => {
 
         queryClient.invalidateQueries('exports');
         queryClient.invalidateQueries('exportsPending');
-        actions.resetForm();
+        formikHelpers.resetForm();
+        router.push('/dashboard/export/search');
       },
     });
-
-    return;
   };
 
   return (
     <>
       <Formik
         initialValues={initialValues}
-        onSubmit={addExport}
+        onSubmit={handleSubmit}
         validationSchema={validationSchema}
       >
         {({ isSubmitting, values, errors }) => (
@@ -350,7 +354,7 @@ const AddExportForm = () => {
                   px='16px'
                   type='submit'
                   colorScheme='teal'
-                  isLoading={isSubmitting}
+                  isLoading={isLoading}
                 >
                   Enviar
                 </Button>

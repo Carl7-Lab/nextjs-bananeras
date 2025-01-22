@@ -5,6 +5,7 @@ import {
   MaterialReactTable,
   useMaterialReactTable,
 } from 'material-react-table';
+import { MRT_Localization_ES } from 'material-react-table/locales/es';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useMemo } from 'react';
 import { BsFillSendCheckFill, BsFillSendDashFill } from 'react-icons/bs';
@@ -55,7 +56,7 @@ const TableExport = ({
       },
       {
         id: 'boxBrand',
-        header: 'Tipo de Caja',
+        header: 'Exportación',
         columns: [
           {
             accessorKey: 'boxBrand.name',
@@ -237,6 +238,7 @@ const TableExport = ({
         />
       </Box>
     ),
+    localization: MRT_Localization_ES,
   });
 
   return <MaterialReactTable table={table} />;

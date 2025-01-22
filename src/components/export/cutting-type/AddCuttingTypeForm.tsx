@@ -156,7 +156,8 @@ const packagingPatternOptions = [
 const AddCuttingTypeForm = () => {
   const router = useRouter();
   const toast = useToast();
-  const { createCuttingType } = useCreateCuttingType();
+  const { createCuttingType, isLoading: createLoading } =
+    useCreateCuttingType();
   const queryClient = useQueryClient();
   const [selectedBoxBrandId, setSelectedBoxBrandId] = React.useState<
     string | null
@@ -203,7 +204,7 @@ const AddCuttingTypeForm = () => {
         },
         onSuccess: async () => {
           toast({
-            title: 'Tipo de Corte creado',
+            title: 'Tipo de Corte Creado con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -225,11 +226,6 @@ const AddCuttingTypeForm = () => {
         {({ isSubmitting, values }) => (
           <Form>
             <Flex flexDirection='column' gap={2}>
-              {/* <Flex justify='space-between'>
-                <Heading fontSize={'2xl'} p={'12px'}>
-                  Crear Tipo de Corte
-                </Heading>
-              </Flex> */}
               <Heading fontSize={'2xl'} p={'12px'}>
                 Marca de Caja
               </Heading>
@@ -561,7 +557,7 @@ const AddCuttingTypeForm = () => {
                   px='16px'
                   type='submit'
                   colorScheme='teal'
-                  isLoading={isSubmitting}
+                  isLoading={createLoading}
                   isDisabled={isSubmitting}
                 >
                   Enviar

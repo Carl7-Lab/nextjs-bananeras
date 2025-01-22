@@ -17,7 +17,7 @@ function ExportPaymentPage() {
   useLayoutEffect(() => {
     if (!isLoading) {
       // console.log('PendingExportPage pendingExport', pendingExport);
-      if (!pendingPayment || !!pendingPayment.done) {
+      if (!pendingPayment || !!pendingPayment.pendingProducerPayment) {
         return redirect('/dashboard/settings/pending-exports');
       }
     }

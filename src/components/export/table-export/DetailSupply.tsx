@@ -58,7 +58,7 @@ const DetailSupply = ({
       } else if (
         typeof supplyObject[key] === 'object' &&
         Array.isArray(supplyObject[key]) &&
-        supplyObject[key].length > 0
+        (supplyObject[key] as any[]).length > 0
       ) {
         const arrayValue:
           | PesticideSentPartType[]
