@@ -7,10 +7,11 @@ import {
   Center,
   Heading,
 } from '@chakra-ui/react';
-import AddBoxBrandsForm from '@/components/box-brands/AddBoxBrandsForm';
+import React from 'react';
+import UploadLogoForm from '../../../../components/box-brands/UploadLogoForm';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
-function AddBoxBrandPage() {
+function UploadLogoPage() {
   return (
     <>
       <Box my={'20px'} mx={'auto'} w={'95%'}>
@@ -26,10 +27,10 @@ function AddBoxBrandPage() {
             mb={'20px'}
           >
             <CardHeader w={'100%'}>
-              <Heading>Agregar Nueva Marca de Caja</Heading>
+              <Heading>Agregar Nuevo Logo</Heading>
             </CardHeader>
             <CardBody w='100%'>
-              <AddBoxBrandsForm />
+              <UploadLogoForm />
             </CardBody>
           </Card>
         </Center>
@@ -38,4 +39,4 @@ function AddBoxBrandPage() {
   );
 }
 
-export default IsOnboarding(AddBoxBrandPage);
+export default IsOnboarding(UploadLogoPage);

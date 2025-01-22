@@ -42,7 +42,7 @@ const SelectPesticide: React.FC<SelectPesticideProps> = ({
       <InputFieldPesticideSelect
         name={name1}
         label={'Agroquímico'}
-        placeholder={'Seleccione el pesticida'}
+        placeholder={'Seleccione el Pesticida'}
         setPesticide={setPesticide}
       />
 

@@ -13,7 +13,7 @@ import IsOnboarding from '../../../../components/ui/IsOnboarding';
 function AddCuttingTypePage() {
   return (
     <>
-      <Box my={'20px'} mx={'auto'} w={'80%'}>
+      <Box my={'20px'} mx={'auto'} w={'95%'}>
         <Center>
           <Card
             w={{

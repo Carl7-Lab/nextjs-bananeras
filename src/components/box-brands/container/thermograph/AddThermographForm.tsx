@@ -45,7 +45,7 @@ const validationSchema = Yup.object({
 });
 
 const AddThermographForm = ({ onClose }: AddThermographFormProps) => {
-  const { createThermograph } = useCreateThermograph();
+  const { createThermograph, isLoading } = useCreateThermograph();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -78,7 +78,7 @@ const AddThermographForm = ({ onClose }: AddThermographFormProps) => {
         },
         onSuccess: () => {
           toast({
-            title: 'Termografo creada',
+            title: 'Termografo Creado con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -117,7 +117,7 @@ const AddThermographForm = ({ onClose }: AddThermographFormProps) => {
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                isLoading={isSubmitting}
+                isLoading={isLoading}
               >
                 Agregar
               </Button>

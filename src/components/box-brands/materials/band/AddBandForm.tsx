@@ -53,7 +53,7 @@ const validationSchema = Yup.object({
 });
 
 const AddBandForm = ({ onClose }: AddBandFormProps) => {
-  const { createBand } = useCreateBand();
+  const { createBand, isLoading } = useCreateBand();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -81,7 +81,7 @@ const AddBandForm = ({ onClose }: AddBandFormProps) => {
         },
         onSuccess: () => {
           toast({
-            title: 'Banda creada',
+            title: 'Banda Creada con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -124,7 +124,7 @@ const AddBandForm = ({ onClose }: AddBandFormProps) => {
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                isLoading={isSubmitting}
+                isLoading={isLoading}
               >
                 Agregar
               </Button>

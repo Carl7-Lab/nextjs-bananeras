@@ -52,7 +52,7 @@ const validationSchema = Yup.object({
 });
 
 const AddStrippingForm = ({ onClose }: AddStrippingFormProps) => {
-  const { createStripping } = useCreateStripping();
+  const { createStripping, isLoading } = useCreateStripping();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -88,7 +88,7 @@ const AddStrippingForm = ({ onClose }: AddStrippingFormProps) => {
         },
         onSuccess: () => {
           toast({
-            title: 'Zuncho creado',
+            title: 'Zuncho Creado con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -131,7 +131,7 @@ const AddStrippingForm = ({ onClose }: AddStrippingFormProps) => {
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                isLoading={isSubmitting}
+                isLoading={isLoading}
               >
                 Agregar
               </Button>

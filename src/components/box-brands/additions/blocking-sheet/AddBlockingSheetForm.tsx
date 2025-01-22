@@ -45,7 +45,7 @@ const validationSchema = Yup.object({
 });
 
 const AddBlockingSheetForm = ({ onClose }: AddBlockingSheetFormProps) => {
-  const { createBlockingSheet } = useCreateBlockingSheet();
+  const { createBlockingSheet, isLoading } = useCreateBlockingSheet();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -78,7 +78,7 @@ const AddBlockingSheetForm = ({ onClose }: AddBlockingSheetFormProps) => {
         },
         onSuccess: () => {
           toast({
-            title: 'Lamina de Bloque creada',
+            title: 'Lamina de Bloqueo Creada con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -105,7 +105,7 @@ const AddBlockingSheetForm = ({ onClose }: AddBlockingSheetFormProps) => {
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>
-                Agregar Lamina de Bloque
+                Agregar Lamina de Bloqueo
               </Heading>
               <Divider mb={'16px'} />
               <InputFieldText name={'name'} label={'Nombre'} />
@@ -117,7 +117,7 @@ const AddBlockingSheetForm = ({ onClose }: AddBlockingSheetFormProps) => {
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                isLoading={isSubmitting}
+                isLoading={isLoading}
               >
                 Agregar
               </Button>

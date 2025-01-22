@@ -41,7 +41,7 @@ const validationSchema = Yup.object({
 });
 
 const AddProtectorForm = ({ onClose }: AddProtectorFormProps) => {
-  const { createProtector } = useCreateProtector();
+  const { createProtector, isLoading } = useCreateProtector();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -77,7 +77,7 @@ const AddProtectorForm = ({ onClose }: AddProtectorFormProps) => {
         },
         onSuccess: () => {
           toast({
-            title: 'Protector creado',
+            title: 'Protector Creado con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -119,7 +119,7 @@ const AddProtectorForm = ({ onClose }: AddProtectorFormProps) => {
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                isLoading={isSubmitting}
+                isLoading={isLoading}
               >
                 Agregar
               </Button>

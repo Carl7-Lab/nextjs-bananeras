@@ -1,16 +1,34 @@
 import { useMutation } from 'react-query';
 import axios from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
-import { LabelType } from '@/types/box-brand/materials/label';
 
 interface CreateLabelResponse {
   labelId: string;
 }
 
-export const createLabel = (
-  data: Partial<LabelType>
-): Promise<CreateLabelResponse> => {
-  return axios.post('/box-brand/label', data);
+type CreateLabelDTO = {
+  name: string;
+  quantityPerRoll: number;
+  art: File | null;
+  description: string;
+};
+
+const createLabel = (data: CreateLabelDTO): Promise<CreateLabelResponse> => {
+  const formData = new FormData();
+
+  formData.append('name', data.name);
+  formData.append('quantityPerRoll', String(data.quantityPerRoll));
+  formData.append('description', data.description);
+
+  if (data.art) {
+    formData.append('art', data.art);
+  }
+
+  return axios.post('/box-brand/label', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
 };
 
 type UseCreateLabelOptions = {
@@ -23,5 +41,5 @@ export const useCreateLabel = ({ config }: UseCreateLabelOptions = {}) => {
     mutationFn: createLabel,
   });
 
-  return { ...mutation, createLabel: mutation.mutate };
+  return { ...mutation, createLabel: mutation.mutateAsync };
 };

@@ -57,7 +57,7 @@ const validationSchema = Yup.object({
 });
 
 const AddInsecticideForm = ({ onClose }: AddInsecticideFormProps) => {
-  const { createInsecticide } = useCreateInsecticide();
+  const { createInsecticide, isLoading } = useCreateInsecticide();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -93,7 +93,7 @@ const AddInsecticideForm = ({ onClose }: AddInsecticideFormProps) => {
         },
         onSuccess: () => {
           toast({
-            title: 'Insecticide creado',
+            title: 'Insecticida Creado con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -136,7 +136,7 @@ const AddInsecticideForm = ({ onClose }: AddInsecticideFormProps) => {
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                isLoading={isSubmitting}
+                isLoading={isLoading}
               >
                 Agregar
               </Button>

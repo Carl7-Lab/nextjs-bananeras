@@ -37,7 +37,7 @@ const chakraStyles: ChakraStylesConfig<
   placeholder: (provided) => ({
     ...provided,
     color: 'gray.600',
-    h: '36px',
+    h: 'auto',
   }),
   input: (provided) => ({
     ...provided,

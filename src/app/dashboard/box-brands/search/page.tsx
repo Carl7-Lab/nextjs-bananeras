@@ -1,5 +1,6 @@
 'use client';
-import { Box, Center, Text, useBreakpointValue } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, Link } from '@chakra-ui/react';
+import Link_Next from 'next/link';
 import React, { useEffect, useState } from 'react';
 import TableBoxBrand from '../../../../components/box-brands/table-box-brand/TableBoxBrand';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
@@ -29,14 +30,26 @@ function SearchBoxBrandPage() {
 
   return (
     <Box
-      my={'auto'}
+      my={'27px'}
       mx={'auto'}
       width={{
         sm: `${Number(windowSize.width) - 20}px`,
         md: `${Number(windowSize.width) - 300}px`,
       }}
     >
-      <Center mt={'30px'}>
+      <Link
+        as={Link_Next}
+        href={'/dashboard/box-brands/add-box-brand'}
+        _hover={{
+          bg: 'green.600',
+          color: 'white',
+        }}
+      >
+        <Flex justify='flex-end' width='100%'>
+          <Button colorScheme='teal'>Agregar Marca de Caja</Button>
+        </Flex>
+      </Link>
+      <Center mt={'24px'}>
         <TableBoxBrand
           windowSize={windowSize}
           width={{

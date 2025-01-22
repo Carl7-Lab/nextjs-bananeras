@@ -53,7 +53,7 @@ const validationSchema = Yup.object({
 });
 
 const AddSachetForm = ({ onClose }: AddSachetFormProps) => {
-  const { createSachet } = useCreateSachet();
+  const { createSachet, isLoading } = useCreateSachet();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -89,7 +89,7 @@ const AddSachetForm = ({ onClose }: AddSachetFormProps) => {
         },
         onSuccess: () => {
           toast({
-            title: 'Sachet creada',
+            title: 'Sachet Creado con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -132,7 +132,7 @@ const AddSachetForm = ({ onClose }: AddSachetFormProps) => {
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                isLoading={isSubmitting}
+                isLoading={isLoading}
               >
                 Agregar
               </Button>
