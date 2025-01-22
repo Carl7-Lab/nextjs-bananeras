@@ -24,7 +24,7 @@ interface InputFieldProps {
 const InputFieldNumber: React.FC<InputFieldProps> = ({
   name,
   label,
-  value,
+  value = '',
   placeholder,
   isReadOnly = false,
   isDecimal = false,
@@ -34,8 +34,10 @@ const InputFieldNumber: React.FC<InputFieldProps> = ({
   const [field, meta, helpers] = useField(name);
 
   useEffect(() => {
-    if (!!value) {
+    if (value !== '') {
       helpers.setValue(isDecimal ? Number(value).toFixed(2) : value);
+    } else {
+      helpers.setValue('');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);

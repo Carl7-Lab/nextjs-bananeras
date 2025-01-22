@@ -2,8 +2,8 @@
 import { Box, Center, Icon, IconButton, Text } from '@chakra-ui/react';
 import { FiMenu } from 'react-icons/fi';
 import MenuIcon from './MenuIcon';
-import { useSidenav } from '../sidenav/sidenav-context';
 import { Logo } from '../Logo';
+import { useSidenav } from '../sidenav/sidenav-context';
 
 export const AppBar = () => {
   const { onOpen } = useSidenav();

@@ -57,11 +57,17 @@ export const AccordionMenu = ({ item }: AccordionMenuProps) => {
             borderRadius='md'
             color={pathname === item.to ? 'green.800' : 'black'}
           >
-            <Flex alignItems='center' justifyContent='start' p={0}>
+            <Flex
+              alignItems='center'
+              justifyContent='start'
+              h='48px'
+              p='0'
+              pl='8px'
+            >
               <Box
                 bg={pathname.includes(item.to) ? 'green.300' : 'green.100'}
                 w={'3px'}
-                h={'40px'}
+                h={'100%'}
                 mx={2}
                 rounded={'1px'}
               />
