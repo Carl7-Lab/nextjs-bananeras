@@ -147,8 +147,8 @@ const UploadLogoFile: React.FC<UploadLogoFileProps> = ({ name }) => {
             <Image
               src={'/uploaded.png'}
               alt='imagen de subida'
-              maxH='200px'
-              my={2}
+              maxH='100px'
+              pt={'20px'}
               mx={'auto'}
             />
           )}

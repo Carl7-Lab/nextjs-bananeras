@@ -245,7 +245,7 @@ const validationSchema = Yup.object({
 const AddProducerForm = () => {
   const router = useRouter();
   const toast = useToast();
-  const { createMerchant } = useCreateMerchant();
+  const { createMerchant, isLoading } = useCreateMerchant();
   const queryClient = useQueryClient();
 
   const onSubmit = async (
@@ -303,7 +303,7 @@ const AddProducerForm = () => {
         },
         onSuccess: async () => {
           toast({
-            title: 'Productor creado',
+            title: 'Productor Creado con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -311,6 +311,7 @@ const AddProducerForm = () => {
 
           queryClient.invalidateQueries('merchants');
           formikHelpers.resetForm();
+          router.push('/dashboard/producer/producers');
         },
       }
     );
@@ -540,7 +541,7 @@ const AddProducerForm = () => {
                   px='16px'
                   type='submit'
                   colorScheme='teal'
-                  isLoading={isSubmitting}
+                  isLoading={isLoading}
                 >
                   Enviar
                 </Button>

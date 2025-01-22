@@ -186,7 +186,7 @@ const validationSchema = Yup.object({
 });
 
 const AddBusinessForm = () => {
-  const { createBusiness } = useCreateBusiness();
+  const { createBusiness, isLoading } = useCreateBusiness();
   const router = useRouter();
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -240,6 +240,7 @@ const AddBusinessForm = () => {
 
           queryClient.invalidateQueries('businesses');
           formikHelpers.resetForm();
+          router.push('/dashboard/producer/fincas');
         },
       }
     );
@@ -253,8 +254,8 @@ const AddBusinessForm = () => {
       id: 'Convencional',
     },
     {
-      name: 'Organica',
-      id: 'Organica',
+      name: 'Orgánica',
+      id: 'Orgánica',
     },
   ];
 
@@ -422,7 +423,7 @@ const AddBusinessForm = () => {
                   px='16px'
                   type='submit'
                   colorScheme='teal'
-                  isLoading={isSubmitting}
+                  isLoading={isLoading}
                 >
                   Enviar
                 </Button>
