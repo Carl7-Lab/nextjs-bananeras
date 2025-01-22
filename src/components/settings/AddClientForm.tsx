@@ -97,7 +97,7 @@ const AddClientForm = () => {
       id: 'Intermediario',
     },
   ];
-  const { createClient } = useCreateClient();
+  const { createClient, isLoading } = useCreateClient();
   const router = useRouter();
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -136,7 +136,7 @@ const AddClientForm = () => {
         },
         onSuccess: () => {
           toast({
-            title: 'Cliente creado',
+            title: 'Cliente Creado con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -145,6 +145,7 @@ const AddClientForm = () => {
           queryClient.invalidateQueries('clients');
           queryClient.invalidateQueries('clientsByHarbor');
           formikHelpers.resetForm();
+          router.push(' /dashboard/client/clients');
         },
       }
     );
@@ -164,7 +165,7 @@ const AddClientForm = () => {
             <Flex flexDirection='column' gap={3} width={'100%'}>
               <Flex justify='space-between'>
                 <Heading fontSize={'2xl'} p={'12px'}>
-                  Agregando Cliente
+                  Cliente
                 </Heading>
                 <ImportClientDrawer />
               </Flex>
@@ -212,7 +213,7 @@ const AddClientForm = () => {
                   px='16px'
                   type='submit'
                   colorScheme='teal'
-                  isLoading={isSubmitting}
+                  isLoading={isLoading}
                 >
                   Enviar
                 </Button>
