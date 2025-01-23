@@ -620,30 +620,35 @@ const CuttingSheetForm = ({
                   flexDirection={'row'}
                   min={10}
                   max={14}
+                  unit='SEM'
                 />
                 <InputFieldQuantity
                   name={'cutSpecifications.netWeight'}
                   label={'Peso neto: '}
                   isReadOnly
                   flexDirection={'row'}
+                  unit='LBS'
                 />
                 <InputFieldQuantity
                   name={'cutSpecifications.grossWeight'}
                   label={'Peso Bruto: '}
                   isReadOnly
                   flexDirection={'row'}
+                  unit='LBS'
                 />
                 <InputFieldQuantity
                   name={'cutSpecifications.caliberMin'}
                   label={'Calibre Mínimo: '}
                   isReadOnly
                   flexDirection={'row'}
+                  unit='MM'
                 />
                 <InputFieldQuantity
                   name={'cutSpecifications.caliberMax'}
                   label={'Calibre Máximo: '}
                   isReadOnly
                   flexDirection={'row'}
+                  unit='MM'
                 />
                 <InputFieldQuantity
                   name={'cutSpecifications.fingerLength'}

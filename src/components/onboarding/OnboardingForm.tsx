@@ -390,10 +390,12 @@ export default function OnboardingForm() {
                 <InputFieldNumber
                   name={'businesses[0].latitude'}
                   label={'Latitud'}
+                  isGeo={true}
                 />
                 <InputFieldNumber
                   name={'businesses[0].longitude'}
                   label={'Longitud'}
+                  isGeo={true}
                 />
               </SimpleGrid>
 
@@ -474,7 +476,7 @@ export default function OnboardingForm() {
                           />
                           <InputFieldText
                             name={`businesses[0].contacts[${index}].role`}
-                            label={'Role'}
+                            label={'Rol'}
                           />
                           <InputFieldText
                             name={`businesses[0].contacts[${index}].email`}

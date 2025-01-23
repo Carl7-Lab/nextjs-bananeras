@@ -53,7 +53,7 @@ const InputFieldSentInsecticide: React.FC<InputFieldSentInsecticideProps> = ({
           <Input
             name={`${name}.activeIngredient`}
             p={'0px'}
-            pl={'4px'}
+            pl={'8px'}
             value={`${insecticideSelected.insecticide?.activeIngredient}`}
             isReadOnly={true}
             focusBorderColor='gray.200'
@@ -66,8 +66,8 @@ const InputFieldSentInsecticide: React.FC<InputFieldSentInsecticideProps> = ({
           <Input
             name={`${name}.dose`}
             p={'0px'}
-            pr={'4px'}
-            textAlign={'right'}
+            pl={'8px'}
+            textAlign={'left'}
             value={`${insecticideSelected.insecticide?.dose}`}
             isReadOnly={true}
             focusBorderColor='gray.200'
@@ -80,9 +80,9 @@ const InputFieldSentInsecticide: React.FC<InputFieldSentInsecticideProps> = ({
           <Input
             name={`${name}.need`}
             value={quantity}
-            textAlign={'right'}
+            textAlign={'left'}
             p={'0px'}
-            pr={'4px'}
+            pl={'8px'}
             isReadOnly={true}
             focusBorderColor='gray.200'
             _hover={{ borderColor: 'gray.200' }}
@@ -100,7 +100,7 @@ const InputFieldSentInsecticide: React.FC<InputFieldSentInsecticideProps> = ({
                 placeholder={
                   placeholder || insecticideSelected.insecticide?.name
                 }
-                textAlign='right'
+                textAlign='left'
                 px={'16px'}
               />
             </NumberInput>

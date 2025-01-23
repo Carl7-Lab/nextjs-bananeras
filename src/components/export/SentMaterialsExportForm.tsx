@@ -428,6 +428,7 @@ const SentMaterialsExportForm = ({
                   material={'Fondo'}
                   materialSelected={exportSelected.boxBrand?.bottomType!}
                   quantity={exportSelected.boxQuantity!}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
@@ -435,6 +436,7 @@ const SentMaterialsExportForm = ({
                   material={'Tapa'}
                   materialSelected={exportSelected.boxBrand?.lidType!}
                   quantity={exportSelected.boxQuantity!}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
@@ -442,6 +444,7 @@ const SentMaterialsExportForm = ({
                   material={'Funda'}
                   materialSelected={exportSelected.boxBrand?.coverType!}
                   quantity={exportSelected.boxQuantity!}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
@@ -449,6 +452,7 @@ const SentMaterialsExportForm = ({
                   material={'Cartulina'}
                   materialSelected={exportSelected.boxBrand?.cardboardType!}
                   quantity={exportSelected.boxQuantity!}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
@@ -456,6 +460,7 @@ const SentMaterialsExportForm = ({
                   material={'ParaSeal'}
                   materialSelected={exportSelected.boxBrand?.parasealType!}
                   quantity={exportSelected.boxBrand?.parasealTypeQuantity!}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
@@ -463,6 +468,7 @@ const SentMaterialsExportForm = ({
                   material={'Pad'}
                   materialSelected={exportSelected.boxBrand?.padType!}
                   quantity={exportSelected.boxBrand?.padTypeQuantity!}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
@@ -470,6 +476,7 @@ const SentMaterialsExportForm = ({
                   material={'Esponja'}
                   materialSelected={exportSelected.boxBrand?.spongeType!}
                   quantity={exportSelected.boxBrand?.spongeTypeQuantity!}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
@@ -477,6 +484,7 @@ const SentMaterialsExportForm = ({
                   material={'Etiqueta'}
                   materialSelected={exportSelected.boxBrand?.label?.name!}
                   quantity={Number(exportSelected.boxBrand?.labelQuantity!)}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
@@ -484,6 +492,7 @@ const SentMaterialsExportForm = ({
                   material={'Banda'}
                   materialSelected={exportSelected.boxBrand?.band?.name!}
                   quantity={Number(exportSelected.boxBrand?.bandQuantity!)}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
@@ -491,6 +500,7 @@ const SentMaterialsExportForm = ({
                   material={'Sachet'}
                   materialSelected={exportSelected.boxBrand?.sachet?.name!}
                   quantity={Number(exportSelected.boxBrand?.sachetQuantity!)}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
@@ -498,6 +508,7 @@ const SentMaterialsExportForm = ({
                   material={'Liga'}
                   materialSelected={exportSelected.boxBrand?.rubber?.name!}
                   quantity={Number(exportSelected.boxBrand?.rubberQuantity!)}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
@@ -505,6 +516,7 @@ const SentMaterialsExportForm = ({
                   material={'Protector'}
                   materialSelected={exportSelected.boxBrand?.protector?.name!}
                   quantity={Number(exportSelected.boxBrand?.protectorQuantity!)}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
@@ -514,6 +526,7 @@ const SentMaterialsExportForm = ({
                   quantity={Number(
                     exportSelected.boxBrand?.clusterBagQuantity!
                   )}
+                  unit='C/U'
                 />
 
                 <Heading fontSize={'2xl'} p={'12px'}>
@@ -545,6 +558,7 @@ const SentMaterialsExportForm = ({
                   quantity={Number(
                     exportSelected.boxBrand?.palletsTypeQuantity!
                   )}
+                  unit='C/C'
                 />
 
                 <InputFieldSentQuantity
@@ -554,6 +568,7 @@ const SentMaterialsExportForm = ({
                   quantity={Number(
                     exportSelected.boxBrand?.miniPalletsTypeQuantity!
                   )}
+                  unit='C/C'
                 />
 
                 <InputFieldSentQuantity
@@ -563,6 +578,7 @@ const SentMaterialsExportForm = ({
                   quantity={Number(
                     exportSelected.boxBrand?.cornerTypeQuantity!
                   )}
+                  unit='C/C'
                 />
 
                 <InputFieldSentQuantity
@@ -572,6 +588,7 @@ const SentMaterialsExportForm = ({
                   quantity={Number(
                     exportSelected.boxBrand?.reinforcementTypeQuantity!
                   )}
+                  unit='C/C'
                 />
 
                 <InputFieldSentQuantity
@@ -579,6 +596,7 @@ const SentMaterialsExportForm = ({
                   material={'Grapa'}
                   materialSelected={exportSelected.boxBrand?.staple?.name!}
                   quantity={Number(exportSelected.boxBrand?.stapleQuantity!)}
+                  unit='C/C'
                 />
 
                 <InputFieldSentQuantity
@@ -586,6 +604,7 @@ const SentMaterialsExportForm = ({
                   material={'Zuncho'}
                   materialSelected={exportSelected.boxBrand?.stripping?.name!}
                   quantity={Number(exportSelected.boxBrand?.strippingQuantity!)}
+                  unit='C/C'
                 />
 
                 <InputFieldSentQuantity
@@ -595,6 +614,7 @@ const SentMaterialsExportForm = ({
                   quantity={Number(
                     exportSelected.boxBrand?.thermographQuantity!
                   )}
+                  unit='C/C'
                 />
 
                 <InputFieldSentQuantity
@@ -602,6 +622,7 @@ const SentMaterialsExportForm = ({
                   material={'Sello'}
                   materialSelected={exportSelected.boxBrand?.seal?.name!}
                   quantity={Number(exportSelected.boxBrand?.sealQuantity!)}
+                  unit='C/C'
                 />
 
                 <InputFieldSentQuantity
@@ -611,6 +632,7 @@ const SentMaterialsExportForm = ({
                   quantity={Number(
                     exportSelected.boxBrand?.mettoLabelQuantity!
                   )}
+                  unit='C/C'
                 />
                 <Heading fontSize={'2xl'} p={'12px'}>
                   Materiales adicionales
@@ -624,6 +646,7 @@ const SentMaterialsExportForm = ({
                   quantity={Number(
                     exportSelected.boxBrand?.packingTapeTypeQuantity!
                   )}
+                  unit='U/C'
                 />
 
                 <InputFieldSentQuantity
@@ -635,6 +658,7 @@ const SentMaterialsExportForm = ({
                   quantity={Number(
                     exportSelected.boxBrand?.latexRemoverQuantity!
                   )}
+                  unit='U/C'
                 />
 
                 <InputFieldSentQuantity
@@ -646,6 +670,7 @@ const SentMaterialsExportForm = ({
                   quantity={Number(
                     exportSelected.boxBrand?.blockingSheetQuantity!
                   )}
+                  unit='U/C'
                 />
 
                 <Heading fontSize={'xl'} p={'10px'}>
