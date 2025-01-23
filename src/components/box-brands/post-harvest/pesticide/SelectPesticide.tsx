@@ -71,7 +71,7 @@ const SelectPesticide: React.FC<SelectPesticideProps> = ({
         />
       </Box>
 
-      <InputFieldQuantity name={name2} label={'Cantidad'} />
+      <InputFieldQuantity name={name2} label={'Cantidad'} unit='U/C' />
 
       <Box display='flex' alignItems='flex-end'>
         <Button
