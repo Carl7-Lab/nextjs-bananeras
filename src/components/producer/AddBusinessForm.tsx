@@ -295,8 +295,16 @@ const AddBusinessForm = () => {
                 />
                 <InputFieldText name={'city'} label={'Ciudad'} />
                 <InputFieldText name={'address'} label={'Dirección'} />
-                <InputFieldNumber name={'latitude'} label={'Latitud'} />
-                <InputFieldNumber name={'longitude'} label={'Longitud'} />
+                <InputFieldNumber
+                  name={'latitude'}
+                  label={'Latitud'}
+                  isGeo={true}
+                />
+                <InputFieldNumber
+                  name={'longitude'}
+                  label={'Longitud'}
+                  isGeo={true}
+                />
               </SimpleGrid>
 
               <Heading fontSize={'2xl'} p={'16px'}>
@@ -370,7 +378,7 @@ const AddBusinessForm = () => {
                           />
                           <InputFieldText
                             name={`contacts[${index}].role`}
-                            label={'Role'}
+                            label={'Rol'}
                           />
                           <InputFieldText
                             name={`contacts[${index}].email`}

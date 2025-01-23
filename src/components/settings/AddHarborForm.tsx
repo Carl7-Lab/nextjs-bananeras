@@ -242,9 +242,17 @@ const AddHarborForm: React.FC<AddHarborFormProps> = ({ onClose }) => {
                 />
                 <InputFieldText name={'name'} label={'Nombre'} />
                 <InputFieldText name={'city'} label={'Ciudad'} />
-                <InputFieldNumber name={'latitude'} label={'Latitud'} />
+                <InputFieldNumber
+                  name={'latitude'}
+                  label={'Latitud'}
+                  isGeo={true}
+                />
                 <InputFieldText name={'location'} label={'Ubicación'} />
-                <InputFieldNumber name={'longitude'} label={'Longitud'} />
+                <InputFieldNumber
+                  name={'longitude'}
+                  label={'Longitud'}
+                  isGeo={true}
+                />
                 <InputFieldText name={'openTime'} label={'Hora de apertura'} />
                 <InputFieldShippingCompanyMultiSelect
                   name={'shippingCompanies'}

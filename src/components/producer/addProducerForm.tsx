@@ -402,10 +402,12 @@ const AddProducerForm = () => {
                 <InputFieldNumber
                   name={'businesses[0].latitude'}
                   label={'Latitud'}
+                  isGeo={true}
                 />
                 <InputFieldNumber
                   name={'businesses[0].longitude'}
                   label={'Longitud'}
+                  isGeo={true}
                 />
               </SimpleGrid>
 
@@ -486,7 +488,7 @@ const AddProducerForm = () => {
                           />
                           <InputFieldText
                             name={`businesses[0].contacts[${index}].role`}
-                            label={'Role'}
+                            label={'Rol'}
                           />
                           <InputFieldText
                             name={`businesses[0].contacts[${index}].email`}
