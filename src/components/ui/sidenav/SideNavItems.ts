@@ -12,23 +12,31 @@ export function GetUser() {
 export function getNavItems(): SidenavItem[] {
   const exportMenu: SidenavMenuItem[] = [
     {
-      label: 'Consultar Exportación',
-      to: '/dashboard/export/search',
-    },
-    {
       label: 'Iniciar Exportación',
       to: '/dashboard/export/add-export',
+    },
+    {
+      label: 'Consultar Exportación',
+      to: '/dashboard/export/search',
     },
   ];
 
   const liquidationMenu: SidenavMenuItem[] = [
     {
       label: 'Envío de Insumos',
-      to: '/dashboard/export/supply-shipment',
+      to: '/dashboard/export/add-supply-shipment',
+    },
+    {
+      label: 'Envíos Realizados',
+      to: '/liquidation/exports-sent',
     },
     {
       label: 'Pago a Productores',
       to: '/dashboard/export/producer-pending-payments',
+    },
+    {
+      label: 'Pagos Realizados',
+      to: '/liquidation/producer-payments',
     },
   ];
 
