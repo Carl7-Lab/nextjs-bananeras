@@ -2,15 +2,15 @@
 import { Box, Button, Center, Flex, Link } from '@chakra-ui/react';
 import Link_Next from 'next/link';
 import React, { useEffect, useState } from 'react';
-import TableProducerPayments from '../../../components/liquidation/producer-payments/TableProducerPayments';
-import IsOnboarding from '../../../components/ui/IsOnboarding';
+import TableExportsSent from '../../../../components/liquidation/exports-sent/TableExportsSent';
+import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
 interface WindowSizeProps {
   width: number | null;
   height: number | null;
 }
 
-function SearchProducerPaymentsPage() {
+function SearchExportsSentPage() {
   const [windowSize, setWindowSize] = useState<WindowSizeProps>({
     width: null,
     height: null,
@@ -39,18 +39,18 @@ function SearchProducerPaymentsPage() {
     >
       <Link
         as={Link_Next}
-        href={'/dashboard/export/producer-pending-payments'}
+        href={'/dashboard/liquidation/add-supply-shipment'}
         _hover={{
           bg: 'green.600',
           color: 'white',
         }}
       >
         <Flex justify='flex-end' width='100%'>
-          <Button colorScheme='teal'>Lista de Pagos Pendientes</Button>
+          <Button colorScheme='teal'>Lista de Envíos Pendientes</Button>
         </Flex>
       </Link>
       <Center mt={'24px'}>
-        <TableProducerPayments
+        <TableExportsSent
           windowSize={windowSize}
           width={{
             sm: Number(windowSize.width) - 20,
@@ -62,4 +62,4 @@ function SearchProducerPaymentsPage() {
   );
 }
 
-export default IsOnboarding(SearchProducerPaymentsPage);
+export default IsOnboarding(SearchExportsSentPage);

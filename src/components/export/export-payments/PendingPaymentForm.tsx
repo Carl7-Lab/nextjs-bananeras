@@ -286,7 +286,7 @@ const PendingPaymentForm = ({
 
       queryClient.invalidateQueries('producerPayments');
       actions.resetForm();
-      router.push('/dashboard/export/producer-pending-payments');
+      router.push('/dashboard/liquidation/producer-payments');
     } catch (error: any) {
       toast({
         title: 'Error',

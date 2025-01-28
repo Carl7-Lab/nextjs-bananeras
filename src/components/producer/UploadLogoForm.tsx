@@ -88,7 +88,7 @@ const UploadLogoForm = () => {
           },
           onSuccess: async () => {
             toast({
-              title: 'Imagen subida',
+              title: 'Imagen Subida con Éxito',
               status: 'success',
               duration: 5000,
               isClosable: true,

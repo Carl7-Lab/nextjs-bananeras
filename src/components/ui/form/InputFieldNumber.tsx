@@ -46,6 +46,7 @@ const InputFieldNumber: React.FC<InputFieldProps> = ({
     } else {
       helpers.setValue('');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   const handleBlur = (event: React.FocusEvent) => {

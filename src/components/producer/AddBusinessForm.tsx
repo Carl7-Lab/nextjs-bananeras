@@ -232,7 +232,7 @@ const AddBusinessForm = () => {
         },
         onSuccess: () => {
           toast({
-            title: 'Finca creada',
+            title: 'Finca Creada con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
