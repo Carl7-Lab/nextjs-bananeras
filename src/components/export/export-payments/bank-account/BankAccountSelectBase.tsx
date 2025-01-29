@@ -96,7 +96,7 @@ const BankAccountSelectBase: React.FC<BankAccountSelectBaseProps> = ({
       isLoading={isLoading}
       options={data}
       getOptionLabel={(bankAccount: Partial<BankAccountType>) =>
-        `${bankAccount.bank} - ${bankAccount.accountNumber} `
+        `${bankAccount.bank} - ${bankAccount.accountNumber} - ${bankAccount.owner} `
       }
       getOptionValue={(bankAccount: Partial<BankAccountType>) =>
         bankAccount.id !== undefined && bankAccount.id !== null
