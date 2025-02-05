@@ -12,7 +12,7 @@ export const importMerchants = (
   const formData = new FormData();
   formData.append('file', file);
 
-  return axios.post('/merchant/upload', formData, {
+  return axios.post('/merchant/business/import', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
