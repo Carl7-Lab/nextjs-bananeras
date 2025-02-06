@@ -1,5 +1,6 @@
 'use client';
-import { Box, Center } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, Link } from '@chakra-ui/react';
+import Link_Next from 'next/link';
 import React, { useEffect, useState } from 'react';
 import TableBankAccounts from '../../../../components/client/table-bank-accounts/TableBankAccounts';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
@@ -29,14 +30,26 @@ function BankAccountsPage() {
 
   return (
     <Box
-      my={'auto'}
+      my={'27px'}
       mx={'auto'}
       width={{
         sm: `${Number(windowSize.width) - 20}px`,
         md: `${Number(windowSize.width) - 300}px`,
       }}
     >
-      <Center mt={'30px'}>
+      <Link
+        as={Link_Next}
+        href={'/dashboard/client/add-bank-account'}
+        _hover={{
+          bg: 'green.600',
+          color: 'white',
+        }}
+      >
+        <Flex justify='flex-end' width='100%'>
+          <Button colorScheme='teal'>Agregar Cuenta Bancaria</Button>
+        </Flex>
+      </Link>
+      <Center mt={'24px'}>
         <TableBankAccounts
           windowSize={windowSize}
           width={{

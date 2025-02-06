@@ -33,7 +33,8 @@ const validationSchema = Yup.object({
 });
 
 const AddCertificateForm = ({ onClose }: AddCertificateFormProps) => {
-  const { createRequiredCertificate } = useCreateRequiredCertificate();
+  const { createRequiredCertificate, isLoading } =
+    useCreateRequiredCertificate();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -66,7 +67,7 @@ const AddCertificateForm = ({ onClose }: AddCertificateFormProps) => {
         },
         onSuccess: () => {
           toast({
-            title: 'Certificado creado',
+            title: 'Certificado Creado con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -104,7 +105,7 @@ const AddCertificateForm = ({ onClose }: AddCertificateFormProps) => {
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                isLoading={isSubmitting}
+                isLoading={isLoading}
               >
                 Agregar
               </Button>

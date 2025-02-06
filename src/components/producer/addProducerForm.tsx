@@ -245,7 +245,7 @@ const validationSchema = Yup.object({
 const AddProducerForm = () => {
   const router = useRouter();
   const toast = useToast();
-  const { createMerchant } = useCreateMerchant();
+  const { createMerchant, isLoading } = useCreateMerchant();
   const queryClient = useQueryClient();
 
   const onSubmit = async (
@@ -303,7 +303,7 @@ const AddProducerForm = () => {
         },
         onSuccess: async () => {
           toast({
-            title: 'Productor creado',
+            title: 'Productor Creado con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -311,6 +311,7 @@ const AddProducerForm = () => {
 
           queryClient.invalidateQueries('merchants');
           formikHelpers.resetForm();
+          router.push('/dashboard/producer/producers');
         },
       }
     );
@@ -401,10 +402,12 @@ const AddProducerForm = () => {
                 <InputFieldNumber
                   name={'businesses[0].latitude'}
                   label={'Latitud'}
+                  isGeo={true}
                 />
                 <InputFieldNumber
                   name={'businesses[0].longitude'}
                   label={'Longitud'}
+                  isGeo={true}
                 />
               </SimpleGrid>
 
@@ -485,7 +488,7 @@ const AddProducerForm = () => {
                           />
                           <InputFieldText
                             name={`businesses[0].contacts[${index}].role`}
-                            label={'Role'}
+                            label={'Rol'}
                           />
                           <InputFieldText
                             name={`businesses[0].contacts[${index}].email`}
@@ -540,7 +543,7 @@ const AddProducerForm = () => {
                   px='16px'
                   type='submit'
                   colorScheme='teal'
-                  isLoading={isSubmitting}
+                  isLoading={isLoading}
                 >
                   Enviar
                 </Button>

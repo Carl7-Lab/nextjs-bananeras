@@ -57,7 +57,7 @@ const validationSchema = Yup.object({
 });
 
 const AddLatexRemoverForm = ({ onClose }: AddLatexRemoverFormProps) => {
-  const { createLatexRemover } = useCreateLatexRemover();
+  const { createLatexRemover, isLoading } = useCreateLatexRemover();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -93,7 +93,7 @@ const AddLatexRemoverForm = ({ onClose }: AddLatexRemoverFormProps) => {
         },
         onSuccess: () => {
           toast({
-            title: 'Removedor de Latex creado',
+            title: 'Removedor de Latex Creado con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -136,7 +136,7 @@ const AddLatexRemoverForm = ({ onClose }: AddLatexRemoverFormProps) => {
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                isLoading={isSubmitting}
+                isLoading={isLoading}
               >
                 Agregar
               </Button>

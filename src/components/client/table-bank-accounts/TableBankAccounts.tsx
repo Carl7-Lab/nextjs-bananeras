@@ -4,6 +4,7 @@ import {
   MaterialReactTable,
   useMaterialReactTable,
 } from 'material-react-table';
+import { MRT_Localization_ES } from 'material-react-table/locales/es';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useMemo } from 'react';
 import DetailBankAccounts from './DetailBankAccounts';
@@ -36,40 +37,64 @@ const TableBankAccounts = ({
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
-        accessorKey: 'merchant.businessName',
-        header: 'Nombre del Negocio',
+        header: 'Productor/Cliente',
+        columns: [
+          {
+            accessorFn: (row) =>
+              row.merchant?.businessName || row.client?.businessName || 'N/A',
+            header: 'Nombre Comercial',
+          },
+          {
+            accessorFn: (row) =>
+              row.merchant?.businessId || row.client?.businessId || 'N/A',
+            header: 'RUC',
+          },
+          {
+            accessorFn: (row) =>
+              row.merchant?.city || row.client?.city || 'N/A',
+            header: 'Ciudad',
+          },
+          {
+            accessorFn: (row) => row.merchant?.address || 'N/A',
+            header: 'Dirección',
+          },
+        ],
       },
       {
-        accessorKey: 'merchant.businessId',
-        header: 'RUC del Negocio',
+        header: 'Información Bancaria',
+        columns: [
+          {
+            accessorKey: 'bank',
+            header: 'Banco',
+          },
+          {
+            accessorKey: 'owner',
+            header: 'Propietario',
+          },
+          {
+            accessorKey: 'accountNumber',
+            header: 'Número de Cuenta',
+          },
+        ],
       },
       {
-        accessorKey: 'merchant.city',
-        header: 'Ciudad',
+        header: 'Contacto',
+        columns: [
+          {
+            accessorFn: (row) =>
+              row.client?.email || row.merchant?.email || 'N/A',
+            header: 'Correo Electrónico',
+          },
+        ],
       },
       {
-        accessorKey: 'merchant.address',
-        header: 'Dirección',
-      },
-      {
-        accessorKey: 'bank',
-        header: 'Banco',
-      },
-      {
-        accessorKey: 'owner',
-        header: 'Propietario',
-      },
-      {
-        accessorKey: 'accountNumber',
-        header: 'Número de Cuenta',
-      },
-      {
-        accessorKey: 'type',
-        header: 'Tipo de Cuenta',
-      },
-      {
-        accessorKey: 'email',
-        header: 'Correo Electrónico',
+        header: 'Tipo',
+        columns: [
+          {
+            accessorKey: 'type',
+            header: 'Tipo de Cuenta',
+          },
+        ],
       },
     ],
     []
@@ -86,7 +111,7 @@ const TableBankAccounts = ({
     enableColumnDragging: false,
     enableHiding: false,
     initialState: {
-      pagination: { pageSize: 5, pageIndex: 0 },
+      pagination: { pageSize: 10, pageIndex: 0 },
       columnPinning: {
         left: ['mrt-row-expand'],
         right: ['type'],
@@ -128,6 +153,7 @@ const TableBankAccounts = ({
         <DetailBankAccounts account={row.original} width={width} />
       </Box>
     ),
+    localization: MRT_Localization_ES,
   });
 
   return <MaterialReactTable table={table} />;

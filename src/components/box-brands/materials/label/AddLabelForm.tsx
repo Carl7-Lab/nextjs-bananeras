@@ -1,12 +1,29 @@
-import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
+import {
+  Button,
+  Divider,
+  Flex,
+  FormLabel,
+  Heading,
+  useToast,
+} from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import { useCreateLabel } from '../../../../hooks/box-brand/materials/label/createLabel';
+import UploadLogoFile from '../../../producer/UploadLogoFile';
 import InputFieldNumber from '../../../ui/form/InputFieldNumber';
 import InputFieldText from '../../../ui/form/InputFieldText';
+
+const SUPPORTED_FORMATS = [
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/bmp',
+  'image/webp',
+  'image/jpg',
+];
 
 interface AddLabelFormProps {
   onClose?: () => void;
@@ -15,14 +32,14 @@ interface AddLabelFormProps {
 interface ValuesProps {
   name: string;
   quantityPerRoll: number | '';
-  art: string;
+  art: File | null;
   description: string;
 }
 
 const initialValues: ValuesProps = {
   name: '',
   quantityPerRoll: '',
-  art: '',
+  art: null,
   description: '',
 };
 
@@ -42,7 +59,11 @@ const validationSchema = Yup.object({
     .moreThan(0, 'Debe ser mayor que 0')
     .lessThan(10000, 'Debe ser menor que 10000 ')
     .required('Requerido'),
-  art: Yup.string().required('Requerido'),
+  art: Yup.mixed()
+    .required('Se requiere una imagen')
+    .test('fileFormat', 'Formato no soportado', (value) => {
+      return value && SUPPORTED_FORMATS.includes((value as File).type);
+    }),
   description: Yup.string()
     .max(200, 'Debe tener 200 caracteres o menos')
     .min(10, 'Debe tener 10 caracteres o más')
@@ -50,7 +71,7 @@ const validationSchema = Yup.object({
 });
 
 const AddLabelForm = ({ onClose }: AddLabelFormProps) => {
-  const { createLabel } = useCreateLabel();
+  const { createLabel, isLoading } = useCreateLabel();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -59,45 +80,44 @@ const AddLabelForm = ({ onClose }: AddLabelFormProps) => {
     values: ValuesProps,
     actions: { resetForm: () => void }
   ) => {
-    const { quantityPerRoll, ...labelData } = values;
-    createLabel(
-      {
-        ...labelData,
-        quantityPerRoll: Number(quantityPerRoll),
+    const formData = {
+      name: values.name,
+      quantityPerRoll: Number(values.quantityPerRoll),
+      description: values.description,
+      art: values.art,
+    };
+
+    createLabel(formData, {
+      onError: (error: any) => {
+        const { response } = error;
+        const { data } = response;
+        const { statusCode, message, error: errorTitle } = data;
+
+        toast({
+          title: `Error ${statusCode}: ${errorTitle} `,
+          description: `${message}`,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+
+        if (statusCode === 401) {
+          router.push('/api/auth/signout');
+        }
       },
-      {
-        onError: (error: any) => {
-          const { response } = error;
-          const { data } = response;
-          const { statusCode, message, error: errorTitle, model, prop } = data;
+      onSuccess: () => {
+        toast({
+          title: 'Etiqueta Creada con Éxito',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
 
-          toast({
-            title: `Error ${statusCode}: ${errorTitle} `,
-            description: `${message}`,
-            status: 'error',
-            duration: 5000,
-            isClosable: true,
-          });
-
-          if (statusCode === 401) {
-            router.push('/api/auth/signout');
-          }
-        },
-        onSuccess: () => {
-          toast({
-            title: 'Etiqueta creada',
-            status: 'success',
-            duration: 5000,
-            isClosable: true,
-          });
-
-          queryClient.invalidateQueries('labels');
-          actions.resetForm();
-          !!onClose && onClose();
-        },
-      }
-    );
-
+        queryClient.invalidateQueries('labels');
+        actions.resetForm();
+        !!onClose && onClose();
+      },
+    });
     return;
   };
 
@@ -120,16 +140,18 @@ const AddLabelForm = ({ onClose }: AddLabelFormProps) => {
                 name={'quantityPerRoll'}
                 label={'Cantidad por rollo'}
               />
-              <InputFieldText name={'art'} label={'Arte'} />
               <InputFieldText name={'description'} label={'Descripción'} />
-
+              <FormLabel fontSize='sm' mb={0}>
+                Arte
+              </FormLabel>
+              <UploadLogoFile name={'art'} />
               <Button
                 mt='32px'
                 py='8px'
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                isLoading={isSubmitting}
+                isLoading={isLoading}
               >
                 Agregar
               </Button>

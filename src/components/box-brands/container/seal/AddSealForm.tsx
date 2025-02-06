@@ -45,7 +45,7 @@ const validationSchema = Yup.object({
 });
 
 const AddSealForm = ({ onClose }: AddSealFormProps) => {
-  const { createSeal } = useCreateSeal();
+  const { createSeal, isLoading } = useCreateSeal();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -78,7 +78,7 @@ const AddSealForm = ({ onClose }: AddSealFormProps) => {
         },
         onSuccess: () => {
           toast({
-            title: 'Sello creado',
+            title: 'Sello Creado con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -117,7 +117,7 @@ const AddSealForm = ({ onClose }: AddSealFormProps) => {
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                isLoading={isSubmitting}
+                isLoading={isLoading}
               >
                 Agregar
               </Button>

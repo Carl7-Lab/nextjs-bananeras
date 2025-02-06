@@ -4,6 +4,7 @@ import {
   MaterialReactTable,
   useMaterialReactTable,
 } from 'material-react-table';
+import { MRT_Localization_ES } from 'material-react-table/locales/es';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useMemo } from 'react';
 import DetailCuttingTypes from './DetailCuttingTypes';
@@ -120,6 +121,7 @@ const TableCuttingTypes = ({
         <DetailCuttingTypes cuttingType={row.original} width={width} />
       </Box>
     ),
+    localization: MRT_Localization_ES,
   });
 
   return <MaterialReactTable table={table} />;

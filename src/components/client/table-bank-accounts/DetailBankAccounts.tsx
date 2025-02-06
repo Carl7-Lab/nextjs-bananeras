@@ -1,25 +1,31 @@
 import {
   Accordion,
-  AccordionButton,
-  AccordionIcon,
   AccordionItem,
-  AccordionPanel,
-  Box,
   Heading,
+  AccordionButton,
+  Box,
+  AccordionIcon,
+  AccordionPanel,
 } from '@chakra-ui/react';
-import React from 'react';
 
 const DetailBankAccounts = ({
   account,
   width,
 }: {
   account: {
-    merchant: {
+    merchant?: {
       businessName: string;
       businessId: string;
       city: string;
       address: string;
       email: string;
+    };
+    client?: {
+      businessName: string;
+      businessId: string;
+      type: string;
+      email: string;
+      phone: string;
     };
     bank: string;
     owner: string;
@@ -76,47 +82,95 @@ const DetailBankAccounts = ({
           </Box>
         </AccordionPanel>
       </AccordionItem>
-      <AccordionItem>
-        <Heading>
-          <AccordionButton
-            pl='60px'
-            width={{
-              sm: Number(width.sm),
-              md: Number(width.md),
-            }}
-          >
-            <Box
-              as='span'
-              flex='1'
-              textAlign='left'
-              fontSize='md'
-              fontWeight='bold'
+      {account.merchant ? (
+        <AccordionItem>
+          <Heading>
+            <AccordionButton
+              pl='60px'
+              width={{
+                sm: Number(width.sm),
+                md: Number(width.md),
+              }}
             >
-              Información del Comerciante
+              <Box
+                as='span'
+                flex='1'
+                textAlign='left'
+                fontSize='md'
+                fontWeight='bold'
+              >
+                Información del Comerciante
+              </Box>
+              <AccordionIcon />
+            </AccordionButton>
+          </Heading>
+          <AccordionPanel pb={4} pl='60px'>
+            <Box>
+              <p>
+                <strong>Nombre Comercial:</strong>{' '}
+                {account.merchant.businessName}
+              </p>
+              <p>
+                <strong>RUC:</strong> {account.merchant.businessId}
+              </p>
+              <p>
+                <strong>Ciudad:</strong> {account.merchant.city}
+              </p>
+              <p>
+                <strong>Dirección:</strong> {account.merchant.address}
+              </p>
+              <p>
+                <strong>Correo Electrónico:</strong> {account.merchant.email}
+              </p>
             </Box>
-            <AccordionIcon />
-          </AccordionButton>
-        </Heading>
-        <AccordionPanel pb={4} pl='60px'>
-          <Box>
-            <p>
-              <strong>Nombre Comercial:</strong> {account.merchant.businessName}
-            </p>
-            <p>
-              <strong>RUC:</strong> {account.merchant.businessId}
-            </p>
-            <p>
-              <strong>Ciudad:</strong> {account.merchant.city}
-            </p>
-            <p>
-              <strong>Dirección:</strong> {account.merchant.address}
-            </p>
-            <p>
-              <strong>Correo Electrónico:</strong> {account.merchant.email}
-            </p>
-          </Box>
-        </AccordionPanel>
-      </AccordionItem>
+          </AccordionPanel>
+        </AccordionItem>
+      ) : (
+        account.client && (
+          <AccordionItem>
+            <Heading>
+              <AccordionButton
+                pl='60px'
+                width={{
+                  sm: Number(width.sm),
+                  md: Number(width.md),
+                }}
+              >
+                <Box
+                  as='span'
+                  flex='1'
+                  textAlign='left'
+                  fontSize='md'
+                  fontWeight='bold'
+                >
+                  Información del Cliente
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+            </Heading>
+            <AccordionPanel pb={4} pl='60px'>
+              <Box>
+                <p>
+                  <strong>Nombre Comercial:</strong>{' '}
+                  {account.client.businessName}
+                </p>
+                <p>
+                  <strong>RUC:</strong> {account.client.businessId}
+                </p>
+                <p>
+                  <strong>Tipo:</strong> {account.client.type}
+                </p>
+                <p>
+                  <strong>Correo Electrónico:</strong> {account.client.email}
+                </p>
+                <p>
+                  <strong>Teléfono:</strong> {account.client.phone}
+                </p>
+              </Box>
+            </AccordionPanel>
+          </AccordionItem>
+        )
+      )}
     </Accordion>
   );
 };

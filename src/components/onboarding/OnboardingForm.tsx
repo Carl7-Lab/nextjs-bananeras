@@ -238,7 +238,7 @@ export default function OnboardingForm() {
   const router = useRouter();
   const toast = useToast();
   const { update } = useSession();
-  const { createOnboarding } = useCreateOnboarding();
+  const { createOnboarding, isLoading } = useCreateOnboarding();
   const queryClient = useQueryClient();
 
   const onSubmit = async (
@@ -291,7 +291,7 @@ export default function OnboardingForm() {
         },
         onSuccess: async () => {
           toast({
-            title: 'Productor creado',
+            title: 'Productor Creado con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -301,7 +301,7 @@ export default function OnboardingForm() {
           formikHelpers.resetForm();
 
           await update({ onboardingStatus: 'done' });
-          router.push('/dashboard/export/search');
+          router.push('/dashboard/producer/producers');
         },
       }
     );
@@ -390,10 +390,12 @@ export default function OnboardingForm() {
                 <InputFieldNumber
                   name={'businesses[0].latitude'}
                   label={'Latitud'}
+                  isGeo={true}
                 />
                 <InputFieldNumber
                   name={'businesses[0].longitude'}
                   label={'Longitud'}
+                  isGeo={true}
                 />
               </SimpleGrid>
 
@@ -474,7 +476,7 @@ export default function OnboardingForm() {
                           />
                           <InputFieldText
                             name={`businesses[0].contacts[${index}].role`}
-                            label={'Role'}
+                            label={'Rol'}
                           />
                           <InputFieldText
                             name={`businesses[0].contacts[${index}].email`}
@@ -524,7 +526,7 @@ export default function OnboardingForm() {
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                isLoading={isSubmitting}
+                isLoading={isLoading}
               >
                 Enviar
               </Button>

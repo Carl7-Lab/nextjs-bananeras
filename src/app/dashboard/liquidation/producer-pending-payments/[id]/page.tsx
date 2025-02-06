@@ -1,5 +1,12 @@
 'use client';
-import { Box, Card, CardBody, Center, Heading } from '@chakra-ui/react';
+import {
+  Box,
+  Card,
+  CardBody,
+  CardHeader,
+  Center,
+  Heading,
+} from '@chakra-ui/react';
 import { redirect, useParams, usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useLayoutEffect } from 'react';
 import PendingPaymentForm from '../../../../../components/export/export-payments/PendingPaymentForm';
@@ -48,7 +55,7 @@ function ExportPaymentPage() {
   }
 
   return (
-    <Box my={'20px'} mx={'auto'}>
+    <Box my={'20px'} mx={'auto'} w={'95%'}>
       <Center>
         <Card
           w={{
@@ -57,10 +64,12 @@ function ExportPaymentPage() {
             md: '90%',
             lg: '100%',
             xl: '100%',
-            '2xl': '700px',
           }}
           mb={'20px'}
         >
+          <CardHeader w={'100%'}>
+            <Heading>Pago a Productores</Heading>
+          </CardHeader>
           <CardBody w='100%'>
             <PendingPaymentForm
               paymentSelected={pendingPayment}

@@ -81,7 +81,7 @@ const validationSchema = Yup.object({
 });
 
 const AddPesticideForm = ({ onClose }: AddPesticideFormProps) => {
-  const { createPesticide } = useCreatePesticide();
+  const { createPesticide, isLoading } = useCreatePesticide();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -117,7 +117,7 @@ const AddPesticideForm = ({ onClose }: AddPesticideFormProps) => {
         },
         onSuccess: () => {
           toast({
-            title: 'Marca creada',
+            title: 'Pesticida Creado con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -162,7 +162,7 @@ const AddPesticideForm = ({ onClose }: AddPesticideFormProps) => {
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                isLoading={isSubmitting}
+                isLoading={isLoading}
               >
                 Agregar
               </Button>

@@ -16,6 +16,7 @@ import { useCreateBankAccount } from '../../hooks/bank-account/createBankAccount
 import { ClientType } from '../../types/client';
 import { MerchantType } from '../../types/merchant/merchant';
 import SelectClient from '../client/SelectClient';
+import CheckboxForm from '../ui/form/CheckboxForm';
 import InputFieldSelector from '../ui/form/InputFieldSelector';
 import InputFieldText from '../ui/form/InputFieldText';
 
@@ -30,6 +31,7 @@ interface ValuesProps {
   email: string;
   isProducer: boolean;
   isClient: boolean;
+  dataReviewed: boolean;
 }
 
 const initialValues: ValuesProps = {
@@ -43,6 +45,7 @@ const initialValues: ValuesProps = {
   email: '',
   isProducer: false,
   isClient: false,
+  dataReviewed: false,
 };
 
 const validationSchema = Yup.object({
@@ -94,6 +97,9 @@ const validationSchema = Yup.object({
     .email('Correo electrónico inválido')
     .max(50, 'Debe tener 50 caracteres o menos')
     .optional(),
+  dataReviewed: Yup.boolean()
+    .oneOf([true], 'Debes revisar los datos antes de enviar')
+    .required('Requerido'),
 });
 
 const typesOpt = [
@@ -117,7 +123,7 @@ const AddBankAccountForm = () => {
   const [initialValuesBankAccount, setInitialValuesBankAccount] =
     useState<ValuesProps>(initialValues);
 
-  const { createBankAccount } = useCreateBankAccount();
+  const { createBankAccount, isLoading } = useCreateBankAccount();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -164,8 +170,14 @@ const AddBankAccountForm = () => {
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
   ) => {
-    const { isClient, isProducer, merchantId, clientId, ...accountValues } =
-      values;
+    const {
+      dataReviewed,
+      isClient,
+      isProducer,
+      merchantId,
+      clientId,
+      ...accountValues
+    } = values;
 
     createBankAccount(
       {
@@ -200,7 +212,7 @@ const AddBankAccountForm = () => {
         },
         onSuccess: () => {
           toast({
-            title: 'Cuenta bancaria Agregada',
+            title: 'Cuenta Bancaria Agregada con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -210,6 +222,11 @@ const AddBankAccountForm = () => {
           formikHelpers.resetForm();
           setProducer(null);
           setClient(null);
+          if (isProducer) {
+            router.push('/dashboard/producer/producers');
+          } else if (isClient) {
+            router.push('/dashboard/client/bank-accounts');
+          }
         },
       }
     );
@@ -266,20 +283,26 @@ const AddBankAccountForm = () => {
               <InputFieldText name={'email'} label={'E-mail'} />
             </SimpleGrid>
 
-            <Button
-              mt='32px'
-              py='8px'
-              px='16px'
-              type='submit'
-              colorScheme='teal'
-              isLoading={isSubmitting}
-              onClick={() => {
-                console.log('errors: ', errors);
-                console.log('values: ', values);
-              }}
-            >
-              Enviar
-            </Button>
+            <SimpleGrid columns={{ base: 1, sm: 1 }}>
+              <CheckboxForm
+                name='dataReviewed'
+                label='He revisado los datos agregados'
+              />
+              <Button
+                mt='12px'
+                py='8px'
+                px='16px'
+                type='submit'
+                colorScheme='teal'
+                isLoading={isLoading}
+                onClick={() => {
+                  console.log('errors: ', errors);
+                  console.log('values: ', values);
+                }}
+              >
+                Enviar
+              </Button>
+            </SimpleGrid>
           </Flex>
         </Form>
       )}

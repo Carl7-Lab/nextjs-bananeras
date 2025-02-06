@@ -69,7 +69,7 @@ const PendingCuttingSheetList = () => {
   return (
     <VStack spacing={2} alignItems='center' justifyContent='center'>
       <Heading width='100%' textAlign='center'>
-        Lista de pagos pendientes
+        Lista de Cortes Pendientes
       </Heading>
       {data.length === 0 ? (
         <Center p={6}>

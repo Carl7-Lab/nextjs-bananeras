@@ -1,7 +1,8 @@
 'use client';
-import { Button, Divider, Flex, Heading } from '@chakra-ui/react';
+import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Formik, Form } from 'formik';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import * as Yup from 'yup';
 import { BACKEND_URL } from '../../lib/constants';
 import CheckboxForm from '../ui/form/CheckboxForm';
@@ -46,29 +47,56 @@ const validationSchema = Yup.object({
 
 export default function SignUpForm() {
   const router = useRouter();
+  const toast = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
   const signUp = async (values: ValuesProps) => {
-    const res = await fetch(BACKEND_URL + '/auth/exporter/register', {
-      method: 'POST',
-      body: JSON.stringify({
-        businessName: values.exportName,
-        businessId: values.exportId,
-        email: values.email,
-        name: values.name,
-        password: values.password,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    setIsLoading(true);
+    try {
+      const res = await fetch(BACKEND_URL + '/auth/exporter/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          businessName: values.exportName,
+          businessId: values.exportId,
+          email: values.email,
+          name: values.name,
+          password: values.password,
+        }),
+      });
 
-    if (!res.ok) {
-      alert(res.statusText);
-      return;
+      if (!res.ok) {
+        const errorData = await res.json();
+        toast({
+          title: `Error ${res.status}`,
+          description: errorData.message,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+        return;
+      }
+
+      toast({
+        title: 'Registro exitoso',
+        description: 'Su cuenta ha sido creada.',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+
+      router.push('/auth/signin');
+    } catch (error) {
+      toast({
+        title: 'Error de conexión',
+        description: 'No se pudo conectar al servidor.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setIsLoading(false);
     }
-
-    router.push('/auth/signin');
-    return;
   };
 
   return (
@@ -98,7 +126,7 @@ export default function SignUpForm() {
               px='16px'
               type='submit'
               colorScheme='teal'
-              isLoading={isSubmitting}
+              isLoading={isLoading}
             >
               Registrarse
             </Button>

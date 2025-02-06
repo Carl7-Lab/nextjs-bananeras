@@ -10,6 +10,7 @@ interface props {
   name2: string;
   label2: string;
   placeholder2?: string;
+  unit?: string;
 }
 
 const InputFieldsBanContainer: React.FC<props> = ({
@@ -19,6 +20,7 @@ const InputFieldsBanContainer: React.FC<props> = ({
   name2,
   label2,
   placeholder2,
+  unit,
 }) => {
   const [isBan, setIsBan] = useState(false);
   const [firstChange, setFirstChange] = useState(false);
@@ -50,6 +52,7 @@ const InputFieldsBanContainer: React.FC<props> = ({
         label={label2}
         isBan={{ state: isBan, firstChange: firstChange }}
         placeholder={placeholder2}
+        unit={unit}
       />
     </Flex>
   );

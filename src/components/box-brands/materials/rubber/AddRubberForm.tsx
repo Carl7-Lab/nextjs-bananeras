@@ -53,7 +53,7 @@ const validationSchema = Yup.object({
 });
 
 const AddRubberForm = ({ onClose }: AddRubberFormProps) => {
-  const { createRubber } = useCreateRubber();
+  const { createRubber, isLoading } = useCreateRubber();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -88,7 +88,7 @@ const AddRubberForm = ({ onClose }: AddRubberFormProps) => {
         },
         onSuccess: () => {
           toast({
-            title: 'Liga creada',
+            title: 'Liga Creada con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -131,7 +131,7 @@ const AddRubberForm = ({ onClose }: AddRubberFormProps) => {
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                isLoading={isSubmitting}
+                isLoading={isLoading}
               >
                 Agregar
               </Button>

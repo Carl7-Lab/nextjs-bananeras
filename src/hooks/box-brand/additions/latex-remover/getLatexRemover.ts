@@ -1,4 +1,5 @@
-import { useQuery, UseQueryResult } from 'react-query';
+//server
+import { UseQueryResult, useQuery } from 'react-query';
 import axios from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
 import { serializeQueryResult } from '@/utils/serializeQueryResult';

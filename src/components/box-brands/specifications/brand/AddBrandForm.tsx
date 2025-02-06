@@ -27,7 +27,7 @@ const validationSchema = Yup.object({
 });
 
 export default function AddBrandForm({ onClose }: AddBrandFormProps) {
-  const { createBrand } = useCreateBrand();
+  const { createBrand, isLoading } = useCreateBrand();
   const router = useRouter();
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -59,7 +59,7 @@ export default function AddBrandForm({ onClose }: AddBrandFormProps) {
         },
         onSuccess: () => {
           toast({
-            title: 'Marca creada',
+            title: 'Marca Creada con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -97,7 +97,7 @@ export default function AddBrandForm({ onClose }: AddBrandFormProps) {
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                isLoading={isSubmitting}
+                isLoading={isLoading}
               >
                 Agregar
               </Button>

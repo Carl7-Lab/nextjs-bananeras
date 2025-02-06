@@ -12,42 +12,41 @@ export function GetUser() {
 export function getNavItems(): SidenavItem[] {
   const exportMenu: SidenavMenuItem[] = [
     {
-      label: 'Consultar',
-      to: '/dashboard/export/search',
-    },
-    {
       label: 'Iniciar Exportación',
       to: '/dashboard/export/add-export',
     },
     {
-      label: 'Hoja de Corte',
-      to: '/dashboard/export/cutting-sheet',
+      label: 'Consultar Exportación',
+      to: '/dashboard/export/search',
     },
-    {
-      label: 'Buscar Hoja de Corte',
-      to: '/dashboard/export/cutting-sheets',
-    },
+  ];
+
+  const liquidationMenu: SidenavMenuItem[] = [
     {
       label: 'Envío de Insumos',
-      to: '/dashboard/export/supply-shipment',
+      to: '/dashboard/liquidation/add-supply-shipment',
     },
     {
-      label: 'Pagos Pendientes a Productores',
-      to: '/dashboard/export/producer-pending-payments',
+      label: 'Envíos Realizados',
+      to: '/dashboard/liquidation/exports-sent',
+    },
+    {
+      label: 'Pago a Productores',
+      to: '/dashboard/liquidation/producer-pending-payments',
+    },
+    {
+      label: 'Pagos Realizados',
+      to: '/dashboard/liquidation/producer-payments',
     },
   ];
 
   const clientMenu: SidenavMenuItem[] = [
     {
-      label: 'Clientes',
-      to: '/dashboard/client/clients',
+      label: 'Agregar Puerto',
+      to: '/dashboard/client/add-harbor',
     },
     {
-      label: 'Cuentas Bancarias',
-      to: '/dashboard/client/bank-accounts',
-    },
-    {
-      label: 'Puertos',
+      label: 'Consultar Puerto',
       to: '/dashboard/client/harbors',
     },
     {
@@ -55,31 +54,35 @@ export function getNavItems(): SidenavItem[] {
       to: '/dashboard/client/add-client',
     },
     {
+      label: 'Consultar Cliente',
+      to: '/dashboard/client/clients',
+    },
+    {
       label: 'Agregar Cuenta Bancaria',
       to: '/dashboard/client/add-bank-account',
     },
     {
-      label: 'Agregar Puerto',
-      to: '/dashboard/client/add-harbor',
+      label: 'Cuentas Bancarias',
+      to: '/dashboard/client/bank-accounts',
     },
   ];
 
   const productorMenu: SidenavMenuItem[] = [
     {
-      label: 'Fincas',
-      to: '/dashboard/producer/fincas',
-    },
-    {
-      label: 'Productores',
-      to: '/dashboard/producer/producers',
-    },
-    {
       label: 'Agregar Productor',
       to: '/dashboard/producer/add-producer',
     },
     {
-      label: 'Agregar Fincas',
+      label: 'Consultar Productor',
+      to: '/dashboard/producer/producers',
+    },
+    {
+      label: 'Agregar Finca',
       to: '/dashboard/producer/add-fincas',
+    },
+    {
+      label: 'Consultar Finca',
+      to: '/dashboard/producer/fincas',
     },
     {
       label: 'Agregar Logo',
@@ -93,44 +96,41 @@ export function getNavItems(): SidenavItem[] {
 
   const boxBrandsMenu: SidenavMenuItem[] = [
     {
-      label: 'Consultar',
+      label: 'Agregar Marca de Caja',
+      to: '/dashboard/box-brands/add-box-brand',
+    },
+    {
+      label: 'Consultar Marca',
       to: '/dashboard/box-brands/search',
     },
     {
-      label: 'Tipos de Corte',
-      to: '/dashboard/box-brands/cutting-types',
+      label: 'Agregar Logo',
+      to: '/dashboard/box-brands/upload-logo',
     },
     {
       label: 'Agregar Tipo de Corte',
       to: '/dashboard/box-brands/add-cutting-type',
     },
     {
-      label: 'Agregar Tipo de Caja',
-      to: '/dashboard/box-brands/add-box-brand',
+      label: 'Tipos de Corte',
+      to: '/dashboard/box-brands/cutting-types',
+    },
+  ];
+
+  const cuttingSheetsMenu: SidenavMenuItem[] = [
+    {
+      label: 'Agregar Hoja de Corte',
+      to: '/dashboard/export/add-cutting-sheet',
     },
     {
-      label: 'Agregar Marca de Caja',
-      to: '/dashboard/box-brands/add-brand',
+      label: 'Hojas de Corte',
+      to: '/dashboard/export/cutting-sheets',
     },
   ];
 
   const settingsMenu: SidenavMenuItem[] = [];
 
   const navItems: SidenavItem[] = [
-    {
-      icon: BsBarChart,
-      label: 'Exportaciones',
-      isMenu: true,
-      to: '/dashboard/export',
-      menu: exportMenu,
-    },
-    {
-      icon: BsBarChart,
-      label: 'Cliente',
-      isMenu: true,
-      to: '/dashboard/client',
-      menu: clientMenu,
-    },
     {
       icon: BsBarChart,
       label: 'Productor',
@@ -140,10 +140,39 @@ export function getNavItems(): SidenavItem[] {
     },
     {
       icon: BsBarChart,
+      label: 'Cliente',
+      isMenu: true,
+      to: '/dashboard/client',
+      menu: clientMenu,
+    },
+
+    {
+      icon: BsBarChart,
       label: 'Marcas de Caja',
       isMenu: true,
       to: '/dashboard/box-brands',
       menu: boxBrandsMenu,
+    },
+    {
+      icon: BsBarChart,
+      label: 'Exportaciones',
+      isMenu: true,
+      to: '/dashboard/export',
+      menu: exportMenu,
+    },
+    {
+      icon: BsBarChart,
+      label: 'Hojas de Corte',
+      isMenu: true,
+      to: '/dashboard/export',
+      menu: cuttingSheetsMenu,
+    },
+    {
+      icon: BsBarChart,
+      label: 'Liquidación',
+      isMenu: true,
+      to: '/dashboard/box-brands',
+      menu: liquidationMenu,
     },
     {
       icon: FaCogs,

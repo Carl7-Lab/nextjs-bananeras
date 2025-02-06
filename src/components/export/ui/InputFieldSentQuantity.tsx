@@ -5,6 +5,8 @@ import {
   Grid,
   GridItem,
   Input,
+  InputGroup,
+  InputRightElement,
   NumberInput,
   NumberInputField,
 } from '@chakra-ui/react';
@@ -16,6 +18,7 @@ interface InputFieldSentQuantityProps {
   material: string;
   materialSelected: string;
   quantity: number | '';
+  unit?: string;
   placeholder?: string;
 }
 
@@ -24,6 +27,7 @@ const InputFieldSentQuantity: React.FC<InputFieldSentQuantityProps> = ({
   material,
   materialSelected,
   quantity,
+  unit,
   placeholder,
 }) => {
   const [field, meta, helpers] = useField(name);
@@ -70,26 +74,32 @@ const InputFieldSentQuantity: React.FC<InputFieldSentQuantityProps> = ({
             focusBorderColor='gray.200'
             _hover={{ borderColor: 'gray.200' }}
             cursor={'not-allowed'}
-            textAlign='right'
+            textAlign='left'
             opacity={0.8}
           />
+          <InputGroup width={'100%'}>
+            {unit && (
+              <InputRightElement
+                pointerEvents='none'
+                color='gray.500'
+                fontSize='1em'
+                mr={'8px'}
+              >
+                {unit}
+              </InputRightElement>
+            )}
 
-          {/* <Input
-            {...field}
-            placeholder={placeholder || material}
-            textAlign='right'
-          /> */}
-
-          <NumberInput {...field}>
-            <NumberInputField
-              {...field}
-              onBlur={handleBlur}
-              onKeyDown={handleKeyDown}
-              placeholder={placeholder || material}
-              textAlign='right'
-              px={'16px'}
-            />
-          </NumberInput>
+            <NumberInput {...field}>
+              <NumberInputField
+                {...field}
+                onBlur={handleBlur}
+                onKeyDown={handleKeyDown}
+                placeholder={placeholder || material}
+                textAlign='left'
+                px={'16px'}
+              />
+            </NumberInput>
+          </InputGroup>
         </Grid>
         {meta.error && meta.touched && (
           <FormErrorMessage mt='8px' mb='16px'>

@@ -18,6 +18,7 @@ interface props {
   name2: string;
   label2: string;
   placeholder2?: string;
+  unit?: string;
 }
 
 const StrippingSelectBanContainer: React.FC<props> = ({
@@ -27,6 +28,7 @@ const StrippingSelectBanContainer: React.FC<props> = ({
   name2,
   label2,
   placeholder2,
+  unit,
 }) => {
   const [isBan, setIsBan] = useState(false);
   const [firstChange, setFirstChange] = useState(false);
@@ -59,6 +61,7 @@ const StrippingSelectBanContainer: React.FC<props> = ({
         label={label2}
         placeholder={placeholder2}
         isBan={{ state: isBan, firstChange: firstChange }}
+        unit={unit}
       />
     </Flex>
   );

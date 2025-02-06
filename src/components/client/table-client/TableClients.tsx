@@ -4,6 +4,7 @@ import {
   MaterialReactTable,
   useMaterialReactTable,
 } from 'material-react-table';
+import { MRT_Localization_ES } from 'material-react-table/locales/es';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useMemo } from 'react';
 import DetailClients from './DetailClients';
@@ -36,48 +37,69 @@ const TableClients = ({
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
-        accessorKey: 'businessName',
-        header: 'Nombre Cliente',
+        header: 'Cliente',
+        columns: [
+          {
+            accessorKey: 'businessName',
+            header: 'Nombre Cliente',
+          },
+          {
+            accessorKey: 'businessId',
+            header: 'RUC',
+          },
+        ],
       },
       {
-        accessorKey: 'type',
-        header: 'Tipo de Negocio',
+        header: 'Contacto',
+        columns: [
+          {
+            accessorKey: 'email',
+            header: 'Correo Electrónico',
+          },
+          {
+            accessorKey: 'phone',
+            header: 'Teléfono',
+          },
+        ],
       },
       {
-        accessorKey: 'email',
-        header: 'Correo Electrónico',
+        header: 'Información Adicional',
+        columns: [
+          {
+            accessorKey: 'harbors',
+            header: 'Puertos',
+            Cell: ({ cell }) => {
+              const harbors = cell.getValue<any[]>();
+              return (
+                <span>
+                  {harbors?.map((harbor) => harbor.name).join(', ') || 'N/A'}
+                </span>
+              );
+            },
+          },
+          {
+            accessorKey: 'shippingCompanies',
+            header: 'Compañías de Envío',
+            Cell: ({ cell }) => {
+              const companies = cell.getValue<any[]>();
+              return (
+                <span>
+                  {companies?.map((company) => company.name).join(', ') ||
+                    'N/A'}
+                </span>
+              );
+            },
+          },
+        ],
       },
       {
-        accessorKey: 'phone',
-        header: 'Teléfono',
-      },
-      {
-        accessorKey: 'businessId',
-        header: 'RUC',
-      },
-      {
-        accessorKey: 'harbors',
-        header: 'Puertos',
-        Cell: ({ cell }) => {
-          const harbors = cell.getValue<any[]>();
-          return (
-            <span>
-              {harbors?.map((harbor) => harbor.name).join(', ') || 'N/A'}
-            </span>
-          );
-        },
-      },
-      {
-        accessorKey: 'shippingCompanies',
-        header: 'Compañías de Envío',
-        Cell: ({ cell }) => {
-          const companies = cell.getValue<any[]>();
-          return (
-            <span>
-              {companies?.map((company) => company.name).join(', ') || 'N/A'}
-            </span>
-          );
-        },
+        header: 'Tipo',
+        columns: [
+          {
+            accessorKey: 'type',
+            header: 'Tipo de Negocio',
+          },
+        ],
       },
     ],
     []
@@ -94,7 +116,7 @@ const TableClients = ({
     enableColumnDragging: false,
     enableHiding: false,
     initialState: {
-      pagination: { pageSize: 5, pageIndex: 0 },
+      pagination: { pageSize: 10, pageIndex: 0 },
       columnPinning: {
         left: ['mrt-row-expand'],
         right: ['type'],
@@ -136,6 +158,7 @@ const TableClients = ({
         <DetailClients business={row.original} width={width} />
       </Box>
     ),
+    localization: MRT_Localization_ES,
   });
 
   return <MaterialReactTable table={table} />;

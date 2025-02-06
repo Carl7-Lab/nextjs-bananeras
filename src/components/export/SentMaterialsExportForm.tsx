@@ -8,6 +8,7 @@ import {
   Input,
   SimpleGrid,
   useToast,
+  Text,
 } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
@@ -249,7 +250,7 @@ const SentMaterialsExportForm = ({
 }) => {
   const [initialValuesExport, setInitialValuesExport] =
     useState<ValuesProps>(initialValues);
-  const { createExportSent } = useCreateExportSent();
+  const { createExportSent, isLoading } = useCreateExportSent();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -341,7 +342,7 @@ const SentMaterialsExportForm = ({
         },
         onSuccess: () => {
           toast({
-            title: 'Registro de insumos enviados',
+            title: 'Registro de Insumos Enviado con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -350,7 +351,7 @@ const SentMaterialsExportForm = ({
           queryClient.invalidateQueries('exportsSent');
           queryClient.invalidateQueries('exportsSentPending');
           actions.resetForm();
-          router.push(pathname.replace(/\/\d+$/, ''));
+          router.push('/dashboard/liquidation/exports-sent');
         },
       }
     );
@@ -373,8 +374,35 @@ const SentMaterialsExportForm = ({
             </Heading>
             <Divider mb={'16px'} />
 
+            {exportSelected?.boxBrand ? (
+              <Box p='4' border='1px' borderRadius='md' borderColor='gray.200'>
+                <Text fontSize='sm'>
+                  <strong>Marca de Caja:</strong>{' '}
+                  {exportSelected.boxBrand.name || 'N/A'}
+                </Text>
+                <Text fontSize='sm'>
+                  <strong>Código de Marca:</strong>{' '}
+                  {exportSelected.boxBrand.brandCode || 'N/A'}
+                </Text>
+                <Text fontSize='sm'>
+                  <strong>Peso Neto (Caja):</strong>{' '}
+                  {exportSelected.boxBrand.netWeightBox} LBS
+                </Text>
+                <Text fontSize='sm'>
+                  <strong>Peso Bruto (Caja):</strong>{' '}
+                  {exportSelected.boxBrand.grossWeightBox} LBS
+                </Text>
+                <Text fontSize='sm'>
+                  <strong>Marca Principal:</strong>{' '}
+                  {exportSelected.boxBrand.brand?.name || 'N/A'}
+                </Text>
+              </Box>
+            ) : (
+              <Text>No se ha seleccionado una marca de caja.</Text>
+            )}
+
             <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
-              <Box>
+              <Box mt={'16px'}>
                 <FormLabel>Cantidad de cajas</FormLabel>
                 <Input
                   value={exportSelected?.boxQuantity || ''}
@@ -400,6 +428,7 @@ const SentMaterialsExportForm = ({
                   material={'Fondo'}
                   materialSelected={exportSelected.boxBrand?.bottomType!}
                   quantity={exportSelected.boxQuantity!}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
@@ -407,6 +436,7 @@ const SentMaterialsExportForm = ({
                   material={'Tapa'}
                   materialSelected={exportSelected.boxBrand?.lidType!}
                   quantity={exportSelected.boxQuantity!}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
@@ -414,6 +444,7 @@ const SentMaterialsExportForm = ({
                   material={'Funda'}
                   materialSelected={exportSelected.boxBrand?.coverType!}
                   quantity={exportSelected.boxQuantity!}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
@@ -421,6 +452,7 @@ const SentMaterialsExportForm = ({
                   material={'Cartulina'}
                   materialSelected={exportSelected.boxBrand?.cardboardType!}
                   quantity={exportSelected.boxQuantity!}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
@@ -428,6 +460,7 @@ const SentMaterialsExportForm = ({
                   material={'ParaSeal'}
                   materialSelected={exportSelected.boxBrand?.parasealType!}
                   quantity={exportSelected.boxBrand?.parasealTypeQuantity!}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
@@ -435,6 +468,7 @@ const SentMaterialsExportForm = ({
                   material={'Pad'}
                   materialSelected={exportSelected.boxBrand?.padType!}
                   quantity={exportSelected.boxBrand?.padTypeQuantity!}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
@@ -442,6 +476,7 @@ const SentMaterialsExportForm = ({
                   material={'Esponja'}
                   materialSelected={exportSelected.boxBrand?.spongeType!}
                   quantity={exportSelected.boxBrand?.spongeTypeQuantity!}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
@@ -449,6 +484,7 @@ const SentMaterialsExportForm = ({
                   material={'Etiqueta'}
                   materialSelected={exportSelected.boxBrand?.label?.name!}
                   quantity={Number(exportSelected.boxBrand?.labelQuantity!)}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
@@ -456,6 +492,7 @@ const SentMaterialsExportForm = ({
                   material={'Banda'}
                   materialSelected={exportSelected.boxBrand?.band?.name!}
                   quantity={Number(exportSelected.boxBrand?.bandQuantity!)}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
@@ -463,6 +500,7 @@ const SentMaterialsExportForm = ({
                   material={'Sachet'}
                   materialSelected={exportSelected.boxBrand?.sachet?.name!}
                   quantity={Number(exportSelected.boxBrand?.sachetQuantity!)}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
@@ -470,6 +508,7 @@ const SentMaterialsExportForm = ({
                   material={'Liga'}
                   materialSelected={exportSelected.boxBrand?.rubber?.name!}
                   quantity={Number(exportSelected.boxBrand?.rubberQuantity!)}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
@@ -477,6 +516,7 @@ const SentMaterialsExportForm = ({
                   material={'Protector'}
                   materialSelected={exportSelected.boxBrand?.protector?.name!}
                   quantity={Number(exportSelected.boxBrand?.protectorQuantity!)}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
@@ -486,6 +526,7 @@ const SentMaterialsExportForm = ({
                   quantity={Number(
                     exportSelected.boxBrand?.clusterBagQuantity!
                   )}
+                  unit='C/U'
                 />
 
                 <Heading fontSize={'2xl'} p={'12px'}>
@@ -517,6 +558,7 @@ const SentMaterialsExportForm = ({
                   quantity={Number(
                     exportSelected.boxBrand?.palletsTypeQuantity!
                   )}
+                  unit='C/C'
                 />
 
                 <InputFieldSentQuantity
@@ -526,6 +568,7 @@ const SentMaterialsExportForm = ({
                   quantity={Number(
                     exportSelected.boxBrand?.miniPalletsTypeQuantity!
                   )}
+                  unit='C/C'
                 />
 
                 <InputFieldSentQuantity
@@ -535,6 +578,7 @@ const SentMaterialsExportForm = ({
                   quantity={Number(
                     exportSelected.boxBrand?.cornerTypeQuantity!
                   )}
+                  unit='C/C'
                 />
 
                 <InputFieldSentQuantity
@@ -544,6 +588,7 @@ const SentMaterialsExportForm = ({
                   quantity={Number(
                     exportSelected.boxBrand?.reinforcementTypeQuantity!
                   )}
+                  unit='C/C'
                 />
 
                 <InputFieldSentQuantity
@@ -551,6 +596,7 @@ const SentMaterialsExportForm = ({
                   material={'Grapa'}
                   materialSelected={exportSelected.boxBrand?.staple?.name!}
                   quantity={Number(exportSelected.boxBrand?.stapleQuantity!)}
+                  unit='C/C'
                 />
 
                 <InputFieldSentQuantity
@@ -558,6 +604,7 @@ const SentMaterialsExportForm = ({
                   material={'Zuncho'}
                   materialSelected={exportSelected.boxBrand?.stripping?.name!}
                   quantity={Number(exportSelected.boxBrand?.strippingQuantity!)}
+                  unit='C/C'
                 />
 
                 <InputFieldSentQuantity
@@ -567,6 +614,7 @@ const SentMaterialsExportForm = ({
                   quantity={Number(
                     exportSelected.boxBrand?.thermographQuantity!
                   )}
+                  unit='C/C'
                 />
 
                 <InputFieldSentQuantity
@@ -574,6 +622,7 @@ const SentMaterialsExportForm = ({
                   material={'Sello'}
                   materialSelected={exportSelected.boxBrand?.seal?.name!}
                   quantity={Number(exportSelected.boxBrand?.sealQuantity!)}
+                  unit='C/C'
                 />
 
                 <InputFieldSentQuantity
@@ -583,6 +632,7 @@ const SentMaterialsExportForm = ({
                   quantity={Number(
                     exportSelected.boxBrand?.mettoLabelQuantity!
                   )}
+                  unit='C/C'
                 />
                 <Heading fontSize={'2xl'} p={'12px'}>
                   Materiales adicionales
@@ -596,6 +646,7 @@ const SentMaterialsExportForm = ({
                   quantity={Number(
                     exportSelected.boxBrand?.packingTapeTypeQuantity!
                   )}
+                  unit='U/C'
                 />
 
                 <InputFieldSentQuantity
@@ -607,6 +658,7 @@ const SentMaterialsExportForm = ({
                   quantity={Number(
                     exportSelected.boxBrand?.latexRemoverQuantity!
                   )}
+                  unit='U/C'
                 />
 
                 <InputFieldSentQuantity
@@ -618,6 +670,7 @@ const SentMaterialsExportForm = ({
                   quantity={Number(
                     exportSelected.boxBrand?.blockingSheetQuantity!
                   )}
+                  unit='U/C'
                 />
 
                 <Heading fontSize={'xl'} p={'10px'}>
@@ -643,7 +696,7 @@ const SentMaterialsExportForm = ({
                     px='16px'
                     type='submit'
                     colorScheme='teal'
-                    isLoading={isSubmitting}
+                    isLoading={isLoading}
                   >
                     Enviar
                   </Button>

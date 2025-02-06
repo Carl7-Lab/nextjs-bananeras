@@ -215,7 +215,7 @@ const CuttingSheetForm = ({
   const [initialValuesCuttingSheet, setInitialValuesCuttingSheet] =
     useState<ValuesProps>(initialValues);
 
-  const { createCuttingSheet } = useCreateCuttingSheet();
+  const { createCuttingSheet, isLoading } = useCreateCuttingSheet();
   const router = useRouter();
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -407,7 +407,7 @@ const CuttingSheetForm = ({
 
         queryClient.invalidateQueries('cuttingSheets');
         formikHelpers.resetForm();
-        router.push('/dashboard/export/cutting-sheet');
+        router.push('/dashboard/export/cutting-sheets');
       },
     });
   };
@@ -620,30 +620,35 @@ const CuttingSheetForm = ({
                   flexDirection={'row'}
                   min={10}
                   max={14}
+                  unit='SEM'
                 />
                 <InputFieldQuantity
                   name={'cutSpecifications.netWeight'}
                   label={'Peso neto: '}
                   isReadOnly
                   flexDirection={'row'}
+                  unit='LBS'
                 />
                 <InputFieldQuantity
                   name={'cutSpecifications.grossWeight'}
                   label={'Peso Bruto: '}
                   isReadOnly
                   flexDirection={'row'}
+                  unit='LBS'
                 />
                 <InputFieldQuantity
                   name={'cutSpecifications.caliberMin'}
                   label={'Calibre Mínimo: '}
                   isReadOnly
                   flexDirection={'row'}
+                  unit='MM'
                 />
                 <InputFieldQuantity
                   name={'cutSpecifications.caliberMax'}
                   label={'Calibre Máximo: '}
                   isReadOnly
                   flexDirection={'row'}
+                  unit='MM'
                 />
                 <InputFieldQuantity
                   name={'cutSpecifications.fingerLength'}
@@ -989,11 +994,7 @@ const CuttingSheetForm = ({
                   px='16px'
                   type='submit'
                   colorScheme='teal'
-                  isLoading={isSubmitting}
-                  onClick={() => {
-                    console.log('values: ', values);
-                    console.log('errors: ', errors);
-                  }}
+                  isLoading={isLoading}
                 >
                   Enviar
                 </Button>

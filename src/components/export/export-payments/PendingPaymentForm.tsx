@@ -195,7 +195,7 @@ const PendingPaymentForm = ({
   pathname,
 }: {
   paymentSelected: Partial<ExportSentType>;
-  pathname: string;
+  pathname?: string;
 }) => {
   const [initialValuesPayment, setInitialValuesPayment] =
     useState<ValuesProps>(initialValues);
@@ -212,7 +212,8 @@ const PendingPaymentForm = ({
   const [boxBrand, setBoxBrand] = useState<Partial<BoxBrandType> | null>(
     paymentSelected?.export!.boxBrand!
   );
-  const { createProducerPayment } = useCreateProducerPayment();
+  const { createProducerPayment, isLoading: createLoading } =
+    useCreateProducerPayment();
   const { uploadTransferImage, isLoading } = useUploadTransferImage();
   const toast = useToast();
   const router = useRouter();
@@ -277,7 +278,7 @@ const PendingPaymentForm = ({
       }
 
       toast({
-        title: 'Liquidación y archivo subidos con éxito',
+        title: 'Liquidación y Archivo Subidos con Éxito',
         status: 'success',
         duration: 5000,
         isClosable: true,
@@ -285,7 +286,7 @@ const PendingPaymentForm = ({
 
       queryClient.invalidateQueries('producerPayments');
       actions.resetForm();
-      router.push(pathname.replace(/\/\d+$/, ''));
+      router.push('/dashboard/liquidation/producer-payments');
     } catch (error: any) {
       toast({
         title: 'Error',
@@ -454,7 +455,7 @@ const PendingPaymentForm = ({
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                isLoading={isSubmitting}
+                isLoading={createLoading || isLoading}
               >
                 Enviar
               </Button>

@@ -70,7 +70,7 @@ const PendingPaymentList = () => {
     <>
       <VStack spacing={4} alignItems='center' justifyContent='center'>
         <Heading width='100%' textAlign='center'>
-          Lista de pagos pendientes
+          Lista de Pagos Pendientes
         </Heading>
         {data.length === 0 ? (
           <Center p={6}>

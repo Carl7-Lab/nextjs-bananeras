@@ -16,16 +16,16 @@ import { PesticideCocktailPart } from './post-harvest/pesticideCocktailPart';
 import { BrandType } from './specifications/brand';
 
 export type BoxBrandType = {
-  id: number | '';
+  id?: number | '';
   // specifications
-  brand: Partial<BrandType>;
+  brand?: Partial<BrandType>;
   brandId: number | '';
   name: string;
   brandCode: string;
   boxQuantity: number | '';
   netWeightBox: number | '';
   grossWeightBox: number | '';
-  requiredCertificates: number[] | null;
+  requiredCertificates: number[] | null | string[];
   // materials
   bottomType: string;
   bottomTypeQuantity: number | '';
@@ -42,26 +42,26 @@ export type BoxBrandType = {
   spongeType: string;
   spongeTypeQuantity: number | '';
 
-  label: Partial<LabelType>;
+  label?: Partial<LabelType>;
   labelId: number | '';
   labelQuantity: number | '';
-  band: Partial<BandType>;
+  band?: Partial<BandType>;
   bandId: number | '';
   bandQuantity: number | '';
-  sachet: Partial<SachetType>;
+  sachet?: Partial<SachetType>;
   sachetId: number | '';
   sachetQuantity: number | '';
-  rubber: Partial<RubberType>;
+  rubber?: Partial<RubberType>;
   rubberId: number | '';
   rubberQuantity: number | '';
-  protector: Partial<ProtectorType>;
+  protector?: Partial<ProtectorType>;
   protectorId: number | '';
   protectorQuantity: number | '';
-  clusterBag: Partial<ClusterBagType>;
+  clusterBag?: Partial<ClusterBagType>;
   clusterBagId: number | '';
   clusterBagQuantity: number | '';
   // post harvest
-  pesticideCocktail: Partial<PesticideCocktailPart>[];
+  pesticideCocktail?: Partial<PesticideCocktailPart>[];
   // pesticidesQuantity: number | '';
   // pesticideList: Partial<PesticideType>[];
   // container
@@ -74,32 +74,32 @@ export type BoxBrandType = {
   reinforcementType: string;
   reinforcementTypeQuantity: number | '';
 
-  staple: Partial<StapleType>;
+  staple?: Partial<StapleType>;
   stapleId: number | '';
   stapleQuantity: number | '';
-  stripping: Partial<StrippingType>;
+  stripping?: Partial<StrippingType>;
   strippingId: number | '';
   strippingQuantity: number | '';
-  thermograph: Partial<ThermographType>;
+  thermograph?: Partial<ThermographType>;
   thermographId: number | '';
   thermographQuantity: number | '';
-  seal: Partial<SealType>;
+  seal?: Partial<SealType>;
   sealId: number | '';
   sealQuantity: number | '';
-  mettoLabel: Partial<MettoLabelType>;
+  mettoLabel?: Partial<MettoLabelType>;
   mettoLabelId: number | '';
   mettoLabelQuantity: number | '';
   // additions
   packingTapeType: string;
   packingTapeTypeQuantity: number | '';
 
-  latexRemover: Partial<LatexRemoverType>;
+  latexRemover?: Partial<LatexRemoverType>;
   latexRemoverId: number | '';
   latexRemoverQuantity: number | '';
-  blockingSheet: Partial<BlockingSheetType>;
+  blockingSheet?: Partial<BlockingSheetType>;
   blockingSheetId: number | '';
   blockingSheetQuantity: number | '';
-  insecticideCocktail: Partial<InsecticideCocktailPart>[];
+  insecticideCocktail?: Partial<InsecticideCocktailPart>[];
   // insecticides: number[] | null | Partial<InsecticideType>[];
   // insecticidesQuantity: number | '';
   // insecticideList: Partial<InsecticideType>[];

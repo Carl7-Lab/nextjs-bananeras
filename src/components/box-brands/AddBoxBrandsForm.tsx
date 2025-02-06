@@ -30,6 +30,7 @@ import InputFieldStrippingSelect from './container/stripping/InputFieldStripping
 import StrippingSelectBanContainer from './container/stripping/StrippingSelectBanContainer';
 import InputFieldThermographSelect from './container/thermograph/InputFieldThermographSelect';
 import ThermographSelectBanContainer from './container/thermograph/ThermographSelectBanContainer';
+import ImportBoxBrandDrawer from './ImportBoxBrandDrawer';
 import InputFieldsBanContainer from './InputFieldsBanContainer';
 import BandSelectBanContanier from './materials/band/BandSelectBanContanier';
 import InputFieldBandSelect from './materials/band/InputFieldBandSelect';
@@ -46,6 +47,7 @@ import SelectPesticide from './post-harvest/pesticide/SelectPesticide';
 import InputFieldBrandSelect from './specifications/brand/InputFieldBrandSelect';
 import InputFieldRequiredCertificateMultiSelect from './specifications/requiredCertificate/InputFieldRequiredCertificateMultiSelect';
 import { PesticideType } from '../../types/box-brand/post-harvest/pesticide';
+import ImportProducerDrawer from '../producer/ImportProducerDrawer';
 import CheckboxForm from '../ui/form/CheckboxForm';
 import InputFieldNumber from '../ui/form/InputFieldNumber';
 import InputFieldQuantity from '../ui/form/InputFieldQuantity';
@@ -787,6 +789,7 @@ interface InputFieldProps {
   name: string;
   label: string;
   placeholder?: string;
+  unit?: string;
 }
 
 const specificationsInputFieldsText: InputFieldProps[] = [
@@ -795,9 +798,9 @@ const specificationsInputFieldsText: InputFieldProps[] = [
 ];
 
 const specificationsInputFieldsNumber: InputFieldProps[] = [
-  { name: 'boxQuantity', label: 'Número de cajas/Contenedor' },
-  { name: 'netWeightBox', label: 'Peso Neto de Caja' },
-  { name: 'grossWeightBox', label: 'Peso Bruto de Caja' },
+  { name: 'boxQuantity', label: 'Número de Cajas/Contenedor', unit: 'C/C' },
+  { name: 'netWeightBox', label: 'Peso Neto de Caja', unit: 'LBS' },
+  { name: 'grossWeightBox', label: 'Peso Bruto de Caja', unit: 'LBS' },
 ];
 
 interface MaterialsInputFieldsProps {
@@ -814,28 +817,28 @@ const materialsInputFields: MaterialsInputFieldsProps[] = [
     name1: 'bottomType',
     label1: 'Fondo',
     name2: 'bottomTypeQuantity',
-    label2: '',
+    label2: 'Fondos/Caja',
     placeholder2: 'Cantidad',
   },
   {
     name1: 'lidType',
     label1: 'Tapa',
     name2: 'lidTypeQuantity',
-    label2: '',
+    label2: 'Tapas/Caja',
     placeholder2: 'Cantidad',
   },
   {
     name1: 'coverType',
     label1: 'Funda',
     name2: 'coverTypeQuantity',
-    label2: '',
+    label2: 'Fundas/Caja',
     placeholder2: 'Cantidad',
   },
   {
     name1: 'cardboardType',
     label1: 'Cartulina',
     name2: 'cardboardTypeQuantity',
-    label2: '',
+    label2: 'Cartulinas/Caja',
     placeholder2: 'Cantidad',
   },
 ];
@@ -845,28 +848,28 @@ const containersInputFields: MaterialsInputFieldsProps[] = [
     name1: 'palletsType',
     label1: 'Pallet',
     name2: 'palletsTypeQuantity',
-    label2: '',
+    label2: 'Pallets/Contenedor',
     placeholder2: 'Cantidad',
   },
   {
     name1: 'miniPalletsType',
     label1: 'Mini pallet',
     name2: 'miniPalletsTypeQuantity',
-    label2: '',
+    label2: 'Mini Pallets/Contenedor',
     placeholder2: 'Cantidad',
   },
   {
     name1: 'cornerType',
     label1: 'Esquinero',
     name2: 'cornerTypeQuantity',
-    label2: '',
+    label2: 'Esquineros/Contenedor',
     placeholder2: 'Cantidad',
   },
   {
     name1: 'reinforcementType',
     label1: 'Refuerzo/Mini esquinero',
     name2: 'reinforcementTypeQuantity',
-    label2: '',
+    label2: 'Refuerzos/Contenedor',
     placeholder2: 'Cantidad',
   },
 ];
@@ -874,7 +877,7 @@ const containersInputFields: MaterialsInputFieldsProps[] = [
 export default function AddBoxBrandsForm() {
   const router = useRouter();
   const toast = useToast();
-  const { createBoxBrand } = useCreateBoxBrand();
+  const { createBoxBrand, isLoading } = useCreateBoxBrand();
   const queryClient = useQueryClient();
 
   const addBoxBrands = async (
@@ -939,7 +942,7 @@ export default function AddBoxBrandsForm() {
         },
         onSuccess: () => {
           toast({
-            title: 'Tipo de caja creada',
+            title: 'Tipo de Caja Creada con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -947,6 +950,7 @@ export default function AddBoxBrandsForm() {
 
           queryClient.invalidateQueries('boxBrands');
           formikHelpers.resetForm();
+          router.push('/dashboard/box-brands/search');
         },
       }
     );
@@ -964,14 +968,12 @@ export default function AddBoxBrandsForm() {
         {({ isSubmitting, values }) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
-              <Heading fontSize={'2xl'} p={'12px'}>
-                Agregando Marca de Cajas
-              </Heading>
-              <Divider mb={'16px'} />
-
-              <Heading fontSize={'2xl'} p={'12px'}>
-                Especificaciones
-              </Heading>
+              <Flex justify='space-between'>
+                <Heading fontSize={'2xl'} p={'12px'}>
+                  Especificaciones
+                </Heading>
+                <ImportBoxBrandDrawer />
+              </Flex>
               <Divider mb={'16px'} />
 
               <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
@@ -995,7 +997,7 @@ export default function AddBoxBrandsForm() {
                     name={field.name}
                     label={field.label}
                     placeholder={field.placeholder}
-                    // isDecimal={field.name !== 'boxQuantity'}
+                    unit={field.unit}
                   />
                 ))}
                 <InputFieldRequiredCertificateMultiSelect
@@ -1020,6 +1022,7 @@ export default function AddBoxBrandsForm() {
                         label={label2}
                         quantity={values.boxQuantity}
                         placeholder={placeholder2}
+                        unit='U/C'
                       />
                     </Flex>
                   )
@@ -1029,73 +1032,82 @@ export default function AddBoxBrandsForm() {
                   name1={'parasealType'}
                   label1={'ParaSeal'}
                   name2={'parasealTypeQuantity'}
-                  label2={''}
+                  label2={'ParaSeals/Caja'}
                   placeholder2={'Cantidad'}
+                  unit='U/C'
                 />
 
                 <InputFieldsBanContainer
                   name1={'padType'}
                   label1={'Pad'}
                   name2={'padTypeQuantity'}
-                  label2={''}
+                  label2={'Pads/Caja'}
                   placeholder2={'Cantidad'}
+                  unit='U/C'
                 />
 
                 <InputFieldsBanContainer
                   name1={'spongeType'}
                   label1={'Esponja'}
                   name2={'spongeTypeQuantity'}
-                  label2={''}
+                  label2={'Esponjas/Caja'}
                   placeholder2={'Cantidad'}
+                  unit='U/C'
                 />
 
                 <LabelSelectBanContainer
                   name1={'labelId'}
                   label1={'Etiqueta'}
-                  placeholder1={'Seleccione la etiqueta'}
+                  placeholder1={'Seleccione la Etiqueta'}
                   name2={'labelQuantity'}
-                  label2={''}
+                  label2={'Etiquetas/Caja'}
                   placeholder2={'Cantidad'}
+                  unit='U/C'
                 />
                 <BandSelectBanContanier
                   name1={'bandId'}
                   label1={'Banda'}
-                  placeholder1={'Seleccione la banda'}
+                  placeholder1={'Seleccione la Banda'}
                   name2={'bandQuantity'}
-                  label2={''}
+                  label2={'Bandas/Caja'}
                   placeholder2={'Cantidad'}
+                  unit='U/C'
                 />
                 <SachetSelectBanContainer
                   name1={'sachetId'}
                   label1={'Sachet'}
-                  placeholder1={'Seleccione el sachet'}
+                  placeholder1={'Seleccione el Sachet'}
                   name2={'sachetQuantity'}
-                  label2={''}
+                  label2={'Sachets/Caja'}
                   placeholder2={'Cantidad'}
+                  unit='U/C'
                 />
                 <RubberSelectBanContainer
                   name1={'rubberId'}
                   label1={'Liga'}
-                  placeholder1={'Seleccione la liga'}
+                  placeholder1={'Seleccione la Liga'}
                   name2={'rubberQuantity'}
-                  label2={''}
+                  label2={'Ligas/Caja'}
                   placeholder2={'Cantidad'}
+                  unit='U/C'
                 />
                 <ProtectorSelectBanContainer
                   name1={'protectorId'}
                   label1={'Protector'}
-                  placeholder1={'Seleccione el protector'}
+                  placeholder1={'Seleccione el Protector'}
                   name2={'protectorQuantity'}
-                  label2={''}
+                  label2={'Protectores/Caja'}
                   placeholder2={'Cantidad'}
+                  unit='U/C'
                 />
                 <ClusterBagSelectBanContainer
                   name1={'clusterBagId'}
                   label1={'Cluster Bag'}
-                  placeholder1={'Seleccione el cluster bag'}
+                  placeholder1={'Seleccione el Cluster Bag'}
                   name2={'clusterBagQuantity'}
-                  label2={''}
+                  label2={'Cluster Bags/Caja'}
                   placeholder2={'Cantidad'}
+                  unit='U/C'
                 />
               </SimpleGrid>
 
@@ -1156,6 +1168,7 @@ export default function AddBoxBrandsForm() {
                       name2={name2}
                       label2={label2}
                       placeholder2={placeholder2}
+                      unit='C/C'
                     />
                   )
                 )}
@@ -1163,42 +1176,47 @@ export default function AddBoxBrandsForm() {
                 <StapleSelectBanContainer
                   name1={'stapleId'}
                   label1={'Grapa'}
-                  placeholder1={'Seleccione la grapa'}
+                  placeholder1={'Seleccione la Grapa'}
                   name2={'stapleQuantity'}
-                  label2={''}
+                  label2={'Grapas/Contenedor'}
                   placeholder2={'Cantidad'}
+                  unit='C/C'
                 />
                 <StrippingSelectBanContainer
                   name1={'strippingId'}
                   label1={'Zuncho'}
-                  placeholder1={'Seleccione el zuncho'}
+                  placeholder1={'Seleccione el Zuncho'}
                   name2={'strippingQuantity'}
-                  label2={''}
+                  label2={'Zunchos/Contenedor'}
                   placeholder2={'Cantidad'}
+                  unit='C/C'
                 />
                 <ThermographSelectBanContainer
                   name1={'thermographId'}
                   label1={'Termografo'}
-                  placeholder1={'Seleccione el termografo'}
+                  placeholder1={'Seleccione el Termografo'}
                   name2={'thermographQuantity'}
-                  label2={''}
+                  label2={'Termografos/Contenedor'}
                   placeholder2={'Cantidad'}
+                  unit='U/C'
                 />
                 <SealSelectBanContainer
                   name1={'sealId'}
                   label1={'Sello'}
-                  placeholder1={'Seleccione el sello'}
+                  placeholder1={'Seleccione el Sello'}
                   name2={'sealQuantity'}
-                  label2={''}
+                  label2={'Sellos/Contenedor'}
                   placeholder2={'Cantidad'}
+                  unit='C/C'
                 />
                 <MettoLabelSelectBanContainer
                   name1={'mettoLabelId'}
                   label1={'Etiqueta Metto'}
-                  placeholder1={'Seleccione la etiqueta Metto'}
+                  placeholder1={'Seleccione la Etiqueta Metto'}
                   name2={'mettoLabelQuantity'}
-                  label2={''}
+                  label2={'Etiquetas Metto/Contenedor'}
                   placeholder2={'Cantidad'}
+                  unit='C/C'
                 />
               </SimpleGrid>
 
@@ -1211,25 +1229,28 @@ export default function AddBoxBrandsForm() {
                   name1={'packingTapeType'}
                   label1={'Cinta de embalaje'}
                   name2={'packingTapeTypeQuantity'}
-                  label2={''}
+                  label2={'Cintas/Contenedor'}
                   placeholder2={'Cantidad'}
+                  unit='U/C'
                 />
 
                 <LatexRemoverSelectBanContainer
                   name1={'latexRemoverId'}
                   label1={'Removedor de latex'}
-                  placeholder1={'Seleccione la removedor de latex'}
+                  placeholder1={'Seleccione el Removedor de Latex'}
                   name2={'latexRemoverQuantity'}
-                  label2={''}
+                  label2={'Removedores/Contenedor'}
                   placeholder2={'Cantidad'}
+                  unit='U/C'
                 />
                 <BlockingSheetSelectBanContainer
                   name1={'blockingSheetId'}
-                  label1={'Lamina de bloque'}
-                  placeholder1={'Seleccione la lamina de bloque'}
+                  label1={'Lamina de bloqueo'}
+                  placeholder1={'Seleccione la Lamina de bloqueo'}
                   name2={'blockingSheetQuantity'}
-                  label2={''}
+                  label2={'Laminas/Contenedor'}
                   placeholder2={'Cantidad'}
+                  unit='U/C'
                 />
               </SimpleGrid>
 
@@ -1249,7 +1270,7 @@ export default function AddBoxBrandsForm() {
                   px='16px'
                   type='submit'
                   colorScheme='teal'
-                  isLoading={isSubmitting}
+                  isLoading={isLoading}
                   onClick={() => console.log('values: ', values)}
                 >
                   Enviar

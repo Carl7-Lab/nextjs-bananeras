@@ -7,10 +7,31 @@ interface CreateClusterBagResponse {
   clusterBagId: string;
 }
 
+type CreateClusterBagDTO = {
+  name: string;
+  quantityPerPack: number;
+  art: File | null;
+  dimensions: string;
+};
+
 export const createClusterBag = (
-  data: Partial<ClusterBagType>
+  data: CreateClusterBagDTO
 ): Promise<CreateClusterBagResponse> => {
-  return axios.post('/box-brand/cluster-bag', data);
+  const formData = new FormData();
+
+  formData.append('name', data.name);
+  formData.append('quantityPerPack', String(data.quantityPerPack));
+  formData.append('dimensions', data.dimensions);
+
+  if (data.art) {
+    formData.append('art', data.art);
+  }
+
+  return axios.post('/box-brand/cluster-bag', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
 };
 
 type UseCreateClusterBagOptions = {

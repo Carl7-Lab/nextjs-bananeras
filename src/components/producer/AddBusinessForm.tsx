@@ -186,7 +186,7 @@ const validationSchema = Yup.object({
 });
 
 const AddBusinessForm = () => {
-  const { createBusiness } = useCreateBusiness();
+  const { createBusiness, isLoading } = useCreateBusiness();
   const router = useRouter();
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -232,7 +232,7 @@ const AddBusinessForm = () => {
         },
         onSuccess: () => {
           toast({
-            title: 'Finca creada',
+            title: 'Finca Creada con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -240,6 +240,7 @@ const AddBusinessForm = () => {
 
           queryClient.invalidateQueries('businesses');
           formikHelpers.resetForm();
+          router.push('/dashboard/producer/fincas');
         },
       }
     );
@@ -253,8 +254,8 @@ const AddBusinessForm = () => {
       id: 'Convencional',
     },
     {
-      name: 'Organica',
-      id: 'Organica',
+      name: 'Orgánica',
+      id: 'Orgánica',
     },
   ];
 
@@ -294,8 +295,16 @@ const AddBusinessForm = () => {
                 />
                 <InputFieldText name={'city'} label={'Ciudad'} />
                 <InputFieldText name={'address'} label={'Dirección'} />
-                <InputFieldNumber name={'latitude'} label={'Latitud'} />
-                <InputFieldNumber name={'longitude'} label={'Longitud'} />
+                <InputFieldNumber
+                  name={'latitude'}
+                  label={'Latitud'}
+                  isGeo={true}
+                />
+                <InputFieldNumber
+                  name={'longitude'}
+                  label={'Longitud'}
+                  isGeo={true}
+                />
               </SimpleGrid>
 
               <Heading fontSize={'2xl'} p={'16px'}>
@@ -369,7 +378,7 @@ const AddBusinessForm = () => {
                           />
                           <InputFieldText
                             name={`contacts[${index}].role`}
-                            label={'Role'}
+                            label={'Rol'}
                           />
                           <InputFieldText
                             name={`contacts[${index}].email`}
@@ -422,7 +431,7 @@ const AddBusinessForm = () => {
                   px='16px'
                   type='submit'
                   colorScheme='teal'
-                  isLoading={isSubmitting}
+                  isLoading={isLoading}
                 >
                   Enviar
                 </Button>

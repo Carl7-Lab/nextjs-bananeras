@@ -56,7 +56,13 @@ const SelectBoxBrand: React.FC<SelectBoxBrandProps> = ({
           <Input isReadOnly={true} value={boxBrand?.brandCode || ''} />
         </Box>
 
-        {!!name2 && <InputFieldNumber name={name2} label={'Número de Cajas'} />}
+        {!!name2 && (
+          <InputFieldNumber
+            name={name2}
+            label={'Número de Cajas'}
+            value={boxQuantity || ''}
+          />
+        )}
 
         {!!namePrice && !!nameSubtotal1 && (
           <>

@@ -41,7 +41,7 @@ const validationSchema = Yup.object({
 });
 
 const AddStapleForm = ({ onClose }: AddStapleFormProps) => {
-  const { createStaple } = useCreateStaple();
+  const { createStaple, isLoading } = useCreateStaple();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -76,7 +76,7 @@ const AddStapleForm = ({ onClose }: AddStapleFormProps) => {
         },
         onSuccess: () => {
           toast({
-            title: 'Grapa creada',
+            title: 'Grapa Creada con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -118,7 +118,7 @@ const AddStapleForm = ({ onClose }: AddStapleFormProps) => {
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                isLoading={isSubmitting}
+                isLoading={isLoading}
               >
                 Agregar
               </Button>

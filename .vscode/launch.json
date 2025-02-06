@@ -23,7 +23,8 @@
           "pattern": "- Local:.+(https?://.+)",
           "uriFormat": "%s",
           "action": "debugWithChrome"
-        }
+        },
+        "resolveSourceMapLocations": [ "${workspaceFolder}/out/**/*.js", "!/node_modules/**" ]
       }
     ]
   }

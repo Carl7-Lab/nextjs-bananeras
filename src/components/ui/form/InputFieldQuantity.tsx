@@ -3,6 +3,8 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
+  InputGroup,
+  InputRightElement,
   NumberInput,
   NumberInputField,
 } from '@chakra-ui/react';
@@ -26,6 +28,7 @@ interface InputFieldProps {
     setBanState?: () => void;
     firstChange: boolean;
   };
+  unit?: string;
 }
 
 const InputFieldQuantity: React.FC<InputFieldProps> = ({
@@ -39,8 +42,8 @@ const InputFieldQuantity: React.FC<InputFieldProps> = ({
   step = 1,
   flexDirection = 'column',
   size = 'md',
-  description,
   isBan,
+  unit,
 }) => {
   const [field, meta, helpers] = useField(name);
 
@@ -105,28 +108,40 @@ const InputFieldQuantity: React.FC<InputFieldProps> = ({
             </FormLabel>
           </Flex>
         )}
-        <Flex
-          flex={label ? '2' : '1'}
-          width='100%'
-          marginLeft={label ? '0' : '0'}
-        >
-          <NumberInput
-            {...field}
-            onChange={handleChange}
-            isReadOnly={isReadOnly || isBan?.state}
-            size={size}
-            width={'100%'}
-            min={min}
-            max={max}
-            step={step}
+        <InputGroup width={'100%'}>
+          {unit && (
+            <InputRightElement
+              pointerEvents='none'
+              color='gray.500'
+              fontSize='1em'
+              mr={'8px'}
+            >
+              {unit}
+            </InputRightElement>
+          )}
+          <Flex
+            flex={label ? '2' : '1'}
+            width='100%'
+            marginLeft={label ? '0' : '0'}
           >
-            <NumberInputField
+            <NumberInput
               {...field}
-              placeholder={placeholder || label}
+              onChange={handleChange}
+              isReadOnly={isReadOnly || isBan?.state}
+              size={size}
               width={'100%'}
-            />
-          </NumberInput>
-        </Flex>
+              min={min}
+              max={max}
+              step={step}
+            >
+              <NumberInputField
+                {...field}
+                placeholder={placeholder || label}
+                width={'100%'}
+              />
+            </NumberInput>
+          </Flex>
+        </InputGroup>
       </Flex>
       {meta.error && meta.touched && (
         <FormErrorMessage mt='8px' mb='16px'>
