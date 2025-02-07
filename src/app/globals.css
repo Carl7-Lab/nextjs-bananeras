@@ -99,7 +99,7 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme) {
+@media (prefers-color-scheme: light) {
   html {
     color-scheme: light;
   }
