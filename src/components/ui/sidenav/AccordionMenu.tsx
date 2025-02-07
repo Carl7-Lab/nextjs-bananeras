@@ -1,4 +1,13 @@
-import { Box, Button, Divider, Flex, Icon, Link, Text } from '@chakra-ui/react';
+import {
+  Badge,
+  Box,
+  Button,
+  Divider,
+  Flex,
+  Icon,
+  Link,
+  Text,
+} from '@chakra-ui/react';
 import Link_Next from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
@@ -17,6 +26,17 @@ export const AccordionMenu = ({ item }: AccordionMenuProps) => {
 
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
+  };
+
+  const renderBadge = (count?: number) => {
+    if (count && count > 0) {
+      return (
+        <Badge colorScheme='red' ml='auto' mr={2.5}>
+          {count}
+        </Badge>
+      );
+    }
+    return null;
   };
 
   return (
@@ -38,12 +58,13 @@ export const AccordionMenu = ({ item }: AccordionMenuProps) => {
         justifyContent={'space-between'}
         h={'48px'}
       >
-        <Flex>
-          <Icon as={item.icon} boxSize={'16px'} />
-          <Text ml={2} fontSize={'md'}>
-            {item.label}
-          </Text>
+        <Flex align='center'>
+          <Icon as={item.icon} boxSize='16px' />
+          <Flex ml={2} align='center' justify='between' w='full'>
+            <Text fontSize='md'>{item.label}</Text>
+          </Flex>
         </Flex>
+        {renderBadge(item.count)}
         <Icon as={isOpen ? IoIosArrowDown : IoIosArrowForward} />
       </Button>
       {isOpen &&
@@ -72,6 +93,7 @@ export const AccordionMenu = ({ item }: AccordionMenuProps) => {
                 rounded={'1px'}
               />
               <Text ml={2}>{item.label}</Text>
+              {renderBadge(item.count)}
             </Flex>
           </Link>
         ))}

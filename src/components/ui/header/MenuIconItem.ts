@@ -9,12 +9,12 @@ export function getTopBarItems(): MenuItemProps[] {
   const menuItems: MenuItemProps[] = [
     {
       icon: BsPersonGear,
-      label: 'Profile',
+      label: 'Perfil',
       to: `/dashboard/user/${user?.id}`,
     },
     {
       icon: FaPowerOff,
-      label: 'Log out',
+      label: 'Cerrar Sesión',
       to: '/api/auth/signout',
     },
   ];

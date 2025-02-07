@@ -11,7 +11,9 @@ import {
   Flex,
   Center,
   theme,
+  Link,
 } from '@chakra-ui/react';
+import Link_Next from 'next/link';
 import React from 'react';
 import { useSidenav } from './sidenav-context';
 import SidenavItems, { SidenavItem } from './sidenav-items';
@@ -44,9 +46,17 @@ export function Sidenav({ navItems }: SidenavProps) {
         >
           <Icon as={Logo} boxSize={8} />
           <Center ml='5px'>
-            <Text fontSize='2xl' fontWeight='bold' color='green'>
-              Bananeras
-            </Text>
+            <Link
+              as={Link_Next}
+              href={'/dashboard'}
+              _hover={{
+                color: 'white',
+              }}
+            >
+              <Text fontSize='2xl' fontWeight='bold' color='green'>
+                Bananeras
+              </Text>{' '}
+            </Link>
           </Center>
         </Flex>
         <SidenavItems navItems={navItems} />

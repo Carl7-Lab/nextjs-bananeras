@@ -1,7 +1,12 @@
 import { useSession } from 'next-auth/react';
 import { BsBarChart } from 'react-icons/bs';
 
-import { FaCogs } from 'react-icons/fa';
+import { FaBoxOpen, FaCashRegister, FaCogs, FaUserTie } from 'react-icons/fa';
+import {
+  MdContentCut,
+  MdFlightTakeoff,
+  MdOutlineAgriculture,
+} from 'react-icons/md';
 import { SidenavItem, SidenavMenuItem } from './sidenav-items';
 
 export function GetUser() {
@@ -9,7 +14,7 @@ export function GetUser() {
   return session?.user;
 }
 
-export function getNavItems(): SidenavItem[] {
+export function getNavItems(counts: any): SidenavItem[] {
   const exportMenu: SidenavMenuItem[] = [
     {
       label: 'Iniciar Exportación',
@@ -25,6 +30,7 @@ export function getNavItems(): SidenavItem[] {
     {
       label: 'Envío de Insumos',
       to: '/dashboard/liquidation/add-supply-shipment',
+      count: counts.addSupplyShipment,
     },
     {
       label: 'Envíos Realizados',
@@ -33,6 +39,7 @@ export function getNavItems(): SidenavItem[] {
     {
       label: 'Pago a Productores',
       to: '/dashboard/liquidation/producer-pending-payments',
+      count: counts.producerPendingPayments,
     },
     {
       label: 'Pagos Realizados',
@@ -121,6 +128,7 @@ export function getNavItems(): SidenavItem[] {
     {
       label: 'Agregar Hoja de Corte',
       to: '/dashboard/export/add-cutting-sheet',
+      count: counts.addCuttingSheet,
     },
     {
       label: 'Hojas de Corte',
@@ -132,14 +140,14 @@ export function getNavItems(): SidenavItem[] {
 
   const navItems: SidenavItem[] = [
     {
-      icon: BsBarChart,
+      icon: MdOutlineAgriculture,
       label: 'Productor',
       isMenu: true,
       to: '/dashboard/producer',
       menu: productorMenu,
     },
     {
-      icon: BsBarChart,
+      icon: FaUserTie,
       label: 'Cliente',
       isMenu: true,
       to: '/dashboard/client',
@@ -147,32 +155,34 @@ export function getNavItems(): SidenavItem[] {
     },
 
     {
-      icon: BsBarChart,
+      icon: FaBoxOpen,
       label: 'Marcas de Caja',
       isMenu: true,
       to: '/dashboard/box-brands',
       menu: boxBrandsMenu,
     },
     {
-      icon: BsBarChart,
+      icon: MdFlightTakeoff,
       label: 'Exportaciones',
       isMenu: true,
       to: '/dashboard/export',
       menu: exportMenu,
     },
     {
-      icon: BsBarChart,
+      icon: MdContentCut,
       label: 'Hojas de Corte',
       isMenu: true,
       to: '/dashboard/export',
       menu: cuttingSheetsMenu,
+      count: counts.addCuttingSheet,
     },
     {
-      icon: BsBarChart,
+      icon: FaCashRegister,
       label: 'Liquidación',
       isMenu: true,
       to: '/dashboard/box-brands',
       menu: liquidationMenu,
+      count: counts.addSupplyShipment + counts.producerPendingPayments,
     },
     {
       icon: FaCogs,

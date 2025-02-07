@@ -11,6 +11,7 @@ import {
   AccordionPanel,
   AccordionIcon,
   Box,
+  Badge,
 } from '@chakra-ui/react';
 import Link_Next from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -24,11 +25,13 @@ export interface SidenavItem {
   to: string;
   isMenu?: boolean;
   menu?: SidenavMenuItem[];
+  count?: number;
 }
 
 export interface SidenavMenuItem {
   label: string;
   to: string;
+  count?: number;
 }
 
 export interface SidenavItemsProps {
@@ -40,7 +43,16 @@ export function SidenavItems({ navItems, mode = 'semi' }: SidenavItemsProps) {
   const pathname = usePathname();
   const { isOpen } = useSidenav();
   const isAble: boolean = pathname !== '/dashboard/onboarding';
-
+  const renderBadge = (count?: number) => {
+    if (count && count > 0) {
+      return (
+        <Badge colorScheme='red' ml='auto' mr={2.5} my={'auto'}>
+          {count}
+        </Badge>
+      );
+    }
+    return null;
+  };
   const sidebarItemInOverMode = (item: SidenavItem, index: number) => (
     <ListItem key={index}>
       {item.isMenu ? (
@@ -56,6 +68,7 @@ export function SidenavItems({ navItems, mode = 'semi' }: SidenavItemsProps) {
                 <Flex>
                   <Icon boxSize='5' as={item.icon} />
                   <Text ml={2}>{item.label}</Text>
+                  {renderBadge(item.count)}
                 </Flex>
               </Box>
               <AccordionIcon />
@@ -79,6 +92,7 @@ export function SidenavItems({ navItems, mode = 'semi' }: SidenavItemsProps) {
                 >
                   <Flex alignItems='center' p={2}>
                     <Text ml={2}>{item.label}</Text>
+                    {renderBadge(item.count)}
                   </Flex>
                 </Link>
               ))}

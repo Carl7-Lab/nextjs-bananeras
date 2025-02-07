@@ -4,6 +4,7 @@ import { AppBar } from './header/AppBar';
 import Sidenav from './sidenav/sidenav';
 import SidenavContainer from './sidenav/sidenav-container';
 import { getNavItems } from './sidenav/SideNavItems';
+import { useMenuCounts } from '../../hooks/useMenuCounts';
 
 export interface UserProps {
   id: number;
@@ -16,7 +17,8 @@ export default function SidenavBar({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const navItems = getNavItems();
+  const counts = useMenuCounts();
+  const navItems = getNavItems(counts.counts);
 
   return (
     <SidenavContainer sidenav={<Sidenav navItems={navItems} />}>

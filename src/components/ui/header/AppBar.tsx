@@ -2,6 +2,7 @@
 import { Box, Center, Icon, IconButton, Text } from '@chakra-ui/react';
 import { FiMenu } from 'react-icons/fi';
 import MenuIcon from './MenuIcon';
+import MenuNotification from './MenuNotifications';
 import { Logo } from '../Logo';
 import { useSidenav } from '../sidenav/sidenav-context';
 
@@ -20,7 +21,7 @@ export const AppBar = () => {
       justifyContent='flex-end'
     >
       <Icon as={Logo} boxSize={8} />
-      <Center ml='5px'>
+      <Center ml='5px' mr={'auto'}>
         <Text fontSize='2xl' fontWeight='bold' color='green'>
           Bananeras
         </Text>
@@ -28,9 +29,11 @@ export const AppBar = () => {
       <IconButton
         aria-label='menu'
         display={{ base: 'flex', md: 'none' }}
+        mr={'8px'}
         onClick={onOpen}
         icon={<FiMenu />}
       />
+      <MenuNotification />
       <MenuIcon />
     </Box>
   );
