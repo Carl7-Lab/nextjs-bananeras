@@ -30,6 +30,7 @@ import InputFieldStrippingSelect from './container/stripping/InputFieldStripping
 import StrippingSelectBanContainer from './container/stripping/StrippingSelectBanContainer';
 import InputFieldThermographSelect from './container/thermograph/InputFieldThermographSelect';
 import ThermographSelectBanContainer from './container/thermograph/ThermographSelectBanContainer';
+import ImportBoxBrandDrawer from './ImportBoxBrandDrawer';
 import InputFieldsBanContainer from './InputFieldsBanContainer';
 import BandSelectBanContanier from './materials/band/BandSelectBanContanier';
 import InputFieldBandSelect from './materials/band/InputFieldBandSelect';
@@ -46,6 +47,7 @@ import SelectPesticide from './post-harvest/pesticide/SelectPesticide';
 import InputFieldBrandSelect from './specifications/brand/InputFieldBrandSelect';
 import InputFieldRequiredCertificateMultiSelect from './specifications/requiredCertificate/InputFieldRequiredCertificateMultiSelect';
 import { PesticideType } from '../../types/box-brand/post-harvest/pesticide';
+import ImportProducerDrawer from '../producer/ImportProducerDrawer';
 import CheckboxForm from '../ui/form/CheckboxForm';
 import InputFieldNumber from '../ui/form/InputFieldNumber';
 import InputFieldQuantity from '../ui/form/InputFieldQuantity';
@@ -966,9 +968,12 @@ export default function AddBoxBrandsForm() {
         {({ isSubmitting, values }) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
-              <Heading fontSize={'2xl'} p={'12px'}>
-                Especificaciones
-              </Heading>
+              <Flex justify='space-between'>
+                <Heading fontSize={'2xl'} p={'12px'}>
+                  Especificaciones
+                </Heading>
+                <ImportBoxBrandDrawer />
+              </Flex>
               <Divider mb={'16px'} />
 
               <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
