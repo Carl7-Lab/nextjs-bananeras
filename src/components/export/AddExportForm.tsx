@@ -214,6 +214,9 @@ const AddExportForm = () => {
 
         queryClient.invalidateQueries('exports');
         queryClient.invalidateQueries('exportsPending');
+        queryClient.invalidateQueries('cuttingSheets');
+        queryClient.invalidateQueries('cuttingSheetsPending');
+
         formikHelpers.resetForm();
         router.push('/dashboard/export/search');
       },

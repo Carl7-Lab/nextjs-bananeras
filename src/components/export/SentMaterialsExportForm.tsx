@@ -350,6 +350,7 @@ const SentMaterialsExportForm = ({
 
           queryClient.invalidateQueries('exportsSent');
           queryClient.invalidateQueries('exportsSentPending');
+          queryClient.invalidateQueries('exportsPending');
           actions.resetForm();
           router.push('/dashboard/liquidation/exports-sent');
         },

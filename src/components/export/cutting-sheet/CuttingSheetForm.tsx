@@ -406,6 +406,7 @@ const CuttingSheetForm = ({
         });
 
         queryClient.invalidateQueries('cuttingSheets');
+        queryClient.invalidateQueries('cuttingSheetsPending');
         formikHelpers.resetForm();
         router.push('/dashboard/export/cutting-sheets');
       },
