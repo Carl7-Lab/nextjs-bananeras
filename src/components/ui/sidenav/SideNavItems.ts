@@ -8,13 +8,14 @@ import {
   MdOutlineAgriculture,
 } from 'react-icons/md';
 import { SidenavItem, SidenavMenuItem } from './sidenav-items';
+import { useExporter } from '../../../hooks/useUserProfile';
 
 export function GetUser() {
   const { data: session } = useSession();
   return session?.user;
 }
 
-export function getNavItems(counts: any): SidenavItem[] {
+export function getNavItems(counts: any, session: any): SidenavItem[] {
   const exportMenu: SidenavMenuItem[] = [
     {
       label: 'Iniciar Exportación',
@@ -136,7 +137,16 @@ export function getNavItems(counts: any): SidenavItem[] {
     },
   ];
 
-  const settingsMenu: SidenavMenuItem[] = [];
+  const settingsMenu: SidenavMenuItem[] = [
+    {
+      label: 'Modificar Logo',
+      to: '/dashboard/settings/upload-logo',
+    },
+    {
+      label: 'Editar Exportadora',
+      to: `/dashboard/user/update-user/${session?.user?.exporterId}`,
+    },
+  ];
 
   const navItems: SidenavItem[] = [
     {

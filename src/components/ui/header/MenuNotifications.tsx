@@ -1,6 +1,5 @@
 'use client';
 import {
-  Button,
   Flex,
   Heading,
   IconButton,
@@ -13,6 +12,8 @@ import {
   Avatar,
   SkeletonCircle,
   MenuDivider,
+  Box,
+  Text,
 } from '@chakra-ui/react';
 import React from 'react';
 import { MdOutlineNotifications } from 'react-icons/md';
@@ -66,9 +67,16 @@ const MenuNotification = () => {
         </Flex>
         <MenuDivider />
         {notifications.length > 0 ? (
-          notifications.map((notification: any, index: any) => (
+          notifications.map((notification, index) => (
             <MenuItem key={index} as='a' href={notification.href}>
-              {notification.message}
+              <Box>
+                <Text fontWeight='medium'>{notification.message}</Text>
+                {notification.detail && (
+                  <Text fontSize='xs' color='gray.500'>
+                    {notification.detail}
+                  </Text>
+                )}
+              </Box>
             </MenuItem>
           ))
         ) : (
