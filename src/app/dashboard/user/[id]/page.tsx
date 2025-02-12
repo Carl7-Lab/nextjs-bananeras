@@ -119,7 +119,6 @@ const ProfilePage = async (props: Props) => {
               alt='Logo de la Empresa'
               boxSize='100px'
               objectFit='cover'
-              borderRadius='full'
               my={2}
               mx={'auto'}
             />
