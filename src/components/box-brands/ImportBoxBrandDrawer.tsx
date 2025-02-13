@@ -18,10 +18,12 @@ import {
   VStack,
   HStack,
   useToast,
+  Link,
 } from '@chakra-ui/react';
 import { useField } from 'formik';
 import React, { useEffect, useRef, useState } from 'react';
 import { useImportBoxBrands } from '../../hooks/box-brand/uploadBoxBrands';
+import axios from '../../lib/axios';
 
 const ImportBoxBrandDrawer: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -57,6 +59,26 @@ const ImportBoxBrandDrawer: React.FC = () => {
       },
     },
   });
+
+  const handleDownloadTemplate = async () => {
+    try {
+      const { data } = await axios.get(`/firebase/download/BoxBrandNuevo.xlsm`);
+
+      if (data.url) {
+        window.open(data.url, '_blank');
+      } else {
+        throw new Error('No se recibió una URL válida.');
+      }
+    } catch (error) {
+      toast({
+        title: 'Error al descargar la plantilla',
+        description: 'No se pudo obtener el enlace de descarga.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
 
   const handleFileChange = (file: File) => {
     if (file) {
@@ -125,6 +147,16 @@ const ImportBoxBrandDrawer: React.FC = () => {
           <DrawerHeader>Importar Marca de Caja</DrawerHeader>
 
           <DrawerBody>
+            <Text mb={4} fontSize='sm' color='gray.600'>
+              ¿Necesitas ayuda?{' '}
+              <Link
+                color='teal'
+                onClick={handleDownloadTemplate}
+                cursor='pointer'
+              >
+                Utiliza nuestra guía.
+              </Link>
+            </Text>
             {fileName ? (
               <Box
                 border='1px solid'
