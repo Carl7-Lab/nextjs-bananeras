@@ -143,7 +143,7 @@ export function getNavItems(counts: any, session: any): SidenavItem[] {
       to: '/dashboard/settings/upload-logo',
     },
     {
-      label: 'Editar Exportadora',
+      label: 'Modificar Ubicación',
       to: `/dashboard/user/update-user/${session?.user?.exporterId}`,
     },
   ];
