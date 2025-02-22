@@ -27,19 +27,19 @@ export type BoxBrandType = {
   grossWeightBox: number | '';
   requiredCertificates: number[] | null | string[];
   // materials
-  bottomType: string;
+  bottomTypeId: number | '';
   bottomTypeQuantity: number | '';
-  lidType: string;
+  lidTypeId: number | '';
   lidTypeQuantity: number | '';
-  coverType: string;
+  coverTypeId: number | '';
   coverTypeQuantity: number | '';
-  cardboardType: string;
+  cardboardTypeId: number | '';
   cardboardTypeQuantity: number | '';
-  parasealType: string;
+  parasealTypeId?: number | '';
   parasealTypeQuantity: number | '';
-  padType: string;
+  padTypeId?: number | '';
   padTypeQuantity: number | '';
-  spongeType: string;
+  spongeTypeId?: number | '';
   spongeTypeQuantity: number | '';
 
   label?: Partial<LabelType>;
@@ -62,16 +62,13 @@ export type BoxBrandType = {
   clusterBagQuantity: number | '';
   // post harvest
   pesticideCocktail?: Partial<PesticideCocktailPart>[];
-  // pesticidesQuantity: number | '';
-  // pesticideList: Partial<PesticideType>[];
-  // container
-  palletsType: string;
+  palletsTypeId?: number | '';
   palletsTypeQuantity: number | '';
-  miniPalletsType: string;
+  miniPalletsTypeId?: number | '';
   miniPalletsTypeQuantity: number | '';
-  cornerType: string;
+  cornerTypeId?: number | '';
   cornerTypeQuantity: number | '';
-  reinforcementType: string;
+  reinforcementTypeId?: number | '';
   reinforcementTypeQuantity: number | '';
 
   staple?: Partial<StapleType>;
@@ -90,7 +87,7 @@ export type BoxBrandType = {
   mettoLabelId: number | '';
   mettoLabelQuantity: number | '';
   // additions
-  packingTapeType: string;
+  packingTapeTypeId?: number | '';
   packingTapeTypeQuantity: number | '';
 
   latexRemover?: Partial<LatexRemoverType>;
@@ -100,7 +97,4 @@ export type BoxBrandType = {
   blockingSheetId: number | '';
   blockingSheetQuantity: number | '';
   insecticideCocktail?: Partial<InsecticideCocktailPart>[];
-  // insecticides: number[] | null | Partial<InsecticideType>[];
-  // insecticidesQuantity: number | '';
-  // insecticideList: Partial<InsecticideType>[];
 };
