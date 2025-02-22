@@ -1,7 +1,6 @@
 import { useMutation } from 'react-query';
 import axios from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
-import { ClusterBagType } from '@/types/box-brand/materials/clusterBag';
 
 interface CreateClusterBagResponse {
   clusterBagId: string;
@@ -9,6 +8,7 @@ interface CreateClusterBagResponse {
 
 type CreateClusterBagDTO = {
   name: string;
+  code: string;
   quantityPerPack: number;
   art: File | null;
   dimensions: string;
@@ -20,6 +20,7 @@ export const createClusterBag = (
   const formData = new FormData();
 
   formData.append('name', data.name);
+  formData.append('code', data.code);
   formData.append('quantityPerPack', String(data.quantityPerPack));
   formData.append('dimensions', data.dimensions);
 
