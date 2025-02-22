@@ -14,12 +14,14 @@ interface AddRubberFormProps {
 
 interface ValuesProps {
   name: string;
+  code: string;
   quantityPerPack: number | '';
   color: string;
 }
 
 const initialValues: ValuesProps = {
   name: '',
+  code: '',
   quantityPerPack: '',
   color: '',
 };
@@ -27,6 +29,16 @@ const initialValues: ValuesProps = {
 const validationSchema = Yup.object({
   name: Yup.string()
     .max(100, 'Debe tener 100 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  code: Yup.string()
+    .max(10, 'Debe tener 10 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -119,6 +131,7 @@ const AddRubberForm = ({ onClose }: AddRubberFormProps) => {
               </Heading>
               <Divider mb={'16px'} />
               <InputFieldText name={'name'} label={'Nombre'} />
+              <InputFieldText name={'code'} label={'Código'} />
               <InputFieldNumber
                 name={'quantityPerPack'}
                 label={'Cantidad por funda'}
