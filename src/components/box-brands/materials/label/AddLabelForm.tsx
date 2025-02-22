@@ -31,6 +31,7 @@ interface AddLabelFormProps {
 
 interface ValuesProps {
   name: string;
+  code: string;
   quantityPerRoll: number | '';
   art: File | null;
   description: string;
@@ -38,6 +39,7 @@ interface ValuesProps {
 
 const initialValues: ValuesProps = {
   name: '',
+  code: '',
   quantityPerRoll: '',
   art: null,
   description: '',
@@ -46,6 +48,16 @@ const initialValues: ValuesProps = {
 const validationSchema = Yup.object({
   name: Yup.string()
     .max(100, 'Debe tener 100 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  code: Yup.string()
+    .max(10, 'Debe tener 10 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -82,6 +94,7 @@ const AddLabelForm = ({ onClose }: AddLabelFormProps) => {
   ) => {
     const formData = {
       name: values.name,
+      code: values.code,
       quantityPerRoll: Number(values.quantityPerRoll),
       description: values.description,
       art: values.art,
@@ -136,6 +149,7 @@ const AddLabelForm = ({ onClose }: AddLabelFormProps) => {
               </Heading>
               <Divider mb={'16px'} />
               <InputFieldText name={'name'} label={'Nombre'} />
+              <InputFieldText name={'code'} label={'Codigo'} />
               <InputFieldNumber
                 name={'quantityPerRoll'}
                 label={'Cantidad por rollo'}

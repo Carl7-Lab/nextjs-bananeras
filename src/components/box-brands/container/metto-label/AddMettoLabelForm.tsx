@@ -137,11 +137,11 @@ const AddMettoLabelForm = ({ onClose }: AddMettoLabelFormProps) => {
               </Heading>
               <Divider mb={'16px'} />
               <InputFieldText name={'name'} label={'Nombre'} />
+              <InputFieldText name={'code'} label={'Código'} />
               <InputFieldNumber
                 name={'quantityPerPack'}
                 label={'Cantidad por funda'}
               />
-              <InputFieldText name={'code'} label={'Código'} />
               <FormLabel fontSize='sm' mb={0}>
                 Arte
               </FormLabel>

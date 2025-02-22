@@ -8,6 +8,7 @@ interface CreateLabelResponse {
 
 type CreateLabelDTO = {
   name: string;
+  code: string;
   quantityPerRoll: number;
   art: File | null;
   description: string;
@@ -17,6 +18,7 @@ const createLabel = (data: CreateLabelDTO): Promise<CreateLabelResponse> => {
   const formData = new FormData();
 
   formData.append('name', data.name);
+  formData.append('code', data.code);
   formData.append('quantityPerRoll', String(data.quantityPerRoll));
   formData.append('description', data.description);
 
