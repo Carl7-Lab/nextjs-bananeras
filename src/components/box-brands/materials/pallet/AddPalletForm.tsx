@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
-import { useCreatePallet } from '@/hooks/box-brand/materials/pallet/createPallet';
 import InputFieldText from '@/components/ui/form/InputFieldText';
+import { useCreatePallet } from '@/hooks/box-brand/materials/pallet/createPallet';
 
 interface AddPalletFormProps {
   onClose?: () => void;

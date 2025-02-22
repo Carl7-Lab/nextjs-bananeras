@@ -12,9 +12,9 @@ import { FieldInputProps } from 'formik';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
+import { useMiniPallets } from '@/hooks/box-brand/materials/minipallet/getMiniPallets';
 import { usePagination } from '@/hooks/usePagination';
 import { MiniPalletType } from '@/types/box-brand/materials/minipallet';
-import { useMiniPallets } from '@/hooks/box-brand/materials/minipallet/getMiniPallets';
 
 interface MiniPalletSelectBaseProps {
   name?: string;

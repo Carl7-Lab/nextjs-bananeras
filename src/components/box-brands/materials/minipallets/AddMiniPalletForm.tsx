@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
-import { useCreateMiniPallet } from '@/hooks/box-brand/materials/minipallet/createMiniPallet';
 import InputFieldText from '@/components/ui/form/InputFieldText';
+import { useCreateMiniPallet } from '@/hooks/box-brand/materials/minipallet/createMiniPallet';
 
 interface AddMiniPalletFormProps {
   onClose?: () => void;

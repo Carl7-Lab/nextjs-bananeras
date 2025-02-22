@@ -12,9 +12,9 @@ import { FieldInputProps } from 'formik';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
+import { usePackingTapes } from '@/hooks/box-brand/materials/packingtape/getPackingTapes';
 import { usePagination } from '@/hooks/usePagination';
 import { PackingTapeType } from '@/types/box-brand/materials/packingtape';
-import { usePackingTapes } from '@/hooks/box-brand/materials/packingtape/getPackingTapes';
 
 interface PackingTapeSelectBaseProps {
   name?: string;

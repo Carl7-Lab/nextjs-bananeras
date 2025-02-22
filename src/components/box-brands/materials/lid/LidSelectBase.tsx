@@ -12,9 +12,9 @@ import { FieldInputProps } from 'formik';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
+import { useLids } from '@/hooks/box-brand/materials/lid/getLids';
 import { usePagination } from '@/hooks/usePagination';
 import { LidType } from '@/types/box-brand/materials/lid';
-import { useLids } from '@/hooks/box-brand/materials/lid/getLids';
 
 interface LidSelectBaseProps {
   name?: string;

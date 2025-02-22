@@ -12,9 +12,9 @@ import { FieldInputProps } from 'formik';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
+import { useCardboards } from '@/hooks/box-brand/materials/cardboard/getCardboards';
 import { usePagination } from '@/hooks/usePagination';
 import { CardboardType } from '@/types/box-brand/materials/cardboard';
-import { useCardboards } from '@/hooks/box-brand/materials/cardboard/getCardboards';
 
 interface CardboardSelectBaseProps {
   name?: string;

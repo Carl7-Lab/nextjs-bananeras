@@ -12,9 +12,9 @@ import { FieldInputProps } from 'formik';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
+import { useBottoms } from '../../../../hooks/box-brand/materials/bottom/getBottoms';
 import { usePagination } from '../../../../hooks/usePagination';
 import { BottomType } from '../../../../types/box-brand/materials/bottom';
-import { useBottoms } from '../../../../hooks/box-brand/materials/bottom/getBottoms';
 
 interface BottomSelectBaseProps {
   name?: string;

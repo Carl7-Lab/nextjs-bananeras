@@ -44,7 +44,7 @@ interface ContainerProps {
 interface PackagingProps {
   bag: string;
   sachet: string;
-  pad: string;
+  pad: number | '';
   firstLine: string;
   secondLine: string;
   thirdLine: string;
@@ -53,27 +53,16 @@ interface PackagingProps {
 
 interface MaterialsProps {
   packagingPattern: string;
-  pallets: string;
-  plasticCorners: string;
-  reinforcements: string;
+  pallets: number | '';
+  plasticCorners: number | '';
+  reinforcements: number | '';
   plasticStraps: string;
   staples: string;
-  cardboardSheets: string;
+  cardboardSheets: number | '';
   authorizedTransport: string;
   thermometer: string;
   generalObservations: string;
 }
-
-interface PesticideProps {
-  pesticideId: number | '';
-  quantity: number | '';
-}
-
-interface InsecticideProps {
-  insecticideId: number | '';
-  quantity: number | '';
-}
-
 interface BusinessProps {
   name: string;
   quality: string;
@@ -258,8 +247,8 @@ const CuttingSheetForm = ({
           boxQuantity: cuttingSheetSelected.boxQuantity || 0,
           boxBrand: cuttingSheetSelected.boxBrand?.name || '',
           shipmentType:
-            cuttingSheetSelected.boxBrand?.palletsType ||
-            cuttingSheetSelected.boxBrand?.miniPalletsType
+            cuttingSheetSelected.boxBrand?.palletsTypeId ||
+            cuttingSheetSelected.boxBrand?.miniPalletsTypeId
               ? 'PALETIZADO'
               : 'GRANEL',
           boxType: cuttingSheetSelected.boxBrand?.brand?.name || '',
@@ -295,7 +284,7 @@ const CuttingSheetForm = ({
           bag: cuttingSheetSelected.boxBrand?.clusterBag?.name || '',
           sachet: cuttingSheetSelected.boxBrand?.sachet?.name || '',
           sachetQuantity: cuttingSheetSelected.boxBrand?.sachetQuantity || 0,
-          pad: cuttingSheetSelected.boxBrand?.padType || '',
+          pad: cuttingSheetSelected.boxBrand?.padTypeId || 0,
           padQuantity: cuttingSheetSelected.boxBrand?.padTypeQuantity || 0,
           firstLine: cuttingSheetSelected.cuttingType?.firstLine || '',
           secondLine: cuttingSheetSelected.cuttingType?.secondLine || '',
@@ -306,17 +295,17 @@ const CuttingSheetForm = ({
           ...prevValues.materials,
           packagingPattern:
             cuttingSheetSelected.cuttingType?.packagingPattern || '',
-          pallets: cuttingSheetSelected.boxBrand?.palletsType || '',
+          pallets: cuttingSheetSelected.boxBrand?.palletsTypeId || '',
           palletsQuantity:
             cuttingSheetSelected.boxBrand?.palletsTypeQuantity || 0,
           palletsDetail: cuttingSheetSelected.cuttingType?.palletDetail || '',
-          plasticCorners: cuttingSheetSelected.boxBrand?.cornerType || '',
+          plasticCorners: cuttingSheetSelected.boxBrand?.cornerTypeId || '',
           plasticCornersQuantity:
             cuttingSheetSelected.boxBrand?.cornerTypeQuantity || 0,
           plasticCornersDetail:
             cuttingSheetSelected.cuttingType?.cornerProtectorsDetail || '',
           reinforcements:
-            cuttingSheetSelected.boxBrand?.reinforcementType || '',
+            cuttingSheetSelected.boxBrand?.reinforcementTypeId || '',
           reinforcementsQuantity:
             cuttingSheetSelected.boxBrand?.reinforcementTypeQuantity || 0,
           reinforcementsDetail:
@@ -329,7 +318,7 @@ const CuttingSheetForm = ({
           staples: cuttingSheetSelected.boxBrand?.staple?.name || '',
           staplesQuantity: cuttingSheetSelected.boxBrand?.stapleQuantity || 0,
           staplesDetail: cuttingSheetSelected.cuttingType?.staplesDetail || '',
-          cardboardSheets: cuttingSheetSelected.boxBrand?.cardboardType || '',
+          cardboardSheets: cuttingSheetSelected.boxBrand?.cardboardTypeId || '',
           cardboardSheetsQuantity:
             cuttingSheetSelected.boxBrand?.cardboardTypeQuantity || 0,
           cardboardSheetsDetail:

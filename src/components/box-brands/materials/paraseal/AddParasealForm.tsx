@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
-import { useCreateParaseal } from '@/hooks/box-brand/materials/paraseal/createParaseal';
 import InputFieldText from '@/components/ui/form/InputFieldText';
+import { useCreateParaseal } from '@/hooks/box-brand/materials/paraseal/createParaseal';
 
 interface AddParasealFormProps {
   onClose?: () => void;

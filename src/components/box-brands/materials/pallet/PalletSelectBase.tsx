@@ -12,9 +12,9 @@ import { FieldInputProps } from 'formik';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
+import { usePallets } from '@/hooks/box-brand/materials/pallet/getPallets';
 import { usePagination } from '@/hooks/usePagination';
 import { PalletType } from '@/types/box-brand/materials/pallet';
-import { usePallets } from '@/hooks/box-brand/materials/pallet/getPallets';
 
 interface PalletSelectBaseProps {
   name?: string;

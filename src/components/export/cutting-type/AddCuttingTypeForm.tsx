@@ -394,19 +394,19 @@ const AddCuttingTypeForm = () => {
                     <Box>
                       <Text fontSize='sm'>
                         <strong>Pallets:</strong>{' '}
-                        {boxBrandDetails?.palletsType || 'N/A'} (
+                        {boxBrandDetails?.palletsType?.name || 'N/A'} (
                         {boxBrandDetails?.palletsTypeQuantity || 'N/A'}{' '}
                         unidades).
                       </Text>
                       <Text fontSize='sm'>
                         <strong>Esquineros:</strong>{' '}
-                        {boxBrandDetails?.cornerType || 'N/A'} (
+                        {boxBrandDetails?.cornerType?.name || 'N/A'} (
                         {boxBrandDetails?.cornerTypeQuantity || 'N/A'}{' '}
                         unidades).
                       </Text>
                       <Text fontSize='sm'>
                         <strong>Refuerzos:</strong>{' '}
-                        {boxBrandDetails?.reinforcementType || 'N/A'} (
+                        {boxBrandDetails?.reinforcementType?.name || 'N/A'} (
                         {boxBrandDetails?.reinforcementTypeQuantity || 'N/A'}{' '}
                         unidades).
                       </Text>
@@ -433,7 +433,7 @@ const AddCuttingTypeForm = () => {
                     <Box>
                       <Text fontSize='sm'>
                         <strong>Mini Pallets:</strong>{' '}
-                        {boxBrandDetails?.miniPalletsType || 'N/A'} (
+                        {boxBrandDetails?.miniPalletsType?.name || 'N/A'} (
                         {boxBrandDetails?.miniPalletsTypeQuantity || 'N/A'}{' '}
                         unidades).
                       </Text>

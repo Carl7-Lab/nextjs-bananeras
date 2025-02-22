@@ -12,9 +12,9 @@ import { FieldInputProps } from 'formik';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
+import { useParaseals } from '@/hooks/box-brand/materials/paraseal/getParaseals';
 import { usePagination } from '@/hooks/usePagination';
 import { ParasealType } from '@/types/box-brand/materials/paraseal';
-import { useParaseals } from '@/hooks/box-brand/materials/paraseal/getParaseals';
 
 interface ParasealSelectBaseProps {
   name?: string;
