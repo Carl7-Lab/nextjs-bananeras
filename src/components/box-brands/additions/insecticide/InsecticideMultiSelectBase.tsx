@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
   DropdownIndicatorProps,
   Select as ChakraSelect,
   GroupBase,
-  SingleValue,
   chakraComponents,
   CSSObjectWithLabel,
   MultiValue,
@@ -56,7 +56,7 @@ const insecticideComponents = {
       true,
       GroupBase<Partial<InsecticideType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -70,15 +70,15 @@ const InsecticideMultiSelectBase: React.FC<InsecticideMultiSelectBaseProps> = ({
   setInsecticides,
   onChange,
 }) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch, error } = useInsecticides(paginationParams);
+  const { paginationParams } = usePagination();
+  const { data, isLoading, error } = useInsecticides(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
     if (!!error) {
       const { response } = error as any;
       const { data } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = data;
+      const { statusCode } = data;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');
@@ -87,7 +87,9 @@ const InsecticideMultiSelectBase: React.FC<InsecticideMultiSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValues: MultiValue<Partial<InsecticideType>>) => {
+  const handleChange = (
+    newValues: MultiValue<Partial<InsecticideType>>
+  ): void => {
     if (setInsecticides)
       setInsecticides(newValues as Partial<InsecticideType>[]);
     if (onChange) onChange(newValues as Partial<InsecticideType>[]);

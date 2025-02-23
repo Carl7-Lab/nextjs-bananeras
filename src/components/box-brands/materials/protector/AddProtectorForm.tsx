@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
@@ -14,17 +15,29 @@ interface AddProtectorFormProps {
 
 interface ValuesProps {
   name: string;
+  code: string;
   quantityPerPack: number | '';
 }
 
 const initialValues: ValuesProps = {
   name: '',
+  code: '',
   quantityPerPack: '',
 };
 
 const validationSchema = Yup.object({
   name: Yup.string()
     .max(100, 'Debe tener 100 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  code: Yup.string()
+    .max(10, 'Debe tener 10 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -40,8 +53,10 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddProtectorForm = ({ onClose }: AddProtectorFormProps) => {
-  const { createProtector } = useCreateProtector();
+const AddProtectorForm = ({
+  onClose,
+}: AddProtectorFormProps): React.JSX.Element => {
+  const { createProtector, isLoading } = useCreateProtector();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -49,7 +64,7 @@ const AddProtectorForm = ({ onClose }: AddProtectorFormProps) => {
   const addProtector = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     const { quantityPerPack, ...protectorData } = values;
 
     createProtector(
@@ -61,7 +76,7 @@ const AddProtectorForm = ({ onClose }: AddProtectorFormProps) => {
         onError: (error: any) => {
           const { response } = error;
           const { data } = response;
-          const { statusCode, message, error: errorTitle, model, prop } = data;
+          const { statusCode, message, error: errorTitle } = data;
 
           toast({
             title: `Error ${statusCode}: ${errorTitle} `,
@@ -77,7 +92,7 @@ const AddProtectorForm = ({ onClose }: AddProtectorFormProps) => {
         },
         onSuccess: () => {
           toast({
-            title: 'Protector creado',
+            title: 'Protector Creado con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -100,7 +115,7 @@ const AddProtectorForm = ({ onClose }: AddProtectorFormProps) => {
         onSubmit={addProtector}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {({}) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>
@@ -108,6 +123,7 @@ const AddProtectorForm = ({ onClose }: AddProtectorFormProps) => {
               </Heading>
               <Divider mb={'16px'} />
               <InputFieldText name={'name'} label={'Nombre'} />
+              <InputFieldText name={'code'} label={'Código'} />
               <InputFieldNumber
                 name={'quantityPerPack'}
                 label={'Cantidad por funda'}
@@ -119,7 +135,7 @@ const AddProtectorForm = ({ onClose }: AddProtectorFormProps) => {
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                isLoading={isSubmitting}
+                isLoading={isLoading}
               >
                 Agregar
               </Button>

@@ -19,7 +19,7 @@ const InputFieldTextArea: React.FC<InputFieldProps> = ({
   label,
   placeholder,
 }) => {
-  const [field, meta, helpers] = useField(name);
+  const [field, meta] = useField(name);
 
   return (
     <FormControl id={name} isInvalid={!!meta.error && meta.touched}>

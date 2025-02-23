@@ -1,16 +1,38 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { useMutation } from 'react-query';
 import axios from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
-import { MettoLabelType } from '@/types/box-brand/container/mettoLabel';
 
 interface CreateMettoLabelResponse {
   mettoLabelId: string;
 }
 
+type CreateMettoLabelDTO = {
+  name: string;
+  quantityPerPack: number;
+  art: File | null;
+  code: string;
+};
+
 export const createMettoLabel = (
-  data: Partial<MettoLabelType>
+  data: CreateMettoLabelDTO
 ): Promise<CreateMettoLabelResponse> => {
-  return axios.post('/box-brand/metto-label', data);
+  const formData = new FormData();
+
+  formData.append('name', data.name);
+  formData.append('quantityPerPack', String(data.quantityPerPack));
+  formData.append('code', data.code);
+
+  if (data.art) {
+    formData.append('art', data.art);
+  }
+
+  return axios.post('/box-brand/metto-label', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
 };
 
 type UseCreateMettoLabelOptions = {

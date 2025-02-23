@@ -13,11 +13,21 @@ interface Props {
 const muiTheme = createMuiTheme();
 const theme = extendTheme();
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      staleTime: Infinity,
+      cacheTime: Infinity,
+    },
+  },
+});
 
-const Providers = ({ children }: Props) => {
+const Providers = ({ children }: Props): React.JSX.Element => {
   return (
-    <SessionProvider>
+    <SessionProvider refetchOnWindowFocus={false}>
       <ChakraProvider theme={{ ...theme, [THEME_ID]: muiTheme }} resetCSS>
         <QueryClientProvider client={queryClient}>
           <SidenavProvider>{children}</SidenavProvider>

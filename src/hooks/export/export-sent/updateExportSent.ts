@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { AxiosResponse } from 'axios';
 import { useMutation } from 'react-query';
 import axios from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
@@ -8,7 +11,10 @@ type updateExportSentDTO = {
   exporSentId: string;
 };
 
-const updateExportSent = ({ data, exporSentId }: updateExportSentDTO) => {
+const updateExportSent = ({
+  data,
+  exporSentId,
+}: updateExportSentDTO): Promise<AxiosResponse> => {
   return axios.post(`/export/export-sent/${exporSentId}`, data);
 };
 

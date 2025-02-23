@@ -1,9 +1,11 @@
-import { Box, Center } from '@chakra-ui/react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Box } from '@chakra-ui/react';
 import {
   MRT_ColumnDef,
   MaterialReactTable,
   useMaterialReactTable,
 } from 'material-react-table';
+import { MRT_Localization_ES } from 'material-react-table/locales/es';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useMemo } from 'react';
 import DetailBusiness from './DetailBusiness';
@@ -16,9 +18,9 @@ const TableBusiness = ({
 }: {
   width: { sm: number; md: number };
   windowSize: { width: number | null; height: number | null };
-}) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data = [], isLoading, error } = useBusinesses(paginationParams);
+}): React.JSX.Element => {
+  const { paginationParams } = usePagination();
+  const { data = [], error } = useBusinesses(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
@@ -37,44 +39,64 @@ const TableBusiness = ({
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
-        accessorKey: 'name',
-        header: 'Nombre',
+        header: 'Información Básica',
+        columns: [
+          {
+            accessorKey: 'name',
+            header: 'Nombre',
+          },
+          {
+            accessorKey: 'city',
+            header: 'Ciudad',
+          },
+          {
+            accessorKey: 'address',
+            header: 'Dirección',
+          },
+        ],
       },
       {
-        accessorKey: 'city',
-        header: 'Ciudad',
+        header: 'Detalles de la Finca',
+        columns: [
+          {
+            accessorKey: 'area',
+            header: 'Área (ha)',
+            Cell: ({ cell }): React.JSX.Element => {
+              const value = cell.getValue<number | null>();
+              return <span>{value != null ? `${value} ha` : 'N/A'}</span>;
+            },
+          },
+          {
+            accessorKey: 'latitude',
+            header: 'Latitud',
+          },
+          {
+            accessorKey: 'longitude',
+            header: 'Longitud',
+          },
+        ],
       },
       {
-        accessorKey: 'address',
-        header: 'Dirección',
+        header: 'Códigos Regulatorios',
+        columns: [
+          {
+            accessorKey: 'codeMAGAP',
+            header: 'Código MAGAP',
+          },
+          {
+            accessorKey: 'codeAGROCALIDAD',
+            header: 'Código Agrocalidad',
+          },
+        ],
       },
       {
-        accessorKey: 'fruitType',
-        header: 'Tipo de Fruta',
-      },
-      {
-        accessorKey: 'area',
-        header: 'Área (ha)',
-        Cell: ({ cell }) => {
-          const value = cell.getValue<number | null>();
-          return <span>{value != null ? `${value} ha` : 'N/A'}</span>;
-        },
-      },
-      {
-        accessorKey: 'latitude',
-        header: 'Latitud',
-      },
-      {
-        accessorKey: 'longitude',
-        header: 'Longitud',
-      },
-      {
-        accessorKey: 'codeMAGAP',
-        header: 'Código MAGAP',
-      },
-      {
-        accessorKey: 'codeAGROCALIDAD',
-        header: 'Código Agrocalidad',
+        header: 'Tipo',
+        columns: [
+          {
+            accessorKey: 'fruitType',
+            header: 'Tipo de Fruta',
+          },
+        ],
       },
     ],
     []
@@ -91,7 +113,7 @@ const TableBusiness = ({
     enableColumnDragging: false,
     enableHiding: false,
     initialState: {
-      pagination: { pageSize: 5, pageIndex: 0 },
+      pagination: { pageSize: 10, pageIndex: 0 },
       columnPinning: {
         left: ['mrt-row-expand'],
         right: ['fruitType'],
@@ -131,6 +153,7 @@ const TableBusiness = ({
         <DetailBusiness business={row.original} width={width} />
       </Box>
     ),
+    localization: MRT_Localization_ES,
   });
 
   return <MaterialReactTable table={table} />;

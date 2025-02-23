@@ -17,7 +17,10 @@ interface Props {
   insecticides: InsecticideProps[];
 }
 
-const SelectInsecticideBanContainer = ({ name, insecticides }: Props) => {
+const SelectInsecticideBanContainer = ({
+  name,
+  insecticides,
+}: Props): React.JSX.Element => {
   const [isBan, setIsBan] = useState(false);
   const [firstChange, setFirstChange] = useState(false);
 
@@ -33,7 +36,7 @@ const SelectInsecticideBanContainer = ({ name, insecticides }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isBan]);
 
-  const setBanState = () => {
+  const setBanState = (): void => {
     setIsBan((prevState) => !prevState);
   };
 
@@ -87,7 +90,7 @@ const SelectInsecticideBanContainer = ({ name, insecticides }: Props) => {
                 isDisabled={isBan}
                 onClick={() => push({ insecticideId: '', quantity: '' })}
               >
-                Agregar Pesticida
+                Agregar Insecticida
               </Button>
             </SimpleGrid>
           </>

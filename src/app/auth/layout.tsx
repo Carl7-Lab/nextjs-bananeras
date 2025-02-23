@@ -5,7 +5,7 @@ export default function AuthLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>): JSX.Element {
   return (
     <Flex minH='100vh'>
       {/* Parte izquierda */}

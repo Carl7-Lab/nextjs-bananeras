@@ -13,7 +13,7 @@ import Link_Next from 'next/link';
 import SignUpForm from '../../../components/signup/SignUpForm';
 import { Logo } from '../../../components/ui/Logo';
 
-const SignUpPage = () => {
+const SignUpPage = (): JSX.Element => {
   return (
     <Center minH='100vh'>
       <Flex

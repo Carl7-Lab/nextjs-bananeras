@@ -1,10 +1,15 @@
+import { AxiosResponse } from 'axios';
 import { useQuery, UseQueryResult } from 'react-query';
 import axios from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
 import { StrippingType } from '@/types/box-brand/container/stripping';
 import { serializeQueryResult } from '@/utils/serializeQueryResult';
 
-export const getStripping = ({ strippingId }: { strippingId: string }) => {
+export const getStripping = ({
+  strippingId,
+}: {
+  strippingId: string;
+}): Promise<AxiosResponse> => {
   return axios.get(`/box-brand/stripping/${strippingId}`);
 };
 

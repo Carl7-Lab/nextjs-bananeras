@@ -1,5 +1,6 @@
 'use client';
-import { Box, Center } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, Link } from '@chakra-ui/react';
+import Link_Next from 'next/link';
 import React, { useEffect, useState } from 'react';
 import TableExport from '../../../../components/export/table-export/TableExport';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
@@ -9,14 +10,14 @@ interface WindowSizeProps {
   height: number | null;
 }
 
-function SearchExportPage() {
+function SearchExportPage(): React.JSX.Element {
   const [windowSize, setWindowSize] = useState<WindowSizeProps>({
     width: null,
     height: null,
   });
 
   useEffect(() => {
-    function handleResize() {
+    function handleResize(): void {
       setWindowSize({
         width: window.innerWidth,
         height: window.innerHeight,
@@ -29,14 +30,27 @@ function SearchExportPage() {
 
   return (
     <Box
-      my={'auto'}
+      my={'27px'}
       mx={'auto'}
       width={{
         sm: `${Number(windowSize.width) - 20}px`,
         md: `${Number(windowSize.width) - 300}px`,
       }}
     >
-      <Center mt={'30px'}>
+      <Link
+        as={Link_Next}
+        href={'/dashboard/export/add-export'}
+        _hover={{
+          bg: 'green.600',
+          color: 'white',
+        }}
+      >
+        <Flex justify='flex-end' width='100%'>
+          <Button colorScheme='teal'>Agregar Exportación</Button>
+        </Flex>
+      </Link>
+      <Center mt={'24px'}>
+        {' '}
         <TableExport
           windowSize={windowSize}
           width={{

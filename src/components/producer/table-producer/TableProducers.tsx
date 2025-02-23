@@ -1,14 +1,51 @@
-import { Box } from '@chakra-ui/react';
+import { Box, Icon } from '@chakra-ui/react';
 import {
   MRT_ColumnDef,
   MaterialReactTable,
   useMaterialReactTable,
 } from 'material-react-table';
+import { MRT_Localization_ES } from 'material-react-table/locales/es';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useMemo } from 'react';
+import { BsImage } from 'react-icons/bs';
 import DetailProducers from './DetailProducers';
 import { useProducers } from '../../../hooks/merchants/getAllMerchant';
 import { usePagination } from '../../../hooks/usePagination';
+
+interface Business {
+  id: number;
+  name: string;
+  city: string;
+  address: string;
+  fruitType: string;
+  area: number;
+  latitude: number;
+  longitude: number;
+  codeMAGAP: string;
+  codeAGROCALIDAD: string;
+}
+
+interface BankAccount {
+  id: number;
+  bank: string;
+  owner: string;
+  ownerID: string;
+  accountNumber: string;
+  type: string;
+  email: string;
+}
+
+interface Merchant {
+  id: number;
+  businessName: string;
+  city: string;
+  email: string;
+  businessId: string;
+  address: string;
+  contractType: string;
+  businesses: Business[];
+  bankAccounts: BankAccount[];
+}
 
 const TableProducers = ({
   width,
@@ -16,13 +53,14 @@ const TableProducers = ({
 }: {
   width: { sm: number; md: number };
   windowSize: { width: number | null; height: number | null };
-}) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data = [], isLoading, error } = useProducers(paginationParams);
+}): React.JSX.Element => {
+  const { paginationParams } = usePagination();
+  const { data = [], error } = useProducers(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
     if (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { response } = error as any;
       const { data: dataRes } = response;
       const { statusCode } = dataRes;
@@ -33,39 +71,109 @@ const TableProducers = ({
     }
   }, [error, router]);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
         accessorKey: 'businessName',
-        header: 'Nombre Productor',
+        header: 'Productor',
+        columns: [
+          {
+            accessorKey: 'businessName',
+            header: 'Nombre',
+          },
+          {
+            accessorKey: 'city',
+            header: 'Ciudad',
+          },
+          {
+            accessorKey: 'email',
+            header: 'Correo Electrónico',
+          },
+          {
+            accessorKey: 'businessId',
+            header: 'RUC',
+          },
+        ],
       },
       {
-        accessorKey: 'city',
-        header: 'Ciudad',
+        accessorKey: 'details',
+        header: 'Detalles de Negocio',
+        columns: [
+          {
+            accessorKey: 'address',
+            header: 'Dirección',
+          },
+          {
+            accessorKey: 'businesses',
+            header: 'Fincas',
+            Cell: ({ cell }): React.JSX.Element => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const value = cell.getValue<any[]>();
+              return <span>{value?.length || 0} asociadas</span>;
+            },
+          },
+          {
+            accessorFn: (row: Merchant) =>
+              row.businesses
+                .map((business: Business) => business.name)
+                .join(', '),
+            header: 'Nombres',
+          },
+          {
+            accessorFn: (row: Merchant) =>
+              row.businesses
+                .map((business: Business) => business.fruitType)
+                .join(', '),
+            header: 'Tipo de Cultivo',
+          },
+          {
+            accessorFn: (row: Merchant) =>
+              row.businesses
+                .map((business: Business) => `${business.area} ha`)
+                .join(', '),
+            header: 'Área',
+          },
+        ],
       },
       {
-        accessorKey: 'email',
-        header: 'Correo Electrónico',
+        header: 'Logo',
+        columns: [
+          {
+            accessorKey: 'logoUrl',
+            header: 'Acceso',
+            Cell: ({ cell }): React.JSX.Element => {
+              const url = cell.getValue() as string | undefined;
+              return url ? (
+                <a href={url} target='_blank' rel='noopener noreferrer'>
+                  <button
+                    style={{
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    Ver Logo
+                    <Icon as={BsImage} color='teal.500' ml={2} />
+                  </button>
+                </a>
+              ) : (
+                <span>No disponible</span>
+              );
+            },
+            size: 150,
+          },
+        ],
       },
       {
-        accessorKey: 'businessId',
-        header: 'RUC',
-      },
-      {
-        accessorKey: 'address',
-        header: 'Dirección',
-      },
-      {
-        accessorKey: 'contractType',
-        header: 'Tipo de Contrato',
-      },
-      {
-        accessorKey: 'businesses',
-        header: 'Asociados',
-        Cell: ({ cell }) => {
-          const value = cell.getValue<any[]>();
-          return <span>{value?.length || 0} asociados</span>;
-        },
+        header: 'Contrato',
+        columns: [
+          {
+            accessorKey: 'contractType',
+            header: 'Tipo de Contrato',
+          },
+        ],
       },
     ],
     []
@@ -82,7 +190,7 @@ const TableProducers = ({
     enableColumnDragging: false,
     enableHiding: false,
     initialState: {
-      pagination: { pageSize: 5, pageIndex: 0 },
+      pagination: { pageSize: 10, pageIndex: 0 },
       columnPinning: {
         left: ['mrt-row-expand'],
         right: ['contractType'],
@@ -124,6 +232,7 @@ const TableProducers = ({
         <DetailProducers business={row.original} width={width} />
       </Box>
     ),
+    localization: MRT_Localization_ES,
   });
 
   return <MaterialReactTable table={table} />;

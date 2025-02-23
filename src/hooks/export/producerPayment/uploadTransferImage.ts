@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { AxiosResponse } from 'axios';
 import { useMutation } from 'react-query';
 import axios from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
@@ -12,7 +16,7 @@ const uploadTransferImage = async ({
   file,
   producerPaymentId,
   merchantId,
-}: UploadTransferImageDTO) => {
+}: UploadTransferImageDTO): Promise<AxiosResponse> => {
   const formData = new FormData();
   formData.append('file', file);
 

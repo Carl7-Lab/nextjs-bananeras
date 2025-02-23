@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -42,7 +43,7 @@ const chakraStyles: ChakraStylesConfig<
 const brandComponents = {
   DropdownIndicator: (
     props: DropdownIndicatorProps<BrandType, false, GroupBase<BrandType>>
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -56,10 +57,10 @@ const BrandSelectBase: React.FC<{
   field?: FieldInputProps<any>;
   placeholder: string;
 }> = ({ setBrand, onChange, field, placeholder, name }) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useBrands(paginationParams);
+  const { paginationParams } = usePagination();
+  const { data, isLoading } = useBrands(paginationParams);
 
-  const handleChange = (newValue: SingleValue<BrandType>) => {
+  const handleChange = (newValue: SingleValue<BrandType>): void => {
     if (setBrand) setBrand(newValue as BrandType);
     if (onChange) onChange(newValue as BrandType);
   };

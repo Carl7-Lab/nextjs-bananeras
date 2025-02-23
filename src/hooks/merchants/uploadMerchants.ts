@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { useMutation } from 'react-query';
 import axios from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
@@ -12,7 +14,7 @@ export const importMerchants = (
   const formData = new FormData();
   formData.append('file', file);
 
-  return axios.post('/merchant/upload', formData, {
+  return axios.post('/merchant/business/import', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },

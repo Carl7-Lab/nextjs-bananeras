@@ -11,10 +11,10 @@ import React from 'react';
 import AddExportForm from '../../../../components/export/AddExportForm';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
-function AddExportPage() {
+function AddExportPage(): React.JSX.Element {
   return (
     <>
-      <Box my={'20px'} mx='auto'>
+      <Box my={'20px'} mx='auto' w={'95%'}>
         <Center>
           <Card
             w={{
@@ -23,7 +23,6 @@ function AddExportPage() {
               md: '90%',
               lg: '100%',
               xl: '100%',
-              '2xl': '700px',
             }}
             mb={'20px'}
           >

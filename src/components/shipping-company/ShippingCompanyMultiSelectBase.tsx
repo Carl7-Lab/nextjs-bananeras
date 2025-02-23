@@ -18,6 +18,7 @@ import { ShippingCompanyType } from '../../types/shippingCompany';
 
 interface ShippingCompanyMultiSelectBaseProps {
   name?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   field?: FieldInputProps<any>;
   placeholder: string;
   setShippingCompanies?: (
@@ -57,7 +58,7 @@ const shippingCompanyComponents = {
       true,
       GroupBase<Partial<ShippingCompanyType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -67,16 +68,16 @@ const shippingCompanyComponents = {
 const ShippingCompanyMultiSelectBase: React.FC<
   ShippingCompanyMultiSelectBaseProps
 > = ({ name, placeholder, field, onChange, setShippingCompanies }) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch, error } =
-    useShippingCompanies(paginationParams);
+  const { paginationParams } = usePagination();
+  const { data, isLoading, error } = useShippingCompanies(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
     if (!!error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { response } = error as any;
       const { data } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = data;
+      const { statusCode } = data;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');
@@ -87,7 +88,7 @@ const ShippingCompanyMultiSelectBase: React.FC<
 
   const handleChange = (
     newValues: MultiValue<Partial<ShippingCompanyType>>
-  ) => {
+  ): void => {
     if (setShippingCompanies) {
       setShippingCompanies(newValues as Partial<ShippingCompanyType>[]);
     }
@@ -111,7 +112,8 @@ const ShippingCompanyMultiSelectBase: React.FC<
       chakraStyles={chakraStyles}
       noOptionsMessage={() =>
         !!error
-          ? (error as any).response.data.message
+          ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (error as any).response.data.message
           : 'Ya no hay naviero/s disponible/s'
       }
       isLoading={isLoading}

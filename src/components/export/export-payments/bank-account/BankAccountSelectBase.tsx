@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -54,7 +55,7 @@ const bankAccountComponents = {
       false,
       GroupBase<Partial<BankAccountType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -68,10 +69,12 @@ const BankAccountSelectBase: React.FC<BankAccountSelectBaseProps> = ({
   onChange,
   setBankAccount,
 }) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch } = useBankAccounts(paginationParams);
+  const { paginationParams } = usePagination();
+  const { data, isLoading } = useBankAccounts(paginationParams);
 
-  const handleChange = (newValue: SingleValue<Partial<BankAccountType>>) => {
+  const handleChange = (
+    newValue: SingleValue<Partial<BankAccountType>>
+  ): void => {
     if (setBankAccount) {
       setBankAccount(newValue as Partial<BankAccountType>);
     }
@@ -96,7 +99,7 @@ const BankAccountSelectBase: React.FC<BankAccountSelectBaseProps> = ({
       isLoading={isLoading}
       options={data}
       getOptionLabel={(bankAccount: Partial<BankAccountType>) =>
-        `${bankAccount.bank} - ${bankAccount.accountNumber} `
+        `${bankAccount.bank} - ${bankAccount.accountNumber} - ${bankAccount.owner} `
       }
       getOptionValue={(bankAccount: Partial<BankAccountType>) =>
         bankAccount.id !== undefined && bankAccount.id !== null

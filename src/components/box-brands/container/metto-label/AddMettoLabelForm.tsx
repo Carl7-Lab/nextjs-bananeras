@@ -1,12 +1,30 @@
-import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  Button,
+  Divider,
+  Flex,
+  FormLabel,
+  Heading,
+  useToast,
+} from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import { useCreateMettoLabel } from '../../../../hooks/box-brand/container/metto-label/createMettoLabel';
+import UploadLogoFile from '../../../producer/UploadLogoFile';
 import InputFieldNumber from '../../../ui/form/InputFieldNumber';
 import InputFieldText from '../../../ui/form/InputFieldText';
+
+const SUPPORTED_FORMATS = [
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/bmp',
+  'image/webp',
+  'image/jpg',
+];
 
 interface AddMettoLabelFormProps {
   onClose?: () => void;
@@ -15,14 +33,14 @@ interface AddMettoLabelFormProps {
 interface ValuesProps {
   name: string;
   quantityPerPack: number | '';
-  art: string;
+  art: File | null;
   code: string;
 }
 
 const initialValues: ValuesProps = {
   name: '',
   quantityPerPack: '',
-  art: '',
+  art: null,
   code: '',
 };
 
@@ -42,9 +60,11 @@ const validationSchema = Yup.object({
     .moreThan(0, 'Debe ser mayor que 0')
     .lessThan(10000, 'Debe ser menor que 10000 ')
     .required('Requerido'),
-  art: Yup.string()
-    .max(100, 'Debe tener 100 caracteres o menos')
-    .required('Requerido'),
+  art: Yup.mixed()
+    .required('Se requiere una imagen')
+    .test('fileFormat', 'Formato no soportado', (value) => {
+      return value && SUPPORTED_FORMATS.includes((value as File).type);
+    }),
   code: Yup.string()
     .max(50, 'Debe tener 50 caracteres o menos')
     .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
@@ -52,8 +72,10 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddMettoLabelForm = ({ onClose }: AddMettoLabelFormProps) => {
-  const { createMettoLabel } = useCreateMettoLabel();
+const AddMettoLabelForm = ({
+  onClose,
+}: AddMettoLabelFormProps): React.JSX.Element => {
+  const { createMettoLabel, isLoading } = useCreateMettoLabel();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -61,46 +83,44 @@ const AddMettoLabelForm = ({ onClose }: AddMettoLabelFormProps) => {
   const AddMettoLabel = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
-    const { quantityPerPack, ...mettoLabelData } = values;
+  ): Promise<void> => {
+    const formData = {
+      name: values.name,
+      quantityPerPack: Number(values.quantityPerPack),
+      code: values.code,
+      art: values.art,
+    };
+    createMettoLabel(formData, {
+      onError: (error: any) => {
+        const { response } = error;
+        const { data } = response;
+        const { statusCode, message, error: errorTitle } = data;
 
-    createMettoLabel(
-      {
-        ...mettoLabelData,
-        quantityPerPack: Number(quantityPerPack),
+        toast({
+          title: `Error ${statusCode}: ${errorTitle} `,
+          description: `${message}`,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+
+        if (statusCode === 401) {
+          router.push('/api/auth/signout');
+        }
       },
-      {
-        onError: (error: any) => {
-          const { response } = error;
-          const { data } = response;
-          const { statusCode, message, error: errorTitle, model, prop } = data;
+      onSuccess: () => {
+        toast({
+          title: 'Etiqueta Metto Creada con Éxito',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
 
-          toast({
-            title: `Error ${statusCode}: ${errorTitle} `,
-            description: `${message}`,
-            status: 'error',
-            duration: 5000,
-            isClosable: true,
-          });
-
-          if (statusCode === 401) {
-            router.push('/api/auth/signout');
-          }
-        },
-        onSuccess: () => {
-          toast({
-            title: 'Etiqueta metto creada',
-            status: 'success',
-            duration: 5000,
-            isClosable: true,
-          });
-
-          queryClient.invalidateQueries('mettoLabels');
-          actions.resetForm();
-          !!onClose && onClose();
-        },
-      }
-    );
+        queryClient.invalidateQueries('labels');
+        actions.resetForm();
+        !!onClose && onClose();
+      },
+    });
 
     return;
   };
@@ -112,7 +132,7 @@ const AddMettoLabelForm = ({ onClose }: AddMettoLabelFormProps) => {
         onSubmit={AddMettoLabel}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {({}) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>
@@ -120,20 +140,22 @@ const AddMettoLabelForm = ({ onClose }: AddMettoLabelFormProps) => {
               </Heading>
               <Divider mb={'16px'} />
               <InputFieldText name={'name'} label={'Nombre'} />
+              <InputFieldText name={'code'} label={'Código'} />
               <InputFieldNumber
                 name={'quantityPerPack'}
                 label={'Cantidad por funda'}
               />
-              <InputFieldText name={'art'} label={'Arte'} />
-              <InputFieldText name={'code'} label={'Código'} />
-
+              <FormLabel fontSize='sm' mb={0}>
+                Arte
+              </FormLabel>
+              <UploadLogoFile name={'art'} />
               <Button
                 mt='32px'
                 py='8px'
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                isLoading={isSubmitting}
+                isLoading={isLoading}
               >
                 Agregar
               </Button>

@@ -1,7 +1,12 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { useSession } from 'next-auth/react';
-import { BsBarChart } from 'react-icons/bs';
-
-import { FaCogs } from 'react-icons/fa';
+import { FaBoxOpen, FaCashRegister, FaCogs, FaUserTie } from 'react-icons/fa';
+import {
+  MdContentCut,
+  MdFlightTakeoff,
+  MdOutlineAgriculture,
+} from 'react-icons/md';
 import { SidenavItem, SidenavMenuItem } from './sidenav-items';
 
 export function GetUser() {
@@ -9,41 +14,47 @@ export function GetUser() {
   return session?.user;
 }
 
-export function getNavItems(): SidenavItem[] {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function getNavItems(counts: any, session: any): SidenavItem[] {
   const exportMenu: SidenavMenuItem[] = [
-    {
-      label: 'Consultar',
-      to: '/dashboard/export/search',
-    },
     {
       label: 'Iniciar Exportación',
       to: '/dashboard/export/add-export',
     },
     {
-      label: 'Hoja de Corte',
-      to: '/dashboard/export/cutting-sheet',
+      label: 'Consultar Exportación',
+      to: '/dashboard/export/search',
     },
+  ];
+
+  const liquidationMenu: SidenavMenuItem[] = [
     {
       label: 'Envío de Insumos',
-      to: '/dashboard/export/supply-shipment',
+      to: '/dashboard/liquidation/add-supply-shipment',
+      count: counts.addSupplyShipment,
     },
     {
-      label: 'Pagos Pendientes a Productores',
-      to: '/dashboard/export/producer-pending-payments',
+      label: 'Envíos Realizados',
+      to: '/dashboard/liquidation/exports-sent',
+    },
+    {
+      label: 'Pago a Productores',
+      to: '/dashboard/liquidation/producer-pending-payments',
+      count: counts.producerPendingPayments,
+    },
+    {
+      label: 'Pagos Realizados',
+      to: '/dashboard/liquidation/producer-payments',
     },
   ];
 
   const clientMenu: SidenavMenuItem[] = [
     {
-      label: 'Clientes',
-      to: '/dashboard/client/clients',
+      label: 'Agregar Puerto',
+      to: '/dashboard/client/add-harbor',
     },
     {
-      label: 'Cuentas Bancarias',
-      to: '/dashboard/client/bank-accounts',
-    },
-    {
-      label: 'Puertos',
+      label: 'Consultar Puerto',
       to: '/dashboard/client/harbors',
     },
     {
@@ -51,31 +62,35 @@ export function getNavItems(): SidenavItem[] {
       to: '/dashboard/client/add-client',
     },
     {
+      label: 'Consultar Cliente',
+      to: '/dashboard/client/clients',
+    },
+    {
       label: 'Agregar Cuenta Bancaria',
       to: '/dashboard/client/add-bank-account',
     },
     {
-      label: 'Agregar Puerto',
-      to: '/dashboard/client/add-harbor',
+      label: 'Cuentas Bancarias',
+      to: '/dashboard/client/bank-accounts',
     },
   ];
 
   const productorMenu: SidenavMenuItem[] = [
     {
-      label: 'Fincas',
-      to: '/dashboard/producer/fincas',
-    },
-    {
-      label: 'Productores',
-      to: '/dashboard/producer/producers',
-    },
-    {
       label: 'Agregar Productor',
       to: '/dashboard/producer/add-producer',
     },
     {
-      label: 'Agregar Fincas',
+      label: 'Consultar Productor',
+      to: '/dashboard/producer/producers',
+    },
+    {
+      label: 'Agregar Finca',
       to: '/dashboard/producer/add-fincas',
+    },
+    {
+      label: 'Consultar Finca',
+      to: '/dashboard/producer/fincas',
     },
     {
       label: 'Agregar Logo',
@@ -89,49 +104,95 @@ export function getNavItems(): SidenavItem[] {
 
   const boxBrandsMenu: SidenavMenuItem[] = [
     {
-      label: 'Consultar',
-      to: '/dashboard/box-brands/search',
-    },
-    {
-      label: 'Agregar Tipo de Caja',
+      label: 'Agregar Marca de Caja',
       to: '/dashboard/box-brands/add-box-brand',
     },
     {
-      label: 'Agregar Marca de Caja',
-      to: '/dashboard/box-brands/add-brand',
+      label: 'Consultar Marca',
+      to: '/dashboard/box-brands/search',
+    },
+    {
+      label: 'Agregar Logo',
+      to: '/dashboard/box-brands/upload-logo',
+    },
+    {
+      label: 'Agregar Tipo de Corte',
+      to: '/dashboard/box-brands/add-cutting-type',
+    },
+    {
+      label: 'Tipos de Corte',
+      to: '/dashboard/box-brands/cutting-types',
     },
   ];
 
-  const settingsMenu: SidenavMenuItem[] = [];
+  const cuttingSheetsMenu: SidenavMenuItem[] = [
+    {
+      label: 'Agregar Hoja de Corte',
+      to: '/dashboard/export/add-cutting-sheet',
+      count: counts.addCuttingSheet,
+    },
+    {
+      label: 'Hojas de Corte',
+      to: '/dashboard/export/cutting-sheets',
+    },
+  ];
+
+  const settingsMenu: SidenavMenuItem[] = [
+    {
+      label: 'Modificar Logo',
+      to: '/dashboard/settings/upload-logo',
+    },
+    {
+      label: 'Modificar Ubicación',
+      to: `/dashboard/user/update-user/${session?.user?.exporterId}`,
+    },
+  ];
 
   const navItems: SidenavItem[] = [
     {
-      icon: BsBarChart,
-      label: 'Exportaciones',
-      isMenu: true,
-      to: '/dashboard/export',
-      menu: exportMenu,
-    },
-    {
-      icon: BsBarChart,
-      label: 'Cliente',
-      isMenu: true,
-      to: '/dashboard/client',
-      menu: clientMenu,
-    },
-    {
-      icon: BsBarChart,
+      icon: MdOutlineAgriculture,
       label: 'Productor',
       isMenu: true,
       to: '/dashboard/producer',
       menu: productorMenu,
     },
     {
-      icon: BsBarChart,
+      icon: FaUserTie,
+      label: 'Cliente',
+      isMenu: true,
+      to: '/dashboard/client',
+      menu: clientMenu,
+    },
+
+    {
+      icon: FaBoxOpen,
       label: 'Marcas de Caja',
       isMenu: true,
       to: '/dashboard/box-brands',
       menu: boxBrandsMenu,
+    },
+    {
+      icon: MdFlightTakeoff,
+      label: 'Exportaciones',
+      isMenu: true,
+      to: '/dashboard/export',
+      menu: exportMenu,
+    },
+    {
+      icon: MdContentCut,
+      label: 'Hojas de Corte',
+      isMenu: true,
+      to: '/dashboard/export',
+      menu: cuttingSheetsMenu,
+      count: counts.addCuttingSheet,
+    },
+    {
+      icon: FaCashRegister,
+      label: 'Liquidación',
+      isMenu: true,
+      to: '/dashboard/box-brands',
+      menu: liquidationMenu,
+      count: counts.addSupplyShipment + counts.producerPendingPayments,
     },
     {
       icon: FaCogs,

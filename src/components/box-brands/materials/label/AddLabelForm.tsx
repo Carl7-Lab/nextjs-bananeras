@@ -1,12 +1,30 @@
-import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  Button,
+  Divider,
+  Flex,
+  FormLabel,
+  Heading,
+  useToast,
+} from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import { useCreateLabel } from '../../../../hooks/box-brand/materials/label/createLabel';
+import UploadLogoFile from '../../../producer/UploadLogoFile';
 import InputFieldNumber from '../../../ui/form/InputFieldNumber';
 import InputFieldText from '../../../ui/form/InputFieldText';
+
+const SUPPORTED_FORMATS = [
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/bmp',
+  'image/webp',
+  'image/jpg',
+];
 
 interface AddLabelFormProps {
   onClose?: () => void;
@@ -14,15 +32,17 @@ interface AddLabelFormProps {
 
 interface ValuesProps {
   name: string;
+  code: string;
   quantityPerRoll: number | '';
-  art: string;
+  art: File | null;
   description: string;
 }
 
 const initialValues: ValuesProps = {
   name: '',
+  code: '',
   quantityPerRoll: '',
-  art: '',
+  art: null,
   description: '',
 };
 
@@ -37,20 +57,34 @@ const validationSchema = Yup.object({
     )
     .transform((value) => value.trim())
     .required('Requerido'),
+  code: Yup.string()
+    .max(10, 'Debe tener 10 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
   quantityPerRoll: Yup.number()
     .integer('Debe ser un número entero')
     .moreThan(0, 'Debe ser mayor que 0')
     .lessThan(10000, 'Debe ser menor que 10000 ')
     .required('Requerido'),
-  art: Yup.string().required('Requerido'),
+  art: Yup.mixed()
+    .required('Se requiere una imagen')
+    .test('fileFormat', 'Formato no soportado', (value) => {
+      return value && SUPPORTED_FORMATS.includes((value as File).type);
+    }),
   description: Yup.string()
     .max(200, 'Debe tener 200 caracteres o menos')
     .min(10, 'Debe tener 10 caracteres o más')
     .required('Requerido'),
 });
 
-const AddLabelForm = ({ onClose }: AddLabelFormProps) => {
-  const { createLabel } = useCreateLabel();
+const AddLabelForm = ({ onClose }: AddLabelFormProps): React.JSX.Element => {
+  const { createLabel, isLoading } = useCreateLabel();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -58,46 +92,46 @@ const AddLabelForm = ({ onClose }: AddLabelFormProps) => {
   const addLabel = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
-    const { quantityPerRoll, ...labelData } = values;
-    createLabel(
-      {
-        ...labelData,
-        quantityPerRoll: Number(quantityPerRoll),
+  ): Promise<void> => {
+    const formData = {
+      name: values.name,
+      code: values.code,
+      quantityPerRoll: Number(values.quantityPerRoll),
+      description: values.description,
+      art: values.art,
+    };
+
+    createLabel(formData, {
+      onError: (error: any) => {
+        const { response } = error;
+        const { data } = response;
+        const { statusCode, message, error: errorTitle } = data;
+
+        toast({
+          title: `Error ${statusCode}: ${errorTitle} `,
+          description: `${message}`,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+
+        if (statusCode === 401) {
+          router.push('/api/auth/signout');
+        }
       },
-      {
-        onError: (error: any) => {
-          const { response } = error;
-          const { data } = response;
-          const { statusCode, message, error: errorTitle, model, prop } = data;
+      onSuccess: () => {
+        toast({
+          title: 'Etiqueta Creada con Éxito',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
 
-          toast({
-            title: `Error ${statusCode}: ${errorTitle} `,
-            description: `${message}`,
-            status: 'error',
-            duration: 5000,
-            isClosable: true,
-          });
-
-          if (statusCode === 401) {
-            router.push('/api/auth/signout');
-          }
-        },
-        onSuccess: () => {
-          toast({
-            title: 'Etiqueta creada',
-            status: 'success',
-            duration: 5000,
-            isClosable: true,
-          });
-
-          queryClient.invalidateQueries('labels');
-          actions.resetForm();
-          !!onClose && onClose();
-        },
-      }
-    );
-
+        queryClient.invalidateQueries('labels');
+        actions.resetForm();
+        !!onClose && onClose();
+      },
+    });
     return;
   };
 
@@ -108,7 +142,7 @@ const AddLabelForm = ({ onClose }: AddLabelFormProps) => {
         onSubmit={addLabel}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {({}) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>
@@ -116,20 +150,23 @@ const AddLabelForm = ({ onClose }: AddLabelFormProps) => {
               </Heading>
               <Divider mb={'16px'} />
               <InputFieldText name={'name'} label={'Nombre'} />
+              <InputFieldText name={'code'} label={'Codigo'} />
               <InputFieldNumber
                 name={'quantityPerRoll'}
                 label={'Cantidad por rollo'}
               />
-              <InputFieldText name={'art'} label={'Arte'} />
               <InputFieldText name={'description'} label={'Descripción'} />
-
+              <FormLabel fontSize='sm' mb={0}>
+                Arte
+              </FormLabel>
+              <UploadLogoFile name={'art'} />
               <Button
                 mt='32px'
                 py='8px'
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                isLoading={isSubmitting}
+                isLoading={isLoading}
               >
                 Agregar
               </Button>

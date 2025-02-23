@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box } from '@mui/material';
 import {
   type MRT_ColumnDef,
   MaterialReactTable,
   useMaterialReactTable,
 } from 'material-react-table';
+import { MRT_Localization_ES } from 'material-react-table/locales/es';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useMemo } from 'react';
 import DetailBoxBrand from './DetailBoxBrand';
@@ -17,14 +19,9 @@ const TableBoxBrand = ({
 }: {
   width: { sm: number; md: number };
   windowSize: { width: number | null; height: number | null };
-}) => {
-  const { paginationParams, filterProps } = usePagination();
-  const {
-    data = [],
-    isLoading,
-    refetch,
-    error,
-  } = useBoxBrands(paginationParams);
+}): React.JSX.Element => {
+  const { paginationParams } = usePagination();
+  const { data = [], error } = useBoxBrands(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
@@ -43,34 +40,62 @@ const TableBoxBrand = ({
   const columns = useMemo<MRT_ColumnDef<Partial<BoxBrandType>>[]>(
     () => [
       {
-        accessorKey: 'name',
-        header: 'Nombre',
-        muiTableHeadCellProps: { style: { color: 'green' } },
-        enableHiding: false,
+        header: 'Marca de Caja',
+        columns: [
+          {
+            accessorKey: 'name',
+            header: 'Nombre de la Caja',
+            muiTableHeadCellProps: { style: { color: 'green' } },
+          },
+          {
+            accessorKey: 'brand.name',
+            header: 'Marca Asociada',
+            muiTableHeadCellProps: { style: { color: 'green' } },
+          },
+        ],
       },
       {
-        accessorKey: 'brand.name',
-        header: 'Marca',
-        muiTableHeadCellProps: { style: { color: 'green' } },
-        enableHiding: false,
+        header: 'Detalles',
+        columns: [
+          {
+            accessorKey: 'boxQuantity',
+            header: 'Cantidad de Cajas',
+          },
+          {
+            accessorKey: 'netWeightBox',
+            header: 'Peso Neto por Caja (kg)',
+            Cell: ({ cell }): React.JSX.Element | string => {
+              const value = cell.getValue<number>();
+              return value ? `${value} kg` : 'N/A';
+            },
+          },
+          {
+            accessorKey: 'grossWeightBox',
+            header: 'Peso Bruto por Caja (kg)',
+            Cell: ({ cell }): React.JSX.Element | string => {
+              const value = cell.getValue<number>();
+              return value ? `${value} kg` : 'N/A';
+            },
+          },
+          {
+            accessorKey: 'seal.name',
+            header: 'Sello',
+          },
+          {
+            accessorKey: 'seal.type',
+            header: 'Tipo de Sello',
+          },
+        ],
       },
       {
-        accessorKey: 'brandCode',
         header: 'Código',
-        muiTableHeadCellProps: { style: { color: 'green' } },
-        enableHiding: false,
-      },
-      {
-        accessorKey: 'boxQuantity',
-        header: 'Cantidad de Caja',
-      },
-      {
-        accessorKey: 'netWeightBox',
-        header: 'Peso Neto',
-      },
-      {
-        accessorKey: 'grossWeightBox',
-        header: 'Peso Bruto',
+        columns: [
+          {
+            accessorKey: 'brandCode',
+            header: 'Código de Marca',
+            muiTableHeadCellProps: { style: { color: 'green' } },
+          },
+        ],
       },
     ],
     []
@@ -79,15 +104,18 @@ const TableBoxBrand = ({
   const table = useMaterialReactTable({
     columns,
     data,
+    enableColumnOrdering: false,
     enableColumnFilters: false,
     enableCellActions: false,
     enableDensityToggle: false,
-    enableColumnActions: false,
+    enableColumnPinning: true,
+    enableColumnDragging: false,
     enableHiding: false,
     initialState: {
-      pagination: { pageSize: 5, pageIndex: 0 },
+      pagination: { pageSize: 10, pageIndex: 0 },
       columnPinning: {
         left: ['mrt-row-expand'],
+        right: ['brandCode'],
       },
       density: 'compact',
     },
@@ -116,7 +144,9 @@ const TableBoxBrand = ({
           justifyContent: 'space-around',
           left: '0px',
           maxWidth:
-            Number(windowSize.width) >= 768 ? `${width.md}px` : `${width.sm}px`,
+            windowSize.width && windowSize.width >= 768
+              ? `${width.md}px`
+              : `${width.sm}px`,
           position: 'sticky',
           width: '100%',
         }}
@@ -128,6 +158,7 @@ const TableBoxBrand = ({
         />
       </Box>
     ),
+    localization: MRT_Localization_ES,
   });
 
   return <MaterialReactTable table={table} />;

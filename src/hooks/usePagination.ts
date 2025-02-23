@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type
 export const usePagination = () => {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);

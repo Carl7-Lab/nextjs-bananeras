@@ -1,10 +1,15 @@
+import { AxiosResponse } from 'axios';
 import { useQuery, UseQueryResult } from 'react-query';
 import axios from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
 import { SealType } from '@/types/box-brand/container/seal';
 import { serializeQueryResult } from '@/utils/serializeQueryResult';
 
-export const getSeal = ({ sealId }: { sealId: string }) => {
+export const getSeal = ({
+  sealId,
+}: {
+  sealId: string;
+}): Promise<AxiosResponse> => {
   return axios.get(`/box-brand/seal/${sealId}`);
 };
 

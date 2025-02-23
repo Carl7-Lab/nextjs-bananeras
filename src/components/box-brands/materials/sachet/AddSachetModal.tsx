@@ -11,7 +11,7 @@ import React from 'react';
 import { AiFillPlusCircle } from 'react-icons/ai';
 import AddSachetForm from './AddSachetForm';
 
-const AddSachetModal = () => {
+const AddSachetModal = (): React.JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (

@@ -14,7 +14,7 @@ interface InputFieldInsecticideMultiSelectProps {
 
 const InputFieldInsecticideMultiSelect: React.FC<
   InputFieldInsecticideMultiSelectProps
-> = ({ name, label, placeholder, setInsecticides }) => {
+> = ({ name, label, placeholder }) => {
   const [field, meta, helpers] = useField(name);
 
   return (

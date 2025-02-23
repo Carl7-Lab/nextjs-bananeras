@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -37,7 +38,7 @@ const chakraStyles: ChakraStylesConfig<
   placeholder: (provided) => ({
     ...provided,
     color: 'gray.600',
-    h: '36px',
+    h: 'auto',
   }),
   input: (provided) => ({
     ...provided,
@@ -57,7 +58,7 @@ const sealComponents = {
       false,
       GroupBase<Partial<SealType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -72,15 +73,15 @@ const SealSelectBase: React.FC<SealSelectBaseProps> = ({
   setSeal,
   onChange,
 }) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch, error } = useSeals(paginationParams);
+  const { paginationParams } = usePagination();
+  const { data, isLoading, error } = useSeals(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
     if (!!error) {
       const { response } = error as any;
       const { data } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = data;
+      const { statusCode } = data;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');
@@ -89,7 +90,7 @@ const SealSelectBase: React.FC<SealSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<SealType>>) => {
+  const handleChange = (newValue: SingleValue<Partial<SealType>>): void => {
     if (setSeal) setSeal(newValue as Partial<SealType>);
     if (onChange) onChange(newValue as Partial<SealType>);
   };

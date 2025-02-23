@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Box,
   Button,
-  Checkbox,
   Divider,
   Flex,
   Heading,
@@ -192,27 +193,29 @@ const validationSchema = Yup.object({
 
 const PendingPaymentForm = ({
   paymentSelected,
-  pathname,
 }: {
   paymentSelected: Partial<ExportSentType>;
-  pathname: string;
-}) => {
+  pathname?: string;
+}): React.JSX.Element => {
   const [initialValuesPayment, setInitialValuesPayment] =
     useState<ValuesProps>(initialValues);
   const [producerSelect, setProducerSelect] =
-    useState<Partial<MerchantType> | null>(paymentSelected?.export!.merchant!);
+    useState<Partial<MerchantType> | null>(
+      paymentSelected?.export!.merchant || null
+    );
   const [departureHarbor, setDepartureHarbor] =
     useState<Partial<HarborType> | null>(
-      paymentSelected?.export!.harborDeparture!
+      paymentSelected?.export!.harborDeparture || null
     );
   const [destinationHarbor, setDestinationHarbor] =
     useState<Partial<HarborType> | null>(
-      paymentSelected?.export!.harborDestination!
+      paymentSelected?.export!.harborDestination || null
     );
   const [boxBrand, setBoxBrand] = useState<Partial<BoxBrandType> | null>(
-    paymentSelected?.export!.boxBrand!
+    paymentSelected?.export!.boxBrand || null
   );
-  const { createProducerPayment } = useCreateProducerPayment();
+  const { createProducerPayment, isLoading: createLoading } =
+    useCreateProducerPayment();
   const { uploadTransferImage, isLoading } = useUploadTransferImage();
   const toast = useToast();
   const router = useRouter();
@@ -238,7 +241,7 @@ const PendingPaymentForm = ({
   const sentPayment = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     try {
       const {
         transferFile,
@@ -277,15 +280,16 @@ const PendingPaymentForm = ({
       }
 
       toast({
-        title: 'Liquidación y archivo subidos con éxito',
+        title: 'Liquidación y Archivo Subidos con Éxito',
         status: 'success',
         duration: 5000,
         isClosable: true,
       });
 
       queryClient.invalidateQueries('producerPayments');
+      queryClient.invalidateQueries('exportsSentPending');
       actions.resetForm();
-      router.push(pathname.replace(/\/\d+$/, ''));
+      router.push('/dashboard/liquidation/producer-payments');
     } catch (error: any) {
       toast({
         title: 'Error',
@@ -454,7 +458,7 @@ const PendingPaymentForm = ({
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                isLoading={isSubmitting}
+                isLoading={createLoading || isLoading}
               >
                 Enviar
               </Button>

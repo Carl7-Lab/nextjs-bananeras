@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, VStack } from '@chakra-ui/react';
 import React from 'react';
 import TableBoxBrandDetail from './TableBoxBrandDetail';
@@ -14,8 +15,8 @@ const DetailBoxBrand = ({
   detail: Partial<BoxBrandType>;
   width: { sm: number; md: number };
   windowSize: { width: number | null; height: number | null };
-}) => {
-  const convertObjectToArray = (inputObject: Partial<BoxBrandType>) => {
+}): React.JSX.Element => {
+  const convertObjectToArray = (inputObject: Partial<BoxBrandType>): any[] => {
     const outputArray: any[] = [];
 
     (Object.keys(inputObject) as (keyof BoxBrandType)[]).forEach((key) => {

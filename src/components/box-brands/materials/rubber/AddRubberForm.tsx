@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
@@ -14,12 +15,14 @@ interface AddRubberFormProps {
 
 interface ValuesProps {
   name: string;
+  code: string;
   quantityPerPack: number | '';
   color: string;
 }
 
 const initialValues: ValuesProps = {
   name: '',
+  code: '',
   quantityPerPack: '',
   color: '',
 };
@@ -27,6 +30,16 @@ const initialValues: ValuesProps = {
 const validationSchema = Yup.object({
   name: Yup.string()
     .max(100, 'Debe tener 100 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  code: Yup.string()
+    .max(10, 'Debe tener 10 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -52,8 +65,8 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddRubberForm = ({ onClose }: AddRubberFormProps) => {
-  const { createRubber } = useCreateRubber();
+const AddRubberForm = ({ onClose }: AddRubberFormProps): React.JSX.Element => {
+  const { createRubber, isLoading } = useCreateRubber();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -61,7 +74,7 @@ const AddRubberForm = ({ onClose }: AddRubberFormProps) => {
   const addRubber = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     const { quantityPerPack, ...rubberData } = values;
     createRubber(
       {
@@ -72,7 +85,7 @@ const AddRubberForm = ({ onClose }: AddRubberFormProps) => {
         onError: (error: any) => {
           const { response } = error;
           const { data } = response;
-          const { statusCode, message, error: errorTitle, model, prop } = data;
+          const { statusCode, message, error: errorTitle } = data;
 
           toast({
             title: `Error ${statusCode}: ${errorTitle} `,
@@ -88,7 +101,7 @@ const AddRubberForm = ({ onClose }: AddRubberFormProps) => {
         },
         onSuccess: () => {
           toast({
-            title: 'Liga creada',
+            title: 'Liga Creada con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -111,7 +124,7 @@ const AddRubberForm = ({ onClose }: AddRubberFormProps) => {
         onSubmit={addRubber}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {() => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>
@@ -119,6 +132,7 @@ const AddRubberForm = ({ onClose }: AddRubberFormProps) => {
               </Heading>
               <Divider mb={'16px'} />
               <InputFieldText name={'name'} label={'Nombre'} />
+              <InputFieldText name={'code'} label={'Código'} />
               <InputFieldNumber
                 name={'quantityPerPack'}
                 label={'Cantidad por funda'}
@@ -131,7 +145,7 @@ const AddRubberForm = ({ onClose }: AddRubberFormProps) => {
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                isLoading={isSubmitting}
+                isLoading={isLoading}
               >
                 Agregar
               </Button>

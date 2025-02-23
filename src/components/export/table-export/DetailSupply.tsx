@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, VStack } from '@chakra-ui/react';
 import React from 'react';
 import TableSupply from './TableSupply';
@@ -22,14 +23,14 @@ const DetailSupply = ({
   width,
   windowSize,
   pendingSent,
-}: props) => {
+}: props): React.JSX.Element | undefined => {
   const convertToArray = ({
     supplyObject,
     boxBrandObject,
   }: {
     boxBrandObject: Partial<BoxBrandType>;
     supplyObject: Partial<ExportSentType>;
-  }) => {
+  }): any[] => {
     const outputArray: any[] = [];
 
     (Object.keys(supplyObject) as (keyof ExportSentType)[]).forEach((key) => {
@@ -58,7 +59,7 @@ const DetailSupply = ({
       } else if (
         typeof supplyObject[key] === 'object' &&
         Array.isArray(supplyObject[key]) &&
-        supplyObject[key].length > 0
+        (supplyObject[key] as any[]).length > 0
       ) {
         const arrayValue:
           | PesticideSentPartType[]

@@ -20,11 +20,14 @@ interface Props {
   pathname: string;
 }
 
-const PendingCuttingSheetCard = ({ exportItem, pathname }: Props) => {
+const PendingCuttingSheetCard = ({
+  exportItem,
+  pathname,
+}: Props): React.JSX.Element => {
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const handleClick = () => {
+  const handleClick = (): void => {
     console.log(`export ${exportItem.id}: `, exportItem);
     router.push(`${pathname}/${exportItem.id}`);
   };

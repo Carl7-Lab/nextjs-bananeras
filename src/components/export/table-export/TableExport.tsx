@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Center } from '@chakra-ui/react';
 import { Box } from '@mui/material';
 import {
@@ -5,6 +6,7 @@ import {
   MaterialReactTable,
   useMaterialReactTable,
 } from 'material-react-table';
+import { MRT_Localization_ES } from 'material-react-table/locales/es';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useMemo } from 'react';
 import { BsFillSendCheckFill, BsFillSendDashFill } from 'react-icons/bs';
@@ -19,9 +21,9 @@ const TableExport = ({
 }: {
   width: { sm: number; md: number };
   windowSize: { width: number | null; height: number | null };
-}) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data = [], isLoading, refetch, error } = useExports(paginationParams);
+}): React.JSX.Element => {
+  const { paginationParams } = usePagination();
+  const { data = [], error } = useExports(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
@@ -55,7 +57,7 @@ const TableExport = ({
       },
       {
         id: 'boxBrand',
-        header: 'Tipo de Caja',
+        header: 'Exportación',
         columns: [
           {
             accessorKey: 'boxBrand.name',
@@ -159,7 +161,7 @@ const TableExport = ({
             header: '🚛',
             enableColumnActions: false,
             size: 50,
-            Cell: ({ renderedCellValue, row }) => (
+            Cell: ({ renderedCellValue }) => (
               <span>
                 {renderedCellValue === 'false' ? (
                   <Center>
@@ -190,14 +192,14 @@ const TableExport = ({
     enableColumnDragging: false,
     enableHiding: false,
     initialState: {
-      pagination: { pageSize: 5, pageIndex: 0 },
+      pagination: { pageSize: 10, pageIndex: 0 },
       columnPinning: {
         left: ['mrt-row-expand', 'boxQuantity'],
         right: ['pendingExportSent'],
       },
       density: 'compact',
     },
-    muiTableContainerProps: { sx: { maxHeight: '575px' } },
+    muiTableContainerProps: { sx: { maxHeight: '100%' } },
     muiDetailPanelProps: () => ({
       sx: (theme) => ({
         padding: '0px',
@@ -230,13 +232,14 @@ const TableExport = ({
         <DetailExport
           boxBrand={row.original.boxBrand!}
           supply={row.original.exportSent!}
-          businessContacts={row.original.business?.contacts!}
+          businessContacts={row.original.business?.contacts || []}
           pendingSent={row.original.pendingExportSent!}
           width={width}
           windowSize={windowSize}
         />
       </Box>
     ),
+    localization: MRT_Localization_ES,
   });
 
   return <MaterialReactTable table={table} />;

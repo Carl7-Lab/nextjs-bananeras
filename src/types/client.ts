@@ -1,5 +1,3 @@
-import { HarborType } from './harbor';
-
 export type ClientType = {
   id: number | '';
   businessName: string;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
@@ -14,12 +15,14 @@ interface AddSachetFormProps {
 
 interface ValuesProps {
   name: string;
+  code: string;
   quantityPerPack: number | '';
   type: string;
 }
 
 const initialValues: ValuesProps = {
   name: '',
+  code: '',
   quantityPerPack: '',
   type: '',
 };
@@ -27,6 +30,16 @@ const initialValues: ValuesProps = {
 const validationSchema = Yup.object({
   name: Yup.string()
     .max(100, 'Debe tener 100 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  code: Yup.string()
+    .max(10, 'Debe tener 10 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -52,8 +65,8 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddSachetForm = ({ onClose }: AddSachetFormProps) => {
-  const { createSachet } = useCreateSachet();
+const AddSachetForm = ({ onClose }: AddSachetFormProps): React.JSX.Element => {
+  const { createSachet, isLoading } = useCreateSachet();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -61,7 +74,7 @@ const AddSachetForm = ({ onClose }: AddSachetFormProps) => {
   const addSachet = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     const { quantityPerPack, ...sachetData } = values;
 
     createSachet(
@@ -73,7 +86,7 @@ const AddSachetForm = ({ onClose }: AddSachetFormProps) => {
         onError: (error: any) => {
           const { response } = error;
           const { data } = response;
-          const { statusCode, message, error: errorTitle, model, prop } = data;
+          const { statusCode, message, error: errorTitle } = data;
 
           toast({
             title: `Error ${statusCode}: ${errorTitle} `,
@@ -89,7 +102,7 @@ const AddSachetForm = ({ onClose }: AddSachetFormProps) => {
         },
         onSuccess: () => {
           toast({
-            title: 'Sachet creada',
+            title: 'Sachet Creado con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -112,7 +125,7 @@ const AddSachetForm = ({ onClose }: AddSachetFormProps) => {
         onSubmit={addSachet}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {() => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>
@@ -120,6 +133,7 @@ const AddSachetForm = ({ onClose }: AddSachetFormProps) => {
               </Heading>
               <Divider mb={'16px'} />
               <InputFieldText name={'name'} label={'Nombre'} />
+              <InputFieldText name={'code'} label={'Código'} />
               <InputFieldNumber
                 name={'quantityPerPack'}
                 label={'Cantidad por funda'}
@@ -132,7 +146,7 @@ const AddSachetForm = ({ onClose }: AddSachetFormProps) => {
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                isLoading={isSubmitting}
+                isLoading={isLoading}
               >
                 Agregar
               </Button>

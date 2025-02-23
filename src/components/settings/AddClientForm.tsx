@@ -86,7 +86,7 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddClientForm = () => {
+const AddClientForm = (): React.JSX.Element => {
   const typesOpt = [
     {
       name: 'Supermercado',
@@ -97,7 +97,7 @@ const AddClientForm = () => {
       id: 'Intermediario',
     },
   ];
-  const { createClient } = useCreateClient();
+  const { createClient, isLoading } = useCreateClient();
   const router = useRouter();
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -105,13 +105,15 @@ const AddClientForm = () => {
   const addClient = async (
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
-  ) => {
+  ): Promise<void> => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { dataReviewed, ...clientData } = values;
     createClient(
       {
         ...clientData,
       },
       {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onError: (error: any) => {
           const { response } = error;
           const { data } = response;
@@ -136,7 +138,7 @@ const AddClientForm = () => {
         },
         onSuccess: () => {
           toast({
-            title: 'Cliente creado',
+            title: 'Cliente Creado con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -145,6 +147,7 @@ const AddClientForm = () => {
           queryClient.invalidateQueries('clients');
           queryClient.invalidateQueries('clientsByHarbor');
           formikHelpers.resetForm();
+          router.push(' /dashboard/client/clients');
         },
       }
     );
@@ -159,12 +162,12 @@ const AddClientForm = () => {
         onSubmit={addClient}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {({}) => (
           <Form>
             <Flex flexDirection='column' gap={3} width={'100%'}>
               <Flex justify='space-between'>
                 <Heading fontSize={'2xl'} p={'12px'}>
-                  Agregando Cliente
+                  Cliente
                 </Heading>
                 <ImportClientDrawer />
               </Flex>
@@ -212,7 +215,7 @@ const AddClientForm = () => {
                   px='16px'
                   type='submit'
                   colorScheme='teal'
-                  isLoading={isSubmitting}
+                  isLoading={isLoading}
                 >
                   Enviar
                 </Button>

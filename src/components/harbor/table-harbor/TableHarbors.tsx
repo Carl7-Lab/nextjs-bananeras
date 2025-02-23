@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box } from '@chakra-ui/react';
 import {
   MRT_ColumnDef,
   MaterialReactTable,
   useMaterialReactTable,
 } from 'material-react-table';
+import { MRT_Localization_ES } from 'material-react-table/locales/es';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useMemo } from 'react';
 import DetailHarbors from './DetailHarbors';
@@ -16,9 +18,9 @@ const TableHarbors = ({
 }: {
   width: { sm: number; md: number };
   windowSize: { width: number | null; height: number | null };
-}) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data = [], isLoading, error } = useHarbors(paginationParams);
+}): React.JSX.Element => {
+  const { paginationParams } = usePagination();
+  const { data = [], error } = useHarbors(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
@@ -36,41 +38,61 @@ const TableHarbors = ({
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
-        accessorKey: 'name',
-        header: 'Nombre del Puerto',
+        header: 'Puerto',
+        columns: [
+          {
+            accessorKey: 'name',
+            header: 'Nombre del Puerto',
+          },
+        ],
       },
       {
-        accessorKey: 'country',
-        header: 'País',
+        header: 'Ubicación',
+        columns: [
+          {
+            accessorKey: 'country',
+            header: 'País',
+          },
+          {
+            accessorKey: 'city',
+            header: 'Ciudad',
+          },
+          {
+            accessorKey: 'latitude',
+            header: 'Latitud',
+          },
+          {
+            accessorKey: 'longitude',
+            header: 'Longitud',
+          },
+        ],
       },
       {
-        accessorKey: 'city',
-        header: 'Ciudad',
+        header: 'Clientes Relacionados',
+        columns: [
+          {
+            accessorKey: 'clients',
+            header: 'Clientes',
+            Cell: ({ cell }): React.JSX.Element => {
+              const clients = cell.getValue<any[]>();
+              return (
+                <span>
+                  {clients?.map((client) => client.businessName).join(', ') ||
+                    'N/A'}
+                </span>
+              );
+            },
+          },
+        ],
       },
       {
-        accessorKey: 'type',
         header: 'Tipo',
-      },
-      {
-        accessorKey: 'clients',
-        header: 'Clientes',
-        Cell: ({ cell }) => {
-          const clients = cell.getValue<any[]>();
-          return (
-            <span>
-              {clients?.map((client) => client.businessName).join(', ') ||
-                'N/A'}
-            </span>
-          );
-        },
-      },
-      {
-        accessorKey: 'latitude',
-        header: 'Latitud',
-      },
-      {
-        accessorKey: 'longitude',
-        header: 'Longitud',
+        columns: [
+          {
+            accessorKey: 'type',
+            header: 'Tipo',
+          },
+        ],
       },
     ],
     []
@@ -87,7 +109,7 @@ const TableHarbors = ({
     enableColumnDragging: false,
     enableHiding: false,
     initialState: {
-      pagination: { pageSize: 5, pageIndex: 0 },
+      pagination: { pageSize: 10, pageIndex: 0 },
       columnPinning: {
         left: ['mrt-row-expand'],
         right: ['type'],
@@ -129,6 +151,7 @@ const TableHarbors = ({
         <DetailHarbors business={row.original} width={width} />
       </Box>
     ),
+    localization: MRT_Localization_ES,
   });
 
   return <MaterialReactTable table={table} />;

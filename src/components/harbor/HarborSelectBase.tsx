@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -56,7 +57,7 @@ const harborComponents = {
       false,
       GroupBase<Partial<HarborType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -71,11 +72,10 @@ const HarborSelectBase: React.FC<HarborSelectBaseProps> = ({
   onChange,
   setHarbor,
 }) => {
-  const { paginationParams, filterProps } = usePagination();
+  const { paginationParams } = usePagination();
   const {
     data = [],
     isLoading,
-    refetch,
     error,
   } = useHarborsByType({
     type,
@@ -87,7 +87,7 @@ const HarborSelectBase: React.FC<HarborSelectBaseProps> = ({
     if (!!error) {
       const { response } = error as any;
       const { data } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = data;
+      const { statusCode } = data;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');
@@ -96,7 +96,7 @@ const HarborSelectBase: React.FC<HarborSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<HarborType>>) => {
+  const handleChange = (newValue: SingleValue<Partial<HarborType>>): void => {
     if (setHarbor) {
       setHarbor(newValue as Partial<HarborType>);
     }

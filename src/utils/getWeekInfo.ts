@@ -1,7 +1,14 @@
 import { format, getISOWeek, startOfISOWeek, endOfISOWeek } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-export const getWeekInfo = ({ date }: { date: Date }) => {
+export const getWeekInfo = ({
+  date,
+}: {
+  date: Date;
+}): {
+  week: string;
+  startDate: Date;
+} => {
   const weekNumber = getISOWeek(date);
   const startDate = startOfISOWeek(date);
   const endDate = endOfISOWeek(date);

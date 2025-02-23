@@ -7,9 +7,9 @@ import IsOnboarding from '../../../../../components/ui/IsOnboarding';
 import { useExportSent } from '../../../../../hooks/export/export-sent/getExportSent';
 import { ExportSentType } from '../../../../../types/exportSent';
 
-function ExportPaymentPage() {
+function ExportPaymentPage(): React.JSX.Element {
   const params = useParams<{ id: string }>();
-  const { data, isLoading, refetch } = useExportSent({
+  const { data, isLoading } = useExportSent({
     exportSentId: params.id,
   });
   const pendingPayment = data as Partial<ExportSentType>;
@@ -17,7 +17,7 @@ function ExportPaymentPage() {
   useLayoutEffect(() => {
     if (!isLoading) {
       // console.log('PendingExportPage pendingExport', pendingExport);
-      if (!pendingPayment || !!pendingPayment.done) {
+      if (!pendingPayment || !!pendingPayment.pendingProducerPayment) {
         return redirect('/dashboard/settings/pending-exports');
       }
     }

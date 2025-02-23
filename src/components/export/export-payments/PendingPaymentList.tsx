@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Box,
   Center,
@@ -13,12 +14,11 @@ import { useExportsSentPending } from '../../../hooks/export/export-sent/getExpo
 import { usePagination } from '../../../hooks/usePagination';
 import { ExportSentType } from '../../../types/exportSent';
 
-const PendingPaymentList = () => {
-  const { paginationParams, filterProps } = usePagination();
+const PendingPaymentList = (): React.JSX.Element => {
+  const { paginationParams } = usePagination();
   const {
     data = [],
     isLoading,
-    refetch,
     error,
   } = useExportsSentPending(paginationParams);
   const router = useRouter();
@@ -70,7 +70,7 @@ const PendingPaymentList = () => {
     <>
       <VStack spacing={4} alignItems='center' justifyContent='center'>
         <Heading width='100%' textAlign='center'>
-          Lista de pagos pendientes
+          Lista de Pagos Pendientes
         </Heading>
         {data.length === 0 ? (
           <Center p={6}>

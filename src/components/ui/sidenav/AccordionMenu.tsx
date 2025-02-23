@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Flex, Icon, Link, Text } from '@chakra-ui/react';
+import { Badge, Box, Button, Flex, Icon, Link, Text } from '@chakra-ui/react';
 import Link_Next from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
@@ -9,14 +9,27 @@ interface AccordionMenuProps {
   item: SidenavItem;
 }
 
-export const AccordionMenu = ({ item }: AccordionMenuProps) => {
+export const AccordionMenu = ({
+  item,
+}: AccordionMenuProps): React.JSX.Element => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(pathname.includes(item.to));
 
   const isAble: boolean = pathname !== '/dashboard/onboarding';
 
-  const toggleAccordion = () => {
+  const toggleAccordion = (): void => {
     setIsOpen(!isOpen);
+  };
+
+  const renderBadge = (count?: number): React.JSX.Element | null => {
+    if (count && count > 0) {
+      return (
+        <Badge colorScheme='red' ml='auto' mr={2.5}>
+          {count}
+        </Badge>
+      );
+    }
+    return null;
   };
 
   return (
@@ -38,12 +51,13 @@ export const AccordionMenu = ({ item }: AccordionMenuProps) => {
         justifyContent={'space-between'}
         h={'48px'}
       >
-        <Flex>
-          <Icon as={item.icon} boxSize={'16px'} />
-          <Text ml={2} fontSize={'md'}>
-            {item.label}
-          </Text>
+        <Flex align='center'>
+          <Icon as={item.icon} boxSize='16px' />
+          <Flex ml={2} align='center' justify='between' w='full'>
+            <Text fontSize='md'>{item.label}</Text>
+          </Flex>
         </Flex>
+        {renderBadge(item.count)}
         <Icon as={isOpen ? IoIosArrowDown : IoIosArrowForward} />
       </Button>
       {isOpen &&
@@ -57,15 +71,22 @@ export const AccordionMenu = ({ item }: AccordionMenuProps) => {
             borderRadius='md'
             color={pathname === item.to ? 'green.800' : 'black'}
           >
-            <Flex alignItems='center' justifyContent='start' p={0}>
+            <Flex
+              alignItems='center'
+              justifyContent='start'
+              h='48px'
+              p='0'
+              pl='8px'
+            >
               <Box
                 bg={pathname.includes(item.to) ? 'green.300' : 'green.100'}
                 w={'3px'}
-                h={'40px'}
+                h={'100%'}
                 mx={2}
                 rounded={'1px'}
               />
               <Text ml={2}>{item.label}</Text>
+              {renderBadge(item.count)}
             </Flex>
           </Link>
         ))}

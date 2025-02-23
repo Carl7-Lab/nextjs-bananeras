@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -37,7 +38,7 @@ const chakraStyles: ChakraStylesConfig<
   placeholder: (provided) => ({
     ...provided,
     color: 'gray.600',
-    h: '36px',
+    h: 'auto',
   }),
   input: (provided) => ({
     ...provided,
@@ -57,7 +58,7 @@ const labelComponents = {
       false,
       GroupBase<Partial<LabelType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -72,8 +73,8 @@ const LabelSelectBase: React.FC<LabelSelectBaseProps> = ({
   setLabel,
   onChange,
 }) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch, error } = useLabels(paginationParams);
+  const { paginationParams } = usePagination();
+  const { data, isLoading, error } = useLabels(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
@@ -89,7 +90,7 @@ const LabelSelectBase: React.FC<LabelSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<LabelType>>) => {
+  const handleChange = (newValue: SingleValue<Partial<LabelType>>): void => {
     if (setLabel) setLabel(newValue as Partial<LabelType>);
     if (onChange) onChange(newValue as Partial<LabelType>);
   };

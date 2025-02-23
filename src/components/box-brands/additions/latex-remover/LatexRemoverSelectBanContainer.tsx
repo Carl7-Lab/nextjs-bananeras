@@ -1,14 +1,6 @@
-import {
-  Flex,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-} from '@chakra-ui/react';
-import { useField } from 'formik';
+import { Flex } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import AddLatexRemoverModal from './AddLatexRemoverModal';
 import InputFieldLatexRemoverSelect from './InputFieldLatexRemoverSelect';
-import LatexRemoverSelectBase from './LatexRemoverSelectBase';
 import InputFieldQuantity from '../../../ui/form/InputFieldQuantity';
 
 interface props {
@@ -18,6 +10,7 @@ interface props {
   name2: string;
   label2: string;
   placeholder2?: string;
+  unit?: string;
 }
 
 const LatexRemoverSelectBanContainer: React.FC<props> = ({
@@ -27,6 +20,7 @@ const LatexRemoverSelectBanContainer: React.FC<props> = ({
   name2,
   label2,
   placeholder2,
+  unit,
 }) => {
   const [isBan, setIsBan] = useState(false);
   const [firstChange, setFirstChange] = useState(false);
@@ -38,7 +32,7 @@ const LatexRemoverSelectBanContainer: React.FC<props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isBan]);
 
-  const setBanState = () => {
+  const setBanState = (): void => {
     setIsBan((prevState) => !prevState);
   };
 
@@ -59,6 +53,7 @@ const LatexRemoverSelectBanContainer: React.FC<props> = ({
         label={label2}
         placeholder={placeholder2}
         isBan={{ state: isBan, firstChange: firstChange }}
+        unit={unit}
       />
     </Flex>
   );

@@ -9,11 +9,13 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { FieldArray, Form, Formik } from 'formik';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import { useCreateHarbor } from '@/hooks/export/harbor/createHarbor';
 import InputFieldShippingCompanyMultiSelect from '../shipping-company/InputFieldShippingCompanyMultiSelect';
+import CheckboxForm from '../ui/form/CheckboxForm';
 import InputFieldDate from '../ui/form/InputFieldDate';
 import InputFieldNumber from '../ui/form/InputFieldNumber';
 import InputFieldSelector from '../ui/form/InputFieldSelector';
@@ -36,12 +38,13 @@ interface ValuesProps {
   city: string;
   location: string;
   name: string;
-  latitude: number | 0;
-  longitude: number | 0;
+  latitude: number | '';
+  longitude: number | '';
   requirementsSC: RequirementProps[];
   openTime: string;
   closeTime: string;
   shippingCompanies: number[] | null;
+  dataReviewed: boolean;
 }
 
 const initialValues: ValuesProps = {
@@ -50,12 +53,13 @@ const initialValues: ValuesProps = {
   country: '',
   city: '',
   location: '',
-  latitude: 0,
-  longitude: 0,
+  latitude: '',
+  longitude: '',
   requirementsSC: [{ name: '', code: '', issueDate: '', expirationDate: '' }],
   openTime: '',
   closeTime: '',
   shippingCompanies: null,
+  dataReviewed: false,
 };
 
 const requirementSchema = Yup.object({
@@ -149,9 +153,12 @@ const validationSchema = Yup.object({
     .min(1, 'Debes tener al menos un requisito')
     .of(requirementSchema)
     .required('Requerido'),
+  dataReviewed: Yup.boolean()
+    .oneOf([true], 'Debes revisar los datos antes de enviar')
+    .required('Requerido'),
 });
 
-const AddHarborForm: React.FC<AddHarborFormProps> = ({ onClose }) => {
+const AddHarborForm: React.FC<AddHarborFormProps> = ({}) => {
   const typesOpt = [
     {
       name: 'Nacional',
@@ -162,17 +169,20 @@ const AddHarborForm: React.FC<AddHarborFormProps> = ({ onClose }) => {
       id: 'Internacional',
     },
   ];
-  const { createHarbor } = useCreateHarbor();
+  const { createHarbor, isLoading } = useCreateHarbor();
   const toast = useToast();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const addHarbor = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { dataReviewed, ...harborData } = values;
     createHarbor(
       {
-        ...values,
+        ...harborData,
       },
       {
         onError: (error) => {
@@ -186,7 +196,7 @@ const AddHarborForm: React.FC<AddHarborFormProps> = ({ onClose }) => {
         },
         onSuccess: () => {
           toast({
-            title: 'Puerto creado',
+            title: 'Puerto Creado con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -195,6 +205,7 @@ const AddHarborForm: React.FC<AddHarborFormProps> = ({ onClose }) => {
           queryClient.invalidateQueries('harbors');
           queryClient.invalidateQueries('harborsByType');
           actions.resetForm();
+          router.push('/dashboard/client/harbors');
         },
       }
     );
@@ -209,11 +220,11 @@ const AddHarborForm: React.FC<AddHarborFormProps> = ({ onClose }) => {
         onSubmit={addHarbor}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting, values }) => (
+        {({ values }) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>
-                Agregando Puerto
+                Puerto
               </Heading>
               <Divider mb={'16px'} />
 
@@ -232,9 +243,17 @@ const AddHarborForm: React.FC<AddHarborFormProps> = ({ onClose }) => {
                 />
                 <InputFieldText name={'name'} label={'Nombre'} />
                 <InputFieldText name={'city'} label={'Ciudad'} />
-                <InputFieldNumber name={'latitude'} label={'Latitud'} />
+                <InputFieldNumber
+                  name={'latitude'}
+                  label={'Latitud'}
+                  isGeo={true}
+                />
                 <InputFieldText name={'location'} label={'Ubicación'} />
-                <InputFieldNumber name={'longitude'} label={'Longitud'} />
+                <InputFieldNumber
+                  name={'longitude'}
+                  label={'Longitud'}
+                  isGeo={true}
+                />
                 <InputFieldText name={'openTime'} label={'Hora de apertura'} />
                 <InputFieldShippingCompanyMultiSelect
                   name={'shippingCompanies'}
@@ -278,7 +297,7 @@ const AddHarborForm: React.FC<AddHarborFormProps> = ({ onClose }) => {
                             isDisabled={values.requirementsSC.length === 1}
                             onClick={() => remove(index)}
                           >
-                            Eliminar Contacto
+                            Eliminar Requisito
                           </Button>
                         </SimpleGrid>
                         <Divider
@@ -301,23 +320,29 @@ const AddHarborForm: React.FC<AddHarborFormProps> = ({ onClose }) => {
                           })
                         }
                       >
-                        Agregar Contacto
+                        Agregar Requisito
                       </Button>
                     </SimpleGrid>
                   </>
                 )}
               </FieldArray>
 
-              <Button
-                mt='32px'
-                py='8px'
-                px='16px'
-                type='submit'
-                colorScheme='teal'
-                isLoading={isSubmitting}
-              >
-                Enviar
-              </Button>
+              <SimpleGrid columns={{ base: 1, sm: 1 }}>
+                <CheckboxForm
+                  name='dataReviewed'
+                  label='He revisado los datos agregados'
+                />
+                <Button
+                  mt='12px'
+                  py='8px'
+                  px='16px'
+                  type='submit'
+                  colorScheme='teal'
+                  isLoading={isLoading}
+                >
+                  Enviar
+                </Button>
+              </SimpleGrid>
             </Flex>
           </Form>
         )}

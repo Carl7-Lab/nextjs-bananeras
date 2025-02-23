@@ -11,7 +11,7 @@ import React from 'react';
 import { AiFillPlusCircle } from 'react-icons/ai';
 import AddLatexRemoverForm from './AddLatexRemoverForm';
 
-const AddLatexRemoverModal = () => {
+const AddLatexRemoverModal = (): React.JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (

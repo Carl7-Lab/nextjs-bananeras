@@ -29,13 +29,13 @@ const InputFieldSentPesticide: React.FC<InputFieldSentPesticideProps> = ({
 }) => {
   const [field, meta, helpers] = useField(name);
 
-  const handleBlur = (event: React.FocusEvent) => {
+  const handleBlur = (event: React.FocusEvent): void => {
     field.onBlur(event);
 
     helpers.setValue(Number(meta.value));
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent) => {
+  const handleKeyDown = (event: React.KeyboardEvent): void => {
     if (event.key === 'Enter') {
       helpers.setValue(Number(field.value));
     }
@@ -53,7 +53,7 @@ const InputFieldSentPesticide: React.FC<InputFieldSentPesticideProps> = ({
           <Input
             name={`${name}.activeIngredient`}
             p={'0px'}
-            pl={'4px'}
+            pl={'8px'}
             value={`${pesticideSelected.pesticide?.activeIngredient}`}
             isReadOnly={true}
             focusBorderColor='gray.200'
@@ -66,8 +66,8 @@ const InputFieldSentPesticide: React.FC<InputFieldSentPesticideProps> = ({
           <Input
             name={`${name}.dose`}
             p={'0px'}
-            pr={'4px'}
-            textAlign={'right'}
+            pl={'8px'}
+            textAlign={'left'}
             value={`${pesticideSelected.pesticide?.dose}`}
             isReadOnly={true}
             focusBorderColor='gray.200'
@@ -80,7 +80,7 @@ const InputFieldSentPesticide: React.FC<InputFieldSentPesticideProps> = ({
           <Input
             name={`${name}.presentation`}
             p={'0px'}
-            pl={'4px'}
+            pl={'8px'}
             value={`${pesticideSelected.pesticide?.presentation}`}
             isReadOnly={true}
             focusBorderColor='gray.200'
@@ -93,9 +93,9 @@ const InputFieldSentPesticide: React.FC<InputFieldSentPesticideProps> = ({
           <Input
             name={`${name}.need`}
             value={quantity}
-            textAlign={'right'}
+            textAlign={'left'}
             p={'0px'}
-            pr={'4px'}
+            pl={'8px'}
             isReadOnly={true}
             focusBorderColor='gray.200'
             _hover={{ borderColor: 'gray.200' }}
@@ -111,7 +111,7 @@ const InputFieldSentPesticide: React.FC<InputFieldSentPesticideProps> = ({
                 onBlur={handleBlur}
                 onKeyDown={handleKeyDown}
                 placeholder={placeholder || pesticideSelected.pesticide?.name}
-                textAlign='right'
+                textAlign='left'
                 px={'16px'}
               />
             </NumberInput>

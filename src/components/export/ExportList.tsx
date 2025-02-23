@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Heading,
   SimpleGrid,
@@ -13,14 +14,9 @@ import { useExportsPending } from '../../hooks/export/getExportsPending';
 import { usePagination } from '../../hooks/usePagination';
 import { ExportType } from '../../types/export';
 
-const ExportList = () => {
-  const { paginationParams, filterProps } = usePagination();
-  const {
-    data = [],
-    isLoading,
-    refetch,
-    error,
-  } = useExportsPending(paginationParams);
+const ExportList = (): React.JSX.Element => {
+  const { paginationParams } = usePagination();
+  const { data = [], isLoading, error } = useExportsPending(paginationParams);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -69,7 +65,7 @@ const ExportList = () => {
   return (
     <VStack spacing={4} alignItems='center' justifyContent='center'>
       <Heading width='100%' textAlign='center'>
-        Lista de exportaciones pendientes
+        Lista de Exportaciones Pendientes
       </Heading>
       {data.length === 0 ? (
         <Center p={6}>

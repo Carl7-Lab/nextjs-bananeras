@@ -6,10 +6,8 @@ import {
   AccordionPanel,
   Box,
   Heading,
-  SimpleGrid,
-  Text,
 } from '@chakra-ui/react';
-import React, { useEffect } from 'react';
+import React from 'react';
 import DetailContacts from './DetailContacts';
 import DetailProducerPayment from './DetailProducerPayment';
 import DetailSupply from './DetailSupply';
@@ -32,7 +30,7 @@ const DetailExport = ({
   pendingSent: boolean;
   width: { sm: number; md: number };
   windowSize: { width: number | null; height: number | null };
-}) => {
+}): React.JSX.Element => {
   return (
     <Accordion defaultIndex={[0]} allowMultiple>
       <AccordionItem>

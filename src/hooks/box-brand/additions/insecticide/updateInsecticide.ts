@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import { useMutation } from 'react-query';
 import axios from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
@@ -8,7 +9,10 @@ type updateInsecticideDTO = {
   insecticideId: string;
 };
 
-const updateInsecticide = ({ data, insecticideId }: updateInsecticideDTO) => {
+const updateInsecticide = ({
+  data,
+  insecticideId,
+}: updateInsecticideDTO): Promise<AxiosResponse> => {
   return axios.post(`/box-brand/insecticide/${insecticideId}`, data);
 };
 
@@ -18,6 +22,7 @@ type UseUpdateInsecticideOptions = {
 
 export const useUpdateInsecticide = ({
   config,
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type
 }: UseUpdateInsecticideOptions = {}) => {
   const mutation = useMutation({
     ...config,

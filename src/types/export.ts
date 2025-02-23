@@ -1,5 +1,6 @@
 import { BoxBrandType } from './box-brand/boxBrand';
 import { ClientType } from './client';
+import { CuttingType } from './cuttingType';
 import { ExportSentType } from './exportSent';
 import { HarborType } from './harbor';
 import { BusinessType } from './merchant/business';
@@ -7,9 +8,16 @@ import { MerchantType } from './merchant/merchant';
 
 export type ExportType = {
   id: number | '';
+  cuttingDate: Date | '';
+  weekDescription: string;
+  weekDaysOfWeek: string[] | null;
+  weekBoxesOfDay: number[];
+  weekTotal: number;
   boxQuantity: number | '';
   boxBrand: Partial<BoxBrandType>;
   boxBrandId: number | '';
+  cuttingType: Partial<CuttingType>;
+  cuttingTypeId: number | '';
   merchant: Partial<MerchantType>;
   merchantId: number | '';
   business: Partial<BusinessType>;

@@ -1,5 +1,5 @@
 import { Box, FormLabel, Input, SimpleGrid } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import InputFieldBusinessSelect from './InputFieldBusinessSelect';
 import { BusinessType } from '../../types/merchant/business';
 

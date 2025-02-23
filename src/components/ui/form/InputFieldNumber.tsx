@@ -4,6 +4,7 @@ import {
   FormLabel,
   InputGroup,
   InputLeftElement,
+  InputRightElement,
   NumberInput,
   NumberInputField,
 } from '@chakra-ui/react';
@@ -18,39 +19,52 @@ interface InputFieldProps {
   isReadOnly?: boolean;
   isDecimal?: boolean;
   isDolar?: boolean;
+  isGeo?: boolean;
+  unit?: string;
   size?: string;
 }
 
 const InputFieldNumber: React.FC<InputFieldProps> = ({
   name,
   label,
-  value,
+  value = '',
   placeholder,
   isReadOnly = false,
   isDecimal = false,
   isDolar = false,
+  isGeo = false,
+  unit,
   size = 'md',
 }) => {
   const [field, meta, helpers] = useField(name);
 
   useEffect(() => {
-    if (!!value) {
-      helpers.setValue(isDecimal ? Number(value).toFixed(2) : value);
+    if (value !== '') {
+      const newValue =
+        isDecimal || isGeo ? Number(value).toFixed(isGeo ? 6 : 2) : value;
+      helpers.setValue(newValue);
+    } else {
+      helpers.setValue('');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
-  const handleBlur = (event: React.FocusEvent) => {
+  const handleBlur = (event: React.FocusEvent): void => {
     field.onBlur(event);
-
-    helpers.setValue(isDecimal ? Number(field.value).toFixed(2) : field.value);
+    const newValue =
+      isDecimal || isGeo
+        ? Number(field.value).toFixed(isGeo ? 6 : 2)
+        : field.value;
+    helpers.setValue(newValue);
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent) => {
+  const handleKeyDown = (event: React.KeyboardEvent): void => {
     if (event.key === 'Enter') {
-      helpers.setValue(
-        isDecimal ? Number(field.value).toFixed(2) : field.value
-      );
+      const newValue =
+        isDecimal || isGeo
+          ? Number(field.value).toFixed(isGeo ? 6 : 2)
+          : field.value;
+      helpers.setValue(newValue);
     }
   };
 
@@ -75,20 +89,31 @@ const InputFieldNumber: React.FC<InputFieldProps> = ({
             $
           </InputLeftElement>
         )}
+        {unit && (
+          <InputRightElement
+            pointerEvents='none'
+            color='gray.500'
+            fontSize='1em'
+            mr={'8px'}
+          >
+            {unit}
+          </InputRightElement>
+        )}
         <NumberInput
           size={size}
           width={'100%'}
           {...field}
           isReadOnly={isReadOnly}
-          step={isDecimal ? 0.01 : 1}
+          step={isDecimal || isGeo ? 0.01 : 1}
+          min={isGeo ? -180 : undefined}
+          max={isGeo ? 180 : undefined}
         >
           <NumberInputField
             {...field}
-            // value={isDecimal ? Number(field.value).toFixed(2) : field.value}
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
             placeholder={placeholder || label}
-            textAlign={isDecimal ? 'right' : 'left'}
+            textAlign={isDecimal && !isGeo ? 'right' : 'left'}
           />
         </NumberInput>
       </InputGroup>

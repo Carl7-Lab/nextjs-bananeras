@@ -27,7 +27,7 @@ const PendingPaymentCard: React.FC<PendingPaymentCardProps> = ({
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const handleClick = () => {
+  const handleClick = (): void => {
     console.log(`export ${exportSentItem.id}: `, exportSentItem);
     router.push(`${pathname}/${exportSentItem.id}`);
   };

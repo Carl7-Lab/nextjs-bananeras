@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Box,
   Button,
@@ -20,7 +22,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useField } from 'formik';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useImportMerchants } from '../../hooks/merchants/uploadMerchants';
 
 const ImportProducerDrawer: React.FC = () => {
@@ -58,7 +60,7 @@ const ImportProducerDrawer: React.FC = () => {
     },
   });
 
-  const handleFileChange = (file: File) => {
+  const handleFileChange = (file: File): void => {
     if (file) {
       setSelectedFile(file);
       setFileName(file.name);
@@ -71,29 +73,29 @@ const ImportProducerDrawer: React.FC = () => {
     }
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
       handleFileChange(file);
     }
   };
 
-  const handleDragEnter = (e: React.DragEvent) => {
+  const handleDragEnter = (e: React.DragEvent): void => {
     e.preventDefault();
     setDragging(true);
   };
 
-  const handleDragLeave = (e: React.DragEvent) => {
+  const handleDragLeave = (e: React.DragEvent): void => {
     e.preventDefault();
     setDragging(false);
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = (e: React.DragEvent): void => {
     e.preventDefault();
     setDragging(true);
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = (e: React.DragEvent): void => {
     e.preventDefault();
     setDragging(false);
 
@@ -101,14 +103,14 @@ const ImportProducerDrawer: React.FC = () => {
     if (file) handleFileChange(file);
   };
 
-  const resetFile = () => {
+  const resetFile = (): void => {
     setFileName('');
     setFileSize(0);
     setSelectedFile(null);
     helpers.setValue(null);
   };
 
-  const handleUpload = () => {
+  const handleUpload = (): void => {
     if (selectedFile) importMerchants(selectedFile);
   };
 

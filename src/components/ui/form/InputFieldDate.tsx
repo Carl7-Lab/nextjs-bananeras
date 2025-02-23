@@ -13,6 +13,7 @@ interface InputFieldDateProps {
   label?: string;
   placeholder?: string;
   flexDirection?: 'column' | 'row';
+  isReadOnly?: boolean;
 }
 
 const InputFieldDate: React.FC<InputFieldDateProps> = ({
@@ -20,10 +21,11 @@ const InputFieldDate: React.FC<InputFieldDateProps> = ({
   label,
   placeholder,
   flexDirection = 'column',
+  isReadOnly = false,
 }) => {
   const [field, meta, helpers] = useField(name);
 
-  const formatDate = (date: Date) => date.toISOString().split('T')[0];
+  const formatDate = (date: Date): string => date.toISOString().split('T')[0];
 
   const [dateValue, setDateValue] = useState<string>(
     field.value ? formatDate(new Date(field.value)) : ''
@@ -41,7 +43,7 @@ const InputFieldDate: React.FC<InputFieldDateProps> = ({
     }
   }, [field.value]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     if (e.target.value) {
       const newDate = new Date(e.target.value);
       newDate.setMinutes(newDate.getMinutes() + newDate.getTimezoneOffset());
@@ -67,6 +69,7 @@ const InputFieldDate: React.FC<InputFieldDateProps> = ({
           onChange={handleChange}
           placeholder={placeholder || label}
           type={'date'}
+          isReadOnly={isReadOnly}
         />
 
         {meta.error && meta.touched && (

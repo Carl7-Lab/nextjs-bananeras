@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -37,7 +38,7 @@ const chakraStyles: ChakraStylesConfig<
   placeholder: (provided) => ({
     ...provided,
     color: 'gray.600',
-    h: '36px',
+    h: 'auto',
   }),
   input: (provided) => ({
     ...provided,
@@ -57,7 +58,7 @@ const clusterBagComponents = {
       false,
       GroupBase<Partial<ClusterBagType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -72,8 +73,8 @@ const ClusterBagSelectBase: React.FC<ClusterBagSelectBaseProps> = ({
   setClusterBag,
   onChange,
 }) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch, error } = useClusterBags(paginationParams);
+  const { paginationParams } = usePagination();
+  const { data, isLoading, error } = useClusterBags(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
@@ -89,7 +90,9 @@ const ClusterBagSelectBase: React.FC<ClusterBagSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<ClusterBagType>>) => {
+  const handleChange = (
+    newValue: SingleValue<Partial<ClusterBagType>>
+  ): void => {
     if (setClusterBag) setClusterBag(newValue as Partial<ClusterBagType>);
     if (onChange) onChange(newValue as Partial<ClusterBagType>);
   };

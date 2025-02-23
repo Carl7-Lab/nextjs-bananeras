@@ -14,13 +14,12 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import { ProducerPaymentType } from '../../../types/producerPayment';
-import InputFieldNumber from '../../ui/form/InputFieldNumber';
 
 interface props {
   payment: Partial<ProducerPaymentType>;
 }
 
-const DetailInvoice = ({ payment }: props) => {
+const DetailInvoice = ({ payment }: props): React.JSX.Element => {
   return (
     <Card
       w={{

@@ -10,6 +10,7 @@ interface props {
   name2: string;
   label2: string;
   placeholder2?: string;
+  unit?: string;
 }
 
 const LabelSelectBanContainer: React.FC<props> = ({
@@ -19,6 +20,7 @@ const LabelSelectBanContainer: React.FC<props> = ({
   name2,
   label2,
   placeholder2,
+  unit,
 }) => {
   const [isBan, setIsBan] = useState(false);
   const [firstChange, setFirstChange] = useState(false);
@@ -30,7 +32,7 @@ const LabelSelectBanContainer: React.FC<props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isBan]);
 
-  const setBanState = () => {
+  const setBanState = (): void => {
     setIsBan((prevState) => !prevState);
   };
 
@@ -51,6 +53,7 @@ const LabelSelectBanContainer: React.FC<props> = ({
         label={label2}
         placeholder={placeholder2}
         isBan={{ state: isBan, firstChange: firstChange }}
+        unit={unit}
       />
     </Flex>
   );

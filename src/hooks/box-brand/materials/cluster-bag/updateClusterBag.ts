@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { AxiosResponse } from 'axios';
 import { useMutation } from 'react-query';
 import axios from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
@@ -8,7 +11,10 @@ type updateClusterBagDTO = {
   clusterBagId: string;
 };
 
-const updateClusterBag = ({ data, clusterBagId }: updateClusterBagDTO) => {
+const updateClusterBag = ({
+  data,
+  clusterBagId,
+}: updateClusterBagDTO): Promise<AxiosResponse> => {
   return axios.post(`/box-brand/cluster-bag/${clusterBagId}`, data);
 };
 

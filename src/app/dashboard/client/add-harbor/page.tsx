@@ -1,13 +1,20 @@
 'use client';
-import { Box, Card, CardBody, Center } from '@chakra-ui/react';
+import {
+  Box,
+  Card,
+  CardBody,
+  CardHeader,
+  Center,
+  Heading,
+} from '@chakra-ui/react';
 import React from 'react';
 import AddHarborForm from '../../../../components/settings/AddHarborForm';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
-function AddHarborPage() {
+function AddHarborPage(): React.JSX.Element {
   return (
     <>
-      <Box mt={'20px'} mx={'auto'}>
+      <Box my={'20px'} mx={'auto'} w={'95%'}>
         <Center>
           <Card
             w={{
@@ -16,10 +23,12 @@ function AddHarborPage() {
               md: '90%',
               lg: '100%',
               xl: '100%',
-              '2xl': '700px',
             }}
-            mb={'30px'}
+            mb={'20px'}
           >
+            <CardHeader w={'100%'}>
+              <Heading>Agregar Nuevo Puerto</Heading>
+            </CardHeader>
             <CardBody w='100%'>
               <AddHarborForm />
             </CardBody>

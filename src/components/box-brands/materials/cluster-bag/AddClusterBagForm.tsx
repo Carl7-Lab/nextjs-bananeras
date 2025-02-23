@@ -1,12 +1,30 @@
-import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  Button,
+  Divider,
+  Flex,
+  FormLabel,
+  Heading,
+  useToast,
+} from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import { useCreateClusterBag } from '../../../../hooks/box-brand/materials/cluster-bag/createClusterBag';
+import UploadLogoFile from '../../../producer/UploadLogoFile';
 import InputFieldNumber from '../../../ui/form/InputFieldNumber';
 import InputFieldText from '../../../ui/form/InputFieldText';
+
+const SUPPORTED_FORMATS = [
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/bmp',
+  'image/webp',
+  'image/jpg',
+];
 
 interface AddClusterBagFormProps {
   onClose?: () => void;
@@ -14,14 +32,16 @@ interface AddClusterBagFormProps {
 
 interface ValuesProps {
   name: string;
-  art: string;
+  code: string;
+  art: File | null;
   dimensions: string;
   quantityPerPack: number | '';
 }
 
 const initialValues: ValuesProps = {
   name: '',
-  art: '',
+  code: '',
+  art: null,
   dimensions: '',
   quantityPerPack: '',
 };
@@ -37,7 +57,21 @@ const validationSchema = Yup.object({
     )
     .transform((value) => value.trim())
     .required('Requerido'),
-  art: Yup.string().required('Requerido'),
+  code: Yup.string()
+    .max(10, 'Debe tener 10 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  art: Yup.mixed()
+    .required('Se requiere una imagen')
+    .test('fileFormat', 'Formato no soportado', (value) => {
+      return value && SUPPORTED_FORMATS.includes((value as File).type);
+    }),
   dimensions: Yup.string()
     .max(50, 'Debe tener 50 caracteres o menos')
     .required('Requerido'),
@@ -48,8 +82,10 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddClusterBagForm = ({ onClose }: AddClusterBagFormProps) => {
-  const { createClusterBag } = useCreateClusterBag();
+const AddClusterBagForm = ({
+  onClose,
+}: AddClusterBagFormProps): React.JSX.Element => {
+  const { createClusterBag, isLoading } = useCreateClusterBag();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -57,46 +93,46 @@ const AddClusterBagForm = ({ onClose }: AddClusterBagFormProps) => {
   const addClusterBag = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
-    const { quantityPerPack, ...clusterBagData } = values;
+  ): Promise<void> => {
+    const formData = {
+      name: values.name,
+      code: values.code,
+      quantityPerPack: Number(values.quantityPerPack),
+      dimensions: values.dimensions,
+      art: values.art,
+    };
 
-    createClusterBag(
-      {
-        ...clusterBagData,
-        quantityPerPack: Number(quantityPerPack),
+    createClusterBag(formData, {
+      onError: (error: any) => {
+        const { response } = error;
+        const { data } = response;
+        const { statusCode, message, error: errorTitle } = data;
+
+        toast({
+          title: `Error ${statusCode}: ${errorTitle} `,
+          description: `${message}`,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+
+        if (statusCode === 401) {
+          router.push('/api/auth/signout');
+        }
       },
-      {
-        onError: (error: any) => {
-          const { response } = error;
-          const { data } = response;
-          const { statusCode, message, error: errorTitle, model, prop } = data;
+      onSuccess: () => {
+        toast({
+          title: 'Cluster Bag Creado con Éxito',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
 
-          toast({
-            title: `Error ${statusCode}: ${errorTitle} `,
-            description: `${message}`,
-            status: 'error',
-            duration: 5000,
-            isClosable: true,
-          });
-
-          if (statusCode === 401) {
-            router.push('/api/auth/signout');
-          }
-        },
-        onSuccess: () => {
-          toast({
-            title: 'Cluster Bag creado',
-            status: 'success',
-            duration: 5000,
-            isClosable: true,
-          });
-
-          queryClient.invalidateQueries('clusterBags');
-          actions.resetForm();
-          !!onClose && onClose();
-        },
-      }
-    );
+        queryClient.invalidateQueries('labels');
+        actions.resetForm();
+        !!onClose && onClose();
+      },
+    });
 
     return;
   };
@@ -108,7 +144,7 @@ const AddClusterBagForm = ({ onClose }: AddClusterBagFormProps) => {
         onSubmit={addClusterBag}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {({}) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>
@@ -116,20 +152,23 @@ const AddClusterBagForm = ({ onClose }: AddClusterBagFormProps) => {
               </Heading>
               <Divider mb={'16px'} />
               <InputFieldText name={'name'} label={'Nombre'} />
-              <InputFieldText name={'art'} label={'Arte'} />
+              <InputFieldText name={'code'} label={'Código'} />
               <InputFieldText name={'dimensions'} label={'Dimensiones'} />
               <InputFieldNumber
                 name={'quantityPerPack'}
                 label={'Cantidad por funda'}
               />
-
+              <FormLabel fontSize='sm' mb={0}>
+                Arte
+              </FormLabel>
+              <UploadLogoFile name={'art'} />
               <Button
                 mt='32px'
                 py='8px'
                 px='16px'
                 type='submit'
                 colorScheme='teal'
-                isLoading={isSubmitting}
+                isLoading={isLoading}
               >
                 Agregar
               </Button>

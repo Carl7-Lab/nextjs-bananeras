@@ -1,5 +1,5 @@
 import { Flex } from '@chakra-ui/react';
-import { FieldArray, useField } from 'formik';
+import { FieldArray } from 'formik';
 import React from 'react';
 import InputFieldSentPesticide from './InputFieldSentPesticide';
 import { PesticideCocktailPart } from '../../../types/box-brand/post-harvest/pesticideCocktailPart';

@@ -26,7 +26,7 @@ export interface MenuItemProps {
   to: string;
 }
 
-export default function MenuIcon() {
+export default function MenuIcon(): React.JSX.Element {
   const { data: session } = useSession();
   const menuItems = getTopBarItems();
 
@@ -35,11 +35,20 @@ export default function MenuIcon() {
       <MenuButton
         as={IconButton}
         bg='green.500'
-        h={'36px'}
-        w={'36px'}
+        h={'auto'}
+        w={'auto'}
         aria-label='user-pic'
         rounded={'full'}
-        icon={<AiOutlineUser size={'30px'} />}
+        icon={
+          <Avatar
+            bg='green.500'
+            h={'36px'}
+            w={'36px'}
+            aria-label='user-pic'
+            rounded={'full'}
+            icon={<AiOutlineUser size={'30px'} />}
+          />
+        }
       />
 
       <MenuList minWidth='220px'>

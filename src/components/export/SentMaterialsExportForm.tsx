@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Box,
   Button,
@@ -8,6 +10,7 @@ import {
   Input,
   SimpleGrid,
   useToast,
+  Text,
 } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
@@ -242,14 +245,13 @@ const validationSchema = Yup.object({
 
 const SentMaterialsExportForm = ({
   exportSelected,
-  pathname,
 }: {
   exportSelected: Partial<ExportType>;
   pathname: string;
-}) => {
+}): React.JSX.Element => {
   const [initialValuesExport, setInitialValuesExport] =
     useState<ValuesProps>(initialValues);
-  const { createExportSent } = useCreateExportSent();
+  const { createExportSent, isLoading } = useCreateExportSent();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -259,13 +261,13 @@ const SentMaterialsExportForm = ({
       setInitialValuesExport((prevValues) => {
         const pesticidesSelected: PesticideProps[] =
           exportSelected.boxBrand?.pesticideCocktail?.map((pesticide) => ({
-            pesticideId: pesticide.pesticide?.id!,
+            pesticideId: pesticide.pesticide?.id || '',
             quantity: pesticide.quantity!,
           })) || [];
 
         const insecticidesSelected: InsecticideProps[] =
           exportSelected.boxBrand?.insecticideCocktail?.map((insecticide) => ({
-            insecticideId: insecticide.insecticide?.id!,
+            insecticideId: insecticide.insecticide?.id || '',
             quantity: insecticide.quantity!,
           })) || [];
 
@@ -276,34 +278,38 @@ const SentMaterialsExportForm = ({
           lidTypeQuantity: exportSelected.boxQuantity!,
           coverTypeQuantity: exportSelected.boxQuantity!,
           cardboardTypeQuantity: exportSelected.boxQuantity!,
-          parasealTypeQuantity: exportSelected.boxBrand?.parasealTypeQuantity!,
-          padTypeQuantity: exportSelected.boxBrand?.padTypeQuantity!,
-          spongeTypeQuantity: exportSelected.boxBrand?.spongeTypeQuantity!,
-          labelQuantity: exportSelected.boxBrand?.labelQuantity!,
-          bandQuantity: exportSelected.boxBrand?.bandQuantity!,
-          sachetQuantity: exportSelected.boxBrand?.sachetQuantity!,
-          rubberQuantity: exportSelected.boxBrand?.rubberQuantity!,
-          protectorQuantity: exportSelected.boxBrand?.protectorQuantity!,
-          clusterBagQuantity: exportSelected.boxBrand?.clusterBagQuantity!,
+          parasealTypeQuantity:
+            exportSelected.boxBrand?.parasealTypeQuantity || '',
+          padTypeQuantity: exportSelected.boxBrand?.padTypeQuantity || '',
+          spongeTypeQuantity: exportSelected.boxBrand?.spongeTypeQuantity || '',
+          labelQuantity: exportSelected.boxBrand?.labelQuantity || '',
+          bandQuantity: exportSelected.boxBrand?.bandQuantity || '',
+          sachetQuantity: exportSelected.boxBrand?.sachetQuantity || '',
+          rubberQuantity: exportSelected.boxBrand?.rubberQuantity || '',
+          protectorQuantity: exportSelected.boxBrand?.protectorQuantity || '',
+          clusterBagQuantity: exportSelected.boxBrand?.clusterBagQuantity || '',
 
           pesticideSent: pesticidesSelected,
 
-          palletsTypeQuantity: exportSelected.boxBrand?.palletsTypeQuantity!,
+          palletsTypeQuantity:
+            exportSelected.boxBrand?.palletsTypeQuantity || '',
           miniPalletsTypeQuantity:
-            exportSelected.boxBrand?.miniPalletsTypeQuantity!,
-          cornerTypeQuantity: exportSelected.boxBrand?.cornerTypeQuantity!,
+            exportSelected.boxBrand?.miniPalletsTypeQuantity || '',
+          cornerTypeQuantity: exportSelected.boxBrand?.cornerTypeQuantity || '',
           reinforcementTypeQuantity:
-            exportSelected.boxBrand?.reinforcementTypeQuantity!,
-          stapleQuantity: exportSelected.boxBrand?.stapleQuantity!,
-          strippingQuantity: exportSelected.boxBrand?.strippingQuantity!,
-          thermographQuantity: exportSelected.boxBrand?.thermographQuantity!,
-          sealQuantity: exportSelected.boxBrand?.sealQuantity!,
-          mettoLabelQuantity: exportSelected.boxBrand?.mettoLabelQuantity!,
+            exportSelected.boxBrand?.reinforcementTypeQuantity || '',
+          stapleQuantity: exportSelected.boxBrand?.stapleQuantity || '',
+          strippingQuantity: exportSelected.boxBrand?.strippingQuantity || '',
+          thermographQuantity:
+            exportSelected.boxBrand?.thermographQuantity || '',
+          sealQuantity: exportSelected.boxBrand?.sealQuantity || '',
+          mettoLabelQuantity: exportSelected.boxBrand?.mettoLabelQuantity || '',
           packingTapeTypeQuantity:
-            exportSelected.boxBrand?.packingTapeTypeQuantity!,
-          latexRemoverQuantity: exportSelected.boxBrand?.latexRemoverQuantity!,
+            exportSelected.boxBrand?.packingTapeTypeQuantity || '',
+          latexRemoverQuantity:
+            exportSelected.boxBrand?.latexRemoverQuantity || '',
           blockingSheetQuantity:
-            exportSelected.boxBrand?.blockingSheetQuantity!,
+            exportSelected.boxBrand?.blockingSheetQuantity || '',
 
           insecticideSent: insecticidesSelected,
         };
@@ -314,7 +320,7 @@ const SentMaterialsExportForm = ({
   const sentMaterialsExport = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     const { dataReviewed, ...sentMaterialsExportData } = values;
 
     createExportSent(
@@ -341,7 +347,7 @@ const SentMaterialsExportForm = ({
         },
         onSuccess: () => {
           toast({
-            title: 'Registro de insumos enviados',
+            title: 'Registro de Insumos Enviado con Éxito',
             status: 'success',
             duration: 5000,
             isClosable: true,
@@ -349,8 +355,9 @@ const SentMaterialsExportForm = ({
 
           queryClient.invalidateQueries('exportsSent');
           queryClient.invalidateQueries('exportsSentPending');
+          queryClient.invalidateQueries('exportsPending');
           actions.resetForm();
-          router.push(pathname.replace(/\/\d+$/, ''));
+          router.push('/dashboard/liquidation/exports-sent');
         },
       }
     );
@@ -365,7 +372,7 @@ const SentMaterialsExportForm = ({
       onSubmit={sentMaterialsExport}
       validationSchema={validationSchema}
     >
-      {({ isSubmitting }) => (
+      {({}) => (
         <Form>
           <Flex flexDirection='column' gap={3}>
             <Heading fontSize={'2xl'} p={'12px'}>
@@ -373,8 +380,35 @@ const SentMaterialsExportForm = ({
             </Heading>
             <Divider mb={'16px'} />
 
+            {exportSelected?.boxBrand ? (
+              <Box p='4' border='1px' borderRadius='md' borderColor='gray.200'>
+                <Text fontSize='sm'>
+                  <strong>Marca de Caja:</strong>{' '}
+                  {exportSelected.boxBrand.name || 'N/A'}
+                </Text>
+                <Text fontSize='sm'>
+                  <strong>Código de Marca:</strong>{' '}
+                  {exportSelected.boxBrand.brandCode || 'N/A'}
+                </Text>
+                <Text fontSize='sm'>
+                  <strong>Peso Neto (Caja):</strong>{' '}
+                  {exportSelected.boxBrand.netWeightBox} LBS
+                </Text>
+                <Text fontSize='sm'>
+                  <strong>Peso Bruto (Caja):</strong>{' '}
+                  {exportSelected.boxBrand.grossWeightBox} LBS
+                </Text>
+                <Text fontSize='sm'>
+                  <strong>Marca Principal:</strong>{' '}
+                  {exportSelected.boxBrand.brand?.name || 'N/A'}
+                </Text>
+              </Box>
+            ) : (
+              <Text>No se ha seleccionado una marca de caja.</Text>
+            )}
+
             <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
-              <Box>
+              <Box mt={'16px'}>
                 <FormLabel>Cantidad de cajas</FormLabel>
                 <Input
                   value={exportSelected?.boxQuantity || ''}
@@ -398,94 +432,133 @@ const SentMaterialsExportForm = ({
                 <InputFieldSentQuantity
                   name={'bottomTypeQuantity'}
                   material={'Fondo'}
-                  materialSelected={exportSelected.boxBrand?.bottomType!}
+                  materialSelected={
+                    exportSelected.boxBrand?.bottomType?.name || ''
+                  }
                   quantity={exportSelected.boxQuantity!}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
                   name={'lidTypeQuantity'}
                   material={'Tapa'}
-                  materialSelected={exportSelected.boxBrand?.lidType!}
+                  materialSelected={
+                    exportSelected.boxBrand?.lidType?.name || ''
+                  }
                   quantity={exportSelected.boxQuantity!}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
                   name={'coverTypeQuantity'}
                   material={'Funda'}
-                  materialSelected={exportSelected.boxBrand?.coverType!}
+                  materialSelected={
+                    exportSelected.boxBrand?.coverType?.name || ''
+                  }
                   quantity={exportSelected.boxQuantity!}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
                   name={'cardboardTypeQuantity'}
                   material={'Cartulina'}
-                  materialSelected={exportSelected.boxBrand?.cardboardType!}
+                  materialSelected={
+                    exportSelected.boxBrand?.cardboardType?.name || ''
+                  }
                   quantity={exportSelected.boxQuantity!}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
                   name={'parasealTypeQuantity'}
                   material={'ParaSeal'}
-                  materialSelected={exportSelected.boxBrand?.parasealType!}
-                  quantity={exportSelected.boxBrand?.parasealTypeQuantity!}
+                  materialSelected={
+                    exportSelected.boxBrand?.parasealType?.name || ''
+                  }
+                  quantity={exportSelected.boxBrand?.parasealTypeQuantity || ''}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
                   name={'padTypeQuantity'}
                   material={'Pad'}
-                  materialSelected={exportSelected.boxBrand?.padType!}
-                  quantity={exportSelected.boxBrand?.padTypeQuantity!}
+                  materialSelected={
+                    exportSelected.boxBrand?.padType?.name || ''
+                  }
+                  quantity={exportSelected.boxBrand?.padTypeQuantity || ''}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
                   name={'spongeTypeQuantity'}
                   material={'Esponja'}
-                  materialSelected={exportSelected.boxBrand?.spongeType!}
-                  quantity={exportSelected.boxBrand?.spongeTypeQuantity!}
+                  materialSelected={
+                    exportSelected.boxBrand?.spongeType?.name || ''
+                  }
+                  quantity={exportSelected.boxBrand?.spongeTypeQuantity || ''}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
                   name={'labelQuantity'}
                   material={'Etiqueta'}
-                  materialSelected={exportSelected.boxBrand?.label?.name!}
-                  quantity={Number(exportSelected.boxBrand?.labelQuantity!)}
+                  materialSelected={exportSelected.boxBrand?.label?.name || ''}
+                  quantity={Number(
+                    exportSelected.boxBrand?.labelQuantity || ''
+                  )}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
                   name={'bandQuantity'}
                   material={'Banda'}
-                  materialSelected={exportSelected.boxBrand?.band?.name!}
-                  quantity={Number(exportSelected.boxBrand?.bandQuantity!)}
+                  materialSelected={exportSelected.boxBrand?.band?.name || ''}
+                  quantity={Number(exportSelected.boxBrand?.bandQuantity || '')}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
                   name={'sachetQuantity'}
                   material={'Sachet'}
-                  materialSelected={exportSelected.boxBrand?.sachet?.name!}
-                  quantity={Number(exportSelected.boxBrand?.sachetQuantity!)}
+                  materialSelected={exportSelected.boxBrand?.sachet?.name || ''}
+                  quantity={Number(
+                    exportSelected.boxBrand?.sachetQuantity || ''
+                  )}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
                   name={'rubberQuantity'}
                   material={'Liga'}
-                  materialSelected={exportSelected.boxBrand?.rubber?.name!}
-                  quantity={Number(exportSelected.boxBrand?.rubberQuantity!)}
+                  materialSelected={exportSelected.boxBrand?.rubber?.name || ''}
+                  quantity={Number(
+                    exportSelected.boxBrand?.rubberQuantity || ''
+                  )}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
                   name={'protectorQuantity'}
                   material={'Protector'}
-                  materialSelected={exportSelected.boxBrand?.protector?.name!}
-                  quantity={Number(exportSelected.boxBrand?.protectorQuantity!)}
+                  materialSelected={
+                    exportSelected.boxBrand?.protector?.name || ''
+                  }
+                  quantity={Number(
+                    exportSelected.boxBrand?.protectorQuantity || ''
+                  )}
+                  unit='C/U'
                 />
 
                 <InputFieldSentQuantity
                   name={'clusterBagQuantity'}
                   material={'Cluster Bag'}
-                  materialSelected={exportSelected.boxBrand?.clusterBag?.name!}
+                  materialSelected={
+                    exportSelected.boxBrand?.clusterBag?.name || ''
+                  }
                   quantity={Number(
-                    exportSelected.boxBrand?.clusterBagQuantity!
+                    exportSelected.boxBrand?.clusterBagQuantity || ''
                   )}
+                  unit='C/U'
                 />
 
                 <Heading fontSize={'2xl'} p={'12px'}>
@@ -501,7 +574,7 @@ const SentMaterialsExportForm = ({
                 <InputFieldSentPesticides
                   name={'pesticideSent'}
                   pesticideCocktailSelected={
-                    exportSelected.boxBrand?.pesticideCocktail!
+                    exportSelected.boxBrand?.pesticideCocktail || []
                   }
                 />
 
@@ -513,76 +586,103 @@ const SentMaterialsExportForm = ({
                 <InputFieldSentQuantity
                   name={'palletsTypeQuantity'}
                   material={'Pallet'}
-                  materialSelected={exportSelected.boxBrand?.palletsType!}
+                  materialSelected={
+                    exportSelected.boxBrand?.palletsType?.name || ''
+                  }
                   quantity={Number(
-                    exportSelected.boxBrand?.palletsTypeQuantity!
+                    exportSelected.boxBrand?.palletsTypeQuantity || ''
                   )}
+                  unit='C/C'
                 />
 
                 <InputFieldSentQuantity
                   name={'miniPalletsTypeQuantity'}
                   material={'Mini pallet'}
-                  materialSelected={exportSelected.boxBrand?.miniPalletsType!}
+                  materialSelected={
+                    exportSelected.boxBrand?.miniPalletsType?.name || ''
+                  }
                   quantity={Number(
-                    exportSelected.boxBrand?.miniPalletsTypeQuantity!
+                    exportSelected.boxBrand?.miniPalletsTypeQuantity || ''
                   )}
+                  unit='C/C'
                 />
 
                 <InputFieldSentQuantity
                   name={'cornerTypeQuantity'}
                   material={'Esquinero'}
-                  materialSelected={exportSelected.boxBrand?.cornerType!}
+                  materialSelected={
+                    exportSelected.boxBrand?.cornerType?.name || ''
+                  }
                   quantity={Number(
-                    exportSelected.boxBrand?.cornerTypeQuantity!
+                    exportSelected.boxBrand?.cornerTypeQuantity || ''
                   )}
+                  unit='C/C'
                 />
 
                 <InputFieldSentQuantity
                   name={'reinforcementTypeQuantity'}
                   material={'Refuerzo/Mini esquinero'}
-                  materialSelected={exportSelected.boxBrand?.reinforcementType!}
+                  materialSelected={
+                    exportSelected.boxBrand?.reinforcementType?.name || ''
+                  }
                   quantity={Number(
-                    exportSelected.boxBrand?.reinforcementTypeQuantity!
+                    exportSelected.boxBrand?.reinforcementTypeQuantity || ''
                   )}
+                  unit='C/C'
                 />
 
                 <InputFieldSentQuantity
                   name={'stapleQuantity'}
                   material={'Grapa'}
-                  materialSelected={exportSelected.boxBrand?.staple?.name!}
-                  quantity={Number(exportSelected.boxBrand?.stapleQuantity!)}
+                  materialSelected={exportSelected.boxBrand?.staple?.name || ''}
+                  quantity={Number(
+                    exportSelected.boxBrand?.stapleQuantity || ''
+                  )}
+                  unit='C/C'
                 />
 
                 <InputFieldSentQuantity
                   name={'strippingQuantity'}
                   material={'Zuncho'}
-                  materialSelected={exportSelected.boxBrand?.stripping?.name!}
-                  quantity={Number(exportSelected.boxBrand?.strippingQuantity!)}
+                  materialSelected={
+                    exportSelected.boxBrand?.stripping?.name || ''
+                  }
+                  quantity={Number(
+                    exportSelected.boxBrand?.strippingQuantity || ''
+                  )}
+                  unit='C/C'
                 />
 
                 <InputFieldSentQuantity
                   name={'thermographQuantity'}
                   material={'Termografo'}
-                  materialSelected={exportSelected.boxBrand?.thermograph?.name!}
+                  materialSelected={
+                    exportSelected.boxBrand?.thermograph?.name || ''
+                  }
                   quantity={Number(
-                    exportSelected.boxBrand?.thermographQuantity!
+                    exportSelected.boxBrand?.thermographQuantity || ''
                   )}
+                  unit='C/C'
                 />
 
                 <InputFieldSentQuantity
                   name={'sealQuantity'}
                   material={'Sello'}
-                  materialSelected={exportSelected.boxBrand?.seal?.name!}
-                  quantity={Number(exportSelected.boxBrand?.sealQuantity!)}
+                  materialSelected={exportSelected.boxBrand?.seal?.name || ''}
+                  quantity={Number(exportSelected.boxBrand?.sealQuantity || '')}
+                  unit='C/C'
                 />
 
                 <InputFieldSentQuantity
                   name={'mettoLabelQuantity'}
                   material={'Etiqueta Metto'}
-                  materialSelected={exportSelected.boxBrand?.mettoLabel?.name!}
+                  materialSelected={
+                    exportSelected.boxBrand?.mettoLabel?.name || ''
+                  }
                   quantity={Number(
-                    exportSelected.boxBrand?.mettoLabelQuantity!
+                    exportSelected.boxBrand?.mettoLabelQuantity || ''
                   )}
+                  unit='C/C'
                 />
                 <Heading fontSize={'2xl'} p={'12px'}>
                   Materiales adicionales
@@ -592,32 +692,37 @@ const SentMaterialsExportForm = ({
                 <InputFieldSentQuantity
                   name={'packingTapeTypeQuantity'}
                   material={'Cinta de embalaje'}
-                  materialSelected={exportSelected.boxBrand?.packingTapeType!}
+                  materialSelected={
+                    exportSelected.boxBrand?.packingTapeType?.name || ''
+                  }
                   quantity={Number(
-                    exportSelected.boxBrand?.packingTapeTypeQuantity!
+                    exportSelected.boxBrand?.packingTapeTypeQuantity || ''
                   )}
+                  unit='U/C'
                 />
 
                 <InputFieldSentQuantity
                   name={'latexRemoverQuantity'}
                   material={'Removedor de latex'}
                   materialSelected={
-                    exportSelected.boxBrand?.latexRemover?.name!
+                    exportSelected.boxBrand?.latexRemover?.name || ''
                   }
                   quantity={Number(
-                    exportSelected.boxBrand?.latexRemoverQuantity!
+                    exportSelected.boxBrand?.latexRemoverQuantity || ''
                   )}
+                  unit='U/C'
                 />
 
                 <InputFieldSentQuantity
                   name={'blockingSheetQuantity'}
                   material={'Lamina de bloque'}
                   materialSelected={
-                    exportSelected.boxBrand?.blockingSheet?.name!
+                    exportSelected.boxBrand?.blockingSheet?.name || ''
                   }
                   quantity={Number(
-                    exportSelected.boxBrand?.blockingSheetQuantity!
+                    exportSelected.boxBrand?.blockingSheetQuantity || ''
                   )}
+                  unit='U/C'
                 />
 
                 <Heading fontSize={'xl'} p={'10px'}>
@@ -628,7 +733,7 @@ const SentMaterialsExportForm = ({
                 <InputFieldSentInsecticides
                   name={'insecticideSent'}
                   insecticideCocktailSelected={
-                    exportSelected.boxBrand?.insecticideCocktail!
+                    exportSelected.boxBrand?.insecticideCocktail || []
                   }
                 />
 
@@ -643,7 +748,7 @@ const SentMaterialsExportForm = ({
                     px='16px'
                     type='submit'
                     colorScheme='teal'
-                    isLoading={isSubmitting}
+                    isLoading={isLoading}
                   >
                     Enviar
                   </Button>

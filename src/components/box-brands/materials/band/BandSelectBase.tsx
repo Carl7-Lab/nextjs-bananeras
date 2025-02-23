@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -37,7 +38,7 @@ const chakraStyles: ChakraStylesConfig<
   placeholder: (provided) => ({
     ...provided,
     color: 'gray.600',
-    h: '36px',
+    h: 'auto',
   }),
   input: (provided) => ({
     ...provided,
@@ -57,7 +58,7 @@ const bandComponents = {
       false,
       GroupBase<Partial<BandType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -72,15 +73,15 @@ const BandSelectBase: React.FC<BandSelectBaseProps> = ({
   setBand,
   onChange,
 }) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch, error } = useBands(paginationParams);
+  const { paginationParams } = usePagination();
+  const { data, isLoading, error } = useBands(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
     if (!!error) {
       const { response } = error as any;
       const { data } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = data;
+      const { statusCode } = data;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');
@@ -89,7 +90,7 @@ const BandSelectBase: React.FC<BandSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<BandType>>) => {
+  const handleChange = (newValue: SingleValue<Partial<BandType>>): void => {
     if (setBand) setBand(newValue as Partial<BandType>);
     if (onChange) onChange(newValue as Partial<BandType>);
   };

@@ -11,6 +11,7 @@ import {
   AccordionPanel,
   AccordionIcon,
   Box,
+  Badge,
 } from '@chakra-ui/react';
 import Link_Next from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -24,11 +25,13 @@ export interface SidenavItem {
   to: string;
   isMenu?: boolean;
   menu?: SidenavMenuItem[];
+  count?: number;
 }
 
 export interface SidenavMenuItem {
   label: string;
   to: string;
+  count?: number;
 }
 
 export interface SidenavItemsProps {
@@ -36,12 +39,27 @@ export interface SidenavItemsProps {
   mode?: 'semi' | 'over';
 }
 
-export function SidenavItems({ navItems, mode = 'semi' }: SidenavItemsProps) {
+export function SidenavItems({
+  navItems,
+  mode = 'semi',
+}: SidenavItemsProps): React.JSX.Element {
   const pathname = usePathname();
   const { isOpen } = useSidenav();
   const isAble: boolean = pathname !== '/dashboard/onboarding';
-
-  const sidebarItemInOverMode = (item: SidenavItem, index: number) => (
+  const renderBadge = (count?: number): React.JSX.Element | null => {
+    if (count && count > 0) {
+      return (
+        <Badge colorScheme='red' ml='auto' mr={2.5} my={'auto'}>
+          {count}
+        </Badge>
+      );
+    }
+    return null;
+  };
+  const sidebarItemInOverMode = (
+    item: SidenavItem,
+    index: number
+  ): React.JSX.Element => (
     <ListItem key={index}>
       {item.isMenu ? (
         <Accordion allowToggle w='full' borderY='0px'>
@@ -56,6 +74,7 @@ export function SidenavItems({ navItems, mode = 'semi' }: SidenavItemsProps) {
                 <Flex>
                   <Icon boxSize='5' as={item.icon} />
                   <Text ml={2}>{item.label}</Text>
+                  {renderBadge(item.count)}
                 </Flex>
               </Box>
               <AccordionIcon />
@@ -79,6 +98,7 @@ export function SidenavItems({ navItems, mode = 'semi' }: SidenavItemsProps) {
                 >
                   <Flex alignItems='center' p={2}>
                     <Text ml={2}>{item.label}</Text>
+                    {renderBadge(item.count)}
                   </Flex>
                 </Link>
               ))}
@@ -107,7 +127,10 @@ export function SidenavItems({ navItems, mode = 'semi' }: SidenavItemsProps) {
     </ListItem>
   );
 
-  const sidebarItemInSemiMode = (item: SidenavItem, index: number) => (
+  const sidebarItemInSemiMode = (
+    item: SidenavItem,
+    index: number
+  ): React.JSX.Element => (
     <ListItem key={index}>
       {item.isMenu ? (
         <AccordionMenu item={item} />

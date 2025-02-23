@@ -1,4 +1,6 @@
-import { useQuery, UseQueryResult } from 'react-query';
+//server
+import { AxiosResponse } from 'axios';
+import { UseQueryResult, useQuery } from 'react-query';
 import axios from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
 import { serializeQueryResult } from '@/utils/serializeQueryResult';
@@ -8,7 +10,7 @@ export const getLatexRemover = ({
   latexRemoverId,
 }: {
   latexRemoverId: string;
-}) => {
+}): Promise<AxiosResponse> => {
   return axios.get(`/box-brand/latex-remover/${latexRemoverId}`);
 };
 

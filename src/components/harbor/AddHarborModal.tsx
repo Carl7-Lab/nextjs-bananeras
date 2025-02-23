@@ -11,7 +11,7 @@ import React from 'react';
 import { AiFillPlusCircle } from 'react-icons/ai';
 import AddHarborForm from '../settings/AddHarborForm';
 
-const AddHarborModal = () => {
+const AddHarborModal = (): React.JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
