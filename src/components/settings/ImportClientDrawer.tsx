@@ -20,7 +20,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useField } from 'formik';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useImportClients } from '../../hooks/export/client/uploadClients';
 
 const ImportClientDrawer: React.FC = () => {
@@ -29,6 +29,7 @@ const ImportClientDrawer: React.FC = () => {
   const [fileSize, setFileSize] = useState<number>(0);
   const [dragging, setDragging] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [field, meta, helpers] = useField('import-client');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const toast = useToast();
@@ -46,6 +47,7 @@ const ImportClientDrawer: React.FC = () => {
         resetFile();
         onClose();
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onError: (error: any) => {
         toast({
           title: 'Error al importar',
@@ -58,7 +60,7 @@ const ImportClientDrawer: React.FC = () => {
     },
   });
 
-  const handleFileChange = (file: File) => {
+  const handleFileChange = (file: File): void => {
     if (file) {
       setSelectedFile(file);
       setFileName(file.name);
@@ -71,29 +73,29 @@ const ImportClientDrawer: React.FC = () => {
     }
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
       handleFileChange(file);
     }
   };
 
-  const handleDragEnter = (e: React.DragEvent) => {
+  const handleDragEnter = (e: React.DragEvent): void => {
     e.preventDefault();
     setDragging(true);
   };
 
-  const handleDragLeave = (e: React.DragEvent) => {
+  const handleDragLeave = (e: React.DragEvent): void => {
     e.preventDefault();
     setDragging(false);
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = (e: React.DragEvent): void => {
     e.preventDefault();
     setDragging(true);
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = (e: React.DragEvent): void => {
     e.preventDefault();
     setDragging(false);
 
@@ -101,14 +103,14 @@ const ImportClientDrawer: React.FC = () => {
     if (file) handleFileChange(file);
   };
 
-  const resetFile = () => {
+  const resetFile = (): void => {
     setFileName('');
     setFileSize(0);
     setSelectedFile(null);
     helpers.setValue(null);
   };
 
-  const handleUpload = () => {
+  const handleUpload = (): void => {
     if (selectedFile) importClients(selectedFile);
   };
 

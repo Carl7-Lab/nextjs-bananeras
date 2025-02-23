@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Box,
   Divider,
@@ -100,7 +101,7 @@ const ExpandDetail = ({
     | PesticideCocktailPart[]
     | InsecticideCocktailPart[]
     | RequiredCertificateType[];
-}) => {
+}): React.JSX.Element | undefined => {
   if (isDetailType(detail)) {
     return (
       <SimpleGrid columns={2} spacing={0} width={'100%'} ml={'60px'}>

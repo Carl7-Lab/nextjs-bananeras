@@ -11,7 +11,7 @@ import React from 'react';
 import AddBankAccountForm from '../../../../components/producer/AddBankAccountForm';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
-const AddBankAccountPage = () => {
+const AddBankAccountPage = (): React.JSX.Element => {
   return (
     <Box my={'20px'} mx={'auto'} w={'95%'}>
       <Center>

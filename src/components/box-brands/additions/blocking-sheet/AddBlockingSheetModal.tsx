@@ -11,7 +11,7 @@ import React from 'react';
 import { AiFillPlusCircle } from 'react-icons/ai';
 import AddBlockingSheetForm from './AddBlockingSheetForm';
 
-const AddBlockingSheetModal = () => {
+const AddBlockingSheetModal = (): React.JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (

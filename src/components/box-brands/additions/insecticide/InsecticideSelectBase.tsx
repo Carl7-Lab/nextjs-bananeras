@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -55,7 +56,7 @@ const insecticideComponents = {
       false,
       GroupBase<Partial<InsecticideType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -69,13 +70,8 @@ const InsecticideSelectBase: React.FC<InsecticideSelectBaseProps> = ({
   setInsecticide,
   onChange,
 }) => {
-  const { paginationParams, filterProps } = usePagination();
-  const {
-    data = [],
-    isLoading,
-    refetch,
-    error,
-  } = useInsecticides(paginationParams);
+  const { paginationParams } = usePagination();
+  const { data = [], isLoading, error } = useInsecticides(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
@@ -101,7 +97,9 @@ const InsecticideSelectBase: React.FC<InsecticideSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [field?.value]);
 
-  const handleChange = (newValue: SingleValue<Partial<InsecticideType>>) => {
+  const handleChange = (
+    newValue: SingleValue<Partial<InsecticideType>>
+  ): void => {
     if (setInsecticide) setInsecticide(newValue as Partial<InsecticideType>);
     if (onChange) onChange(newValue as Partial<InsecticideType>);
   };

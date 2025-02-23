@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box } from '@chakra-ui/react';
 import {
   MRT_ColumnDef,
@@ -17,9 +18,9 @@ const TableClients = ({
 }: {
   width: { sm: number; md: number };
   windowSize: { width: number | null; height: number | null };
-}) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data = [], isLoading, error } = useClients(paginationParams);
+}): React.JSX.Element => {
+  const { paginationParams } = usePagination();
+  const { data = [], error } = useClients(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
@@ -68,7 +69,7 @@ const TableClients = ({
           {
             accessorKey: 'harbors',
             header: 'Puertos',
-            Cell: ({ cell }) => {
+            Cell: ({ cell }): React.JSX.Element => {
               const harbors = cell.getValue<any[]>();
               return (
                 <span>
@@ -80,7 +81,7 @@ const TableClients = ({
           {
             accessorKey: 'shippingCompanies',
             header: 'Compañías de Envío',
-            Cell: ({ cell }) => {
+            Cell: ({ cell }): React.JSX.Element => {
               const companies = cell.getValue<any[]>();
               return (
                 <span>

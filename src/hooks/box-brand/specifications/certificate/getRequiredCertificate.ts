@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import { useQuery, UseQueryResult } from 'react-query';
 import axios from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
@@ -8,7 +9,7 @@ export const getRequiredCertificate = ({
   certificateId,
 }: {
   certificateId: string;
-}) => {
+}): Promise<AxiosResponse> => {
   return axios.get(`/box-brand/certificate/${certificateId}`);
 };
 

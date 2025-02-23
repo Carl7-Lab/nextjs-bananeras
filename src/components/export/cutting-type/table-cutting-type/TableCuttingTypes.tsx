@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box } from '@chakra-ui/react';
 import {
   MRT_ColumnDef,
@@ -17,9 +18,9 @@ const TableCuttingTypes = ({
 }: {
   width: { sm: number; md: number };
   windowSize: { width: number | null; height: number | null };
-}) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data = [], isLoading, error } = useCuttingTypes(paginationParams);
+}): React.JSX.Element => {
+  const { paginationParams } = usePagination();
+  const { data = [], error } = useCuttingTypes(paginationParams);
   const router = useRouter();
 
   useEffect(() => {

@@ -4,7 +4,7 @@ import { Container, Text } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
 import React from 'react';
 
-export const SignInButton = () => {
+export const SignInButton = (): React.JSX.Element => {
   const { data: session } = useSession();
 
   if (session && session.user)

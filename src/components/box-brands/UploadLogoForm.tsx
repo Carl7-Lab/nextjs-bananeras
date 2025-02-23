@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Button,
   Divider,
@@ -49,7 +50,7 @@ const validationSchema = Yup.object().shape({
     .required('Requerido'),
 });
 
-const UploadLogoForm = () => {
+const UploadLogoForm = (): React.JSX.Element => {
   const router = useRouter();
   const toast = useToast();
   const { uploadBoxBrandLogo, isLoading } = useUploadBoxBrandLogo();
@@ -58,9 +59,7 @@ const UploadLogoForm = () => {
   const onSubmit = async (
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
-  ) => {
-    const { dataReviewed } = values;
-
+  ): Promise<void> => {
     if (values.logoImg) {
       uploadBoxBrandLogo(
         {

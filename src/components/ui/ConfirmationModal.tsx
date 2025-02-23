@@ -28,7 +28,7 @@ const ConfirmationModal = ({
   description,
   confirmText = 'Confirmar',
   cancelText = 'Cancelar',
-}: ConfirmationModalProps) => {
+}: ConfirmationModalProps): React.JSX.Element => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />

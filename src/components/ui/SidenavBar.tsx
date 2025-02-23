@@ -10,7 +10,7 @@ import { useExporter } from '../../hooks/useUserProfile';
 
 export default function SidenavBar({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: Readonly<{ children: React.ReactNode }>): React.JSX.Element {
   const counts = useMenuCounts();
   const { data: session } = useSession();
   const navItems = getNavItems(counts.counts, session);

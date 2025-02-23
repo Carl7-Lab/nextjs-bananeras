@@ -18,20 +18,20 @@ type NotificationDefaultFunctions = {
   defaultError: () => ToastId;
 };
 
-export const useNotification = () => {
+export const useNotification = (): Notification => {
   const defaultOptions = { duration: 3000, isClosable: true };
   const toast = useToast();
 
-  const success = (options: UseToastOptions) =>
+  const success = (options: UseToastOptions): ToastId =>
     toast({ ...defaultOptions, ...options, status: 'success' });
 
-  const info = (options: UseToastOptions) =>
+  const info = (options: UseToastOptions): ToastId =>
     toast({ ...defaultOptions, ...options, status: 'info' });
 
-  const warning = (options: UseToastOptions) =>
+  const warning = (options: UseToastOptions): ToastId =>
     toast({ ...defaultOptions, ...options, status: 'warning' });
 
-  const error = (options: UseToastOptions) => {
+  const error = (options: UseToastOptions): ToastId => {
     const errorMessages = {
       title: parseErrorMessage(options.title as string | string[]),
       description: parseErrorMessage(options.description as string | string[]),
@@ -45,7 +45,8 @@ export const useNotification = () => {
     });
   };
 
-  const defaultError = () => error({ title: 'Ooops, something went wrong' });
+  const defaultError = (): ToastId =>
+    error({ title: 'Ooops, something went wrong' });
 
   const notification: Notification = {
     success,
@@ -58,7 +59,9 @@ export const useNotification = () => {
   return notification;
 };
 
-const parseErrorMessage = (errorMessage: string | string[]) => {
+const parseErrorMessage = (
+  errorMessage: string | string[]
+): string | string[] | JSX.Element => {
   if (Array.isArray(errorMessage) && errorMessage.length > 1) {
     return (
       <UnorderedList>

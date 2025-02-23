@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -55,7 +56,7 @@ const cuttingTypeComponents = {
       false,
       GroupBase<Partial<CuttingType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -69,20 +70,15 @@ const CuttingTypeSelectBase: React.FC<CuttingTypeSelectBaseProps> = ({
   onChange,
   setCuttingType,
 }) => {
-  const { paginationParams, filterProps } = usePagination();
-  const {
-    data = [],
-    isLoading,
-    refetch,
-    error,
-  } = useCuttingTypes(paginationParams);
+  const { paginationParams } = usePagination();
+  const { data = [], isLoading, error } = useCuttingTypes(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
     if (!!error) {
       const { response } = error as any;
       const { data } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = data;
+      const { statusCode } = data;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');
@@ -91,7 +87,7 @@ const CuttingTypeSelectBase: React.FC<CuttingTypeSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<CuttingType>>) => {
+  const handleChange = (newValue: SingleValue<Partial<CuttingType>>): void => {
     if (setCuttingType) {
       setCuttingType(newValue as Partial<CuttingType>);
     }

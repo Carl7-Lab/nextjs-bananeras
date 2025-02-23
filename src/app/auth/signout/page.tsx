@@ -1,19 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
-import {
-  Center,
-  Flex,
-  Heading,
-  Card,
-  CardBody,
-  Button,
-  Text,
-} from '@chakra-ui/react';
+import { Center, Flex, Heading, Button, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 import { useEffect } from 'react';
-import { Logo } from '../../../components/ui/Logo';
 
-const SignOutPage = () => {
+const SignOutPage = (): JSX.Element => {
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -23,7 +15,7 @@ const SignOutPage = () => {
     }
   }, [status, router]);
 
-  const handleSignOut = async () => {
+  const handleSignOut = async (): Promise<void> => {
     await signOut({ redirect: false });
   };
 

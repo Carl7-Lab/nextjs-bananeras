@@ -10,14 +10,14 @@ interface WindowSizeProps {
   height: number | null;
 }
 
-function SearchExportsSentPage() {
+function SearchExportsSentPage(): React.JSX.Element {
   const [windowSize, setWindowSize] = useState<WindowSizeProps>({
     width: null,
     height: null,
   });
 
   useEffect(() => {
-    function handleResize() {
+    function handleResize(): void {
       setWindowSize({
         width: window.innerWidth,
         height: window.innerHeight,

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Box } from '@chakra-ui/react';
 import {
   MaterialReactTable,
@@ -32,7 +33,11 @@ interface TableSizeProps {
   md: number | null;
 }
 
-const TableSupply = ({ details, width, windowSize }: props) => {
+const TableSupply = ({
+  details,
+  width,
+  windowSize,
+}: props): React.JSX.Element => {
   const [columnSize, setColumnSize] = useState<TableSizeProps>({
     sm: (Number(width.sm) - 92 - 60 - 30) / 3,
     md: (Number(width.md) - 92 - 60 - 30) / 3,

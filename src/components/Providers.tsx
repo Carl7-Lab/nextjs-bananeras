@@ -25,7 +25,7 @@ const queryClient = new QueryClient({
   },
 });
 
-const Providers = ({ children }: Props) => {
+const Providers = ({ children }: Props): React.JSX.Element => {
   return (
     <SessionProvider refetchOnWindowFocus={false}>
       <ChakraProvider theme={{ ...theme, [THEME_ID]: muiTheme }} resetCSS>

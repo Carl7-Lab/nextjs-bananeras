@@ -42,7 +42,7 @@ const DetailCuttingTypes = ({
     generalObservations?: string;
   };
   width: { sm: number; md: number };
-}) => {
+}): React.JSX.Element => {
   return (
     <Accordion defaultIndex={[0]} allowMultiple>
       <AccordionItem>

@@ -1,10 +1,15 @@
+import { AxiosResponse } from 'axios';
 import { useQuery, UseQueryResult } from 'react-query';
 import axios from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
 import { SachetType } from '@/types/box-brand/materials/sachet';
 import { serializeQueryResult } from '@/utils/serializeQueryResult';
 
-export const getSachet = ({ sachetId }: { sachetId: string }) => {
+export const getSachet = ({
+  sachetId,
+}: {
+  sachetId: string;
+}): Promise<AxiosResponse> => {
   return axios.get(`/box-brand/sachet/${sachetId}`);
 };
 

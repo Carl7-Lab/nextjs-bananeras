@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import {
   Box,
@@ -14,9 +15,9 @@ import IsOnboarding from '../../../../../components/ui/IsOnboarding';
 import { useExportSent } from '../../../../../hooks/export/export-sent/getExportSent';
 import { ExportSentType } from '../../../../../types/exportSent';
 
-function ExportPaymentPage() {
+function ExportPaymentPage(): React.JSX.Element {
   const params = useParams<{ id: string }>();
-  const { data, isLoading, refetch, error } = useExportSent({
+  const { data, isLoading, error } = useExportSent({
     exportSentId: params.id,
   });
   const pendingPayment = data as Partial<ExportSentType>;
@@ -27,7 +28,7 @@ function ExportPaymentPage() {
     if (!!error) {
       const { response } = error as any;
       const { data: dataRes } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = dataRes;
+      const { statusCode } = dataRes;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');

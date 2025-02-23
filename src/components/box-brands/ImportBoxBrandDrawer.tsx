@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Box,
   Button,
@@ -21,7 +23,7 @@ import {
   Link,
 } from '@chakra-ui/react';
 import { useField } from 'formik';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useImportBoxBrands } from '../../hooks/box-brand/uploadBoxBrands';
 import axios from '../../lib/axios';
 
@@ -37,7 +39,7 @@ const ImportBoxBrandDrawer: React.FC = () => {
 
   const { importBoxBrands, isLoading } = useImportBoxBrands({
     config: {
-      onSuccess: (data) => {
+      onSuccess: () => {
         toast({
           title: 'Importación exitosa',
           description: `Se importaron productores correctamente.`,
@@ -60,7 +62,7 @@ const ImportBoxBrandDrawer: React.FC = () => {
     },
   });
 
-  const handleDownloadTemplate = async () => {
+  const handleDownloadTemplate = async (): Promise<void> => {
     try {
       const { data } = await axios.get(`/firebase/download/BoxBrandNuevo.xlsm`);
 
@@ -80,7 +82,7 @@ const ImportBoxBrandDrawer: React.FC = () => {
     }
   };
 
-  const handleFileChange = (file: File) => {
+  const handleFileChange = (file: File): void => {
     if (file) {
       setSelectedFile(file);
       setFileName(file.name);
@@ -93,29 +95,29 @@ const ImportBoxBrandDrawer: React.FC = () => {
     }
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
       handleFileChange(file);
     }
   };
 
-  const handleDragEnter = (e: React.DragEvent) => {
+  const handleDragEnter = (e: React.DragEvent): void => {
     e.preventDefault();
     setDragging(true);
   };
 
-  const handleDragLeave = (e: React.DragEvent) => {
+  const handleDragLeave = (e: React.DragEvent): void => {
     e.preventDefault();
     setDragging(false);
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = (e: React.DragEvent): void => {
     e.preventDefault();
     setDragging(true);
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = (e: React.DragEvent): void => {
     e.preventDefault();
     setDragging(false);
 
@@ -123,14 +125,14 @@ const ImportBoxBrandDrawer: React.FC = () => {
     if (file) handleFileChange(file);
   };
 
-  const resetFile = () => {
+  const resetFile = (): void => {
     setFileName('');
     setFileSize(0);
     setSelectedFile(null);
     helpers.setValue(null);
   };
 
-  const handleUpload = () => {
+  const handleUpload = (): void => {
     if (selectedFile) importBoxBrands(selectedFile);
   };
 

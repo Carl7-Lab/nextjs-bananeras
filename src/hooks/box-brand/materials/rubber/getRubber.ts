@@ -1,10 +1,15 @@
+import { AxiosResponse } from 'axios';
 import { useQuery, UseQueryResult } from 'react-query';
 import axios from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
 import { RubberType } from '@/types/box-brand/materials/rubber';
 import { serializeQueryResult } from '@/utils/serializeQueryResult';
 
-export const getRubber = ({ rubberId }: { rubberId: string }) => {
+export const getRubber = ({
+  rubberId,
+}: {
+  rubberId: string;
+}): Promise<AxiosResponse> => {
   return axios.get(`/box-brand/rubber/${rubberId}`);
 };
 

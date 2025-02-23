@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import { useMutation } from 'react-query';
 import axios from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
@@ -8,7 +9,10 @@ type updateBankAccountDTO = {
   bankAccountId: string;
 };
 
-const updateBankAccount = ({ data, bankAccountId }: updateBankAccountDTO) => {
+const updateBankAccount = ({
+  data,
+  bankAccountId,
+}: updateBankAccountDTO): Promise<AxiosResponse> => {
   return axios.post(`/bank-account/${bankAccountId}`, data);
 };
 
@@ -18,6 +22,7 @@ type UseUpdateBankAccountOptions = {
 
 export const useUpdateBankAccount = ({
   config,
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type
 }: UseUpdateBankAccountOptions = {}) => {
   const mutation = useMutation({
     ...config,

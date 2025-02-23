@@ -11,7 +11,7 @@ import React from 'react';
 import AddBusinessForm from '../../../../components/producer/AddBusinessForm';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
-function AddBusinessPage() {
+function AddBusinessPage(): React.JSX.Element {
   return (
     <Box my={'20px'} mx={'auto'} w={'95%'}>
       <Center>

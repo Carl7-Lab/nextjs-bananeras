@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import { useMutation } from 'react-query';
 import axios from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
@@ -11,7 +12,7 @@ type updateBlockingSheetDTO = {
 const updateBlockingSheet = ({
   data,
   blockingSheetId,
-}: updateBlockingSheetDTO) => {
+}: updateBlockingSheetDTO): Promise<AxiosResponse> => {
   return axios.post(`/box-brand/blocking-sheet/${blockingSheetId}`, data);
 };
 
@@ -21,6 +22,7 @@ type UseUpdateBlockingSheetOptions = {
 
 export const useUpdateBlockingSheet = ({
   config,
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type
 }: UseUpdateBlockingSheetOptions = {}) => {
   const mutation = useMutation({
     ...config,

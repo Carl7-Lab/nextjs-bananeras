@@ -4,7 +4,7 @@ import React from 'react';
 import ExportList from '../../../../components/export/ExportList';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
-function MaterialsExportPage() {
+function MaterialsExportPage(): React.JSX.Element {
   return (
     <Box my={'20px'} mx={'auto'}>
       <Center>

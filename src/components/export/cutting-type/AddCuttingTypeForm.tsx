@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Box,
   Button,
@@ -5,7 +7,6 @@ import {
   Flex,
   Heading,
   SimpleGrid,
-  Spinner,
   useToast,
   Text,
 } from '@chakra-ui/react';
@@ -153,23 +154,22 @@ const packagingPatternOptions = [
   },
 ];
 
-const AddCuttingTypeForm = () => {
+const AddCuttingTypeForm = (): React.JSX.Element => {
   const router = useRouter();
   const toast = useToast();
   const { createCuttingType, isLoading: createLoading } =
     useCreateCuttingType();
-  const queryClient = useQueryClient();
   const [selectedBoxBrandId, setSelectedBoxBrandId] = React.useState<
     string | null
   >(null);
-  const { data: boxBrandDetails, isLoading } = useBoxBrand({
+  const { data: boxBrandDetails } = useBoxBrand({
     boxBrandId: selectedBoxBrandId || '',
   });
 
   const onSubmit = async (
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
-  ) => {
+  ): Promise<void> => {
     const transformedValues = {
       ...values,
       leavesAtHarvest: Number(values.leavesAtHarvest),
@@ -394,19 +394,19 @@ const AddCuttingTypeForm = () => {
                     <Box>
                       <Text fontSize='sm'>
                         <strong>Pallets:</strong>{' '}
-                        {boxBrandDetails?.palletsType || 'N/A'} (
+                        {boxBrandDetails?.palletsType?.name || 'N/A'} (
                         {boxBrandDetails?.palletsTypeQuantity || 'N/A'}{' '}
                         unidades).
                       </Text>
                       <Text fontSize='sm'>
                         <strong>Esquineros:</strong>{' '}
-                        {boxBrandDetails?.cornerType || 'N/A'} (
+                        {boxBrandDetails?.cornerType?.name || 'N/A'} (
                         {boxBrandDetails?.cornerTypeQuantity || 'N/A'}{' '}
                         unidades).
                       </Text>
                       <Text fontSize='sm'>
                         <strong>Refuerzos:</strong>{' '}
-                        {boxBrandDetails?.reinforcementType || 'N/A'} (
+                        {boxBrandDetails?.reinforcementType?.name || 'N/A'} (
                         {boxBrandDetails?.reinforcementTypeQuantity || 'N/A'}{' '}
                         unidades).
                       </Text>
@@ -433,7 +433,7 @@ const AddCuttingTypeForm = () => {
                     <Box>
                       <Text fontSize='sm'>
                         <strong>Mini Pallets:</strong>{' '}
-                        {boxBrandDetails?.miniPalletsType || 'N/A'} (
+                        {boxBrandDetails?.miniPalletsType?.name || 'N/A'} (
                         {boxBrandDetails?.miniPalletsTypeQuantity || 'N/A'}{' '}
                         unidades).
                       </Text>

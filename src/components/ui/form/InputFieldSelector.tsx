@@ -29,9 +29,8 @@ const InputFieldSelector: React.FC<InputFieldSelectorProps> = ({
   placeholder = 'Seleccione una opción',
   isDisabled,
   flexDirection = 'column',
-  alignItems = 'flex-start',
 }) => {
-  const [field, meta, helpers] = useField(name);
+  const [field, meta] = useField(name);
 
   return (
     <FormControl

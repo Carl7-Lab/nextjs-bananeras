@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -57,7 +58,7 @@ const blockingSheetComponents = {
       false,
       GroupBase<Partial<BlockingSheetType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -72,16 +73,15 @@ const BlockingSheetSelectBase: React.FC<BlockingSheetSelectBaseProps> = ({
   setBlockingSheet,
   onChange,
 }) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch, error } =
-    useBlockingSheets(paginationParams);
+  const { paginationParams } = usePagination();
+  const { data, isLoading, error } = useBlockingSheets(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
     if (!!error) {
       const { response } = error as any;
       const { data } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = data;
+      const { statusCode } = data;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');
@@ -90,7 +90,9 @@ const BlockingSheetSelectBase: React.FC<BlockingSheetSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<BlockingSheetType>>) => {
+  const handleChange = (
+    newValue: SingleValue<Partial<BlockingSheetType>>
+  ): void => {
     if (setBlockingSheet)
       setBlockingSheet(newValue as Partial<BlockingSheetType>);
     if (onChange) onChange(newValue as Partial<BlockingSheetType>);

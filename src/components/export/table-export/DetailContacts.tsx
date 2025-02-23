@@ -8,7 +8,7 @@ const DetailContacts = ({
 }: {
   businessContacts: Partial<ContactType>[];
   width: { sm: number; md: number };
-}) => {
+}): React.JSX.Element => {
   return (
     <>
       <SimpleGrid

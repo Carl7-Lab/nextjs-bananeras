@@ -47,7 +47,7 @@ const DetailProducerPayments = ({
     transferUrl: string;
   };
   width: { sm: number; md: number };
-}) => {
+}): React.JSX.Element => {
   return (
     <Accordion defaultIndex={[0]} allowMultiple>
       <AccordionItem>

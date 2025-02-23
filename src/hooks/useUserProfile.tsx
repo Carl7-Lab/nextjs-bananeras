@@ -36,7 +36,12 @@ async function fetchExporter(refreshToken: string): Promise<UserProfile> {
   return response.json();
 }
 
-export function useExporter() {
+export function useExporter(): {
+  user: UserProfile | undefined;
+  isLoading: boolean;
+  error: unknown;
+  reloadExporter: () => Promise<void>;
+} {
   const { data: session } = useSession();
   const queryClient = useQueryClient();
 

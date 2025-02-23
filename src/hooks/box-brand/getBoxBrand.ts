@@ -1,10 +1,15 @@
+import { AxiosResponse } from 'axios';
 import { useQuery, UseQueryResult } from 'react-query';
 import axios from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
 import { BoxBrandType } from '@/types/box-brand/boxBrand';
 import { serializeQueryResult } from '@/utils/serializeQueryResult';
 
-export const getBoxBrand = ({ boxBrandId }: { boxBrandId: string }) => {
+export const getBoxBrand = ({
+  boxBrandId,
+}: {
+  boxBrandId: string;
+}): Promise<AxiosResponse> => {
   return axios.get(`/box-brand/${boxBrandId}`);
 };
 

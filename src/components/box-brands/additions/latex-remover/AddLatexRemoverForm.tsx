@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
@@ -14,12 +15,14 @@ interface AddLatexRemoverFormProps {
 
 interface ValuesProps {
   name: string;
+  code: string;
   activeIngredient: string;
   dose: number | '';
 }
 
 const initialValues: ValuesProps = {
   name: '',
+  code: '',
   activeIngredient: '',
   dose: '',
 };
@@ -27,6 +30,16 @@ const initialValues: ValuesProps = {
 const validationSchema = Yup.object({
   name: Yup.string()
     .max(100, 'Debe tener 100 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  code: Yup.string()
+    .max(10, 'Debe tener 10 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -56,7 +69,9 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddLatexRemoverForm = ({ onClose }: AddLatexRemoverFormProps) => {
+const AddLatexRemoverForm = ({
+  onClose,
+}: AddLatexRemoverFormProps): React.JSX.Element => {
   const { createLatexRemover, isLoading } = useCreateLatexRemover();
   const toast = useToast();
   const router = useRouter();
@@ -65,7 +80,7 @@ const AddLatexRemoverForm = ({ onClose }: AddLatexRemoverFormProps) => {
   const addLatexRemover = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     const { dose, ...latexRemoverData } = values;
 
     createLatexRemover(
@@ -77,7 +92,7 @@ const AddLatexRemoverForm = ({ onClose }: AddLatexRemoverFormProps) => {
         onError: (error: any) => {
           const { response } = error;
           const { data } = response;
-          const { statusCode, message, error: errorTitle, model, prop } = data;
+          const { statusCode, message, error: errorTitle } = data;
 
           toast({
             title: `Error ${statusCode}: ${errorTitle} `,
@@ -116,7 +131,7 @@ const AddLatexRemoverForm = ({ onClose }: AddLatexRemoverFormProps) => {
         onSubmit={addLatexRemover}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {() => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>
@@ -124,6 +139,7 @@ const AddLatexRemoverForm = ({ onClose }: AddLatexRemoverFormProps) => {
               </Heading>
               <Divider mb={'16px'} />
               <InputFieldText name={'name'} label={'Nombre'} />
+              <InputFieldText name={'code'} label={'Código'} />
               <InputFieldText
                 name={'activeIngredient'}
                 label={'Ingrediente activo'}

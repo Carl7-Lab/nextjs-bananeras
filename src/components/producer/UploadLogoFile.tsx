@@ -36,25 +36,25 @@ const UploadLogoFile: React.FC<UploadLogoFileProps> = ({ name }) => {
     }
   }, [field.value]);
 
-  const handleDragEnter = (e: React.DragEvent) => {
+  const handleDragEnter = (e: React.DragEvent): void => {
     e.preventDefault();
     e.stopPropagation();
     setDragging(true);
   };
 
-  const handleDragLeave = (e: React.DragEvent) => {
+  const handleDragLeave = (e: React.DragEvent): void => {
     e.preventDefault();
     e.stopPropagation();
     setDragging(false);
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = (e: React.DragEvent): void => {
     e.preventDefault();
     e.stopPropagation();
     setDragging(true);
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = (e: React.DragEvent): void => {
     e.preventDefault();
     e.stopPropagation();
     setDragging(false);
@@ -65,22 +65,22 @@ const UploadLogoFile: React.FC<UploadLogoFileProps> = ({ name }) => {
     }
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const file = event.currentTarget.files?.[0];
     if (file) {
       handleFile(file);
     }
   };
 
-  const handleFile = (file: File) => {
+  const handleFile = (file: File): void => {
     if (file) {
       setLoading(true);
       helpers.setValue(file);
       const reader = new FileReader();
-      reader.onloadend = () => {
+      reader.onloadend = (): void => {
         setImageUrl(reader.result as string);
         const img = new window.Image();
-        img.onload = () => {
+        img.onload = (): void => {
           setImageInfo({ width: img.width, height: img.height });
           setLoading(false);
         };

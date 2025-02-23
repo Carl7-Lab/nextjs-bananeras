@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
@@ -14,6 +16,7 @@ interface AddPesticideFormProps {
 
 interface ValuesProps {
   name: string;
+  code: string;
   brandName: string;
   activeIngredient: string;
   dose: number | '';
@@ -22,6 +25,7 @@ interface ValuesProps {
 
 const initialValues: ValuesProps = {
   name: '',
+  code: '',
   brandName: '',
   activeIngredient: '',
   dose: '',
@@ -31,6 +35,16 @@ const initialValues: ValuesProps = {
 const validationSchema = Yup.object({
   name: Yup.string()
     .max(100, 'Debe tener 100 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  code: Yup.string()
+    .max(10, 'Debe tener 10 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -80,7 +94,9 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddPesticideForm = ({ onClose }: AddPesticideFormProps) => {
+const AddPesticideForm = ({
+  onClose,
+}: AddPesticideFormProps): React.JSX.Element => {
   const { createPesticide, isLoading } = useCreatePesticide();
   const toast = useToast();
   const router = useRouter();
@@ -89,7 +105,7 @@ const AddPesticideForm = ({ onClose }: AddPesticideFormProps) => {
   const addPesticide = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     const { dose, ...pesticideData } = values;
 
     createPesticide(
@@ -148,6 +164,7 @@ const AddPesticideForm = ({ onClose }: AddPesticideFormProps) => {
               </Heading>
               <Divider mb={'16px'} />
               <InputFieldText name={'name'} label={'Nombre'} />
+              <InputFieldText name={'code'} label={'Código'} />
               <InputFieldText name={'brandName'} label={'Nombre comercial'} />
               <InputFieldText
                 name={'activeIngredient'}

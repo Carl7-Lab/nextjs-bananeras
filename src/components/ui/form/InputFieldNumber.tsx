@@ -40,7 +40,7 @@ const InputFieldNumber: React.FC<InputFieldProps> = ({
 
   useEffect(() => {
     if (value !== '') {
-      let newValue =
+      const newValue =
         isDecimal || isGeo ? Number(value).toFixed(isGeo ? 6 : 2) : value;
       helpers.setValue(newValue);
     } else {
@@ -49,18 +49,18 @@ const InputFieldNumber: React.FC<InputFieldProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
-  const handleBlur = (event: React.FocusEvent) => {
+  const handleBlur = (event: React.FocusEvent): void => {
     field.onBlur(event);
-    let newValue =
+    const newValue =
       isDecimal || isGeo
         ? Number(field.value).toFixed(isGeo ? 6 : 2)
         : field.value;
     helpers.setValue(newValue);
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent) => {
+  const handleKeyDown = (event: React.KeyboardEvent): void => {
     if (event.key === 'Enter') {
-      let newValue =
+      const newValue =
         isDecimal || isGeo
           ? Number(field.value).toFixed(isGeo ? 6 : 2)
           : field.value;

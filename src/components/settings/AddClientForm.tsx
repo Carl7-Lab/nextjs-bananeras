@@ -86,7 +86,7 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddClientForm = () => {
+const AddClientForm = (): React.JSX.Element => {
   const typesOpt = [
     {
       name: 'Supermercado',
@@ -105,13 +105,15 @@ const AddClientForm = () => {
   const addClient = async (
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
-  ) => {
+  ): Promise<void> => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { dataReviewed, ...clientData } = values;
     createClient(
       {
         ...clientData,
       },
       {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onError: (error: any) => {
           const { response } = error;
           const { data } = response;
@@ -160,7 +162,7 @@ const AddClientForm = () => {
         onSubmit={addClient}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {({}) => (
           <Form>
             <Flex flexDirection='column' gap={3} width={'100%'}>
               <Flex justify='space-between'>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Button,
   Divider,
@@ -31,6 +32,7 @@ interface AddClusterBagFormProps {
 
 interface ValuesProps {
   name: string;
+  code: string;
   art: File | null;
   dimensions: string;
   quantityPerPack: number | '';
@@ -38,6 +40,7 @@ interface ValuesProps {
 
 const initialValues: ValuesProps = {
   name: '',
+  code: '',
   art: null,
   dimensions: '',
   quantityPerPack: '',
@@ -46,6 +49,16 @@ const initialValues: ValuesProps = {
 const validationSchema = Yup.object({
   name: Yup.string()
     .max(100, 'Debe tener 100 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  code: Yup.string()
+    .max(10, 'Debe tener 10 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -69,7 +82,9 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddClusterBagForm = ({ onClose }: AddClusterBagFormProps) => {
+const AddClusterBagForm = ({
+  onClose,
+}: AddClusterBagFormProps): React.JSX.Element => {
   const { createClusterBag, isLoading } = useCreateClusterBag();
   const toast = useToast();
   const router = useRouter();
@@ -78,9 +93,10 @@ const AddClusterBagForm = ({ onClose }: AddClusterBagFormProps) => {
   const addClusterBag = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     const formData = {
       name: values.name,
+      code: values.code,
       quantityPerPack: Number(values.quantityPerPack),
       dimensions: values.dimensions,
       art: values.art,
@@ -128,7 +144,7 @@ const AddClusterBagForm = ({ onClose }: AddClusterBagFormProps) => {
         onSubmit={addClusterBag}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {({}) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>
@@ -136,6 +152,7 @@ const AddClusterBagForm = ({ onClose }: AddClusterBagFormProps) => {
               </Heading>
               <Divider mb={'16px'} />
               <InputFieldText name={'name'} label={'Nombre'} />
+              <InputFieldText name={'code'} label={'Código'} />
               <InputFieldText name={'dimensions'} label={'Dimensiones'} />
               <InputFieldNumber
                 name={'quantityPerPack'}

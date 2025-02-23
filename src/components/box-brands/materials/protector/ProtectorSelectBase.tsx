@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -57,7 +58,7 @@ const protectorComponents = {
       false,
       GroupBase<Partial<ProtectorType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -72,15 +73,15 @@ const ProtectorSelectBase: React.FC<ProtectorSelectBaseProps> = ({
   setProtector,
   onChange,
 }) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch, error } = useProtectors(paginationParams);
+  const { paginationParams } = usePagination();
+  const { data, isLoading, error } = useProtectors(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
     if (!!error) {
       const { response } = error as any;
       const { data } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = data;
+      const { statusCode } = data;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');
@@ -89,7 +90,9 @@ const ProtectorSelectBase: React.FC<ProtectorSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<ProtectorType>>) => {
+  const handleChange = (
+    newValue: SingleValue<Partial<ProtectorType>>
+  ): void => {
     if (setProtector) setProtector(newValue as Partial<ProtectorType>);
     if (onChange) onChange(newValue as Partial<ProtectorType>);
   };

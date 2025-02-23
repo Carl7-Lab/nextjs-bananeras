@@ -10,7 +10,6 @@ import {
   Text,
   Flex,
   Center,
-  theme,
   Link,
   Skeleton,
   SkeletonCircle,
@@ -26,7 +25,7 @@ export interface SidenavProps {
   navItems: SidenavItem[];
 }
 
-export function Sidenav({ navItems }: SidenavProps) {
+export function Sidenav({ navItems }: SidenavProps): React.JSX.Element {
   const { isOpen, onClose } = useSidenav();
   const { user, isLoading } = useExporter();
   return (

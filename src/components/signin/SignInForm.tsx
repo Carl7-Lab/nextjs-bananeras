@@ -29,8 +29,9 @@ const validationSchema = Yup.object({
   password: Yup.string().required('Required'),
 });
 
-export default function SignInForm(props: Props) {
-  const signin = async (values: ValuesProps) => {
+export default function SignInForm(props: Props): React.JSX.Element {
+  const signin = async (values: ValuesProps): Promise<void> => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const res = await signIn('credentials', {
       username: values.email,
       password: values.password,

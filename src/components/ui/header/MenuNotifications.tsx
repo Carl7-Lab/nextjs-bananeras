@@ -19,7 +19,7 @@ import React from 'react';
 import { MdOutlineNotifications } from 'react-icons/md';
 import { useNotifications } from '../../../hooks/useNotifications';
 
-const MenuNotification = () => {
+const MenuNotification = (): React.JSX.Element => {
   const { notifications, isLoading } = useNotifications();
 
   if (isLoading)

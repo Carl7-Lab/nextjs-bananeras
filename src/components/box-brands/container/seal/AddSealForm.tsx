@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
@@ -13,17 +14,29 @@ interface AddSealFormProps {
 
 interface ValuesProps {
   name: string;
+  code: string;
   type: string;
 }
 
 const initialValues: ValuesProps = {
   name: '',
+  code: '',
   type: '',
 };
 
 const validationSchema = Yup.object({
   name: Yup.string()
     .max(100, 'Debe tener 100 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  code: Yup.string()
+    .max(10, 'Debe tener 10 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -44,7 +57,7 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddSealForm = ({ onClose }: AddSealFormProps) => {
+const AddSealForm = ({ onClose }: AddSealFormProps): React.JSX.Element => {
   const { createSeal, isLoading } = useCreateSeal();
   const toast = useToast();
   const router = useRouter();
@@ -53,7 +66,7 @@ const AddSealForm = ({ onClose }: AddSealFormProps) => {
   const addSeal = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     createSeal(
       {
         ...values,
@@ -62,7 +75,7 @@ const AddSealForm = ({ onClose }: AddSealFormProps) => {
         onError: (error: any) => {
           const { response } = error;
           const { data } = response;
-          const { statusCode, message, error: errorTitle, model, prop } = data;
+          const { statusCode, message, error: errorTitle } = data;
 
           toast({
             title: `Error ${statusCode}: ${errorTitle} `,
@@ -101,7 +114,7 @@ const AddSealForm = ({ onClose }: AddSealFormProps) => {
         onSubmit={addSeal}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {() => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>
@@ -109,6 +122,7 @@ const AddSealForm = ({ onClose }: AddSealFormProps) => {
               </Heading>
               <Divider mb={'16px'} />
               <InputFieldText name={'name'} label={'Nombre'} />
+              <InputFieldText name={'code'} label={'Código'} />
               <InputFieldText name={'type'} label={'Tipo'} />
 
               <Button

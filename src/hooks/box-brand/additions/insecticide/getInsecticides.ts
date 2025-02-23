@@ -6,7 +6,7 @@ import { serializeQueryResult } from '@/utils/serializeQueryResult';
 
 type Params = PaginationParams;
 
-function listInsecticides(params: Params) {
+function listInsecticides(params: Params): Promise<AxiosResponse> {
   return axios
     .get('/box-brand/insecticide', { params })
     .then((response) => {
@@ -26,6 +26,7 @@ function listInsecticides(params: Params) {
     });
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type
 export function useInsecticides({ search = '', page = 1, limit = 10 }: Params) {
   const result = useQuery(
     ['insecticides', search, page, limit],

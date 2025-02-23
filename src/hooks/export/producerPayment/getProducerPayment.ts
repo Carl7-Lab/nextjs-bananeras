@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import { UseQueryResult, useQuery } from 'react-query';
 import axios from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
@@ -8,7 +9,7 @@ export const getProducerPayment = ({
   producerPaymentId,
 }: {
   producerPaymentId: string;
-}) => {
+}): Promise<AxiosResponse> => {
   return axios.get(`/export/producer-payment/${producerPaymentId}`);
 };
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -55,7 +56,7 @@ const clientComponents = {
       false,
       GroupBase<Partial<ClientType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -69,8 +70,8 @@ const ClientSelectBase: React.FC<ClientSelectBaseProps> = ({
   onChange,
   setClient,
 }) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch, error } = useClients({
+  const { paginationParams } = usePagination();
+  const { data, isLoading, error } = useClients({
     ...paginationParams,
   });
 
@@ -89,7 +90,7 @@ const ClientSelectBase: React.FC<ClientSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<ClientType>>) => {
+  const handleChange = (newValue: SingleValue<Partial<ClientType>>): void => {
     if (setClient) {
       setClient(newValue as Partial<ClientType>);
     }

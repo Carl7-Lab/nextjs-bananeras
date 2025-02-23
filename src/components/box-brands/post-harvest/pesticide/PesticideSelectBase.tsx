@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -55,7 +56,7 @@ const pesticideComponents = {
       false,
       GroupBase<Partial<PesticideType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -69,13 +70,8 @@ const PesticideSelectBase: React.FC<PesticideSelectBaseProps> = ({
   setPesticide,
   onChange,
 }) => {
-  const { paginationParams, filterProps } = usePagination();
-  const {
-    data = [],
-    isLoading,
-    refetch,
-    error,
-  } = usePesticides(paginationParams);
+  const { paginationParams } = usePagination();
+  const { data = [], isLoading, error } = usePesticides(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
@@ -101,7 +97,9 @@ const PesticideSelectBase: React.FC<PesticideSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [field?.value]);
 
-  const handleChange = (newValue: SingleValue<Partial<PesticideType>>) => {
+  const handleChange = (
+    newValue: SingleValue<Partial<PesticideType>>
+  ): void => {
     if (setPesticide) {
       setPesticide(newValue as Partial<PesticideType>);
     }

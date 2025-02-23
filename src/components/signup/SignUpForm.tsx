@@ -1,5 +1,5 @@
 'use client';
-import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
+import { Button, Flex, useToast } from '@chakra-ui/react';
 import { Formik, Form } from 'formik';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -45,12 +45,12 @@ const validationSchema = Yup.object({
   ),
 });
 
-export default function SignUpForm() {
+export default function SignUpForm(): React.JSX.Element {
   const router = useRouter();
   const toast = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
-  const signUp = async (values: ValuesProps) => {
+  const signUp = async (values: ValuesProps): Promise<void> => {
     setIsLoading(true);
     try {
       const res = await fetch(BACKEND_URL + '/auth/exporter/register', {
@@ -105,7 +105,7 @@ export default function SignUpForm() {
       onSubmit={signUp}
       validationSchema={validationSchema}
     >
-      {({ isSubmitting }) => (
+      {({}) => (
         <Form>
           <Flex flexDirection='column' gap={3}>
             <InputFieldText name={'exportName'} label={'Razón Social'} />

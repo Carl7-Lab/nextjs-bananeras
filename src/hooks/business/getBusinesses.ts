@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { AxiosResponse } from 'axios';
 import { useQuery } from 'react-query';
 import axios from '@/lib/axios';
@@ -10,7 +12,7 @@ interface Body {
   id: number;
 }
 
-function listBusinesses(params: Params, body: Body) {
+function listBusinesses(params: Params, body: Body): Promise<AxiosResponse> {
   return axios
     .get(`/merchant/${body.id}/business`, { params })
     .then((response) => {

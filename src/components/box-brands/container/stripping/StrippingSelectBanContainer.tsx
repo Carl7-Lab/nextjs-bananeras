@@ -1,14 +1,6 @@
-import {
-  Flex,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-} from '@chakra-ui/react';
-import { useField } from 'formik';
+import { Flex } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import AddStrippingModal from './AddStrippingModal';
 import InputFieldStrippingSelect from './InputFieldStrippingSelect';
-import StrippingSelectBase from './StrippingSelectBase';
 import InputFieldQuantity from '../../../ui/form/InputFieldQuantity';
 
 interface props {
@@ -40,7 +32,7 @@ const StrippingSelectBanContainer: React.FC<props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isBan]);
 
-  const setBanState = () => {
+  const setBanState = (): void => {
     setIsBan((prevState) => !prevState);
   };
 

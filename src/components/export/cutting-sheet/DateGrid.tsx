@@ -1,16 +1,8 @@
-import {
-  Box,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Grid,
-  GridItem,
-} from '@chakra-ui/react';
+import { FormLabel, Grid, GridItem } from '@chakra-ui/react';
 import { addDays, format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useField } from 'formik';
 import React, { useEffect } from 'react';
-import InputFieldNumber from '../../ui/form/InputFieldNumber';
 import InputFieldQuantity from '../../ui/form/InputFieldQuantity';
 
 interface Props {
@@ -28,7 +20,7 @@ const DateGrid = ({
   dateSelected,
   startDate,
   // daysOfWeek,
-}: Props) => {
+}: Props): React.JSX.Element => {
   const daysOfWeek = Array.from({ length: 7 }).map((_, i) =>
     addDays(startDate, i)
   );

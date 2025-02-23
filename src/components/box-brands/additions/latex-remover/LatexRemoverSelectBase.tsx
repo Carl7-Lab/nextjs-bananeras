@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -57,7 +58,7 @@ const latexRemoverComponents = {
       false,
       GroupBase<Partial<LatexRemoverType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -72,9 +73,8 @@ const LatexRemoverSelectBase: React.FC<LatexRemoverSelectBaseProps> = ({
   setLatexRemover,
   onChange,
 }) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch, error } =
-    useLatexRemovers(paginationParams);
+  const { paginationParams } = usePagination();
+  const { data, isLoading, error } = useLatexRemovers(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
@@ -90,7 +90,9 @@ const LatexRemoverSelectBase: React.FC<LatexRemoverSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<LatexRemoverType>>) => {
+  const handleChange = (
+    newValue: SingleValue<Partial<LatexRemoverType>>
+  ): void => {
     if (setLatexRemover) setLatexRemover(newValue as Partial<LatexRemoverType>);
     if (onChange) onChange(newValue as Partial<LatexRemoverType>);
   };

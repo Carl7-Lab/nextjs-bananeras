@@ -1,10 +1,15 @@
+import { AxiosResponse } from 'axios';
 import { useQuery, UseQueryResult } from 'react-query';
 import axios from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
 import { BandType } from '@/types/box-brand/materials/band';
 import { serializeQueryResult } from '@/utils/serializeQueryResult';
 
-export const getBand = ({ bandId }: { bandId: string }) => {
+export const getBand = ({
+  bandId,
+}: {
+  bandId: string;
+}): Promise<AxiosResponse> => {
   return axios.get(`/box-brand/band/${bandId}`);
 };
 

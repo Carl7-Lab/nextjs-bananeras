@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { AxiosResponse } from 'axios';
 import { useMutation } from 'react-query';
 import axios from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
@@ -11,7 +14,7 @@ type updateRequiredCertificateDTO = {
 const updateRequiredCertificate = ({
   data,
   certificateId,
-}: updateRequiredCertificateDTO) => {
+}: updateRequiredCertificateDTO): Promise<AxiosResponse> => {
   return axios.post(`/box-brand/certificate/${certificateId}`, data);
 };
 

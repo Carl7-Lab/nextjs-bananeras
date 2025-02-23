@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Button,
   Divider,
@@ -113,7 +115,7 @@ const typesOpt = [
   },
 ];
 
-const AddBankAccountForm = () => {
+const AddBankAccountForm = (): React.JSX.Element => {
   const pathname = usePathname();
   const [producer, setProducer] = useState<Partial<MerchantType> | null>(null);
   const isProducerPath = pathname === '/dashboard/producer/add-bank-account';
@@ -169,7 +171,7 @@ const AddBankAccountForm = () => {
   const addBankAccount = async (
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
-  ) => {
+  ): Promise<void> => {
     const {
       dataReviewed,
       isClient,

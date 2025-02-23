@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Accordion,
   AccordionButton,
@@ -15,7 +16,7 @@ const DetailBusiness = ({
 }: {
   business: any;
   width: { sm: number; md: number };
-}) => {
+}): React.JSX.Element => {
   return (
     <Accordion defaultIndex={[0]} allowMultiple>
       <AccordionItem>

@@ -10,7 +10,7 @@ import {
 import AddBoxBrandsForm from '@/components/box-brands/AddBoxBrandsForm';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
-function AddBoxBrandPage() {
+function AddBoxBrandPage(): React.JSX.Element {
   return (
     <>
       <Box my={'20px'} mx={'auto'} w={'95%'}>

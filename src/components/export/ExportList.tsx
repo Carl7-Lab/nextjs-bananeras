@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Heading,
   SimpleGrid,
@@ -13,14 +14,9 @@ import { useExportsPending } from '../../hooks/export/getExportsPending';
 import { usePagination } from '../../hooks/usePagination';
 import { ExportType } from '../../types/export';
 
-const ExportList = () => {
-  const { paginationParams, filterProps } = usePagination();
-  const {
-    data = [],
-    isLoading,
-    refetch,
-    error,
-  } = useExportsPending(paginationParams);
+const ExportList = (): React.JSX.Element => {
+  const { paginationParams } = usePagination();
+  const { data = [], isLoading, error } = useExportsPending(paginationParams);
   const router = useRouter();
   const pathname = usePathname();
 

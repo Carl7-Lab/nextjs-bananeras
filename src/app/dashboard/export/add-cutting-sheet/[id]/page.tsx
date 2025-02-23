@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import {
   Box,
@@ -13,9 +14,9 @@ import CuttingSheetForm from '../../../../../components/export/cutting-sheet/Cut
 import { useExport } from '../../../../../hooks/export/getExport';
 import { ExportType } from '../../../../../types/export';
 
-const CuttingSheetPage = () => {
+const CuttingSheetPage = (): React.JSX.Element => {
   const params = useParams<{ id: string }>();
-  const { data, isLoading, refetch, error } = useExport({
+  const { data, isLoading, error } = useExport({
     exportId: params.id,
   });
   const pendingCuttingSheet = data as Partial<ExportType>;

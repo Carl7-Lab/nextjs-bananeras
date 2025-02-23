@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Box,
   Center,
@@ -13,12 +14,11 @@ import { useCuttingSheetsPending } from '../../../hooks/export/cuttingSheet/getE
 import { usePagination } from '../../../hooks/usePagination';
 import { ExportType } from '../../../types/export';
 
-const PendingCuttingSheetList = () => {
-  const { paginationParams, filterProps } = usePagination();
+const PendingCuttingSheetList = (): React.JSX.Element => {
+  const { paginationParams } = usePagination();
   const {
     data = [],
     isLoading,
-    refetch,
     error,
   } = useCuttingSheetsPending(paginationParams);
   const router = useRouter();

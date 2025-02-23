@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { AxiosResponse } from 'axios';
 import { useMutation } from 'react-query';
 import axios from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
@@ -10,7 +14,7 @@ type uploadBoxBrandLogoDTO = {
 const uploadBoxBrandLogo = async ({
   logoImg,
   boxBrandId,
-}: uploadBoxBrandLogoDTO) => {
+}: uploadBoxBrandLogoDTO): Promise<AxiosResponse> => {
   const formData = new FormData();
   formData.append('file', logoImg);
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -56,7 +57,7 @@ const businessComponents = {
       false,
       GroupBase<Partial<BusinessType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -71,8 +72,8 @@ const BusinessSelectBase: React.FC<BusinessSelectBaseProps> = ({
   onChange,
   setBusiness,
 }) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch, error } = useBusinessesByMerchantId(
+  const { paginationParams } = usePagination();
+  const { data, isLoading, error } = useBusinessesByMerchantId(
     { ...paginationParams },
     { id: merchant ?? 0 }
   );
@@ -82,7 +83,7 @@ const BusinessSelectBase: React.FC<BusinessSelectBaseProps> = ({
     if (!!error) {
       const { response } = error as any;
       const { data } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = data;
+      const { statusCode } = data;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');
@@ -91,7 +92,7 @@ const BusinessSelectBase: React.FC<BusinessSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<BusinessType>>) => {
+  const handleChange = (newValue: SingleValue<Partial<BusinessType>>): void => {
     if (setBusiness) {
       setBusiness(newValue as Partial<BusinessType>);
     }

@@ -1,10 +1,15 @@
+import { AxiosResponse } from 'axios';
 import { UseQueryResult, useQuery } from 'react-query';
 import axios from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
 import { HarborType } from '@/types/harbor';
 import { serializeQueryResult } from '@/utils/serializeQueryResult';
 
-export const getHarbor = ({ harborId }: { harborId: string }) => {
+export const getHarbor = ({
+  harborId,
+}: {
+  harborId: string;
+}): Promise<AxiosResponse> => {
   return axios.get(`/harbor/${harborId}`);
 };
 

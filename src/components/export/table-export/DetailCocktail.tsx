@@ -1,7 +1,5 @@
 import {
-  Box,
   Table,
-  TableCaption,
   TableContainer,
   Tbody,
   Td,
@@ -9,12 +7,7 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react';
-import {
-  MaterialReactTable,
-  MRT_ColumnDef,
-  useMaterialReactTable,
-} from 'material-react-table';
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import { InsecticideCocktailPart } from '../../../types/box-brand/additions/insecticideCocktailPart';
 import { PesticideCocktailPart } from '../../../types/box-brand/post-harvest/pesticideCocktailPart';
 import {
@@ -29,11 +22,6 @@ interface Props {
   windowSize: { width: number | null; height: number | null };
 }
 
-interface TableSizeProps {
-  sm: number | null;
-  md: number | null;
-}
-
 interface CocktailProps {
   name: string;
   need: number;
@@ -43,9 +31,7 @@ interface CocktailProps {
 const DetailCocktail = ({
   cocktailNeed,
   cocktailSent,
-  width,
-  windowSize,
-}: Props) => {
+}: Props): React.JSX.Element => {
   const cocktail: CocktailProps[] = cocktailSent.map((item, index) => {
     const name: string =
       (item as PesticideSentPartType).pesticide.name ||

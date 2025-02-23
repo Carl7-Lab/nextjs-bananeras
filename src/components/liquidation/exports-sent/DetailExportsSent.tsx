@@ -20,12 +20,8 @@ const DetailExportSent = ({
 }: {
   exportSent: ExportSentType;
   width: { sm: number; md: number };
-}) => {
+}): React.JSX.Element => {
   const { export: ex } = exportSent;
-
-  const renderDetails = (label: string, data?: string) => {
-    return data ? `${label}: ${data}` : `${label}: No disponible`;
-  };
 
   return (
     <Accordion defaultIndex={[0]} allowMultiple>

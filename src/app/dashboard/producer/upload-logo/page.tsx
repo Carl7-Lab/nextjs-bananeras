@@ -11,7 +11,7 @@ import React from 'react';
 import UploadLogoForm from '../../../../components/producer/UploadLogoForm';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
-function UploadLogoPage() {
+function UploadLogoPage(): React.JSX.Element {
   return (
     <>
       <Box my={'20px'} mx={'auto'} w={'95%'}>

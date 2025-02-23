@@ -19,6 +19,7 @@ type UseCreateBlockingSheetOptions = {
 
 export const useCreateBlockingSheet = ({
   config,
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type
 }: UseCreateBlockingSheetOptions = {}) => {
   const mutation = useMutation({
     ...config,

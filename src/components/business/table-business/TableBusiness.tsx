@@ -1,4 +1,5 @@
-import { Box, Center } from '@chakra-ui/react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Box } from '@chakra-ui/react';
 import {
   MRT_ColumnDef,
   MaterialReactTable,
@@ -17,9 +18,9 @@ const TableBusiness = ({
 }: {
   width: { sm: number; md: number };
   windowSize: { width: number | null; height: number | null };
-}) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data = [], isLoading, error } = useBusinesses(paginationParams);
+}): React.JSX.Element => {
+  const { paginationParams } = usePagination();
+  const { data = [], error } = useBusinesses(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
@@ -60,7 +61,7 @@ const TableBusiness = ({
           {
             accessorKey: 'area',
             header: 'Área (ha)',
-            Cell: ({ cell }) => {
+            Cell: ({ cell }): React.JSX.Element => {
               const value = cell.getValue<number | null>();
               return <span>{value != null ? `${value} ha` : 'N/A'}</span>;
             },

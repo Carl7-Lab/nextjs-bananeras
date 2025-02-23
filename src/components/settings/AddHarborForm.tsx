@@ -158,7 +158,7 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddHarborForm: React.FC<AddHarborFormProps> = ({ onClose }) => {
+const AddHarborForm: React.FC<AddHarborFormProps> = ({}) => {
   const typesOpt = [
     {
       name: 'Nacional',
@@ -177,7 +177,8 @@ const AddHarborForm: React.FC<AddHarborFormProps> = ({ onClose }) => {
   const addHarbor = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { dataReviewed, ...harborData } = values;
     createHarbor(
       {
@@ -219,7 +220,7 @@ const AddHarborForm: React.FC<AddHarborFormProps> = ({ onClose }) => {
         onSubmit={addHarbor}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting, values }) => (
+        {({ values }) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>

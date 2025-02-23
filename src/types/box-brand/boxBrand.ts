@@ -7,11 +7,23 @@ import { StapleType } from './container/staple';
 import { StrippingType } from './container/stripping';
 import { ThermographType } from './container/thermograph';
 import { BandType } from './materials/band';
+import { BottomType } from './materials/bottom';
+import { CardboardType } from './materials/cardboard';
 import { ClusterBagType } from './materials/clusterBag';
+import { CornerType } from './materials/corner';
+import { CoverType } from './materials/cover';
 import { LabelType } from './materials/label';
+import { LidType } from './materials/lid';
+import { MiniPalletType } from './materials/minipallet';
+import { PackingTapeType } from './materials/packingtape';
+import { PadType } from './materials/pad';
+import { PalletType } from './materials/pallet';
+import { ParasealType } from './materials/paraseal';
 import { ProtectorType } from './materials/protector';
+import { ReinforcementType } from './materials/reinforcement';
 import { RubberType } from './materials/rubber';
 import { SachetType } from './materials/sachet';
+import { SpongeType } from './materials/sponge';
 import { PesticideCocktailPart } from './post-harvest/pesticideCocktailPart';
 import { BrandType } from './specifications/brand';
 
@@ -27,21 +39,27 @@ export type BoxBrandType = {
   grossWeightBox: number | '';
   requiredCertificates: number[] | null | string[];
   // materials
-  bottomType: string;
+  bottomType?: Partial<BottomType>;
+  bottomTypeId: number | '';
   bottomTypeQuantity: number | '';
-  lidType: string;
+  lidType?: Partial<LidType>;
+  lidTypeId: number | '';
   lidTypeQuantity: number | '';
-  coverType: string;
+  coverType?: Partial<CoverType>;
+  coverTypeId: number | '';
   coverTypeQuantity: number | '';
-  cardboardType: string;
+  cardboardType?: Partial<CardboardType>;
+  cardboardTypeId: number | '';
   cardboardTypeQuantity: number | '';
-  parasealType: string;
+  parasealType?: Partial<ParasealType>;
+  parasealTypeId?: number | '';
   parasealTypeQuantity: number | '';
-  padType: string;
+  padType?: Partial<PadType>;
+  padTypeId?: number | '';
   padTypeQuantity: number | '';
-  spongeType: string;
+  spongeType?: Partial<SpongeType>;
+  spongeTypeId?: number | '';
   spongeTypeQuantity: number | '';
-
   label?: Partial<LabelType>;
   labelId: number | '';
   labelQuantity: number | '';
@@ -62,18 +80,18 @@ export type BoxBrandType = {
   clusterBagQuantity: number | '';
   // post harvest
   pesticideCocktail?: Partial<PesticideCocktailPart>[];
-  // pesticidesQuantity: number | '';
-  // pesticideList: Partial<PesticideType>[];
-  // container
-  palletsType: string;
+  palletsType?: Partial<PalletType>;
+  palletsTypeId?: number | '';
   palletsTypeQuantity: number | '';
-  miniPalletsType: string;
+  miniPalletsType?: Partial<MiniPalletType>;
+  miniPalletsTypeId?: number | '';
   miniPalletsTypeQuantity: number | '';
-  cornerType: string;
+  cornerType?: Partial<CornerType>;
+  cornerTypeId?: number | '';
   cornerTypeQuantity: number | '';
-  reinforcementType: string;
+  reinforcementType?: Partial<ReinforcementType>;
+  reinforcementTypeId?: number | '';
   reinforcementTypeQuantity: number | '';
-
   staple?: Partial<StapleType>;
   stapleId: number | '';
   stapleQuantity: number | '';
@@ -90,9 +108,9 @@ export type BoxBrandType = {
   mettoLabelId: number | '';
   mettoLabelQuantity: number | '';
   // additions
-  packingTapeType: string;
+  packingTapeType?: Partial<PackingTapeType>;
+  packingTapeTypeId?: number | '';
   packingTapeTypeQuantity: number | '';
-
   latexRemover?: Partial<LatexRemoverType>;
   latexRemoverId: number | '';
   latexRemoverQuantity: number | '';
@@ -100,7 +118,4 @@ export type BoxBrandType = {
   blockingSheetId: number | '';
   blockingSheetQuantity: number | '';
   insecticideCocktail?: Partial<InsecticideCocktailPart>[];
-  // insecticides: number[] | null | Partial<InsecticideType>[];
-  // insecticidesQuantity: number | '';
-  // insecticideList: Partial<InsecticideType>[];
 };

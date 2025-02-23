@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -55,7 +56,7 @@ const brandComponents = {
       false,
       GroupBase<Partial<ExportType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -69,16 +70,15 @@ const ExportSelectBase: React.FC<ExportSelectBaseProps> = ({
   onChange,
   setExport,
 }) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch, error } =
-    useExportsPending(paginationParams);
+  const { paginationParams } = usePagination();
+  const { data, isLoading, error } = useExportsPending(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
     if (!!error) {
       const { response } = error as any;
       const { data } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = data;
+      const { statusCode } = data;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');
@@ -87,7 +87,7 @@ const ExportSelectBase: React.FC<ExportSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<ExportType>>) => {
+  const handleChange = (newValue: SingleValue<Partial<ExportType>>): void => {
     if (setExport) {
       setExport(newValue as Partial<ExportType>);
     }

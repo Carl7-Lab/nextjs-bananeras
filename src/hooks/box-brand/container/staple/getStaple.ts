@@ -1,10 +1,15 @@
+import { AxiosResponse } from 'axios';
 import { useQuery, UseQueryResult } from 'react-query';
 import axios from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
 import { PesticideType } from '@/types/box-brand/post-harvest/pesticide';
 import { serializeQueryResult } from '@/utils/serializeQueryResult';
 
-export const getPesticide = ({ pesticideId }: { pesticideId: string }) => {
+export const getPesticide = ({
+  pesticideId,
+}: {
+  pesticideId: string;
+}): Promise<AxiosResponse> => {
   return axios.get(`/box-brand/pesticide/${pesticideId}`);
 };
 

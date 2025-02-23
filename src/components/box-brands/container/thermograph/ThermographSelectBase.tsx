@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   DropdownIndicatorProps,
@@ -57,7 +58,7 @@ const thermoComponents = {
       false,
       GroupBase<Partial<ThermographType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -72,15 +73,15 @@ const ThermographSelectBase: React.FC<ThermographSelectBaseProps> = ({
   setThermo,
   onChange,
 }) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch, error } = useThermographs(paginationParams);
+  const { paginationParams } = usePagination();
+  const { data, isLoading, error } = useThermographs(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
     if (!!error) {
       const { response } = error as any;
       const { data } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = data;
+      const { statusCode } = data;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');
@@ -89,7 +90,9 @@ const ThermographSelectBase: React.FC<ThermographSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<ThermographType>>) => {
+  const handleChange = (
+    newValue: SingleValue<Partial<ThermographType>>
+  ): void => {
     if (setThermo) setThermo(newValue as Partial<ThermographType>);
     if (onChange) onChange(newValue as Partial<ThermographType>);
   };

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
@@ -13,17 +14,29 @@ interface AddBlockingSheetFormProps {
 
 interface ValuesProps {
   name: string;
+  code: string;
   dimensions: string;
 }
 
 const initialValues: ValuesProps = {
   name: '',
+  code: '',
   dimensions: '',
 };
 
 const validationSchema = Yup.object({
   name: Yup.string()
     .max(100, 'Debe tener 100 caracteres o menos')
+    .min(2, 'Debe tener 2 caracteres o más')
+    .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
+    .matches(
+      /^(?!.*\s{2,}).*$/,
+      'No debe tener múltiples espacios consecutivos'
+    )
+    .transform((value) => value.trim())
+    .required('Requerido'),
+  code: Yup.string()
+    .max(10, 'Debe tener 10 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .matches(/^\S.*\S$/, 'No debe tener espacios al principio ni al final')
     .matches(
@@ -44,7 +57,9 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddBlockingSheetForm = ({ onClose }: AddBlockingSheetFormProps) => {
+const AddBlockingSheetForm = ({
+  onClose,
+}: AddBlockingSheetFormProps): React.JSX.Element => {
   const { createBlockingSheet, isLoading } = useCreateBlockingSheet();
   const toast = useToast();
   const router = useRouter();
@@ -53,7 +68,7 @@ const AddBlockingSheetForm = ({ onClose }: AddBlockingSheetFormProps) => {
   const addBlockingSheet = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     createBlockingSheet(
       {
         ...values,
@@ -62,7 +77,7 @@ const AddBlockingSheetForm = ({ onClose }: AddBlockingSheetFormProps) => {
         onError: (error: any) => {
           const { response } = error;
           const { data } = response;
-          const { statusCode, message, error: errorTitle, model, prop } = data;
+          const { statusCode, message, error: errorTitle } = data;
 
           toast({
             title: `Error ${statusCode}: ${errorTitle} `,
@@ -101,7 +116,7 @@ const AddBlockingSheetForm = ({ onClose }: AddBlockingSheetFormProps) => {
         onSubmit={addBlockingSheet}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {({}) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>
@@ -109,6 +124,7 @@ const AddBlockingSheetForm = ({ onClose }: AddBlockingSheetFormProps) => {
               </Heading>
               <Divider mb={'16px'} />
               <InputFieldText name={'name'} label={'Nombre'} />
+              <InputFieldText name={'code'} label={'Código'} />
               <InputFieldText name={'dimensions'} label={'Dimensiones'} />
 
               <Button

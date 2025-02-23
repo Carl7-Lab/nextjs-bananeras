@@ -1,4 +1,5 @@
-import { Box, Center, Icon } from '@chakra-ui/react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Box, Icon } from '@chakra-ui/react';
 import {
   MRT_ColumnDef,
   MaterialReactTable,
@@ -7,7 +8,7 @@ import {
 import { MRT_Localization_ES } from 'material-react-table/locales/es';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useMemo } from 'react';
-import { BsFileEarmarkPdf, BsImage } from 'react-icons/bs';
+import { BsImage } from 'react-icons/bs';
 import DetailProducerPayments from './DetailProducerPayments';
 import { useProducerPayments } from '../../../hooks/liquidation/getProducerPayments';
 import { usePagination } from '../../../hooks/usePagination';
@@ -18,9 +19,9 @@ const TableProducerPayments = ({
 }: {
   width: { sm: number; md: number };
   windowSize: { width: number | null; height: number | null };
-}) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data = [], isLoading, error } = useProducerPayments(paginationParams);
+}): React.JSX.Element => {
+  const { paginationParams } = usePagination();
+  const { data = [], error } = useProducerPayments(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
@@ -123,7 +124,7 @@ const TableProducerPayments = ({
           {
             accessorKey: 'transferUrl',
             header: 'Acceso',
-            Cell: ({ cell }) => {
+            Cell: ({ cell }): React.JSX.Element => {
               const url = cell.getValue() as string | undefined;
               return url ? (
                 <a href={url} target='_blank' rel='noopener noreferrer'>

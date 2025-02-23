@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Box,
   Button,
@@ -185,7 +187,7 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddBusinessForm = () => {
+const AddBusinessForm = (): React.JSX.Element => {
   const { createBusiness, isLoading } = useCreateBusiness();
   const router = useRouter();
   const toast = useToast();
@@ -194,7 +196,7 @@ const AddBusinessForm = () => {
   const sendProducerForm = async (
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
-  ) => {
+  ): Promise<void> => {
     const { area, dataReviewed, ...businessData } = values;
 
     createBusiness(

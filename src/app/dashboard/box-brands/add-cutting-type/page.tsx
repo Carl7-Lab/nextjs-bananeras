@@ -10,7 +10,7 @@ import {
 import AddCuttingTypeForm from '../../../../components/export/cutting-type/AddCuttingTypeForm';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
-function AddCuttingTypePage() {
+function AddCuttingTypePage(): React.JSX.Element {
   return (
     <>
       <Box my={'20px'} mx={'auto'} w={'95%'}>

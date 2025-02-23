@@ -29,13 +29,13 @@ const InputFieldSentInsecticide: React.FC<InputFieldSentInsecticideProps> = ({
 }) => {
   const [field, meta, helpers] = useField(name);
 
-  const handleBlur = (event: React.FocusEvent) => {
+  const handleBlur = (event: React.FocusEvent): void => {
     field.onBlur(event);
 
     helpers.setValue(Number(meta.value));
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent) => {
+  const handleKeyDown = (event: React.KeyboardEvent): void => {
     if (event.key === 'Enter') {
       helpers.setValue(Number(field.value));
     }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -55,7 +56,7 @@ const certificateComponents = {
       true,
       GroupBase<Partial<RequiredCertificateType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -65,16 +66,15 @@ const certificateComponents = {
 const RequiredCertificateMultiSelectBase: React.FC<
   RequiredCertificateMultiSelectBaseProps
 > = ({ name, placeholder, field, onChange, setCertificates }) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch, error } =
-    useRequiredCertificates(paginationParams);
+  const { paginationParams } = usePagination();
+  const { data, isLoading, error } = useRequiredCertificates(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
     if (!!error) {
       const { response } = error as any;
       const { data } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = data;
+      const { statusCode } = data;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');
@@ -85,7 +85,7 @@ const RequiredCertificateMultiSelectBase: React.FC<
 
   const handleChange = (
     newValues: MultiValue<Partial<RequiredCertificateType>>
-  ) => {
+  ): void => {
     if (setCertificates) {
       setCertificates(newValues as Partial<RequiredCertificateType>[]);
     }
