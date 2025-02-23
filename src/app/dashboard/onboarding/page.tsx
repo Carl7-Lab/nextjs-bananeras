@@ -12,7 +12,7 @@ import { useSession } from 'next-auth/react';
 import React, { useLayoutEffect } from 'react';
 import OnboardingForm from '../../../components/onboarding/OnboardingForm';
 
-export default function OnBoardingPage() {
+export default function OnBoardingPage(): React.JSX.Element {
   const { data: session } = useSession();
   const isOnboarded = session?.user?.onboardingStatus;
 

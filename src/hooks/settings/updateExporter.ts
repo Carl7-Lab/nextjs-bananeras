@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { AxiosResponse } from 'axios';
 import { useMutation } from 'react-query';
 import axios from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
@@ -12,7 +16,7 @@ const updateExporter = async ({
   city,
   address,
   exporterId,
-}: UpdateExporterDTO) => {
+}: UpdateExporterDTO): Promise<AxiosResponse> => {
   try {
     return await axios.post(`/exporter/update/${exporterId}`, {
       city,

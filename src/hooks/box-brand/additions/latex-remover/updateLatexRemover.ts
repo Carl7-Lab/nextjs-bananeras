@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { AxiosResponse } from 'axios';
 import { useMutation } from 'react-query';
 import axios from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
@@ -11,7 +13,7 @@ type updateLatexRemoverDTO = {
 const updateLatexRemover = ({
   data,
   latexRemoverId,
-}: updateLatexRemoverDTO) => {
+}: updateLatexRemoverDTO): Promise<AxiosResponse> => {
   return axios.post(`/box-brand/latex-remover/${latexRemoverId}`, data);
 };
 
@@ -21,6 +23,7 @@ type UseUpdateLatexRemoverOptions = {
 
 export const useUpdateLatexRemover = ({
   config,
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }: UseUpdateLatexRemoverOptions = {}) => {
   const mutation = useMutation({
     ...config,

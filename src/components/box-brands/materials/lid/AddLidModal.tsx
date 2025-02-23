@@ -11,7 +11,7 @@ import React from 'react';
 import { AiFillPlusCircle } from 'react-icons/ai';
 import AddLidForm from './AddLidForm';
 
-const AddLidModal = () => {
+const AddLidModal = (): React.JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (

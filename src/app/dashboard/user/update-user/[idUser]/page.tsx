@@ -12,7 +12,7 @@ import UpdateExporterForm from '../../../../../components/settings/UpdateExporte
 import IsOnboarding from '../../../../../components/ui/IsOnboarding';
 import { useExporter, UserProfile } from '../../../../../hooks/useUserProfile';
 
-const UpdateExporterPage = () => {
+const UpdateExporterPage = (): JSX.Element => {
   const { user, isLoading } = useExporter();
   const exporter = user as Partial<UserProfile>;
 

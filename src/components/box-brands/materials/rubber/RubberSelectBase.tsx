@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -57,7 +58,7 @@ const rubberComponents = {
       false,
       GroupBase<Partial<RubberType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -72,8 +73,8 @@ const RubberSelectBase: React.FC<RubberSelectBaseProps> = ({
   setRubber,
   onChange,
 }) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch, error } = useRubbers(paginationParams);
+  const { paginationParams } = usePagination();
+  const { data, isLoading, error } = useRubbers(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
@@ -89,7 +90,7 @@ const RubberSelectBase: React.FC<RubberSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<RubberType>>) => {
+  const handleChange = (newValue: SingleValue<Partial<RubberType>>): void => {
     if (setRubber) setRubber(newValue as Partial<RubberType>);
     if (onChange) onChange(newValue as Partial<RubberType>);
   };

@@ -24,8 +24,7 @@ const ExportCard: React.FC<ExportCardProps> = ({ exportItem, pathname }) => {
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const handleClick = () => {
-    // console.log(`export ${exportItem.id}: `, exportItem);
+  const handleClick = (): void => {
     router.push(`${pathname}/${exportItem.id}`);
   };
 

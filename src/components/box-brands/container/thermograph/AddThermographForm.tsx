@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
@@ -56,7 +57,9 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddThermographForm = ({ onClose }: AddThermographFormProps) => {
+const AddThermographForm = ({
+  onClose,
+}: AddThermographFormProps): React.JSX.Element => {
   const { createThermograph, isLoading } = useCreateThermograph();
   const toast = useToast();
   const router = useRouter();
@@ -65,7 +68,7 @@ const AddThermographForm = ({ onClose }: AddThermographFormProps) => {
   const addThermo = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     createThermograph(
       {
         ...values,
@@ -74,7 +77,7 @@ const AddThermographForm = ({ onClose }: AddThermographFormProps) => {
         onError: (error: any) => {
           const { response } = error;
           const { data } = response;
-          const { statusCode, message, error: errorTitle, model, prop } = data;
+          const { statusCode, message, error: errorTitle } = data;
 
           toast({
             title: `Error ${statusCode}: ${errorTitle} `,
@@ -113,7 +116,7 @@ const AddThermographForm = ({ onClose }: AddThermographFormProps) => {
         onSubmit={addThermo}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {() => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>

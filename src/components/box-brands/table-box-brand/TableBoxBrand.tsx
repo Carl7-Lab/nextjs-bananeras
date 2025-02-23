@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box } from '@mui/material';
 import {
   type MRT_ColumnDef,
@@ -18,14 +19,9 @@ const TableBoxBrand = ({
 }: {
   width: { sm: number; md: number };
   windowSize: { width: number | null; height: number | null };
-}) => {
-  const { paginationParams, filterProps } = usePagination();
-  const {
-    data = [],
-    isLoading,
-    refetch,
-    error,
-  } = useBoxBrands(paginationParams);
+}): React.JSX.Element => {
+  const { paginationParams } = usePagination();
+  const { data = [], error } = useBoxBrands(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
@@ -68,7 +64,7 @@ const TableBoxBrand = ({
           {
             accessorKey: 'netWeightBox',
             header: 'Peso Neto por Caja (kg)',
-            Cell: ({ cell }) => {
+            Cell: ({ cell }): React.JSX.Element | string => {
               const value = cell.getValue<number>();
               return value ? `${value} kg` : 'N/A';
             },
@@ -76,7 +72,7 @@ const TableBoxBrand = ({
           {
             accessorKey: 'grossWeightBox',
             header: 'Peso Bruto por Caja (kg)',
-            Cell: ({ cell }) => {
+            Cell: ({ cell }): React.JSX.Element | string => {
               const value = cell.getValue<number>();
               return value ? `${value} kg` : 'N/A';
             },

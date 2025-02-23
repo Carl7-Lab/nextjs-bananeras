@@ -1,6 +1,5 @@
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
@@ -44,16 +43,15 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddBottomForm = ({ onClose }: AddBottomFormProps) => {
+const AddBottomForm = ({ onClose }: AddBottomFormProps): React.JSX.Element => {
   const { createBottom, isLoading } = useCreateBottom();
   const toast = useToast();
-  const router = useRouter();
   const queryClient = useQueryClient();
 
   const addBottom = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     const { ...bottomData } = values;
 
     createBottom(
@@ -95,7 +93,7 @@ const AddBottomForm = ({ onClose }: AddBottomFormProps) => {
         onSubmit={addBottom}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {({}) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -57,7 +58,7 @@ const mettoLabelComponents = {
       false,
       GroupBase<Partial<MettoLabelType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -72,15 +73,15 @@ const MettoLabelSelectBase: React.FC<MettoLabelSelectBaseProps> = ({
   setMettoLabel,
   onChange,
 }) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch, error } = useMettoLabels(paginationParams);
+  const { paginationParams } = usePagination();
+  const { data, isLoading, error } = useMettoLabels(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
     if (!!error) {
       const { response } = error as any;
       const { data } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = data;
+      const { statusCode } = data;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');
@@ -89,7 +90,9 @@ const MettoLabelSelectBase: React.FC<MettoLabelSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<MettoLabelType>>) => {
+  const handleChange = (
+    newValue: SingleValue<Partial<MettoLabelType>>
+  ): void => {
     if (setMettoLabel) setMettoLabel(newValue as Partial<MettoLabelType>);
     if (onChange) onChange(newValue as Partial<MettoLabelType>);
   };

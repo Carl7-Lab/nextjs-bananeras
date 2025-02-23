@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
@@ -52,7 +53,9 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddProtectorForm = ({ onClose }: AddProtectorFormProps) => {
+const AddProtectorForm = ({
+  onClose,
+}: AddProtectorFormProps): React.JSX.Element => {
   const { createProtector, isLoading } = useCreateProtector();
   const toast = useToast();
   const router = useRouter();
@@ -61,7 +64,7 @@ const AddProtectorForm = ({ onClose }: AddProtectorFormProps) => {
   const addProtector = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     const { quantityPerPack, ...protectorData } = values;
 
     createProtector(
@@ -73,7 +76,7 @@ const AddProtectorForm = ({ onClose }: AddProtectorFormProps) => {
         onError: (error: any) => {
           const { response } = error;
           const { data } = response;
-          const { statusCode, message, error: errorTitle, model, prop } = data;
+          const { statusCode, message, error: errorTitle } = data;
 
           toast({
             title: `Error ${statusCode}: ${errorTitle} `,
@@ -112,7 +115,7 @@ const AddProtectorForm = ({ onClose }: AddProtectorFormProps) => {
         onSubmit={addProtector}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {({}) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>

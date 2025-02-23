@@ -1,6 +1,5 @@
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
@@ -44,16 +43,17 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddParasealForm = ({ onClose }: AddParasealFormProps) => {
+const AddParasealForm = ({
+  onClose,
+}: AddParasealFormProps): React.JSX.Element => {
   const { createParaseal, isLoading } = useCreateParaseal();
   const toast = useToast();
-  const router = useRouter();
   const queryClient = useQueryClient();
 
   const addParaseal = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     createParaseal(
       { ...values },
       {

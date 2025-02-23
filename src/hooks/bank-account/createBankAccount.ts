@@ -19,6 +19,7 @@ type UseCreateBankAccountOptions = {
 
 export const useCreateBankAccount = ({
   config,
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type
 }: UseCreateBankAccountOptions = {}) => {
   const mutation = useMutation({
     ...config,

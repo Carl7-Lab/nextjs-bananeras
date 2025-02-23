@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import {
   Box,
@@ -14,9 +15,9 @@ import IsOnboarding from '../../../../../components/ui/IsOnboarding';
 import { useExport } from '../../../../../hooks/export/getExport';
 import { ExportType } from '../../../../../types/export';
 
-const PendingExportPage = () => {
+const PendingExportPage = (): React.JSX.Element => {
   const params = useParams<{ id: string }>();
-  const { data, isLoading, refetch, error } = useExport({
+  const { data, isLoading, error } = useExport({
     exportId: params.id,
   });
   const pendingExport = data as Partial<ExportType>;
@@ -27,7 +28,7 @@ const PendingExportPage = () => {
     if (!!error) {
       const { response } = error as any;
       const { data: dataRes } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = dataRes;
+      const { statusCode } = dataRes;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');

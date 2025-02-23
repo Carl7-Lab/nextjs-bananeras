@@ -1,9 +1,4 @@
-import {
-  Checkbox,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-} from '@chakra-ui/react';
+import { Checkbox, FormControl, FormErrorMessage } from '@chakra-ui/react';
 import { useField } from 'formik';
 import React from 'react';
 

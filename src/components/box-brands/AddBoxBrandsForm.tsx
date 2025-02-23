@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 import {
   Box,
@@ -861,7 +863,7 @@ const specificationsInputFieldsNumber: InputFieldProps[] = [
   { name: 'grossWeightBox', label: 'Peso Bruto de Caja', unit: 'LBS' },
 ];
 
-export default function AddBoxBrandsForm() {
+export default function AddBoxBrandsForm(): React.JSX.Element {
   const router = useRouter();
   const toast = useToast();
   const { createBoxBrand, isLoading } = useCreateBoxBrand();
@@ -870,7 +872,7 @@ export default function AddBoxBrandsForm() {
   const addBoxBrands = async (
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
-  ) => {
+  ): Promise<void> => {
     const {
       netWeightBox,
       grossWeightBox,

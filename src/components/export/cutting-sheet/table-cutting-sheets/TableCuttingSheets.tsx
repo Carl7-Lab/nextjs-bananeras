@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, Center } from '@chakra-ui/react';
 import {
   MRT_ColumnDef,
@@ -7,7 +8,7 @@ import {
 import { MRT_Localization_ES } from 'material-react-table/locales/es';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useMemo } from 'react';
-import { BsDownload, BsFileEarmarkPdf } from 'react-icons/bs';
+import { BsFileEarmarkPdf } from 'react-icons/bs';
 import DetailCuttingSheets from './DetailCuttingSheets';
 import { useCuttingSheets } from '../../../../hooks/export/cuttingSheet/getCuttingSheets';
 import { usePagination } from '../../../../hooks/usePagination';
@@ -18,9 +19,9 @@ const TableCuttingSheets = ({
 }: {
   width: { sm: number; md: number };
   windowSize: { width: number | null; height: number | null };
-}) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data = [], isLoading, error } = useCuttingSheets(paginationParams);
+}): React.JSX.Element => {
+  const { paginationParams } = usePagination();
+  const { data = [], error } = useCuttingSheets(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
@@ -101,7 +102,7 @@ const TableCuttingSheets = ({
           {
             accessorKey: 'pdfUrl',
             header: 'Acceso al PDF',
-            Cell: ({ cell }) => {
+            Cell: ({ cell }): React.JSX.Element => {
               const url = cell.getValue();
               return typeof url === 'string' && url ? (
                 <Center>

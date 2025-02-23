@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -57,7 +58,7 @@ const reinforcementComponents = {
       false,
       GroupBase<Partial<ReinforcementType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -86,7 +87,9 @@ const ReinforcementSelectBase: React.FC<ReinforcementSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<ReinforcementType>>) => {
+  const handleChange = (
+    newValue: SingleValue<Partial<ReinforcementType>>
+  ): void => {
     if (setReinforcement)
       setReinforcement(newValue as Partial<ReinforcementType>);
     if (onChange) onChange(newValue as Partial<ReinforcementType>);

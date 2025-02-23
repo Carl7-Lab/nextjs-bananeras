@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
@@ -68,7 +69,9 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddLatexRemoverForm = ({ onClose }: AddLatexRemoverFormProps) => {
+const AddLatexRemoverForm = ({
+  onClose,
+}: AddLatexRemoverFormProps): React.JSX.Element => {
   const { createLatexRemover, isLoading } = useCreateLatexRemover();
   const toast = useToast();
   const router = useRouter();
@@ -77,7 +80,7 @@ const AddLatexRemoverForm = ({ onClose }: AddLatexRemoverFormProps) => {
   const addLatexRemover = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     const { dose, ...latexRemoverData } = values;
 
     createLatexRemover(
@@ -89,7 +92,7 @@ const AddLatexRemoverForm = ({ onClose }: AddLatexRemoverFormProps) => {
         onError: (error: any) => {
           const { response } = error;
           const { data } = response;
-          const { statusCode, message, error: errorTitle, model, prop } = data;
+          const { statusCode, message, error: errorTitle } = data;
 
           toast({
             title: `Error ${statusCode}: ${errorTitle} `,
@@ -128,7 +131,7 @@ const AddLatexRemoverForm = ({ onClose }: AddLatexRemoverFormProps) => {
         onSubmit={addLatexRemover}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {() => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>

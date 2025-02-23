@@ -32,7 +32,7 @@ const LatexRemoverSelectBanContainer: React.FC<props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isBan]);
 
-  const setBanState = () => {
+  const setBanState = (): void => {
     setIsBan((prevState) => !prevState);
   };
 

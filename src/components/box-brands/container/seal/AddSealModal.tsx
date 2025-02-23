@@ -11,7 +11,7 @@ import React from 'react';
 import { AiFillPlusCircle } from 'react-icons/ai';
 import AddSealForm from './AddSealForm';
 
-const AddSealModal = () => {
+const AddSealModal = (): React.JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (

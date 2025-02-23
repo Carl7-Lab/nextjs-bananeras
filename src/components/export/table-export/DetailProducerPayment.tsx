@@ -14,10 +14,8 @@ interface props {
 const DetailProducerPayment = ({
   payment,
   width,
-  windowSize,
-  pendingSent,
   pendingPayment,
-}: props) => {
+}: props): React.JSX.Element | undefined => {
   console.log('pendingPayment', pendingPayment);
 
   if (pendingPayment) return;

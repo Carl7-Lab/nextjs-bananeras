@@ -1,13 +1,4 @@
-import {
-  Badge,
-  Box,
-  Button,
-  Divider,
-  Flex,
-  Icon,
-  Link,
-  Text,
-} from '@chakra-ui/react';
+import { Badge, Box, Button, Flex, Icon, Link, Text } from '@chakra-ui/react';
 import Link_Next from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
@@ -18,17 +9,19 @@ interface AccordionMenuProps {
   item: SidenavItem;
 }
 
-export const AccordionMenu = ({ item }: AccordionMenuProps) => {
+export const AccordionMenu = ({
+  item,
+}: AccordionMenuProps): React.JSX.Element => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(pathname.includes(item.to));
 
   const isAble: boolean = pathname !== '/dashboard/onboarding';
 
-  const toggleAccordion = () => {
+  const toggleAccordion = (): void => {
     setIsOpen(!isOpen);
   };
 
-  const renderBadge = (count?: number) => {
+  const renderBadge = (count?: number): React.JSX.Element | null => {
     if (count && count > 0) {
       return (
         <Badge colorScheme='red' ml='auto' mr={2.5}>

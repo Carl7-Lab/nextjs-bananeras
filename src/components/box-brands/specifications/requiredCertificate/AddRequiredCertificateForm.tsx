@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
@@ -32,7 +33,9 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddCertificateForm = ({ onClose }: AddCertificateFormProps) => {
+const AddCertificateForm = ({
+  onClose,
+}: AddCertificateFormProps): React.JSX.Element => {
   const { createRequiredCertificate, isLoading } =
     useCreateRequiredCertificate();
   const toast = useToast();
@@ -42,7 +45,7 @@ const AddCertificateForm = ({ onClose }: AddCertificateFormProps) => {
   const addCertificate = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     createRequiredCertificate(
       {
         ...values,
@@ -51,7 +54,7 @@ const AddCertificateForm = ({ onClose }: AddCertificateFormProps) => {
         onError: (error: any) => {
           const { response } = error;
           const { data } = response;
-          const { statusCode, message, error: errorTitle, model, prop } = data;
+          const { statusCode, message, error: errorTitle } = data;
 
           toast({
             title: `Error ${statusCode}: ${errorTitle} `,
@@ -90,7 +93,7 @@ const AddCertificateForm = ({ onClose }: AddCertificateFormProps) => {
         onSubmit={addCertificate}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {({}) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>

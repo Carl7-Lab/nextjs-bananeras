@@ -4,7 +4,7 @@ import React from 'react';
 import PendingPaymentList from '../../../../components/export/export-payments/PendingPaymentList';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
-function ExportPaymentsPage() {
+function ExportPaymentsPage(): React.JSX.Element {
   return (
     <Box my={'20px'} mx={'auto'}>
       <Center>

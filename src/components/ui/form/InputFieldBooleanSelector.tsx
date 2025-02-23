@@ -24,7 +24,7 @@ const InputFieldBooleanSelector: React.FC<InputFieldBooleanSelectorProps> = ({
 }) => {
   const [field, meta, helpers] = useField(name);
 
-  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     const value = event.target.value;
     const boolValue = value === 'true';
     helpers.setValue(boolValue);

@@ -1,4 +1,5 @@
-import { Box, Center, Icon } from '@chakra-ui/react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Box } from '@chakra-ui/react';
 import {
   MRT_ColumnDef,
   MaterialReactTable,
@@ -7,7 +8,6 @@ import {
 import { MRT_Localization_ES } from 'material-react-table/locales/es';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useMemo } from 'react';
-import { BsImage } from 'react-icons/bs';
 import DetailExportsSent from './DetailExportsSent';
 import { useExportsSent } from '../../../hooks/liquidation/getExportsSent';
 import { usePagination } from '../../../hooks/usePagination';
@@ -18,9 +18,9 @@ const TableExportsSent = ({
 }: {
   width: { sm: number; md: number };
   windowSize: { width: number | null; height: number | null };
-}) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data = [], isLoading, error } = useExportsSent(paginationParams);
+}): React.JSX.Element => {
+  const { paginationParams } = usePagination();
+  const { data = [], error } = useExportsSent(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
@@ -121,7 +121,7 @@ const TableExportsSent = ({
           {
             accessorKey: 'pesticideSent',
             header: 'Pesticidas Enviados',
-            Cell: ({ cell }) => {
+            Cell: ({ cell }): React.JSX.Element | string => {
               const pesticides = cell.getValue() as any[];
               return pesticides
                 .map((p) => `${p.pesticide.name} (Cantidad: ${p.quantity})`)
@@ -131,7 +131,7 @@ const TableExportsSent = ({
           {
             accessorKey: 'insecticideSent',
             header: 'Insecticidas Enviados',
-            Cell: ({ cell }) => {
+            Cell: ({ cell }): React.JSX.Element | string => {
               const insecticides = cell.getValue() as any[];
               return insecticides
                 .map((i) => `${i.insecticide.name} (Cantidad: ${i.quantity})`)

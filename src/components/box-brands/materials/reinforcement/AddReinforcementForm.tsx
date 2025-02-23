@@ -1,6 +1,5 @@
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
@@ -44,16 +43,17 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddReinforcementForm = ({ onClose }: AddReinforcementFormProps) => {
+const AddReinforcementForm = ({
+  onClose,
+}: AddReinforcementFormProps): React.JSX.Element => {
   const { createReinforcement, isLoading } = useCreateReinforcement();
   const toast = useToast();
-  const router = useRouter();
   const queryClient = useQueryClient();
 
   const addReinforcement = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     createReinforcement(
       { ...values },
       {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
@@ -64,7 +65,7 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddSachetForm = ({ onClose }: AddSachetFormProps) => {
+const AddSachetForm = ({ onClose }: AddSachetFormProps): React.JSX.Element => {
   const { createSachet, isLoading } = useCreateSachet();
   const toast = useToast();
   const router = useRouter();
@@ -73,7 +74,7 @@ const AddSachetForm = ({ onClose }: AddSachetFormProps) => {
   const addSachet = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     const { quantityPerPack, ...sachetData } = values;
 
     createSachet(
@@ -85,7 +86,7 @@ const AddSachetForm = ({ onClose }: AddSachetFormProps) => {
         onError: (error: any) => {
           const { response } = error;
           const { data } = response;
-          const { statusCode, message, error: errorTitle, model, prop } = data;
+          const { statusCode, message, error: errorTitle } = data;
 
           toast({
             title: `Error ${statusCode}: ${errorTitle} `,
@@ -124,7 +125,7 @@ const AddSachetForm = ({ onClose }: AddSachetFormProps) => {
         onSubmit={addSachet}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {() => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>

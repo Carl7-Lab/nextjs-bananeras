@@ -1,4 +1,4 @@
-import { Box, Center, Icon } from '@chakra-ui/react';
+import { Box, Icon } from '@chakra-ui/react';
 import {
   MRT_ColumnDef,
   MaterialReactTable,
@@ -53,13 +53,14 @@ const TableProducers = ({
 }: {
   width: { sm: number; md: number };
   windowSize: { width: number | null; height: number | null };
-}) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data = [], isLoading, error } = useProducers(paginationParams);
+}): React.JSX.Element => {
+  const { paginationParams } = usePagination();
+  const { data = [], error } = useProducers(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
     if (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { response } = error as any;
       const { data: dataRes } = response;
       const { statusCode } = dataRes;
@@ -70,6 +71,7 @@ const TableProducers = ({
     }
   }, [error, router]);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
@@ -105,7 +107,8 @@ const TableProducers = ({
           {
             accessorKey: 'businesses',
             header: 'Fincas',
-            Cell: ({ cell }) => {
+            Cell: ({ cell }): React.JSX.Element => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const value = cell.getValue<any[]>();
               return <span>{value?.length || 0} asociadas</span>;
             },
@@ -139,7 +142,7 @@ const TableProducers = ({
           {
             accessorKey: 'logoUrl',
             header: 'Acceso',
-            Cell: ({ cell }) => {
+            Cell: ({ cell }): React.JSX.Element => {
               const url = cell.getValue() as string | undefined;
               return url ? (
                 <a href={url} target='_blank' rel='noopener noreferrer'>

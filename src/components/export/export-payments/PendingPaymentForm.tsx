@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Box,
   Button,
-  Checkbox,
   Divider,
   Flex,
   Heading,
@@ -192,25 +193,26 @@ const validationSchema = Yup.object({
 
 const PendingPaymentForm = ({
   paymentSelected,
-  pathname,
 }: {
   paymentSelected: Partial<ExportSentType>;
   pathname?: string;
-}) => {
+}): React.JSX.Element => {
   const [initialValuesPayment, setInitialValuesPayment] =
     useState<ValuesProps>(initialValues);
   const [producerSelect, setProducerSelect] =
-    useState<Partial<MerchantType> | null>(paymentSelected?.export!.merchant!);
+    useState<Partial<MerchantType> | null>(
+      paymentSelected?.export!.merchant || null
+    );
   const [departureHarbor, setDepartureHarbor] =
     useState<Partial<HarborType> | null>(
-      paymentSelected?.export!.harborDeparture!
+      paymentSelected?.export!.harborDeparture || null
     );
   const [destinationHarbor, setDestinationHarbor] =
     useState<Partial<HarborType> | null>(
-      paymentSelected?.export!.harborDestination!
+      paymentSelected?.export!.harborDestination || null
     );
   const [boxBrand, setBoxBrand] = useState<Partial<BoxBrandType> | null>(
-    paymentSelected?.export!.boxBrand!
+    paymentSelected?.export!.boxBrand || null
   );
   const { createProducerPayment, isLoading: createLoading } =
     useCreateProducerPayment();
@@ -239,7 +241,7 @@ const PendingPaymentForm = ({
   const sentPayment = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     try {
       const {
         transferFile,

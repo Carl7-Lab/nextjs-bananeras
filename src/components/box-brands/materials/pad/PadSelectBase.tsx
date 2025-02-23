@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -57,7 +58,7 @@ const padComponents = {
       false,
       GroupBase<Partial<PadType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -86,7 +87,7 @@ const PadSelectBase: React.FC<PadSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<PadType>>) => {
+  const handleChange = (newValue: SingleValue<Partial<PadType>>): void => {
     if (setPad) setPad(newValue as Partial<PadType>);
     if (onChange) onChange(newValue as Partial<PadType>);
   };

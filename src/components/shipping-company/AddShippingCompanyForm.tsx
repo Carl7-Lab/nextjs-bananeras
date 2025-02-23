@@ -49,16 +49,17 @@ const AddShippingCompanyForm: React.FC<AddShippingCompanyFormProps> = ({
   const addShippingCompany = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     createShippingCompany(
       {
         ...values,
       },
       {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onError: (error: any) => {
           const { response } = error;
           const { data } = response;
-          const { statusCode, message, error: errorTitle, model, prop } = data;
+          const { statusCode, message, error: errorTitle } = data;
 
           toast({
             title: `Error ${statusCode}: ${errorTitle} `,

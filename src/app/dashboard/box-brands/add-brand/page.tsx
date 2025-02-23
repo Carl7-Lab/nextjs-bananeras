@@ -4,7 +4,7 @@ import React from 'react';
 import AddBrandForm from '../../../../components/box-brands/specifications/brand/AddBrandForm';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
-function AddBrandPage() {
+function AddBrandPage(): React.JSX.Element {
   return (
     <>
       <Box my={'auto'} mx={'auto'}>

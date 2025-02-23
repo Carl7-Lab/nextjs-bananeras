@@ -75,7 +75,7 @@ const InputFieldQuantity: React.FC<InputFieldProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isBan?.state]);
 
-  const handleChange = (valueString: string) => {
+  const handleChange = (valueString: string): void => {
     helpers.setValue(Number(valueString));
   };
 

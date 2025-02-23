@@ -11,7 +11,7 @@ import React from 'react';
 import { AiFillPlusCircle } from 'react-icons/ai';
 import AddReinforcementForm from './AddReinforcementForm';
 
-const AddReinforcementModal = () => {
+const AddReinforcementModal = (): React.JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (

@@ -1,6 +1,5 @@
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
@@ -44,16 +43,15 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddPadForm = ({ onClose }: AddPadFormProps) => {
+const AddPadForm = ({ onClose }: AddPadFormProps): React.JSX.Element => {
   const { createPad, isLoading } = useCreatePad();
   const toast = useToast();
-  const router = useRouter();
   const queryClient = useQueryClient();
 
   const addPad = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     createPad(
       { ...values },
       {

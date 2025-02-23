@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Box } from '@mui/material';
 import {
   MRT_ColumnDef,
@@ -49,7 +50,7 @@ const TableBoxBrandDetail = ({
   details: DetailType[];
   width: { sm: number; md: number };
   windowSize: { width: number | null; height: number | null };
-}) => {
+}): React.JSX.Element => {
   const [columnSize, setColumnSize] = useState<TableSizeProps>({
     sm: (Number(width.sm) - 92 - 60) / 2,
     md: (Number(width.md) - 92 - 60) / 2,

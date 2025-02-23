@@ -1,6 +1,5 @@
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
@@ -44,16 +43,17 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddCardboardForm = ({ onClose }: AddCardboardFormProps) => {
+const AddCardboardForm = ({
+  onClose,
+}: AddCardboardFormProps): React.JSX.Element => {
   const { createCardboard, isLoading } = useCreateCardboard();
   const toast = useToast();
-  const router = useRouter();
   const queryClient = useQueryClient();
 
   const addCardboard = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     createCardboard(
       { ...values },
       {

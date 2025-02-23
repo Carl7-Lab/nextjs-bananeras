@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -57,7 +58,7 @@ const coverComponents = {
       false,
       GroupBase<Partial<CoverType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -86,7 +87,7 @@ const CoverSelectBase: React.FC<CoverSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<CoverType>>) => {
+  const handleChange = (newValue: SingleValue<Partial<CoverType>>): void => {
     if (setCover) setCover(newValue as Partial<CoverType>);
     if (onChange) onChange(newValue as Partial<CoverType>);
   };

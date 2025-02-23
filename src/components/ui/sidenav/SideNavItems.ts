@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { useSession } from 'next-auth/react';
-import { BsBarChart } from 'react-icons/bs';
-
 import { FaBoxOpen, FaCashRegister, FaCogs, FaUserTie } from 'react-icons/fa';
 import {
   MdContentCut,
@@ -8,13 +8,13 @@ import {
   MdOutlineAgriculture,
 } from 'react-icons/md';
 import { SidenavItem, SidenavMenuItem } from './sidenav-items';
-import { useExporter } from '../../../hooks/useUserProfile';
 
 export function GetUser() {
   const { data: session } = useSession();
   return session?.user;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getNavItems(counts: any, session: any): SidenavItem[] {
   const exportMenu: SidenavMenuItem[] = [
     {

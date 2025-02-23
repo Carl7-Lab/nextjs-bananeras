@@ -1,10 +1,15 @@
+import { AxiosResponse } from 'axios';
 import { UseQueryResult, useQuery } from 'react-query';
 import axios from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
 import { ClientType } from '@/types/client';
 import { serializeQueryResult } from '@/utils/serializeQueryResult';
 
-export const getClient = ({ clientId }: { clientId: string }) => {
+export const getClient = ({
+  clientId,
+}: {
+  clientId: string;
+}): Promise<AxiosResponse> => {
   return axios.get(`/client/${clientId}`);
 };
 

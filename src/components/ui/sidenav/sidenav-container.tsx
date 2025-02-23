@@ -6,7 +6,10 @@ export interface SidenavContainerProps {
   sidenav: ReactElement;
 }
 
-export function SidenavContainer({ children, sidenav }: SidenavContainerProps) {
+export function SidenavContainer({
+  children,
+  sidenav,
+}: SidenavContainerProps): React.JSX.Element {
   return (
     <Grid
       templateAreas={`'sidebar main'`}

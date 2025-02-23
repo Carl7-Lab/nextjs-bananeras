@@ -32,7 +32,7 @@ const InputFieldsBanContainer: React.FC<props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isBan]);
 
-  const setBanState = () => {
+  const setBanState = (): void => {
     setIsBan((prevState) => !prevState);
   };
 
@@ -41,6 +41,7 @@ const InputFieldsBanContainer: React.FC<props> = ({
       <InputFieldText
         name={name1}
         label={label1}
+        placeholder={placeholder1}
         isBan={{
           state: isBan,
           setBanState: setBanState,

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 'use client';
 import { useToast } from '@chakra-ui/react';
 import { useEffect } from 'react';
@@ -25,7 +27,7 @@ const useToastCustom = () => {
     status = 'info',
     position = 'bottom',
     variant = 'solid',
-  }: MyToastProps) => {
+  }: MyToastProps): void => {
     toast({
       title,
       description,
@@ -37,13 +39,13 @@ const useToastCustom = () => {
     });
   };
 
-  const closeAllToasts = () => {
+  const closeAllToasts = (): void => {
     toast.closeAll();
   };
 
   // Cerrar todos los toasts cuando el componente se desmonta
   useEffect(() => {
-    return () => {
+    return (): void => {
       closeAllToasts();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

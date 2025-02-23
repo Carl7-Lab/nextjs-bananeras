@@ -11,7 +11,7 @@ import React from 'react';
 import AddHarborForm from '../../../../components/settings/AddHarborForm';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
-function AddHarborPage() {
+function AddHarborPage(): React.JSX.Element {
   return (
     <>
       <Box my={'20px'} mx={'auto'} w={'95%'}>

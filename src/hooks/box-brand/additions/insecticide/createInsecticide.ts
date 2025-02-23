@@ -19,6 +19,7 @@ type UseCreateInsecticideOptions = {
 
 export const useCreateInsecticide = ({
   config,
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type
 }: UseCreateInsecticideOptions = {}) => {
   const mutation = useMutation({
     ...config,

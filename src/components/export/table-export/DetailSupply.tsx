@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, VStack } from '@chakra-ui/react';
 import React from 'react';
 import TableSupply from './TableSupply';
@@ -22,14 +23,14 @@ const DetailSupply = ({
   width,
   windowSize,
   pendingSent,
-}: props) => {
+}: props): React.JSX.Element | undefined => {
   const convertToArray = ({
     supplyObject,
     boxBrandObject,
   }: {
     boxBrandObject: Partial<BoxBrandType>;
     supplyObject: Partial<ExportSentType>;
-  }) => {
+  }): any[] => {
     const outputArray: any[] = [];
 
     (Object.keys(supplyObject) as (keyof ExportSentType)[]).forEach((key) => {

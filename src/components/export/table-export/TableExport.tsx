@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Center } from '@chakra-ui/react';
 import { Box } from '@mui/material';
 import {
@@ -20,9 +21,9 @@ const TableExport = ({
 }: {
   width: { sm: number; md: number };
   windowSize: { width: number | null; height: number | null };
-}) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data = [], isLoading, refetch, error } = useExports(paginationParams);
+}): React.JSX.Element => {
+  const { paginationParams } = usePagination();
+  const { data = [], error } = useExports(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
@@ -160,7 +161,7 @@ const TableExport = ({
             header: '🚛',
             enableColumnActions: false,
             size: 50,
-            Cell: ({ renderedCellValue, row }) => (
+            Cell: ({ renderedCellValue }) => (
               <span>
                 {renderedCellValue === 'false' ? (
                   <Center>
@@ -231,7 +232,7 @@ const TableExport = ({
         <DetailExport
           boxBrand={row.original.boxBrand!}
           supply={row.original.exportSent!}
-          businessContacts={row.original.business?.contacts!}
+          businessContacts={row.original.business?.contacts || []}
           pendingSent={row.original.pendingExportSent!}
           width={width}
           windowSize={windowSize}

@@ -1,10 +1,15 @@
+import { AxiosResponse } from 'axios';
 import { UseQueryResult, useQuery } from 'react-query';
 import axios from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
 import { serializeQueryResult } from '@/utils/serializeQueryResult';
 import { MerchantType } from '../../types/merchant/merchant';
 
-export const getMerchant = ({ merchantId }: { merchantId: string }) => {
+export const getMerchant = ({
+  merchantId,
+}: {
+  merchantId: string;
+}): Promise<AxiosResponse> => {
   return axios.get(`/merchant/${merchantId}`);
 };
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -57,7 +58,7 @@ const packingTapeComponents = {
       false,
       GroupBase<Partial<PackingTapeType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -86,7 +87,9 @@ const PackingTapeSelectBase: React.FC<PackingTapeSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<PackingTapeType>>) => {
+  const handleChange = (
+    newValue: SingleValue<Partial<PackingTapeType>>
+  ): void => {
     if (setPackingTape) setPackingTape(newValue as Partial<PackingTapeType>);
     if (onChange) onChange(newValue as Partial<PackingTapeType>);
   };

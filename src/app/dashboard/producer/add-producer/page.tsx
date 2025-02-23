@@ -11,7 +11,7 @@ import React from 'react';
 import AddProducerForm from '../../../../components/producer/AddProducerForm';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
-function AddProductorPage() {
+function AddProductorPage(): React.JSX.Element {
   return (
     <>
       <Box my={'20px'} mx={'auto'} w={'95%'}>

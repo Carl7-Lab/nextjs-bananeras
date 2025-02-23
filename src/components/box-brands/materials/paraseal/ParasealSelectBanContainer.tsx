@@ -34,7 +34,7 @@ const ParasealSelectBanContanier: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isBan]);
 
-  const setBanState = () => {
+  const setBanState = (): void => {
     setIsBan((prevState) => !prevState);
   };
 

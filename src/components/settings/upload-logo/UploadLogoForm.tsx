@@ -17,7 +17,6 @@ import { useUploadExporterLogo } from '../../../hooks/settings/uploadExporterLog
 import { useExporter } from '../../../hooks/useUserProfile';
 import UploadLogoFile from '../../producer/UploadLogoFile';
 import CheckboxForm from '../../ui/form/CheckboxForm';
-import { Logo } from '../../ui/Logo';
 
 const SUPPORTED_FORMATS = [
   'image/jpeg',
@@ -51,19 +50,17 @@ const validationSchema = Yup.object().shape({
     .required('Requerido'),
 });
 
-const UploadLogoForm = () => {
+const UploadLogoForm = (): React.JSX.Element => {
   const router = useRouter();
   const toast = useToast();
-  const { user, isLoading: userLoading } = useExporter();
+  const { user } = useExporter();
   const { uploadExporterLogo, isLoading } = useUploadExporterLogo();
   const queryClient = useQueryClient();
 
   const onSubmit = async (
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
-  ) => {
-    const { dataReviewed } = values;
-
+  ): Promise<void> => {
     if (values.logoImg) {
       uploadExporterLogo(
         {
@@ -71,6 +68,7 @@ const UploadLogoForm = () => {
           exporterId: String(user?.exporterDetails.id) || '',
         },
         {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onError: (error: any) => {
             const { response } = error;
             const { data } = response;

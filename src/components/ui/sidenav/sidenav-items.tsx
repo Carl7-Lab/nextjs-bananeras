@@ -39,11 +39,14 @@ export interface SidenavItemsProps {
   mode?: 'semi' | 'over';
 }
 
-export function SidenavItems({ navItems, mode = 'semi' }: SidenavItemsProps) {
+export function SidenavItems({
+  navItems,
+  mode = 'semi',
+}: SidenavItemsProps): React.JSX.Element {
   const pathname = usePathname();
   const { isOpen } = useSidenav();
   const isAble: boolean = pathname !== '/dashboard/onboarding';
-  const renderBadge = (count?: number) => {
+  const renderBadge = (count?: number): React.JSX.Element | null => {
     if (count && count > 0) {
       return (
         <Badge colorScheme='red' ml='auto' mr={2.5} my={'auto'}>
@@ -53,7 +56,10 @@ export function SidenavItems({ navItems, mode = 'semi' }: SidenavItemsProps) {
     }
     return null;
   };
-  const sidebarItemInOverMode = (item: SidenavItem, index: number) => (
+  const sidebarItemInOverMode = (
+    item: SidenavItem,
+    index: number
+  ): React.JSX.Element => (
     <ListItem key={index}>
       {item.isMenu ? (
         <Accordion allowToggle w='full' borderY='0px'>
@@ -121,7 +127,10 @@ export function SidenavItems({ navItems, mode = 'semi' }: SidenavItemsProps) {
     </ListItem>
   );
 
-  const sidebarItemInSemiMode = (item: SidenavItem, index: number) => (
+  const sidebarItemInSemiMode = (
+    item: SidenavItem,
+    index: number
+  ): React.JSX.Element => (
     <ListItem key={index}>
       {item.isMenu ? (
         <AccordionMenu item={item} />

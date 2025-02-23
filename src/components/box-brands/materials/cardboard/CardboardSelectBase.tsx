@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -57,7 +58,7 @@ const cardboardComponents = {
       false,
       GroupBase<Partial<CardboardType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -86,7 +87,9 @@ const CardboardSelectBase: React.FC<CardboardSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<CardboardType>>) => {
+  const handleChange = (
+    newValue: SingleValue<Partial<CardboardType>>
+  ): void => {
     if (setCardboard) setCardboard(newValue as Partial<CardboardType>);
     if (onChange) onChange(newValue as Partial<CardboardType>);
   };

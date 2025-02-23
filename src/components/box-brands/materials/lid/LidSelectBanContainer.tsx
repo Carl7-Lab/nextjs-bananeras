@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Flex } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import InputFieldLidSelect from './InputFieldLidSelect';
@@ -34,7 +35,7 @@ const LidSelectBanContanier: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isBan]);
 
-  const setBanState = () => {
+  const setBanState = (): void => {
     setIsBan((prevState) => !prevState);
   };
 

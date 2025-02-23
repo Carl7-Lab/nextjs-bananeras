@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { AxiosResponse } from 'axios';
 import { useMutation } from 'react-query';
 import axios from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
@@ -11,7 +14,7 @@ type updateProducerPaymentDTO = {
 const updateProducerPayment = ({
   data,
   producerPaymentId,
-}: updateProducerPaymentDTO) => {
+}: updateProducerPaymentDTO): Promise<AxiosResponse> => {
   return axios.post(`/export/producer-payment/${producerPaymentId}`, data);
 };
 

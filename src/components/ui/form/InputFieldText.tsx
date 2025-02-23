@@ -83,7 +83,7 @@ const InputFieldText: React.FC<InputFieldProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValue]);
 
-  const banClick = () => {
+  const banClick = (): void => {
     if (isBan?.setBanState) {
       isBan.setBanState();
     }

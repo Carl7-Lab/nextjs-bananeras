@@ -69,7 +69,7 @@ const DetailCuttingSheets = ({
     };
   };
   width: { sm: number; md: number };
-}) => {
+}): React.JSX.Element => {
   const { export: ex } = cuttingSheet;
 
   return (

@@ -1,6 +1,5 @@
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
@@ -64,16 +63,15 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddBandForm = ({ onClose }: AddBandFormProps) => {
+const AddBandForm = ({ onClose }: AddBandFormProps): React.JSX.Element => {
   const { createBand, isLoading } = useCreateBand();
   const toast = useToast();
-  const router = useRouter();
   const queryClient = useQueryClient();
 
   const addBand = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     const { quantityPerPack, ...bandData } = values;
 
     createBand(
@@ -116,7 +114,7 @@ const AddBandForm = ({ onClose }: AddBandFormProps) => {
         onSubmit={addBand}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {({}) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>

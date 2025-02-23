@@ -1,7 +1,6 @@
 import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react';
 import { useField } from 'formik';
 import React from 'react';
-import AddHarborModal from './AddHarborModal';
 import HarborMultiSelectBase from './HarborMultiSelectBase';
 import { HarborType } from '../../types/harbor';
 
@@ -22,7 +21,6 @@ const InputFieldHarborMultiSelect: React.FC<
     <FormControl id={name} isInvalid={!!meta.error && meta.touched}>
       <FormLabel fontSize='sm' mb='8px'>
         {label}
-        {/* <AddHarborModal /> */}
       </FormLabel>
 
       <HarborMultiSelectBase

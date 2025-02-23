@@ -20,7 +20,7 @@ interface AppBarProps {
   exporter: UseExporterReturn;
 }
 
-export const AppBar = ({ exporter }: AppBarProps) => {
+export const AppBar = ({ exporter }: AppBarProps): React.JSX.Element => {
   const { user, isLoading } = exporter;
   const { onOpen } = useSidenav();
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -57,7 +58,7 @@ const sachetComponents = {
       false,
       GroupBase<Partial<SachetType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -72,15 +73,15 @@ const SachetSelectBase: React.FC<SachetSelectBaseProps> = ({
   setSachet,
   onChange,
 }) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch, error } = useSachets(paginationParams);
+  const { paginationParams } = usePagination();
+  const { data, isLoading, error } = useSachets(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
     if (!!error) {
       const { response } = error as any;
       const { data } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = data;
+      const { statusCode } = data;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');
@@ -89,7 +90,7 @@ const SachetSelectBase: React.FC<SachetSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<SachetType>>) => {
+  const handleChange = (newValue: SingleValue<Partial<SachetType>>): void => {
     if (setSachet) setSachet(newValue as Partial<SachetType>);
     if (onChange) onChange(newValue as Partial<SachetType>);
   };

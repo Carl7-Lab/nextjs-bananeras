@@ -11,7 +11,7 @@ import React from 'react';
 import { AiFillPlusCircle } from 'react-icons/ai';
 import AddMiniPalletForm from './AddMiniPalletForm';
 
-const AddMiniPalletModal = () => {
+const AddMiniPalletModal = (): React.JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (

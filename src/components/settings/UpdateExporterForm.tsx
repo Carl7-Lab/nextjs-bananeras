@@ -51,7 +51,9 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const UpdateExporterForm = ({ exporterDetails }: UpdateExporterFormProps) => {
+const UpdateExporterForm = ({
+  exporterDetails,
+}: UpdateExporterFormProps): React.JSX.Element => {
   const router = useRouter();
   const toast = useToast();
   const { idUser: exporterId } = useParams<{ idUser: string }>();
@@ -76,7 +78,8 @@ const UpdateExporterForm = ({ exporterDetails }: UpdateExporterFormProps) => {
   const onSubmit = async (
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
-  ) => {
+  ): Promise<void> => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { dataReviewed, ...exporterData } = values;
 
     try {
@@ -107,7 +110,7 @@ const UpdateExporterForm = ({ exporterDetails }: UpdateExporterFormProps) => {
       onSubmit={onSubmit}
       validationSchema={validationSchema}
     >
-      {({ isSubmitting }) => (
+      {({}) => (
         <Form>
           <Flex flexDirection='column' gap={2}>
             <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={4}>

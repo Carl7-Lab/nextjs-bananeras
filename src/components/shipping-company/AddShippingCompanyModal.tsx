@@ -11,7 +11,7 @@ import React from 'react';
 import { AiFillPlusCircle } from 'react-icons/ai';
 import AddShippingCompanyForm from './AddShippingCompanyForm';
 
-const AddShippingCompanyModal = () => {
+const AddShippingCompanyModal = (): React.JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (

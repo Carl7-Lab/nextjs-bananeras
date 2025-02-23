@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
@@ -52,7 +53,7 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddStapleForm = ({ onClose }: AddStapleFormProps) => {
+const AddStapleForm = ({ onClose }: AddStapleFormProps): React.JSX.Element => {
   const { createStaple, isLoading } = useCreateStaple();
   const toast = useToast();
   const router = useRouter();
@@ -61,7 +62,7 @@ const AddStapleForm = ({ onClose }: AddStapleFormProps) => {
   const addStaple = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     const { quantityPerPack, ...stapleData } = values;
     createStaple(
       {
@@ -72,7 +73,7 @@ const AddStapleForm = ({ onClose }: AddStapleFormProps) => {
         onError: (error: any) => {
           const { response } = error;
           const { data } = response;
-          const { statusCode, message, error: errorTitle, model, prop } = data;
+          const { statusCode, message, error: errorTitle } = data;
 
           toast({
             title: `Error ${statusCode}: ${errorTitle} `,
@@ -111,7 +112,7 @@ const AddStapleForm = ({ onClose }: AddStapleFormProps) => {
         onSubmit={addStaple}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {() => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>

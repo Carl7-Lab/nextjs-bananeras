@@ -26,7 +26,7 @@ export interface MenuItemProps {
   to: string;
 }
 
-export default function MenuIcon() {
+export default function MenuIcon(): React.JSX.Element {
   const { data: session } = useSession();
   const menuItems = getTopBarItems();
 

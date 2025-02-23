@@ -11,7 +11,7 @@ import React from 'react';
 import { AiFillPlusCircle } from 'react-icons/ai';
 import AddPackingTapeForm from './AddPackingTapeForm';
 
-const AddPackingTapeModal = () => {
+const AddPackingTapeModal = (): React.JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (

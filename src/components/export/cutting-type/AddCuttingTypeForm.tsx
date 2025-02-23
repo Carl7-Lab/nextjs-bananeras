@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Box,
   Button,
@@ -5,7 +7,6 @@ import {
   Flex,
   Heading,
   SimpleGrid,
-  Spinner,
   useToast,
   Text,
 } from '@chakra-ui/react';
@@ -153,23 +154,22 @@ const packagingPatternOptions = [
   },
 ];
 
-const AddCuttingTypeForm = () => {
+const AddCuttingTypeForm = (): React.JSX.Element => {
   const router = useRouter();
   const toast = useToast();
   const { createCuttingType, isLoading: createLoading } =
     useCreateCuttingType();
-  const queryClient = useQueryClient();
   const [selectedBoxBrandId, setSelectedBoxBrandId] = React.useState<
     string | null
   >(null);
-  const { data: boxBrandDetails, isLoading } = useBoxBrand({
+  const { data: boxBrandDetails } = useBoxBrand({
     boxBrandId: selectedBoxBrandId || '',
   });
 
   const onSubmit = async (
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
-  ) => {
+  ): Promise<void> => {
     const transformedValues = {
       ...values,
       leavesAtHarvest: Number(values.leavesAtHarvest),

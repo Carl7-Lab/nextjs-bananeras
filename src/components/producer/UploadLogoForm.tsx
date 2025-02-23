@@ -49,7 +49,7 @@ const validationSchema = Yup.object().shape({
     .required('Requerido'),
 });
 
-const UploadLogoForm = () => {
+const UploadLogoForm = (): React.JSX.Element => {
   const router = useRouter();
   const toast = useToast();
   const { uploadMerchantLogo, isLoading } = useUploadMerchantLogo();
@@ -58,9 +58,7 @@ const UploadLogoForm = () => {
   const onSubmit = async (
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
-  ) => {
-    const { dataReviewed } = values;
-
+  ): Promise<void> => {
     if (values.logoImg) {
       uploadMerchantLogo(
         {
@@ -68,6 +66,7 @@ const UploadLogoForm = () => {
           merchantId: String(values.merchantId),
         },
         {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onError: (error: any) => {
             const { response } = error;
             const { data } = response;

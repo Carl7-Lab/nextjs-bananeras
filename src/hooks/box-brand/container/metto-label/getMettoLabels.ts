@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { AxiosResponse } from 'axios';
 import { useQuery } from 'react-query';
 import axios from '@/lib/axios';
@@ -6,7 +8,7 @@ import { serializeQueryResult } from '@/utils/serializeQueryResult';
 
 type Params = PaginationParams;
 
-function listMettoLabels(params: Params) {
+function listMettoLabels(params: Params): Promise<AxiosResponse> {
   return axios
     .get('/box-brand/metto-label', { params })
     .then((response) => {

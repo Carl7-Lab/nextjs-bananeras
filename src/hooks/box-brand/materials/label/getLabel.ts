@@ -1,10 +1,15 @@
+import { AxiosResponse } from 'axios';
 import { useQuery, UseQueryResult } from 'react-query';
 import axios from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
 import { LabelType } from '@/types/box-brand/materials/label';
 import { serializeQueryResult } from '@/utils/serializeQueryResult';
 
-export const getLabel = ({ labelId }: { labelId: string }) => {
+export const getLabel = ({
+  labelId,
+}: {
+  labelId: string;
+}): Promise<AxiosResponse> => {
   return axios.get(`/box-brand/label/${labelId}`);
 };
 

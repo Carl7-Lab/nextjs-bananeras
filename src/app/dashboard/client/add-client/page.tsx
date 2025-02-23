@@ -11,7 +11,7 @@ import React from 'react';
 import AddClientForm from '../../../../components/settings/AddClientForm';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
-function AddClientPage() {
+function AddClientPage(): React.JSX.Element {
   return (
     <>
       <Box my={'20px'} mx={'auto'} w={'95%'}>

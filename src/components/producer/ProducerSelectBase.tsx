@@ -18,7 +18,7 @@ import { MerchantType } from '../../types/merchant/merchant';
 
 interface ProducerSelectBaseProps {
   name?: string;
-  field?: FieldInputProps<any>;
+  field?: FieldInputProps<unknown>;
   placeholder: string;
   setProducer?: (producer: Partial<MerchantType>) => void;
   onChange?: (newValue: Partial<MerchantType>) => void;
@@ -49,6 +49,7 @@ const chakraStyles: ChakraStylesConfig<
 };
 
 const producerComponents = {
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   DropdownIndicator: (
     props: DropdownIndicatorProps<
       Partial<MerchantType>,
@@ -69,20 +70,16 @@ const ProducerSelectBase: React.FC<ProducerSelectBaseProps> = ({
   onChange,
   setProducer,
 }) => {
-  const { paginationParams, filterProps } = usePagination();
-  const {
-    data = [],
-    isLoading,
-    refetch,
-    error,
-  } = useMerchants(paginationParams);
+  const { paginationParams } = usePagination();
+  const { data = [], isLoading, error } = useMerchants(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
     if (!!error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { response } = error as any;
       const { data } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = data;
+      const { statusCode } = data;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');
@@ -91,6 +88,7 @@ const ProducerSelectBase: React.FC<ProducerSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleChange = (newValue: SingleValue<Partial<MerchantType>>) => {
     if (setProducer) {
       setProducer(newValue as Partial<MerchantType>);
@@ -114,7 +112,8 @@ const ProducerSelectBase: React.FC<ProducerSelectBaseProps> = ({
       chakraStyles={chakraStyles}
       noOptionsMessage={() =>
         !!error
-          ? (error as any).response.data.message
+          ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (error as any).response.data.message
           : 'Ya no hay productor/es disponible/s'
       }
       isLoading={isLoading}

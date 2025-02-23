@@ -11,7 +11,7 @@ import React from 'react';
 import { AiFillPlusCircle } from 'react-icons/ai';
 import AddInsecticideForm from './AddInsecticideForm';
 
-const AddInsecticideModal = () => {
+const AddInsecticideModal = (): React.JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (

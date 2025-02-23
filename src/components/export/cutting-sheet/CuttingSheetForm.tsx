@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Box,
   Button,
@@ -5,7 +7,6 @@ import {
   Flex,
   Heading,
   SimpleGrid,
-  Text,
   useToast,
 } from '@chakra-ui/react';
 import { Form, Formik, FormikHelpers } from 'formik';
@@ -196,11 +197,10 @@ const validationSchema = Yup.object({
 
 const CuttingSheetForm = ({
   cuttingSheetSelected,
-  pathname,
 }: {
   cuttingSheetSelected: Partial<ExportType>;
   pathname: string;
-}) => {
+}): React.JSX.Element => {
   const [initialValuesCuttingSheet, setInitialValuesCuttingSheet] =
     useState<ValuesProps>(initialValues);
 
@@ -355,7 +355,7 @@ const CuttingSheetForm = ({
   const handleSubmit = async (
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
-  ) => {
+  ): Promise<void> => {
     const { dataReviewed, container, ...rest } = values;
 
     const cuttingSheetData: CuttingSheetType = {
@@ -758,14 +758,14 @@ const CuttingSheetForm = ({
                 <InputFieldSentPesticides
                   name={'pesticideSent'}
                   pesticideCocktailSelected={
-                    cuttingSheetSelected.boxBrand?.pesticideCocktail!
+                    cuttingSheetSelected.boxBrand?.pesticideCocktail || []
                   }
                   showNumberInput={false}
                 />
                 <InputFieldSentInsecticides
                   name={'insecticideSent'}
                   insecticideCocktailSelected={
-                    cuttingSheetSelected.boxBrand?.insecticideCocktail!
+                    cuttingSheetSelected.boxBrand?.insecticideCocktail || []
                   }
                   showNumberInput={false}
                 />

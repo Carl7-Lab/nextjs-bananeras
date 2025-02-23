@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 import {
   Box,
@@ -153,7 +155,7 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddExportForm = () => {
+const AddExportForm = (): React.JSX.Element => {
   const { createExport, isLoading } = useCreateExport();
   const router = useRouter();
   const toast = useToast();
@@ -162,7 +164,7 @@ const AddExportForm = () => {
   const handleSubmit = async (
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
-  ) => {
+  ): Promise<void> => {
     const {
       weekCutting,
       cuttingDate,

@@ -1,6 +1,5 @@
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
@@ -44,16 +43,17 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddMiniPalletForm = ({ onClose }: AddMiniPalletFormProps) => {
+const AddMiniPalletForm = ({
+  onClose,
+}: AddMiniPalletFormProps): React.JSX.Element => {
   const { createMiniPallet, isLoading } = useCreateMiniPallet();
   const toast = useToast();
-  const router = useRouter();
   const queryClient = useQueryClient();
 
   const addMiniPallet = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     createMiniPallet(
       { ...values },
       {

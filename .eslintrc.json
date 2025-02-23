@@ -1,14 +1,16 @@
 {
-  "extends": ["next", "prettier"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "extends": [
+    "next",
+    "prettier",
+    "plugin:@typescript-eslint/recommended"
+  ],
   "ignorePatterns": ["*.json"],
   "rules": {
-    // "@typescript-eslint/explicit-function-return-type": "error",
-    // "@typescript-eslint/explicit-module-boundary-types": "error",
     "@typescript-eslint/interface-name-prefix": "off",
-    // "@typescript-eslint/no-explicit-any": "error",
-    // "@typescript-eslint/no-unused-vars": "warn",
     "import/order": [
-      "error",
+      "warn",
       {
         "groups": [
           "builtin",
@@ -22,6 +24,10 @@
         ],
         "alphabetize": { "order": "asc", "caseInsensitive": true }
       }
-    ]
+    ],
+    "@typescript-eslint/explicit-function-return-type": "warn",
+    "@typescript-eslint/explicit-module-boundary-types": "warn",
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-unused-vars": "warn"
   }
 }

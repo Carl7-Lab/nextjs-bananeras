@@ -11,7 +11,7 @@ import React from 'react';
 import { AiFillPlusCircle } from 'react-icons/ai';
 import AddClusterBagForm from './AddClusterBagForm';
 
-const AddClusterBagModal = () => {
+const AddClusterBagModal = (): React.JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (

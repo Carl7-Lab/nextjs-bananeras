@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Button,
   Divider,
@@ -81,7 +82,9 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddClusterBagForm = ({ onClose }: AddClusterBagFormProps) => {
+const AddClusterBagForm = ({
+  onClose,
+}: AddClusterBagFormProps): React.JSX.Element => {
   const { createClusterBag, isLoading } = useCreateClusterBag();
   const toast = useToast();
   const router = useRouter();
@@ -90,7 +93,7 @@ const AddClusterBagForm = ({ onClose }: AddClusterBagFormProps) => {
   const addClusterBag = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     const formData = {
       name: values.name,
       code: values.code,
@@ -141,7 +144,7 @@ const AddClusterBagForm = ({ onClose }: AddClusterBagFormProps) => {
         onSubmit={addClusterBag}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {({}) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>

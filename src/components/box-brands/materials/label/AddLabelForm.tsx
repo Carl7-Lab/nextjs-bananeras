@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Button,
   Divider,
@@ -82,7 +83,7 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddLabelForm = ({ onClose }: AddLabelFormProps) => {
+const AddLabelForm = ({ onClose }: AddLabelFormProps): React.JSX.Element => {
   const { createLabel, isLoading } = useCreateLabel();
   const toast = useToast();
   const router = useRouter();
@@ -91,7 +92,7 @@ const AddLabelForm = ({ onClose }: AddLabelFormProps) => {
   const addLabel = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     const formData = {
       name: values.name,
       code: values.code,
@@ -141,7 +142,7 @@ const AddLabelForm = ({ onClose }: AddLabelFormProps) => {
         onSubmit={addLabel}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {({}) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>

@@ -5,20 +5,13 @@ import {
   Divider,
   Badge,
   Flex,
-  Button,
   Image,
 } from '@chakra-ui/react';
 import { getServerSession } from 'next-auth';
 import { BACKEND_URL } from '../../../../lib/constants';
 import { authOptions } from '../../../api/auth/[...nextauth]/authOptions';
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
-
-const ProfilePage = async (props: Props) => {
+const ProfilePage = async (): Promise<JSX.Element> => {
   const session = await getServerSession(authOptions);
   const response = await fetch(BACKEND_URL + `/auth/exporter/profile`, {
     method: 'GET',

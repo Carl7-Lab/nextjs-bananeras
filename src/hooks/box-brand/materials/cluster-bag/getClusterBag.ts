@@ -1,10 +1,15 @@
+import { AxiosResponse } from 'axios';
 import { useQuery, UseQueryResult } from 'react-query';
 import axios from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
 import { ClusterBagType } from '@/types/box-brand/materials/clusterBag';
 import { serializeQueryResult } from '@/utils/serializeQueryResult';
 
-export const getClusterBag = ({ clusterBagId }: { clusterBagId: string }) => {
+export const getClusterBag = ({
+  clusterBagId,
+}: {
+  clusterBagId: string;
+}): Promise<AxiosResponse> => {
   return axios.get(`/box-brand/cluster-bag/${clusterBagId}`);
 };
 

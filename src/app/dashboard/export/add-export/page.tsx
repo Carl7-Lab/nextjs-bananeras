@@ -11,7 +11,7 @@ import React from 'react';
 import AddExportForm from '../../../../components/export/AddExportForm';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
-function AddExportPage() {
+function AddExportPage(): React.JSX.Element {
   return (
     <>
       <Box my={'20px'} mx='auto' w={'95%'}>

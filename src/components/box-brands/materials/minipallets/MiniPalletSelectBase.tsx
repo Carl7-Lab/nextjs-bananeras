@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -57,7 +58,7 @@ const minipalletComponents = {
       false,
       GroupBase<Partial<MiniPalletType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -86,7 +87,9 @@ const MiniPalletSelectBase: React.FC<MiniPalletSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<MiniPalletType>>) => {
+  const handleChange = (
+    newValue: SingleValue<Partial<MiniPalletType>>
+  ): void => {
     if (setMiniPallet) setMiniPallet(newValue as Partial<MiniPalletType>);
     if (onChange) onChange(newValue as Partial<MiniPalletType>);
   };

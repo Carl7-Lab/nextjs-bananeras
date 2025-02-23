@@ -1,6 +1,5 @@
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
@@ -44,16 +43,15 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddSpongeForm = ({ onClose }: AddSpongeFormProps) => {
+const AddSpongeForm = ({ onClose }: AddSpongeFormProps): React.JSX.Element => {
   const { createSponge, isLoading } = useCreateSponge();
   const toast = useToast();
-  const router = useRouter();
   const queryClient = useQueryClient();
 
   const addSponge = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     createSponge(
       { ...values },
       {

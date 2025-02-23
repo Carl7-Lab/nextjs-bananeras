@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -57,7 +58,7 @@ const cornerComponents = {
       false,
       GroupBase<Partial<CornerType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -86,7 +87,7 @@ const CornerSelectBase: React.FC<CornerSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<CornerType>>) => {
+  const handleChange = (newValue: SingleValue<Partial<CornerType>>): void => {
     if (setCorner) setCorner(newValue as Partial<CornerType>);
     if (onChange) onChange(newValue as Partial<CornerType>);
   };

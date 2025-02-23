@@ -43,7 +43,7 @@ const InputFieldPackingTapeSelect: React.FC<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isBan?.state]);
 
-  const banClick = () => {
+  const banClick = (): void => {
     if (isBan?.setBanState) {
       isBan.setBanState();
     }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -55,7 +56,7 @@ const pesticideComponents = {
       true,
       GroupBase<Partial<PesticideType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -69,15 +70,15 @@ const PesticideMultiSelectBase: React.FC<PesticideMultiSelectBaseProps> = ({
   onChange,
   setPesticides,
 }) => {
-  const { paginationParams, filterProps } = usePagination();
-  const { data, isLoading, refetch, error } = usePesticides(paginationParams);
+  const { paginationParams } = usePagination();
+  const { data, isLoading, error } = usePesticides(paginationParams);
   const router = useRouter();
 
   useEffect(() => {
     if (!!error) {
       const { response } = error as any;
       const { data } = response;
-      const { statusCode, message, error: errorTitle, model, prop } = data;
+      const { statusCode } = data;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');
@@ -86,7 +87,9 @@ const PesticideMultiSelectBase: React.FC<PesticideMultiSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValues: MultiValue<Partial<PesticideType>>) => {
+  const handleChange = (
+    newValues: MultiValue<Partial<PesticideType>>
+  ): void => {
     if (setPesticides) {
       setPesticides(newValues as Partial<PesticideType>[]);
     }

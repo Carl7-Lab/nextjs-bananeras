@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Button,
   Divider,
@@ -71,7 +72,9 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddMettoLabelForm = ({ onClose }: AddMettoLabelFormProps) => {
+const AddMettoLabelForm = ({
+  onClose,
+}: AddMettoLabelFormProps): React.JSX.Element => {
   const { createMettoLabel, isLoading } = useCreateMettoLabel();
   const toast = useToast();
   const router = useRouter();
@@ -80,7 +83,7 @@ const AddMettoLabelForm = ({ onClose }: AddMettoLabelFormProps) => {
   const AddMettoLabel = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     const formData = {
       name: values.name,
       quantityPerPack: Number(values.quantityPerPack),
@@ -129,7 +132,7 @@ const AddMettoLabelForm = ({ onClose }: AddMettoLabelFormProps) => {
         onSubmit={AddMettoLabel}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting }) => (
+        {({}) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>

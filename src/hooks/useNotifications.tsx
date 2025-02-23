@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { useCuttingSheetsPending } from './export/cuttingSheet/getExportsSentPending';
 import { useExportsSentPending } from './export/export-sent/getExportsSentPending';
@@ -8,7 +9,10 @@ export interface NotificationItem {
   href: string;
 }
 
-export function useNotifications() {
+export function useNotifications(): {
+  notifications: NotificationItem[];
+  isLoading: boolean;
+} {
   const { data: cuttingSheets, isLoading: isLoadingCuttingSheets } =
     useCuttingSheetsPending({ page: 1, limit: 10 });
   const { data: supplies, isLoading: isLoadingSupplies } = useExportsPending({

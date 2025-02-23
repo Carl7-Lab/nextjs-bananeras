@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -57,7 +58,7 @@ const parasealComponents = {
       false,
       GroupBase<Partial<ParasealType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -86,7 +87,7 @@ const ParasealSelectBase: React.FC<ParasealSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<ParasealType>>) => {
+  const handleChange = (newValue: SingleValue<Partial<ParasealType>>): void => {
     if (setParaseal) setParaseal(newValue as Partial<ParasealType>);
     if (onChange) onChange(newValue as Partial<ParasealType>);
   };

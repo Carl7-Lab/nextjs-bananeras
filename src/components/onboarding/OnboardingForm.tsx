@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Button,
   Divider,
@@ -234,7 +235,7 @@ const validationSchema = Yup.object({
     .min(1, 'Debe tener al menos una finca'),
 });
 
-export default function OnboardingForm() {
+export default function OnboardingForm(): React.JSX.Element {
   const router = useRouter();
   const toast = useToast();
   const { update } = useSession();
@@ -244,7 +245,7 @@ export default function OnboardingForm() {
   const onSubmit = async (
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
-  ) => {
+  ): Promise<void> => {
     console.log('here!!!');
     const { businesses, ...producerData } = values;
     const { area, ...businessData } = businesses[0];
@@ -340,7 +341,7 @@ export default function OnboardingForm() {
         onSubmit={onSubmit}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting, values }) => (
+        {({ values }) => (
           <Form>
             <Flex flexDirection='column' gap={3}>
               <Heading fontSize={'2xl'} p={'12px'}>

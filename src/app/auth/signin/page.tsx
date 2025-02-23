@@ -17,7 +17,7 @@ type Props = {
   searchParams?: Record<'callbackUrl' | 'error', string>;
 };
 
-const SignInPage = (props: Props) => {
+const SignInPage = (props: Props): JSX.Element => {
   return (
     <Center minH='100vh'>
       <Flex

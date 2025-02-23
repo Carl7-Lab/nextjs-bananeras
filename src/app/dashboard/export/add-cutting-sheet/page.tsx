@@ -4,7 +4,7 @@ import React from 'react';
 import PendingCuttingSheetList from '../../../../components/export/cutting-sheet/PendingCuttingSheetList';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
-const CuttingSheetsPage = () => {
+const CuttingSheetsPage = (): React.JSX.Element => {
   return (
     <Box my={'20px'} mx='auto' w={'99%'}>
       <Box my={'20px'} mx={'auto'}>

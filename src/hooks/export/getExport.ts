@@ -1,10 +1,15 @@
+import { AxiosResponse } from 'axios';
 import { UseQueryResult, useQuery } from 'react-query';
 import axios from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
 import { ExportType } from '@/types/export';
 import { serializeQueryResult } from '@/utils/serializeQueryResult';
 
-export const getExport = ({ exportId }: { exportId: string }) => {
+export const getExport = ({
+  exportId,
+}: {
+  exportId: string;
+}): Promise<AxiosResponse> => {
   return axios.get(`/export/${exportId}`);
 };
 

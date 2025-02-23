@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
   ChakraStylesConfig,
@@ -57,7 +58,7 @@ const spongeComponents = {
       false,
       GroupBase<Partial<SpongeType>>
     >
-  ) => (
+  ): React.JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -86,7 +87,7 @@ const SpongeSelectBase: React.FC<SpongeSelectBaseProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleChange = (newValue: SingleValue<Partial<SpongeType>>) => {
+  const handleChange = (newValue: SingleValue<Partial<SpongeType>>): void => {
     if (setSponge) setSponge(newValue as Partial<SpongeType>);
     if (onChange) onChange(newValue as Partial<SpongeType>);
   };

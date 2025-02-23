@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Button, Divider, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
@@ -92,7 +94,9 @@ const validationSchema = Yup.object({
     .required('Requerido'),
 });
 
-const AddPesticideForm = ({ onClose }: AddPesticideFormProps) => {
+const AddPesticideForm = ({
+  onClose,
+}: AddPesticideFormProps): React.JSX.Element => {
   const { createPesticide, isLoading } = useCreatePesticide();
   const toast = useToast();
   const router = useRouter();
@@ -101,7 +105,7 @@ const AddPesticideForm = ({ onClose }: AddPesticideFormProps) => {
   const addPesticide = async (
     values: ValuesProps,
     actions: { resetForm: () => void }
-  ) => {
+  ): Promise<void> => {
     const { dose, ...pesticideData } = values;
 
     createPesticide(
