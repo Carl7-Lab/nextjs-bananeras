@@ -1,12 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Box,
   Button,
   Drawer,
   DrawerBody,
   DrawerFooter,
-  DrawerHeader,
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
@@ -24,36 +21,61 @@ import {
 } from '@chakra-ui/react';
 import { useField } from 'formik';
 import React, { useRef, useState } from 'react';
+import { useImportBoxBrandMaterials } from '../../hooks/box-brand/materials/uploadBoxBrandMaterials';
 import { useImportBoxBrands } from '../../hooks/box-brand/uploadBoxBrands';
 import axios from '../../lib/axios';
 
-const ImportBoxBrandDrawer: React.FC = () => {
+const ImportFilesDrawer: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [fileName, setFileName] = useState<string>('');
-  const [fileSize, setFileSize] = useState<number>(0);
-  const [dragging, setDragging] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [field, meta, helpers] = useField('import-boxBrand');
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const toast = useToast();
 
-  const { importBoxBrands, isLoading } = useImportBoxBrands({
+  const [boxBrandFileName, setBoxBrandFileName] = useState<string>('');
+  const [boxBrandFileSize, setBoxBrandFileSize] = useState<number>(0);
+  const [boxBrandDragging, setBoxBrandDragging] = useState(false);
+  const [boxBrandFile, setBoxBrandFile] = useState<File | null>(null);
+  const [boxBrandField, , boxBrandHelpers] = useField('import-boxBrand');
+  const boxBrandFileInputRef = useRef<HTMLInputElement>(null);
+
+  const { importBoxBrands, isLoading: isLoadingBoxBrand } = useImportBoxBrands({
     config: {
-      onSuccess: () => {
-        toast({
-          title: 'Importación exitosa',
-          description: `Se importaron productores correctamente.`,
-          status: 'success',
-          duration: 5000,
-          isClosable: true,
-        });
-        resetFile();
-        onClose();
+      onSuccess: (data) => {
+        const { successCount, errorCount, errors } = data.details;
+        if (errorCount > 0) {
+          toast({
+            title: 'Importación completada con errores',
+            description: (
+              <div>
+                <div>Se importaron {successCount} filas con éxito, pero {errorCount} fallaron.</div>
+                <div>
+                  Detalles:
+                  {errors.slice(0, 3).map((err, i) => (
+                    <div key={i}>
+                      Fila {err.row}: {err.message}
+                    </div>
+                  ))}
+                  {errors.length > 3 && <div>... y {errors.length - 3} más</div>}
+                </div>
+              </div>
+            ),
+            status: 'warning',
+            duration: 5000,
+            isClosable: true,
+          });
+        } else {
+          toast({
+            title: 'Importación exitosa',
+            description: `Se importaron todas las filas correctamente (${successCount} en total).`,
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+        resetBoxBrandFile();
       },
-      onError: (error: any) => {
+      onError: (error) => {
         toast({
-          title: 'Error al importar',
-          description: error.response?.data?.message || 'Error desconocido.',
+          title: 'Error al importar Box Brand',
+          description: error?.message || 'Error desconocido.',
           status: 'error',
           duration: 5000,
           isClosable: true,
@@ -62,10 +84,162 @@ const ImportBoxBrandDrawer: React.FC = () => {
     },
   });
 
-  const handleDownloadTemplate = async (): Promise<void> => {
-    try {
-      const { data } = await axios.get(`/firebase/download/BoxBrandNuevo.xlsm`);
+  const handleBoxBrandFileChange = (file: File): void => {
+    if (file) {
+      setBoxBrandFile(file);
+      setBoxBrandFileName(file.name);
+      setBoxBrandFileSize(file.size);
+      boxBrandHelpers.setValue(file);
+      if (boxBrandFileInputRef.current) {
+        boxBrandFileInputRef.current.value = '';
+      }
+    }
+  };
 
+  const handleBoxBrandChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    if (event.target.files && event.target.files.length > 0) {
+      handleBoxBrandFileChange(event.target.files[0]);
+    }
+  };
+
+  const handleBoxBrandDragEnter = (e: React.DragEvent): void => {
+    e.preventDefault();
+    setBoxBrandDragging(true);
+  };
+
+  const handleBoxBrandDragLeave = (e: React.DragEvent): void => {
+    e.preventDefault();
+    setBoxBrandDragging(false);
+  };
+
+  const handleBoxBrandDragOver = (e: React.DragEvent): void => {
+    e.preventDefault();
+    setBoxBrandDragging(true);
+  };
+
+  const handleBoxBrandDrop = (e: React.DragEvent): void => {
+    e.preventDefault();
+    setBoxBrandDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) handleBoxBrandFileChange(file);
+  };
+
+  const resetBoxBrandFile = (): void => {
+    setBoxBrandFileName('');
+    setBoxBrandFileSize(0);
+    setBoxBrandFile(null);
+    boxBrandHelpers.setValue(null);
+  };
+
+  const [materialFileName, setMaterialFileName] = useState<string>('');
+  const [materialFileSize, setMaterialFileSize] = useState<number>(0);
+  const [materialDragging, setMaterialDragging] = useState(false);
+  const [materialFile, setMaterialFile] = useState<File | null>(null);
+  const [materialField, , materialHelpers] = useField('import-material');
+  const materialFileInputRef = useRef<HTMLInputElement>(null);
+
+  const { importBoxBrandMaterials, isLoading: isLoadingMaterials } = useImportBoxBrandMaterials({
+    config: {
+      onSuccess: (data) => {
+        const { successCount, errorCount, errors } = data.details;
+        if (errorCount > 0) {
+          toast({
+            title: 'Importación de materiales completada con errores',
+            description: (
+              <div>
+                <div>Se importaron {successCount} filas con éxito, pero {errorCount} fallaron.</div>
+                <div>
+                  Detalles:
+                  {errors.slice(0, 3).map((err, i) => (
+                    <div key={i}>
+                      Fila {err.row}: {err.message}
+                    </div>
+                  ))}
+                  {errors.length > 3 && <div>... y {errors.length - 3} más</div>}
+                </div>
+              </div>
+            ),
+            status: 'warning',
+            duration: 5000,
+            isClosable: true,
+          });
+        } else {
+          toast({
+            title: 'Importación exitosa',
+            description: `Se importaron todas las filas correctamente (${successCount} en total).`,
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+        resetMaterialFile();
+      },
+      onError: (error) => {
+        toast({
+          title: 'Error al importar Materiales',
+          description: error?.message || 'Error desconocido.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      },
+    },
+  });
+
+  const handleMaterialFileChange = (file: File): void => {
+    if (file) {
+      setMaterialFile(file);
+      setMaterialFileName(file.name);
+      setMaterialFileSize(file.size);
+      materialHelpers.setValue(file);
+      if (materialFileInputRef.current) {
+        materialFileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const handleMaterialChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    if (event.target.files && event.target.files.length > 0) {
+      handleMaterialFileChange(event.target.files[0]);
+    }
+  };
+
+  const handleMaterialDragEnter = (e: React.DragEvent): void => {
+    e.preventDefault();
+    setMaterialDragging(true);
+  };
+
+  const handleMaterialDragLeave = (e: React.DragEvent): void => {
+    e.preventDefault();
+    setMaterialDragging(false);
+  };
+
+  const handleMaterialDragOver = (e: React.DragEvent): void => {
+    e.preventDefault();
+    setMaterialDragging(true);
+  };
+
+  const handleMaterialDrop = (e: React.DragEvent): void => {
+    e.preventDefault();
+    setMaterialDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) handleMaterialFileChange(file);
+  };
+
+  const resetMaterialFile = (): void => {
+    setMaterialFileName('');
+    setMaterialFileSize(0);
+    setMaterialFile(null);
+    materialHelpers.setValue(null);
+  };
+
+  const handleDownloadTemplate = async (type: 'boxBrand' | 'material'): Promise<void> => {
+    try {
+      const url =
+        type === 'boxBrand'
+          ? '/firebase/download/ImportarMarcasDeCaja.xlsm'
+          : '/firebase/download/ImportarMateriales.xlsm';
+      const { data } = await axios.get(url);
       if (data.url) {
         window.open(data.url, '_blank');
       } else {
@@ -82,150 +256,194 @@ const ImportBoxBrandDrawer: React.FC = () => {
     }
   };
 
-  const handleFileChange = (file: File): void => {
-    if (file) {
-      setSelectedFile(file);
-      setFileName(file.name);
-      setFileSize(file.size);
-      helpers.setValue(file);
-
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
-    }
-  };
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    if (event.target.files && event.target.files.length > 0) {
-      const file = event.target.files[0];
-      handleFileChange(file);
-    }
-  };
-
-  const handleDragEnter = (e: React.DragEvent): void => {
-    e.preventDefault();
-    setDragging(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent): void => {
-    e.preventDefault();
-    setDragging(false);
-  };
-
-  const handleDragOver = (e: React.DragEvent): void => {
-    e.preventDefault();
-    setDragging(true);
-  };
-
-  const handleDrop = (e: React.DragEvent): void => {
-    e.preventDefault();
-    setDragging(false);
-
-    const file = e.dataTransfer.files?.[0];
-    if (file) handleFileChange(file);
-  };
-
-  const resetFile = (): void => {
-    setFileName('');
-    setFileSize(0);
-    setSelectedFile(null);
-    helpers.setValue(null);
-  };
-
   const handleUpload = (): void => {
-    if (selectedFile) importBoxBrands(selectedFile);
+    if (boxBrandFile) {
+      importBoxBrands(boxBrandFile);
+    }
+    if (materialFile) {
+      importBoxBrandMaterials(materialFile);
+    }
   };
+
+  const isLoading = isLoadingBoxBrand || isLoadingMaterials;
+  const isDisabled = !boxBrandFile && !materialFile;
 
   return (
     <Box>
-      <Button py='8px' px='16px' colorScheme='teal' onClick={onOpen}>
-        Importar Marcas
+      <Button py="8px" px="16px" colorScheme="teal" onClick={onOpen}>
+        Importar Archivos
       </Button>
 
-      <Drawer isOpen={isOpen} placement='right' onClose={onClose}>
+      <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="md">
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Importar Marca de Caja</DrawerHeader>
-
           <DrawerBody>
-            <Text mb={4} fontSize='sm' color='gray.600'>
+            <Text fontSize={"xl"} fontWeight={"semibold"} mb={2} mt={4}>Importar Marcas de Caja</Text>
+            <Text mb={4} fontSize="sm" color="gray.600">
               ¿Necesitas ayuda?{' '}
               <Link
-                color='teal'
-                onClick={handleDownloadTemplate}
-                cursor='pointer'
+                color="teal"
+                onClick={() => handleDownloadTemplate('boxBrand')}
+                cursor="pointer"
               >
-                Utiliza nuestra guía.
+                Utiliza nuestra guía para Marcas de Caja.
               </Link>
             </Text>
-            {fileName ? (
+            {boxBrandFileName ? (
               <Box
-                border='1px solid'
-                borderColor='gray.200'
-                borderRadius='md'
+                border="1px solid"
+                borderColor="gray.200"
+                borderRadius="md"
                 p={4}
-                bg='teal.50'
-                shadow='md'
+                bg="teal.50"
+                shadow="md"
               >
-                <HStack justify='space-between'>
-                  <VStack align='start' spacing={1}>
-                    <Text fontWeight='bold' fontSize='lg'>
-                      Archivo seleccionado
+                <HStack justify="space-between">
+                  <VStack align="start" spacing={1}>
+                    <Text fontWeight="bold" fontSize="lg">
+                      Archivo de Marcas seleccionado
                     </Text>
-                    <Text fontSize='sm' color='gray.600'>
-                      Nombre: <b>{fileName}</b>
+                    <Text fontSize="sm" color="gray.600">
+                      Nombre: <b>{boxBrandFileName}</b>
                     </Text>
-                    <Text fontSize='sm' color='gray.600'>
-                      Tamaño: <b>{(fileSize / 1024).toFixed(2)} KB</b>
+                    <Text fontSize="sm" color="gray.600">
+                      Tamaño: <b>{(boxBrandFileSize / 1024).toFixed(2)} KB</b>
                     </Text>
                   </VStack>
                   <Button
-                    size='sm'
-                    colorScheme='red'
-                    variant='outline'
-                    onClick={resetFile}
+                    size="sm"
+                    colorScheme="red"
+                    variant="outline"
+                    onClick={resetBoxBrandFile}
                   >
                     Quitar
                   </Button>
                 </HStack>
               </Box>
             ) : (
-              <FormControl id='import-boxBrand' width='100%'>
+              <FormControl id="import-boxBrand" width="100%">
                 <Box
-                  onDragEnter={handleDragEnter}
-                  onDragLeave={handleDragLeave}
-                  onDragOver={handleDragOver}
-                  onDrop={handleDrop}
-                  border='2px dashed'
-                  borderColor={dragging ? 'teal.500' : 'gray.300'}
-                  borderRadius='md'
-                  textAlign='center'
-                  bg={dragging ? 'teal.50' : 'white'}
-                  cursor='pointer'
+                  onDragEnter={handleBoxBrandDragEnter}
+                  onDragLeave={handleBoxBrandDragLeave}
+                  onDragOver={handleBoxBrandDragOver}
+                  onDrop={handleBoxBrandDrop}
+                  border="2px dashed"
+                  borderColor={boxBrandDragging ? 'teal.500' : 'gray.300'}
+                  borderRadius="md"
+                  textAlign="center"
+                  bg={boxBrandDragging ? 'teal.50' : 'white'}
+                  cursor="pointer"
                 >
                   <Input
-                    ref={fileInputRef}
-                    id={field.name}
-                    type='file'
-                    accept='.csv'
-                    display='none'
-                    onChange={handleChange}
+                    ref={boxBrandFileInputRef}
+                    id={boxBrandField.name}
+                    type="file"
+                    accept=".csv"
+                    display="none"
+                    onChange={handleBoxBrandChange}
                   />
                   <FormLabel>
-                    {isLoading ? (
+                    {isLoadingBoxBrand ? (
                       <Spinner />
                     ) : (
                       <Image
                         src={'/uploaded.png'}
-                        alt='Subida de archivo'
-                        maxH='200px'
+                        alt="Subida de archivo"
+                        maxW="150px"
+                        pt={8}
                         my={2}
-                        mx='auto'
+                        mx="auto"
                       />
                     )}
-                    <Text p={4} color={dragging ? 'teal.500' : 'gray.300'}>
-                      {dragging
+                    <Text textAlign="center" p={4} color={boxBrandDragging ? 'teal.500' : 'gray.300'}>
+                      {boxBrandDragging
+                        ? 'Suelta aquí...'
+                        : 'Arrastra y suelta un archivo aquí, o haz clic para seleccionar uno'}
+                    </Text>
+                  </FormLabel>
+                </Box>
+              </FormControl>
+            )}
+            <Text fontSize={"xl"} fontWeight={"semibold"} mb={2} mt={4}>Importar Materiales</Text>
+            <Text mb={4} fontSize="sm" color="gray.600">
+              ¿Necesitas ayuda?{' '}
+              <Link
+                color="teal"
+                onClick={() => handleDownloadTemplate('material')}
+                cursor="pointer"
+              >
+                Utiliza nuestra guía para Materiales.
+              </Link>
+            </Text>
+            {materialFileName ? (
+              <Box
+                border="1px solid"
+                borderColor="gray.200"
+                borderRadius="md"
+                p={4}
+                bg="teal.50"
+                shadow="md"
+              >
+                <HStack justify="space-between">
+                  <VStack align="start" spacing={1}>
+                    <Text fontWeight="bold" fontSize="lg">
+                      Archivo de Materiales seleccionado
+                    </Text>
+                    <Text fontSize="sm" color="gray.600">
+                      Nombre: <b>{materialFileName}</b>
+                    </Text>
+                    <Text fontSize="sm" color="gray.600">
+                      Tamaño: <b>{(materialFileSize / 1024).toFixed(2)} KB</b>
+                    </Text>
+                  </VStack>
+                  <Button
+                    size="sm"
+                    colorScheme="red"
+                    variant="outline"
+                    onClick={resetMaterialFile}
+                  >
+                    Quitar
+                  </Button>
+                </HStack>
+              </Box>
+            ) : (
+              <FormControl id="import-material" width="100%">
+                <Box
+                  onDragEnter={handleMaterialDragEnter}
+                  onDragLeave={handleMaterialDragLeave}
+                  onDragOver={handleMaterialDragOver}
+                  onDrop={handleMaterialDrop}
+                  border="2px dashed"
+                  borderColor={materialDragging ? 'teal.500' : 'gray.300'}
+                  borderRadius="md"
+                  textAlign="center"
+                  bg={materialDragging ? 'teal.50' : 'white'}
+                  cursor="pointer"
+                >
+                  <Input
+                    ref={materialFileInputRef}
+                    id={materialField.name}
+                    type="file"
+                    accept=".csv"
+                    display="none"
+                    onChange={handleMaterialChange}
+                  />
+                  <FormLabel>
+                    {isLoadingMaterials ? (
+                      <Spinner />
+                    ) : (
+                      <Image
+                        src={'/uploaded.png'}
+                        alt="Subida de archivo"
+                        maxW="150px"
+                        pt={8}
+                        my={2}
+                        mx="auto"
+                      />
+                    )}
+                    <Text textAlign="center" p={4} color={materialDragging ? 'teal.500' : 'gray.300'}>
+                      {materialDragging
                         ? 'Suelta aquí...'
                         : 'Arrastra y suelta un archivo aquí, o haz clic para seleccionar uno'}
                     </Text>
@@ -236,15 +454,15 @@ const ImportBoxBrandDrawer: React.FC = () => {
           </DrawerBody>
 
           <DrawerFooter>
-            <Button variant='outline' mr={3} onClick={onClose}>
+            <Button variant="outline" mr={3} onClick={onClose}>
               Cancelar
             </Button>
             <Button
-              py='8px'
-              px='16px'
-              colorScheme='teal'
-              isDisabled={!selectedFile}
+              py="8px"
+              px="16px"
+              colorScheme="teal"
               onClick={handleUpload}
+              isDisabled={isDisabled}
               isLoading={isLoading}
             >
               Subir
@@ -256,4 +474,4 @@ const ImportBoxBrandDrawer: React.FC = () => {
   );
 };
 
-export default ImportBoxBrandDrawer;
+export default ImportFilesDrawer;
