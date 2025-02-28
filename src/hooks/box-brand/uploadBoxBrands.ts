@@ -1,11 +1,17 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { useMutation } from 'react-query';
+import { useMutation, UseMutationResult } from 'react-query';
 import axios from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
 
 interface ImportBoxBrandsResponse {
   message: string;
+  details: {
+    successCount: number;
+    errorCount: number;
+    errors: Array<{
+      row: number;
+      message: string;
+    }>;
+  };
 }
 
 export const importBoxBrands = (
@@ -14,11 +20,15 @@ export const importBoxBrands = (
   const formData = new FormData();
   formData.append('file', file);
 
-  return axios.post('/box-brand/upload-csv', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+  return axios
+    .post<
+      ImportBoxBrandsResponse
+    >('/box-brand/upload-csv', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then((response) => response.data);
 };
 
 type UseImportBoxBrandsOptions = {
@@ -27,7 +37,14 @@ type UseImportBoxBrandsOptions = {
 
 export const useImportBoxBrands = ({
   config,
-}: UseImportBoxBrandsOptions = {}) => {
+}: UseImportBoxBrandsOptions = {}): UseMutationResult<
+  ImportBoxBrandsResponse,
+  unknown,
+  File,
+  unknown
+> & {
+  importBoxBrands: (file: File) => void;
+} => {
   const mutation = useMutation({
     mutationFn: importBoxBrands,
     ...config,
